@@ -11,10 +11,10 @@ msgstr ""
 "PO-Revision-Date: 2005-06-02 22:20+0800\n"
 "Last-Translator: Asho Yeh <asho@debian.org.tw>\n"
 "Language-Team: Chinese (traditional) <zh-l10n@linux.org.tw>\n"
-"Language: zh_TW\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: zh_TW\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Poedit-Language: Chinese\n"
 "X-Poedit-Country: TAIWAN\n"
@@ -52,7 +52,6 @@ msgid "%s: out of memory\n"
 msgstr "%s：記憶體不足\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot update file %s\n"
 msgid "%s: Cannot stat %s: %s\n"
 msgstr "%s：無法更新檔案 %s\n"
 
@@ -61,7 +60,6 @@ msgid "%s: %s is neither a directory, nor a symlink.\n"
 msgstr "%s：無效的主目錄“%s”\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot rename directory %s to %s\n"
 msgid "%s: Cannot read symbolic link %s: %s\n"
 msgstr "%s：無法將目錄 %s 改名為 %s\n"
 
@@ -70,57 +68,46 @@ msgid "%s: Suspiciously long symlink: %s\n"
 msgstr ""
 
 #, fuzzy, c-format
-#| msgid "%s: cannot create directory %s\n"
 msgid "%s: Cannot create directory %s: %s\n"
 msgstr "%s：無法建立目錄 %s\n"
 
 #, fuzzy, c-format
-#| msgid "%s: warning: can't remove "
 msgid "%s: Cannot change owner of %s: %s\n"
 msgstr "%s：警告：無法刪除"
 
 #, fuzzy, c-format
-#| msgid "%s: warning: can't remove "
 msgid "%s: Cannot change mode of %s: %s\n"
 msgstr "%s：警告：無法刪除"
 
 #, fuzzy, c-format
-#| msgid "%s: rename: %s"
 msgid "%s: unlink: %s: %s\n"
 msgstr "%s：更名：%s"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot rename directory %s to %s\n"
 msgid "%s: Cannot remove directory %s: %s\n"
 msgstr "%s：無法將目錄 %s 改名為 %s\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot rename directory %s to %s\n"
 msgid "%s: Cannot rename %s to %s: %s\n"
 msgstr "%s：無法將目錄 %s 改名為 %s\n"
 
 #, fuzzy, c-format
-#| msgid "%s: warning: can't remove "
 msgid "%s: Cannot remove %s: %s\n"
 msgstr "%s：警告：無法刪除"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot create directory %s\n"
 msgid "%s: Cannot create symbolic link %s: %s\n"
 msgstr "%s：無法建立目錄 %s\n"
 
 #, fuzzy, c-format
-#| msgid "%s: warning: can't remove "
 msgid "%s: Cannot change owners of %s: %s\n"
 msgstr "%s：警告：無法刪除"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot update file %s\n"
 msgid "%s: Cannot lstat %s: %s\n"
 msgstr "%s：無法更新檔案 %s\n"
 
 #, fuzzy, c-format
-#| msgid "%s: can't update shadow file\n"
 msgid "%s: Warning, user %s has no tcb shadow file.\n"
 msgstr "%s：無法更新shadow檔案\n"
 
@@ -131,12 +118,10 @@ msgid ""
 msgstr ""
 
 #, fuzzy, c-format
-#| msgid "%s: rename: %s"
 msgid "%s: mkdir: %s: %s\n"
 msgstr "%s：更名：%s"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot open file %s\n"
 msgid "%s: Cannot open %s: %s\n"
 msgstr "%s：無法打開檔案 %s\n"
 
@@ -179,12 +164,10 @@ msgid "Cannot open audit interface - aborting.\n"
 msgstr ""
 
 #, fuzzy, c-format
-#| msgid "Unable to change tty %s"
 msgid "Unable to change owner or mode of tty stdin: %s"
 msgstr "無法改變 tty %s"
 
 #, fuzzy, c-format
-#| msgid "%s: fields too long\n"
 msgid "%s: failed to unlock %s\n"
 msgstr "%s：字段太長\n"
 
@@ -219,8 +202,8 @@ msgstr ""
 
 #, c-format
 msgid ""
-"%s: Invalid configuration: SYS_GID_MIN (%lu), GID_MIN (%lu), SYS_GID_MAX "
-"(%lu)\n"
+"%s: Invalid configuration: SYS_GID_MIN (%lu), GID_MIN (%lu), SYS_GID_MAX (%"
+"lu)\n"
 msgstr ""
 
 #, fuzzy, c-format
@@ -237,8 +220,8 @@ msgstr ""
 
 #, c-format
 msgid ""
-"%s: Invalid configuration: SYS_UID_MIN (%lu), UID_MIN (%lu), SYS_UID_MAX "
-"(%lu)\n"
+"%s: Invalid configuration: SYS_UID_MIN (%lu), UID_MIN (%lu), SYS_UID_MAX (%"
+"lu)\n"
 msgstr ""
 
 #, fuzzy, c-format
@@ -296,7 +279,6 @@ msgid "passwd: %s\n"
 msgstr "passwd：%s\n"
 
 #, fuzzy
-#| msgid "Password changed."
 msgid "passwd: password unchanged\n"
 msgstr "密碼已更改。"
 
@@ -452,12 +434,10 @@ msgid "%s: PAM authentication failed\n"
 msgstr "%s：PAM 驗証失敗\n"
 
 #, fuzzy, c-format
-#| msgid "%s: can't lock files, try again later\n"
 msgid "%s: cannot lock %s; try again later.\n"
 msgstr "%s：無法鎖定檔案，請稍後再試。\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot open file %s\n"
 msgid "%s: cannot open %s\n"
 msgstr "%s：無法打開檔案 %s\n"
 
@@ -601,7 +581,6 @@ msgid ""
 msgstr ""
 
 #, fuzzy, c-format
-#| msgid "%s: do not include \"l\" with other flags\n"
 msgid "%s: %s flag is only allowed with the %s flag\n"
 msgstr "%s：請不要與其它標誌一同使用“l”\n"
 
@@ -622,12 +601,10 @@ msgid "%s: line %d: missing new password\n"
 msgstr "%s：第 %d 行：缺少新密碼\n"
 
 #, fuzzy, c-format
-#| msgid "%s: group %s does not exist\n"
 msgid "%s: line %d: group '%s' does not exist\n"
 msgstr "%s：%s 群組不存在\n"
 
 #, fuzzy, c-format
-#| msgid "%s: line %d: can't update entry\n"
 msgid "%s: line %d: failed to prepare the new %s entry '%s'\n"
 msgstr "%s：第 %d 行：無法更新項目\n"
 
@@ -636,7 +613,6 @@ msgid "%s: error detected, changes ignored\n"
 msgstr "%s：發現錯誤，忽略更動\n"
 
 #, fuzzy, c-format
-#| msgid "Usage: %s [input]\n"
 msgid ""
 "Usage: %s [options]\n"
 "\n"
@@ -679,7 +655,6 @@ msgid "Login Shell"
 msgstr "登入 Shell"
 
 #, fuzzy, c-format
-#| msgid "You may not change the shell for %s.\n"
 msgid "You may not change the shell for '%s'.\n"
 msgstr "您不能為 %s 更改 shell。\n"
 
@@ -692,17 +667,14 @@ msgid "%s: Invalid entry: %s\n"
 msgstr "%s：無效的項目：%s\n"
 
 #, fuzzy, c-format
-#| msgid "%s is an invalid shell.\n"
 msgid "%s: %s is an invalid shell\n"
 msgstr "%s 是無效的 shell。\n"
 
 #, fuzzy, c-format
-#| msgid "%s: user %s does not exist\n"
 msgid "%s: Warning: %s does not exist\n"
 msgstr "%s：使用者 %s 不存在\n"
 
 #, fuzzy, c-format
-#| msgid "%s: warning: %s not owned by %s\n"
 msgid "%s: Warning: %s is not executable\n"
 msgstr "%s：警告：%s 不屬於 %s\n"
 
@@ -743,7 +715,6 @@ msgid "Login       Failures Maximum Latest                   On\n"
 msgstr "登入        失敗     最多    最後                     在\n"
 
 #, fuzzy, c-format
-#| msgid " [%lds left]"
 msgid " [%lus left]"
 msgstr " [還剩 %lds]"
 
@@ -768,7 +739,6 @@ msgid "lastlog: Unknown user or range: %s\n"
 msgstr "未知使用者：%s\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot open file %s\n"
 msgid "faillog: Cannot open %s: %s\n"
 msgstr "%s：無法打開檔案 %s\n"
 
@@ -777,7 +747,6 @@ msgid "faillog: Cannot get the size of %s: %s\n"
 msgstr ""
 
 #, fuzzy, c-format
-#| msgid "Usage: %s [input]\n"
 msgid ""
 "Usage: %s [option] GROUP\n"
 "\n"
@@ -806,12 +775,10 @@ msgid ""
 msgstr ""
 
 #, fuzzy
-#| msgid "The password for %s cannot be changed.\n"
 msgid "Except for the -A and -M options, the options cannot be combined.\n"
 msgstr "無法更改 %s 的密碼。\n"
 
 #, fuzzy
-#| msgid "The password for %s cannot be changed.\n"
 msgid "The options cannot be combined.\n"
 msgstr "無法更改 %s 的密碼。\n"
 
@@ -820,7 +787,6 @@ msgid "%s: shadow group passwords required for -A\n"
 msgstr "%s：-A 需要shadow群組密碼\n"
 
 #, fuzzy, c-format
-#| msgid "%s: group %s does not exist\n"
 msgid "%s: group '%s' does not exist in %s\n"
 msgstr "%s：%s 群組不存在\n"
 
@@ -862,7 +828,6 @@ msgid "%s: Not a tty\n"
 msgstr "%s：不是 tty\n"
 
 #, fuzzy, c-format
-#| msgid "Usage: %s [input]\n"
 msgid ""
 "Usage: %s [options] GROUP\n"
 "\n"
@@ -895,7 +860,6 @@ msgid "  -r, --system                  create a system account\n"
 msgstr ""
 
 #, fuzzy, c-format
-#| msgid "%s: %s is not a valid group name\n"
 msgid "%s: '%s' is not a valid group name\n"
 msgstr "%s：%s 不是有效的群組名\n"
 
@@ -908,7 +872,6 @@ msgid "%s: -K requires KEY=VALUE\n"
 msgstr "%s：-O 需要 NAME=VALUE\n"
 
 #, fuzzy, c-format
-#| msgid "%s: group %s exists\n"
 msgid "%s: group '%s' already exists\n"
 msgstr "%s：%s 群組已存在\n"
 
@@ -920,7 +883,6 @@ msgid "Usage: groupdel group\n"
 msgstr "用法：groupdel 群組\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot rename directory %s to %s\n"
 msgid "%s: cannot remove entry '%s' from %s\n"
 msgstr "%s：無法將目錄 %s 改名為 %s\n"
 
@@ -929,7 +891,6 @@ msgid "%s: cannot remove the primary group of user '%s'\n"
 msgstr "%s：不能在 NIS 用戶端上修改使用者“%s”。\n"
 
 #, fuzzy, c-format
-#| msgid "%s: group %s does not exist\n"
 msgid "%s: group '%s' does not exist\n"
 msgstr "%s：%s 群組不存在\n"
 
@@ -942,7 +903,6 @@ msgid "%s: %s is the NIS master\n"
 msgstr "%s：%s 是 NIS 管理員\n"
 
 #, fuzzy, c-format
-#| msgid "%s: user %s is a NIS user\n"
 msgid "%s: user '%s' is already a member of '%s'\n"
 msgstr "%s：使用者 %s 是 NIS 使用者\n"
 
@@ -951,7 +911,6 @@ msgid "%s: Out of memory. Cannot update %s.\n"
 msgstr "%s：update_group 時記憶體不足\n"
 
 #, fuzzy, c-format
-#| msgid "Usage: %s [input]\n"
 msgid ""
 "Usage: %s [options] [action]\n"
 "\n"
@@ -1098,17 +1057,14 @@ msgid "%s: no changes\n"
 msgstr "%s：無改變\n"
 
 #, fuzzy
-#| msgid "Usage: groupdel group\n"
 msgid "Usage: grpconv\n"
 msgstr "用法：groupdel 群組\n"
 
 #, fuzzy
-#| msgid "Usage: groupdel group\n"
 msgid "Usage: grpunconv\n"
 msgstr "用法：groupdel 群組\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot update file %s\n"
 msgid "%s: cannot delete %s\n"
 msgstr "%s：無法更新檔案 %s\n"
 
@@ -1196,9 +1152,6 @@ msgstr ""
 "[忽略斷線要求 -- 允許 root 登入。]"
 
 #, fuzzy, c-format
-#| msgid ""
-#| "\n"
-#| "Login timed out after %d seconds.\n"
 msgid ""
 "\n"
 "Login timed out after %u seconds.\n"
@@ -1276,7 +1229,6 @@ msgid ""
 msgstr ""
 
 #, fuzzy
-#| msgid "Usage: id\n"
 msgid "Usage: logoutd\n"
 msgstr "用法：id\n"
 
@@ -1313,7 +1265,6 @@ msgid "%s: group '%s' is a shadow group, but does not exist in /etc/group\n"
 msgstr "%s：%s 群組不存在\n"
 
 #, fuzzy, c-format
-#| msgid "%s: invalid user name '%s'\n"
 msgid "%s: invalid user ID '%s'\n"
 msgstr "%s：無效使用者名稱“%s”\n"
 
@@ -1346,12 +1297,10 @@ msgid "%s: line %d: can't update password\n"
 msgstr "%s：第 %d 行：無法更新密碼\n"
 
 #, fuzzy, c-format
-#| msgid "%s: line %d: mkdir failed\n"
 msgid "%s: line %d: mkdir %s failed: %s\n"
 msgstr "%s：第 %d 行：建立目錄失敗\n"
 
 #, fuzzy, c-format
-#| msgid "%s: line %d: chown failed\n"
 msgid "%s: line %d: chown %s failed: %s\n"
 msgstr "%s：第 %d 行：改變擁有者或群組失敗\n"
 
@@ -1468,17 +1417,14 @@ msgid "The password for %s is unchanged.\n"
 msgstr "%s 的密碼未被改變。\n"
 
 #, fuzzy, c-format
-#| msgid "Password changed."
 msgid "%s: password changed.\n"
 msgstr "密碼已更改。"
 
 #, fuzzy, c-format
-#| msgid "Password Expiration Warning"
 msgid "%s: password expiry information changed.\n"
 msgstr "密碼過期警告"
 
 #, fuzzy, c-format
-#| msgid "Usage: %s [-q] [-r] [-s] [passwd [shadow]]\n"
 msgid "Usage: %s [-q] [-r] [passwd]\n"
 msgstr "用法：%s [-q] [-r] [-s] [passwd [shadow]]\n"
 
@@ -1487,7 +1433,6 @@ msgid "Usage: %s [-q] [-r] [-s] [passwd [shadow]]\n"
 msgstr "用法：%s [-q] [-r] [-s] [passwd [shadow]]\n"
 
 #, fuzzy, c-format
-#| msgid "%s: -s and -r are incompatibile\n"
 msgid "%s: -s and -r are incompatible\n"
 msgstr "%s：-s 和 -r 是互不相容的\n"
 
@@ -1506,42 +1451,34 @@ msgid "invalid user name '%s'\n"
 msgstr "無效的使用者名稱“%s”\n"
 
 #, fuzzy, c-format
-#| msgid "invalid user name '%s'\n"
 msgid "invalid user ID '%lu'\n"
 msgstr "無效的使用者名稱“%s”\n"
 
 #, fuzzy, c-format
-#| msgid "user %s: no group %u\n"
 msgid "user '%s': no group %lu\n"
 msgstr "使用者 %s：無 %u 群組\n"
 
 #, fuzzy, c-format
-#| msgid "user %s: directory %s does not exist\n"
 msgid "user '%s': directory '%s' does not exist\n"
 msgstr "使用者 %s：目錄 %s 不存在\n"
 
 #, fuzzy, c-format
-#| msgid "user %s: program %s does not exist\n"
 msgid "user '%s': program '%s' does not exist\n"
 msgstr "使用者 %s：程式 %s 不存在\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot create directory %s\n"
 msgid "no tcb directory for %s\n"
 msgstr "%s：無法建立目錄 %s\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot create directory %s\n"
 msgid "create tcb directory for %s?"
 msgstr "%s：無法建立目錄 %s\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot create directory %s\n"
 msgid "failed to create tcb directory for %s\n"
 msgstr "%s：無法建立目錄 %s\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot lock file %s\n"
 msgid "%s: cannot lock %s.\n"
 msgstr "%s：無法鎖定檔案 %s\n"
 
@@ -1569,17 +1506,14 @@ msgid "user %s: last password change in the future\n"
 msgstr "使用者 %s：最近一次密碼更動\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot open file %s\n"
 msgid "%s: cannot sort entries in %s\n"
 msgstr "%s：無法打開檔案 %s\n"
 
 #, fuzzy
-#| msgid "Usage: id\n"
 msgid "Usage: pwconv\n"
 msgstr "用法：id\n"
 
 #, fuzzy, c-format
-#| msgid "%s: can't re-write file\n"
 msgid "%s: can't work with tcb enabled\n"
 msgstr "%s：無法重寫檔案\n"
 
@@ -1588,7 +1522,6 @@ msgid "%s: failed to change the mode of %s to 0600\n"
 msgstr ""
 
 #, fuzzy
-#| msgid "Usage: id\n"
 msgid "Usage: pwunconv\n"
 msgstr "用法：id\n"
 
@@ -1608,7 +1541,6 @@ msgid " ...waiting for child to terminate.\n"
 msgstr ""
 
 #, fuzzy, c-format
-#| msgid "%s: cannot lock file %s\n"
 msgid "%s: Cannot fork user shell\n"
 msgstr "%s：無法鎖定檔案 %s\n"
 
@@ -1672,12 +1604,10 @@ msgstr ""
 "(忽略)\n"
 
 #, fuzzy, c-format
-#| msgid "%s: PAM authentication failed\n"
 msgid "%s: Authentication failure\n"
 msgstr "%s：PAM 驗証失敗\n"
 
 #, fuzzy, c-format
-#| msgid "You are not authorized to su %s\n"
 msgid "%s: You are not authorized to su at that time\n"
 msgstr "您沒有被授權 su %s\n"
 
@@ -1722,12 +1652,10 @@ msgid "%s: cannot open new defaults file\n"
 msgstr "%s：無法打開新的預設檔案\n"
 
 #, fuzzy, c-format
-#| msgid "%s: line %d: chown failed\n"
 msgid "%s: line too long in %s: %s..."
 msgstr "%s：第 %d 行：改變擁有者或群組失敗\n"
 
 #, fuzzy, c-format
-#| msgid "%s: rename: %s"
 msgid "%s: rename: %s: %s"
 msgstr "%s：更名：%s"
 
@@ -1740,7 +1668,6 @@ msgid "%s: too many groups specified (max %d).\n"
 msgstr "%s：指定了過多群組(最多 %d)。\n"
 
 #, fuzzy, c-format
-#| msgid "Usage: %s [input]\n"
 msgid ""
 "Usage: %s [options] LOGIN\n"
 "\n"
@@ -1890,7 +1817,6 @@ msgid "Setting mailbox file permissions"
 msgstr ""
 
 #, fuzzy, c-format
-#| msgid "%s: user %s exists\n"
 msgid "%s: user '%s' already exists\n"
 msgstr "%s：使用者 %s 已存在\n"
 
@@ -1909,7 +1835,6 @@ msgid "%s: UID %lu is not unique\n"
 msgstr "%s：gid %u 並不唯一\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot create directory %s\n"
 msgid "%s: Failed to create tcb directory for %s\n"
 msgstr "%s：無法建立目錄 %s\n"
 
@@ -1939,7 +1864,6 @@ msgid "%s: group %s is the primary group of another user and is not removed.\n"
 msgstr "%s：不能刪除使用者的主群組。\n"
 
 #, fuzzy, c-format
-#| msgid "%s: warning: can't remove "
 msgid "%s: warning: can't remove %s: %s\n"
 msgstr "%s：警告：無法刪除"
 
@@ -1952,17 +1876,14 @@ msgid "%s: Can't allocate memory, tcb entry for %s not removed.\n"
 msgstr ""
 
 #, fuzzy, c-format
-#| msgid "%s: cannot update file %s\n"
 msgid "%s: Cannot drop privileges: %s\n"
 msgstr "%s：無法更新檔案 %s\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot rename directory %s to %s\n"
 msgid "%s: Cannot remove the content of %s: %s\n"
 msgstr "%s：無法將目錄 %s 改名為 %s\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot rename directory %s to %s\n"
 msgid "%s: Cannot remove tcb files for %s: %s\n"
 msgstr "%s：無法將目錄 %s 改名為 %s\n"
 
@@ -2026,7 +1947,6 @@ msgid ""
 msgstr ""
 
 #, fuzzy, c-format
-#| msgid "%s: user %s exists\n"
 msgid "%s: user '%s' already exists in %s\n"
 msgstr "%s：使用者 %s 已存在\n"
 
@@ -2057,7 +1977,6 @@ msgid ""
 msgstr ""
 
 #, fuzzy, c-format
-#| msgid "%s: cannot create directory %s\n"
 msgid "%s: Failed to change ownership of the home directory"
 msgstr "%s：無法建立目錄 %s\n"
 
@@ -2095,7 +2014,6 @@ msgid ""
 msgstr ""
 
 #, fuzzy
-#| msgid "Usage: %s [input]\n"
 msgid ""
 "Usage: vipw [options]\n"
 "\n"
@@ -2122,16 +2040,12 @@ msgid "%s: failed to remove %s\n"
 msgstr "%s：無效的工作電話：“%s”\n"
 
 #, fuzzy, c-format
-#| msgid ""
-#| "\n"
-#| "%s: %s is unchanged\n"
 msgid "%s: %s is unchanged\n"
 msgstr ""
 "\n"
 "%s：%s 沒有更改\n"
 
 #, fuzzy
-#| msgid "failed to rename mailbox"
 msgid "failed to create scratch directory"
 msgstr "無法為信箱改名"
 
@@ -2140,7 +2054,6 @@ msgid "failed to drop privileges"
 msgstr "%s：無效的工作電話：“%s”\n"
 
 #, fuzzy
-#| msgid "Couldn't lock file"
 msgid "Couldn't get file context"
 msgstr "無法鎖定檔案"
 
@@ -2161,22 +2074,18 @@ msgid "failed to open scratch file"
 msgstr "%s：無法打開群組檔案\n"
 
 #, fuzzy
-#| msgid "%s: fields too long\n"
 msgid "failed to unlink scratch file"
 msgstr "%s：字段太長\n"
 
 #, fuzzy
-#| msgid "failed to rename mailbox"
 msgid "failed to stat edited file"
 msgstr "無法為信箱改名"
 
 #, fuzzy
-#| msgid "failed to change mailbox owner"
 msgid "failed to allocate memory"
 msgstr "改變信箱所有者失敗"
 
 #, fuzzy
-#| msgid "failed to rename mailbox"
 msgid "failed to create backup file"
 msgstr "無法為信箱改名"
 
@@ -2187,6 +2096,79 @@ msgstr "%s：無法復原 %s：%s (您的修改在 %s 中)\n"
 #, fuzzy, c-format
 msgid "%s: failed to find tcb directory for %s\n"
 msgstr "%s：無效的主目錄“%s”\n"
+
+#, fuzzy, c-format
+msgid "%s: %s is an invalid shell.\n"
+msgstr "%s 是無效的 shell。\n"
+
+msgid ""
+"  -l, --lock-time SEC           after failed login lock account for SEC "
+"seconds\n"
+msgstr ""
+
+#, c-format
+msgid ""
+"Usage: %s [option] GROUP\n"
+"\n"
+"Options:\n"
+"  -a, --add USER                add USER to GROUP\n"
+"  -d, --delete USER             remove USER from GROUP\n"
+"  -r, --remove-password         remove the GROUP's password\n"
+"  -R, --restrict                restrict access to GROUP to its members\n"
+"  -M, --members USER,...        set the list of members of GROUP\n"
+"%s\n"
+"\n"
+msgstr ""
+
+msgid ""
+"  -A, --administrators ADMIN,...\n"
+"                                set the list of administrators for GROUP\n"
+"Except for the -A and -M options, the options cannot be combined.\n"
+msgstr ""
+
+msgid ""
+"Usage: groupmems [options] [action]\n"
+"\n"
+"Options:\n"
+"  -g, --group groupname         change groupname instead of the user's "
+"group\n"
+"                                (root only)\n"
+"\n"
+"Actions:\n"
+"  -a, --add username            add username to the members of the group\n"
+"  -d, --delete username         remove username from the members of the "
+"group\n"
+"  -p, --purge                   purge all members from the group\n"
+"  -l, --list                    list the members of the group\n"
+"\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid ""
+"Usage: useradd [options] LOGIN\n"
+"\n"
+"Options:\n"
+msgstr "用法：%s [輸入]\n"
+
+#, c-format
+msgid "%s: can't create %s\n"
+msgstr "%s：無法建立 %s\n"
+
+#, c-format
+msgid "%s: can't chown %s\n"
+msgstr "%s：無法改變 %s 的所有者和群組\n"
+
+msgid ""
+"Usage: vipw [options]\n"
+"\n"
+"Options:\n"
+"  -g, --group                   edit group database\n"
+"  -h, --help                    display this help message and exit\n"
+"  -p, --passwd                  edit passwd database\n"
+"  -q, --quiet                   quiet mode\n"
+"  -s, --shadow                  edit shadow or gshadow database\n"
+"\n"
+msgstr ""
 
 #, fuzzy
 #~ msgid ""
@@ -2208,20 +2190,6 @@ msgstr "%s：無效的主目錄“%s”\n"
 #~ "  -t, --time DAYS\t只列出 DAYS 天內的歷史記錄\n"
 #~ "  -u, --user LOGIN\t根據指定的 LOGIN 列出該使用者最後的歷史記錄\n"
 #~ "\n"
-
-#, fuzzy
-#~| msgid "Usage: %s [input]\n"
-#~ msgid ""
-#~ "Usage: useradd [options] LOGIN\n"
-#~ "\n"
-#~ "Options:\n"
-#~ msgstr "用法：%s [輸入]\n"
-
-#~ msgid "%s: can't create %s\n"
-#~ msgstr "%s：無法建立 %s\n"
-
-#~ msgid "%s: can't chown %s\n"
-#~ msgstr "%s：無法改變 %s 的所有者和群組\n"
 
 #, fuzzy
 #~ msgid ""

@@ -10,10 +10,10 @@ msgstr ""
 "PO-Revision-Date: 2009-09-29 22:09+0930\n"
 "Last-Translator: Clytie Siddall <clytie@riverland.net.au>\n"
 "Language-Team: Vietnamese <vi-VN@googlegroups.com>\n"
-"Language: vi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: vi\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: LocFactoryEditor 1.8\n"
 
@@ -21,8 +21,8 @@ msgstr ""
 msgid ""
 "Multiple entries named '%s' in %s. Please fix this with pwck or grpck.\n"
 msgstr ""
-"Có nhiều mục nhập tên « %s » trong %s. Hãy sửa chữa trường hợp này, dùng "
-"pwck hoặc grpck.\n"
+"Có nhiều mục nhập tên « %s » trong %s. Hãy sửa chữa trường hợp này, dùng pwck "
+"hoặc grpck.\n"
 
 #, c-format
 msgid "crypt method not supported by libcrypt? (%s)\n"
@@ -51,17 +51,14 @@ msgid "%s: out of memory\n"
 msgstr "%s: tràn bộ nhớ\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot delete %s\n"
 msgid "%s: Cannot stat %s: %s\n"
 msgstr "%s: không thể xoá %s\n"
 
 #, fuzzy, c-format
-#| msgid "%s: %s home directory (%s) not found\n"
 msgid "%s: %s is neither a directory, nor a symlink.\n"
 msgstr "%s: %s không tìm thấy thư mục chính (%s)\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot remove entry '%s' from %s\n"
 msgid "%s: Cannot read symbolic link %s: %s\n"
 msgstr "%s: không thể gỡ bỏ mục nhập « %s » khỏi %s\n"
 
@@ -70,57 +67,46 @@ msgid "%s: Suspiciously long symlink: %s\n"
 msgstr ""
 
 #, fuzzy, c-format
-#| msgid "%s: cannot create directory %s\n"
 msgid "%s: Cannot create directory %s: %s\n"
 msgstr "%s: không thể tạo thư mục %s\n"
 
 #, fuzzy, c-format
-#| msgid "lastlog: Cannot get the size of %s: %s\n"
 msgid "%s: Cannot change owner of %s: %s\n"
 msgstr "lastlog: Không thể lấy kích cỡ của %s: %s\n"
 
 #, fuzzy, c-format
-#| msgid "%s: warning: can't remove %s: %s\n"
 msgid "%s: Cannot change mode of %s: %s\n"
 msgstr "%s: cảnh báo : không thể gỡ bỏ %s: %s\n"
 
 #, fuzzy, c-format
-#| msgid "%s: rename: %s: %s"
 msgid "%s: unlink: %s: %s\n"
 msgstr "%s: thay tên: %s: %s"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot rename directory %s to %s\n"
 msgid "%s: Cannot remove directory %s: %s\n"
 msgstr "%s: không thể thay đổi lại tên thư mục %s thành %s\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot rename directory %s to %s\n"
 msgid "%s: Cannot rename %s to %s: %s\n"
 msgstr "%s: không thể thay đổi lại tên thư mục %s thành %s\n"
 
 #, fuzzy, c-format
-#| msgid "%s: warning: can't remove %s: %s\n"
 msgid "%s: Cannot remove %s: %s\n"
 msgstr "%s: cảnh báo : không thể gỡ bỏ %s: %s\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot create directory %s\n"
 msgid "%s: Cannot create symbolic link %s: %s\n"
 msgstr "%s: không thể tạo thư mục %s\n"
 
 #, fuzzy, c-format
-#| msgid "lastlog: Cannot get the size of %s: %s\n"
 msgid "%s: Cannot change owners of %s: %s\n"
 msgstr "lastlog: Không thể lấy kích cỡ của %s: %s\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot delete %s\n"
 msgid "%s: Cannot lstat %s: %s\n"
 msgstr "%s: không thể xoá %s\n"
 
 #, fuzzy, c-format
-#| msgid "%s: (line %d, user %s) password not changed\n"
 msgid "%s: Warning, user %s has no tcb shadow file.\n"
 msgstr "%s: (dòng %d, người dùng %s) mật khẩu chưa thay đổi\n"
 
@@ -131,12 +117,10 @@ msgid ""
 msgstr ""
 
 #, fuzzy, c-format
-#| msgid "%s: rename: %s: %s"
 msgid "%s: mkdir: %s: %s\n"
 msgstr "%s: thay tên: %s: %s"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot open %s\n"
 msgid "%s: Cannot open %s: %s\n"
 msgstr "%s: không thể mở %s\n"
 
@@ -188,7 +172,6 @@ msgid "%s: failed to unlock %s\n"
 msgstr "%s: lỗi mở khoá %s\n"
 
 #, fuzzy, c-format
-#| msgid "%s: %s\n"
 msgid "%s: "
 msgstr "%s: %s\n"
 
@@ -219,8 +202,8 @@ msgstr ""
 
 #, c-format
 msgid ""
-"%s: Invalid configuration: SYS_GID_MIN (%lu), GID_MIN (%lu), SYS_GID_MAX "
-"(%lu)\n"
+"%s: Invalid configuration: SYS_GID_MIN (%lu), GID_MIN (%lu), SYS_GID_MAX (%"
+"lu)\n"
 msgstr ""
 
 #, c-format
@@ -238,8 +221,8 @@ msgstr ""
 
 #, c-format
 msgid ""
-"%s: Invalid configuration: SYS_UID_MIN (%lu), UID_MIN (%lu), SYS_UID_MAX "
-"(%lu)\n"
+"%s: Invalid configuration: SYS_UID_MIN (%lu), UID_MIN (%lu), SYS_UID_MAX (%"
+"lu)\n"
 msgstr ""
 
 #, c-format
@@ -651,7 +634,6 @@ msgstr ""
 "Tuỳ chọn:\n"
 
 #, fuzzy, c-format
-#| msgid "  -c, --crypt-method            the crypt method (one of %s)\n"
 msgid "  -c, --crypt-method <METHOD>   the crypt method (one of %s)\n"
 msgstr "  -c, --crypt-method            phương pháp mật mã (một của %s)\n"
 
@@ -709,17 +691,14 @@ msgid "%s: Invalid entry: %s\n"
 msgstr "%s: Mục nhập không hợp lệ: %s\n"
 
 #, fuzzy, c-format
-#| msgid "%s: %s is an invalid shell.\n"
 msgid "%s: %s is an invalid shell\n"
 msgstr "%s: %s là một trình bao không hợp lệ.\n"
 
 #, fuzzy, c-format
-#| msgid "%s: user '%s' does not exist\n"
 msgid "%s: Warning: %s does not exist\n"
 msgstr "%s: người dùng « %s » không tồn tại\n"
 
 #, fuzzy, c-format
-#| msgid "%s: warning: %s not owned by %s\n"
 msgid "%s: Warning: %s is not executable\n"
 msgstr "%s: cảnh báo : %s không phải được %s sở hữu\n"
 
@@ -734,9 +713,6 @@ msgstr ""
 "dùng\n"
 
 #, fuzzy
-#| msgid ""
-#| "  -l, --lock-time SEC           after failed login lock account for SEC "
-#| "seconds\n"
 msgid ""
 "  -l, --lock-secs SEC           after failed login lock account for SEC "
 "seconds\n"
@@ -812,10 +788,6 @@ msgid "faillog: Cannot get the size of %s: %s\n"
 msgstr "faillog: không thể lấy kích cỡ của %s: %s\n"
 
 #, fuzzy, c-format
-#| msgid ""
-#| "Usage: %s [options] GROUP\n"
-#| "\n"
-#| "Options:\n"
 msgid ""
 "Usage: %s [option] GROUP\n"
 "\n"
@@ -826,7 +798,6 @@ msgstr ""
 "Tuỳ chọn:\n"
 
 #, fuzzy
-#| msgid "  -g, --gid GID                 change the group ID to GID\n"
 msgid "  -a, --add USER                add USER to GROUP\n"
 msgstr "  -g, --gid GID                 thay đổi mã số nhóm sang GID này\n"
 
@@ -837,8 +808,6 @@ msgid "  -r, --remove-password         remove the GROUP's password\n"
 msgstr ""
 
 #, fuzzy
-#| msgid ""
-#| "  -r, --reset                   reset the counters of login failures\n"
 msgid ""
 "  -R, --restrict                restrict access to GROUP to its members\n"
 msgstr ""
@@ -848,10 +817,6 @@ msgid "  -M, --members USER,...        set the list of members of GROUP\n"
 msgstr ""
 
 #, fuzzy
-#| msgid ""
-#| "  -A, --administrators ADMIN,...\n"
-#| "                                set the list of administrators for GROUP\n"
-#| "Except for the -A and -M options, the options cannot be combined.\n"
 msgid ""
 "  -A, --administrators ADMIN,...\n"
 "                                set the list of administrators for GROUP\n"
@@ -861,7 +826,6 @@ msgstr ""
 "Trừ hai tuỳ chọn « -A » và « -M », không thể tổ hợp các tuỳ chọn.\n"
 
 #, fuzzy
-#| msgid "The options cannot be combined.\n"
 msgid "Except for the -A and -M options, the options cannot be combined.\n"
 msgstr "Không thể tổ hợp các tuỳ chọn.\n"
 
@@ -928,8 +892,8 @@ msgid ""
 "exists,\n"
 "                                and cancel -g if the GID is already used\n"
 msgstr ""
-"  -f, --force                   thoát thành công nếu nhóm đã có, và hủy bỏ « "
-"-g » nếu GID đã được dùng\n"
+"  -f, --force                   thoát thành công nếu nhóm đã có, và hủy bỏ « -"
+"g » nếu GID đã được dùng\n"
 
 msgid "  -g, --gid GID                 use GID for the new group\n"
 msgstr "  -g, --gid GID                 dùng GID này cho nhóm mới\n"
@@ -1009,10 +973,6 @@ msgid "%s: Out of memory. Cannot update %s.\n"
 msgstr "%s: Không đủ bộ nhớ. Không thể cập nhật %s.\n"
 
 #, fuzzy, c-format
-#| msgid ""
-#| "Usage: %s [options]\n"
-#| "\n"
-#| "Options:\n"
 msgid ""
 "Usage: %s [options] [action]\n"
 "\n"
@@ -1023,10 +983,6 @@ msgstr ""
 "Tuỳ chọn:\n"
 
 #, fuzzy
-#| msgid ""
-#| "  -N, --no-user-group           do not create a group with the same name "
-#| "as\n"
-#| "                                the user\n"
 msgid ""
 "  -g, --group groupname         change groupname instead of the user's "
 "group\n"
@@ -1041,7 +997,6 @@ msgid "Actions:\n"
 msgstr ""
 
 #, fuzzy
-#| msgid "  -g, --gid GID                 use GID for the new group\n"
 msgid ""
 "  -a, --add username            add username to the members of the group\n"
 msgstr "  -g, --gid GID                 dùng GID này cho nhóm mới\n"
@@ -1052,12 +1007,10 @@ msgid ""
 msgstr ""
 
 #, fuzzy
-#| msgid "  -g, --gid GID                 use GID for the new group\n"
 msgid "  -p, --purge                   purge all members from the group\n"
 msgstr "  -g, --gid GID                 dùng GID này cho nhóm mới\n"
 
 #, fuzzy
-#| msgid "  -g, --gid GID                 use GID for the new group\n"
 msgid "  -l, --list                    list the members of the group\n"
 msgstr "  -g, --gid GID                 dùng GID này cho nhóm mới\n"
 
@@ -1537,8 +1490,8 @@ msgid ""
 "account.\n"
 msgstr ""
 "%s: mở khoá mật khẩu thì gây ra một tài khoản không có mật khẩu.\n"
-"Bạn nên đặt một mật khẩu dùng câu lệnh « usermod -p » để mở khoá mật khẩu "
-"của tài khoản này.\n"
+"Bạn nên đặt một mật khẩu dùng câu lệnh « usermod -p » để mở khoá mật khẩu của "
+"tài khoản này.\n"
 
 #, c-format
 msgid "%s: repository %s not supported\n"
@@ -1570,7 +1523,6 @@ msgid "%s: password expiry information changed.\n"
 msgstr "%s: thông tin đã thay đổi về sự hết hạn sử dụng mật khẩu.\n"
 
 #, fuzzy, c-format
-#| msgid "Usage: %s [-q] [-r] [-s] [passwd [shadow]]\n"
 msgid "Usage: %s [-q] [-r] [passwd]\n"
 msgstr ""
 "Sử dụng: %s [-q] [-r] [-s] [passwd [shadow]]\n"
@@ -1619,22 +1571,18 @@ msgid "user '%s': program '%s' does not exist\n"
 msgstr "người dùng « %s »: chương trình « %s » không tồn tại\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot create directory %s\n"
 msgid "no tcb directory for %s\n"
 msgstr "%s: không thể tạo thư mục %s\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot create directory %s\n"
 msgid "create tcb directory for %s?"
 msgstr "%s: không thể tạo thư mục %s\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot create directory %s\n"
 msgid "failed to create tcb directory for %s\n"
 msgstr "%s: không thể tạo thư mục %s\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot open %s\n"
 msgid "%s: cannot lock %s.\n"
 msgstr "%s: không thể mở %s\n"
 
@@ -1697,7 +1645,6 @@ msgid " ...waiting for child to terminate.\n"
 msgstr ""
 
 #, fuzzy, c-format
-#| msgid "%s: Cannot determine your user name.\n"
 msgid "%s: Cannot fork user shell\n"
 msgstr "%s: không thể quyết định tên người dùng của bạn.\n"
 
@@ -1840,10 +1787,6 @@ msgid "%s: too many groups specified (max %d).\n"
 msgstr "%s: ghi rõ quá nhiều nhóm (tối đa %d).\n"
 
 #, fuzzy, c-format
-#| msgid ""
-#| "Usage: %s [options]\n"
-#| "\n"
-#| "Options:\n"
 msgid ""
 "Usage: %s [options] LOGIN\n"
 "\n"
@@ -2011,8 +1954,8 @@ msgstr "Đang tạo tập tin hộp thư"
 msgid ""
 "Group 'mail' not found. Creating the user mailbox file with 0600 mode.\n"
 msgstr ""
-"Không tìm thấy nhóm « mail » (thư tín). Vì thế đang tạo tập tin hộp thư "
-"người dùng với chế độ 0600.\n"
+"Không tìm thấy nhóm « mail » (thư tín). Vì thế đang tạo tập tin hộp thư người "
+"dùng với chế độ 0600.\n"
 
 msgid "Setting mailbox file permissions"
 msgstr "Đang đặt quyền truy cập tập tin hộp thư"
@@ -2036,7 +1979,6 @@ msgid "%s: UID %lu is not unique\n"
 msgstr "%s: UID %lu không phải duy nhất\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot create directory %s\n"
 msgid "%s: Failed to create tcb directory for %s\n"
 msgstr "%s: không thể tạo thư mục %s\n"
 
@@ -2089,17 +2031,14 @@ msgid "%s: Can't allocate memory, tcb entry for %s not removed.\n"
 msgstr ""
 
 #, fuzzy, c-format
-#| msgid "%s: failed to drop privileges (%s)\n"
 msgid "%s: Cannot drop privileges: %s\n"
 msgstr "%s: lỗi bỏ quyền truy cập (%s)\n"
 
 #, fuzzy, c-format
-#| msgid "lastlog: Cannot get the size of %s: %s\n"
 msgid "%s: Cannot remove the content of %s: %s\n"
 msgstr "lastlog: Không thể lấy kích cỡ của %s: %s\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot remove entry '%s' from %s\n"
 msgid "%s: Cannot remove tcb files for %s: %s\n"
 msgstr "%s: không thể gỡ bỏ mục nhập « %s » khỏi %s\n"
 
@@ -2118,8 +2057,8 @@ msgstr "%s: %s không tìm thấy thư mục chính (%s)\n"
 #, c-format
 msgid "%s: not removing directory %s (would remove home of user %s)\n"
 msgstr ""
-"%s: sẽ không gỡ bỏ thư mục %s (vì cũng gỡ bỏ thư mục chính của người dùng "
-"%s)\n"
+"%s: sẽ không gỡ bỏ thư mục %s (vì cũng gỡ bỏ thư mục chính của người dùng %"
+"s)\n"
 
 #, c-format
 msgid "%s: error removing directory %s\n"
@@ -2229,7 +2168,6 @@ msgid ""
 msgstr ""
 
 #, fuzzy, c-format
-#| msgid "%s: cannot create directory %s\n"
 msgid "%s: Failed to change ownership of the home directory"
 msgstr "%s: không thể tạo thư mục %s\n"
 
@@ -2244,14 +2182,14 @@ msgstr "%s: không thể thay đổi lại tên thư mục %s thành %s\n"
 #, c-format
 msgid "%s: failed to copy the lastlog entry of user %lu to user %lu: %s\n"
 msgstr ""
-"%s: không sao chép được mục nhập lastlog của người dùng %lu sang người dùng "
-"%lu: %s\n"
+"%s: không sao chép được mục nhập lastlog của người dùng %lu sang người dùng %"
+"lu: %s\n"
 
 #, c-format
 msgid "%s: failed to copy the faillog entry of user %lu to user %lu: %s\n"
 msgstr ""
-"%s: không sao chép được mục nhập faillog của người dùng %lu sang người dùng "
-"%lu: %s\n"
+"%s: không sao chép được mục nhập faillog của người dùng %lu sang người dùng %"
+"lu: %s\n"
 
 #, c-format
 msgid "%s: warning: %s not owned by %s\n"
@@ -2274,10 +2212,6 @@ msgstr ""
 "Hãy sử dụng câu lệnh « %s » để làm như thế.\n"
 
 #, fuzzy
-#| msgid ""
-#| "Usage: %s [options]\n"
-#| "\n"
-#| "Options:\n"
 msgid ""
 "Usage: vipw [options]\n"
 "\n"
@@ -2288,30 +2222,24 @@ msgstr ""
 "Tuỳ chọn:\n"
 
 #, fuzzy
-#| msgid "  -g, --gid GID                 change the group ID to GID\n"
 msgid "  -g, --group                   edit group database\n"
 msgstr "  -g, --gid GID                 thay đổi mã số nhóm sang GID này\n"
 
 #, fuzzy
-#| msgid "  -r, --system                  create system accounts\n"
 msgid "  -p, --passwd                  edit passwd database\n"
 msgstr "  -r, --system                  tạo các tài khoản hệ thống\n"
 
 #, fuzzy
-#| msgid "  -g, --gid GID                 use GID for the new group\n"
 msgid "  -q, --quiet                   quiet mode\n"
 msgstr "  -g, --gid GID                 dùng GID này cho nhóm mới\n"
 
 #, fuzzy
-#| msgid ""
-#| "  -a, --all                     display faillog records for all users\n"
 msgid "  -s, --shadow                  edit shadow or gshadow database\n"
 msgstr ""
 "  -a, --all                     hiển thị các mục ghi faillog cho mọi người "
 "dùng\n"
 
 #, fuzzy
-#| msgid "  -u, --uid UID                 user ID of the new account\n"
 msgid "  -u, --user                    which user's tcb shadow file to edit\n"
 msgstr "  -u, --uid UID                 mã số người dùng của tài khoản mới\n"
 
@@ -2324,12 +2252,10 @@ msgid "%s: %s is unchanged\n"
 msgstr "%s: %s chưa thay đổi\n"
 
 #, fuzzy
-#| msgid "failed to rename mailbox"
 msgid "failed to create scratch directory"
 msgstr "lỗi thay đổi tên của hộp thư"
 
 #, fuzzy
-#| msgid "%s: failed to drop privileges (%s)\n"
 msgid "failed to drop privileges"
 msgstr "%s: lỗi bỏ quyền truy cập (%s)\n"
 
@@ -2340,7 +2266,6 @@ msgid "setfscreatecon () failed"
 msgstr "setfscreatecon () bị lỗi"
 
 #, fuzzy
-#| msgid "%s: failed to drop privileges (%s)\n"
 msgid "failed to gain privileges"
 msgstr "%s: lỗi bỏ quyền truy cập (%s)\n"
 
@@ -2351,27 +2276,22 @@ msgid "Couldn't make backup"
 msgstr "Không thể sao lưu"
 
 #, fuzzy
-#| msgid "failed to rename mailbox"
 msgid "failed to open scratch file"
 msgstr "lỗi thay đổi tên của hộp thư"
 
 #, fuzzy
-#| msgid "%s: failed to unlock %s\n"
 msgid "failed to unlink scratch file"
 msgstr "%s: lỗi mở khoá %s\n"
 
 #, fuzzy
-#| msgid "failed to rename mailbox"
 msgid "failed to stat edited file"
 msgstr "lỗi thay đổi tên của hộp thư"
 
 #, fuzzy
-#| msgid "failed to change mailbox owner"
 msgid "failed to allocate memory"
 msgstr "lỗi thay đổi chủ hộp thư"
 
 #, fuzzy
-#| msgid "failed to rename mailbox"
 msgid "failed to create backup file"
 msgstr "lỗi thay đổi tên của hộp thư"
 
@@ -2380,9 +2300,116 @@ msgid "%s: can't restore %s: %s (your changes are in %s)\n"
 msgstr "%s: không thể phục hồi %s: %s (các thay đổi của bạn nằm trong %s)\n"
 
 #, fuzzy, c-format
-#| msgid "%s: invalid base directory '%s'\n"
 msgid "%s: failed to find tcb directory for %s\n"
 msgstr "%s: thư mục cơ ban không hợp lệ « %s »\n"
+
+#, fuzzy, c-format
+msgid "%s: %s is an invalid shell.\n"
+msgstr "%s là hệ vỏ không hợp lệ.\n"
+
+msgid ""
+"  -l, --lock-time SEC           after failed login lock account for SEC "
+"seconds\n"
+msgstr ""
+
+#, c-format
+msgid ""
+"Usage: %s [option] GROUP\n"
+"\n"
+"Options:\n"
+"  -a, --add USER                add USER to GROUP\n"
+"  -d, --delete USER             remove USER from GROUP\n"
+"  -r, --remove-password         remove the GROUP's password\n"
+"  -R, --restrict                restrict access to GROUP to its members\n"
+"  -M, --members USER,...        set the list of members of GROUP\n"
+"%s\n"
+"\n"
+msgstr ""
+"Sử dụng: %s [tuỳ_chọn] NHÓM\n"
+"\n"
+"Tuỳ chọn:\n"
+"  -a, --add NGƯỜI_DÙNG\tthêm người dùng này vào NHÓM\n"
+"  -d, --delete NGƯỜI_DÙNG   \tgỡ bỏ người dùng này khỏi NHÓM\n"
+"  -r, --remove-password         \tgỡ bỏ mật khẩu của NHÓM\n"
+"  -R, --restrict \t\t\t\thạn chế truy cập đến NHÓM thành các thành viên của "
+"nó\n"
+"  -M, --members NGƯỜI_DÙNG,...\t\tđặt danh sách các thành viên của NHÓM\n"
+"%s\n"
+"\n"
+
+msgid ""
+"  -A, --administrators ADMIN,...\n"
+"                                set the list of administrators for GROUP\n"
+"Except for the -A and -M options, the options cannot be combined.\n"
+msgstr ""
+
+msgid ""
+"Usage: groupmems [options] [action]\n"
+"\n"
+"Options:\n"
+"  -g, --group groupname         change groupname instead of the user's "
+"group\n"
+"                                (root only)\n"
+"\n"
+"Actions:\n"
+"  -a, --add username            add username to the members of the group\n"
+"  -d, --delete username         remove username from the members of the "
+"group\n"
+"  -p, --purge                   purge all members from the group\n"
+"  -l, --list                    list the members of the group\n"
+"\n"
+msgstr ""
+"Sử dụng: groupmems [tuỳ_chọn ...] [hành_vi]\n"
+"\n"
+"Tuỳ chọn:\n"
+"  -g, --group TÊN_NHÓM    thay đổi tên của nhóm này thay cho nhóm của người "
+"dùng (chỉ người chủ)\n"
+"\n"
+"Hành vi:\n"
+"  -a, --add TÊN\t\t\tthêm tên người dùng này vào nhóm\n"
+"  -d, --delete TÊN         \tgỡ bỏ tên này khỏi nhóm\n"
+"  -p, --purge                   \ttẩy mọi người ra nhóm\n"
+"  -l, --list                    \t\tliệt kê những người trong nhóm\n"
+"\n"
+
+#, c-format
+msgid ""
+"Usage: useradd [options] LOGIN\n"
+"\n"
+"Options:\n"
+msgstr ""
+"Sử dụng: useradd [tuỳ_chọn ...] ĐĂNG_NHẬP\n"
+"\n"
+"Tuỳ chọn:\n"
+
+#, c-format
+msgid "%s: can't create %s\n"
+msgstr "%s: không thể tạo %s\n"
+
+#, c-format
+msgid "%s: can't chown %s\n"
+msgstr "%s: không thể chown (thay đổi quyền sở hữu) %s\n"
+
+msgid ""
+"Usage: vipw [options]\n"
+"\n"
+"Options:\n"
+"  -g, --group                   edit group database\n"
+"  -h, --help                    display this help message and exit\n"
+"  -p, --passwd                  edit passwd database\n"
+"  -q, --quiet                   quiet mode\n"
+"  -s, --shadow                  edit shadow or gshadow database\n"
+"\n"
+msgstr ""
+"Sử dụng: vipw [tùy_chọn...]\n"
+"\n"
+"Tùy chọn:\n"
+"  -g, --group                   sửa đổi cơ sở dữ liệu _nhóm_\n"
+"  -h, --help                    hiển thị _trợ giúp_ này rồi thoát\n"
+"  -p, --passwd                  sửa đổi cơ sở dữ liệu passwd\n"
+"  -q, --quiet                   chế độ _im_ (không hiển thị chi tiết)\n"
+"  -s, --shadow                  sửa đổi cơ sở dữ liệu shadow hay gshadow\n"
+"\n"
 
 #, fuzzy
 #~| msgid ""
@@ -2416,71 +2443,3 @@ msgstr "%s: thư mục cơ ban không hợp lệ « %s »\n"
 #~ "  -q, --quiet                   chế độ im (không xuất chi tiết)\n"
 #~ "  -s, --shadow                  sửa đổi cơ sở dữ liệu shadow hay gshadow\n"
 #~ "\n"
-
-#~ msgid ""
-#~ "Usage: %s [option] GROUP\n"
-#~ "\n"
-#~ "Options:\n"
-#~ "  -a, --add USER                add USER to GROUP\n"
-#~ "  -d, --delete USER             remove USER from GROUP\n"
-#~ "  -r, --remove-password         remove the GROUP's password\n"
-#~ "  -R, --restrict                restrict access to GROUP to its members\n"
-#~ "  -M, --members USER,...        set the list of members of GROUP\n"
-#~ "%s\n"
-#~ "\n"
-#~ msgstr ""
-#~ "Sử dụng: %s [tuỳ_chọn] NHÓM\n"
-#~ "\n"
-#~ "Tuỳ chọn:\n"
-#~ "  -a, --add NGƯỜI_DÙNG\tthêm người dùng này vào NHÓM\n"
-#~ "  -d, --delete NGƯỜI_DÙNG   \tgỡ bỏ người dùng này khỏi NHÓM\n"
-#~ "  -r, --remove-password         \tgỡ bỏ mật khẩu của NHÓM\n"
-#~ "  -R, --restrict \t\t\t\thạn chế truy cập đến NHÓM thành các thành viên "
-#~ "của nó\n"
-#~ "  -M, --members NGƯỜI_DÙNG,...\t\tđặt danh sách các thành viên của NHÓM\n"
-#~ "%s\n"
-#~ "\n"
-
-#~ msgid ""
-#~ "Usage: groupmems [options] [action]\n"
-#~ "\n"
-#~ "Options:\n"
-#~ "  -g, --group groupname         change groupname instead of the user's "
-#~ "group\n"
-#~ "                                (root only)\n"
-#~ "\n"
-#~ "Actions:\n"
-#~ "  -a, --add username            add username to the members of the group\n"
-#~ "  -d, --delete username         remove username from the members of the "
-#~ "group\n"
-#~ "  -p, --purge                   purge all members from the group\n"
-#~ "  -l, --list                    list the members of the group\n"
-#~ "\n"
-#~ msgstr ""
-#~ "Sử dụng: groupmems [tuỳ_chọn ...] [hành_vi]\n"
-#~ "\n"
-#~ "Tuỳ chọn:\n"
-#~ "  -g, --group TÊN_NHÓM    thay đổi tên của nhóm này thay cho nhóm của "
-#~ "người dùng (chỉ người chủ)\n"
-#~ "\n"
-#~ "Hành vi:\n"
-#~ "  -a, --add TÊN\t\t\tthêm tên người dùng này vào nhóm\n"
-#~ "  -d, --delete TÊN         \tgỡ bỏ tên này khỏi nhóm\n"
-#~ "  -p, --purge                   \ttẩy mọi người ra nhóm\n"
-#~ "  -l, --list                    \t\tliệt kê những người trong nhóm\n"
-#~ "\n"
-
-#~ msgid ""
-#~ "Usage: useradd [options] LOGIN\n"
-#~ "\n"
-#~ "Options:\n"
-#~ msgstr ""
-#~ "Sử dụng: useradd [tuỳ_chọn ...] ĐĂNG_NHẬP\n"
-#~ "\n"
-#~ "Tuỳ chọn:\n"
-
-#~ msgid "%s: can't create %s\n"
-#~ msgstr "%s: không thể tạo %s\n"
-
-#~ msgid "%s: can't chown %s\n"
-#~ msgstr "%s: không thể chown (thay đổi quyền sở hữu) %s\n"

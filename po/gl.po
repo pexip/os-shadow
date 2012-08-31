@@ -10,10 +10,10 @@ msgstr ""
 "PO-Revision-Date: 2006-07-18 23:27+0200\n"
 "Last-Translator: Jacobo Tarrio <jtarrio@debian.org>\n"
 "Language-Team: Galician <trasno@ceu.fi.udc.es>\n"
-"Language: gl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: gl\n"
 "Plural-Forms: nplurals=2; plural=n!=1;\n"
 
 #, c-format
@@ -50,17 +50,14 @@ msgid "%s: out of memory\n"
 msgstr "%s: memoria esgotada\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot update file %s\n"
 msgid "%s: Cannot stat %s: %s\n"
 msgstr "%s: non se pode actualizar o ficheiro %s\n"
 
 #, fuzzy, c-format
-#| msgid "%s: invalid home directory '%s'\n"
 msgid "%s: %s is neither a directory, nor a symlink.\n"
 msgstr "%s: directorio inicial \"%s\" non válido\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot rename directory %s to %s\n"
 msgid "%s: Cannot read symbolic link %s: %s\n"
 msgstr "%s: non se pode cambiar o nome do directorio %s a %s\n"
 
@@ -69,57 +66,46 @@ msgid "%s: Suspiciously long symlink: %s\n"
 msgstr ""
 
 #, fuzzy, c-format
-#| msgid "%s: cannot create directory %s\n"
 msgid "%s: Cannot create directory %s: %s\n"
 msgstr "%s: non se pode crear o directorio %s\n"
 
 #, fuzzy, c-format
-#| msgid "%s: warning: can't remove "
 msgid "%s: Cannot change owner of %s: %s\n"
 msgstr "%s: aviso: non se pode eliminar "
 
 #, fuzzy, c-format
-#| msgid "%s: warning: can't remove "
 msgid "%s: Cannot change mode of %s: %s\n"
 msgstr "%s: aviso: non se pode eliminar "
 
 #, fuzzy, c-format
-#| msgid "%s: rename: %s"
 msgid "%s: unlink: %s: %s\n"
 msgstr "%s: rename: %s"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot rename directory %s to %s\n"
 msgid "%s: Cannot remove directory %s: %s\n"
 msgstr "%s: non se pode cambiar o nome do directorio %s a %s\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot rename directory %s to %s\n"
 msgid "%s: Cannot rename %s to %s: %s\n"
 msgstr "%s: non se pode cambiar o nome do directorio %s a %s\n"
 
 #, fuzzy, c-format
-#| msgid "%s: warning: can't remove "
 msgid "%s: Cannot remove %s: %s\n"
 msgstr "%s: aviso: non se pode eliminar "
 
 #, fuzzy, c-format
-#| msgid "%s: cannot create directory %s\n"
 msgid "%s: Cannot create symbolic link %s: %s\n"
 msgstr "%s: non se pode crear o directorio %s\n"
 
 #, fuzzy, c-format
-#| msgid "%s: warning: can't remove "
 msgid "%s: Cannot change owners of %s: %s\n"
 msgstr "%s: aviso: non se pode eliminar "
 
 #, fuzzy, c-format
-#| msgid "%s: cannot update file %s\n"
 msgid "%s: Cannot lstat %s: %s\n"
 msgstr "%s: non se pode actualizar o ficheiro %s\n"
 
 #, fuzzy, c-format
-#| msgid "%s: can't update shadow file\n"
 msgid "%s: Warning, user %s has no tcb shadow file.\n"
 msgstr "%s: non se pode actualizar o ficheiro shadow\n"
 
@@ -130,12 +116,10 @@ msgid ""
 msgstr ""
 
 #, fuzzy, c-format
-#| msgid "%s: rename: %s"
 msgid "%s: mkdir: %s: %s\n"
 msgstr "%s: rename: %s"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot open file %s\n"
 msgid "%s: Cannot open %s: %s\n"
 msgstr "%s: non se pode abrir o ficheiro %s\n"
 
@@ -178,17 +162,14 @@ msgid "Cannot open audit interface - aborting.\n"
 msgstr ""
 
 #, fuzzy, c-format
-#| msgid "Unable to change tty %s"
 msgid "Unable to change owner or mode of tty stdin: %s"
 msgstr "Non se puido cambiar o tty %s"
 
 #, fuzzy, c-format
-#| msgid "%s: fields too long\n"
 msgid "%s: failed to unlock %s\n"
 msgstr "%s: campos longos de máis\n"
 
 #, fuzzy, c-format
-#| msgid "%s: %s\n"
 msgid "%s: "
 msgstr "%s: %s\n"
 
@@ -222,8 +203,8 @@ msgstr ""
 
 #, c-format
 msgid ""
-"%s: Invalid configuration: SYS_GID_MIN (%lu), GID_MIN (%lu), SYS_GID_MAX "
-"(%lu)\n"
+"%s: Invalid configuration: SYS_GID_MIN (%lu), GID_MIN (%lu), SYS_GID_MAX (%"
+"lu)\n"
 msgstr ""
 
 #, fuzzy, c-format
@@ -240,8 +221,8 @@ msgstr ""
 
 #, c-format
 msgid ""
-"%s: Invalid configuration: SYS_UID_MIN (%lu), UID_MIN (%lu), SYS_UID_MAX "
-"(%lu)\n"
+"%s: Invalid configuration: SYS_UID_MIN (%lu), UID_MIN (%lu), SYS_UID_MAX (%"
+"lu)\n"
 msgstr ""
 
 #, fuzzy, c-format
@@ -298,7 +279,6 @@ msgid "passwd: %s\n"
 msgstr "passwd: %s\n"
 
 #, fuzzy
-#| msgid "Password changed."
 msgid "passwd: password unchanged\n"
 msgstr "Cambiouse o contrasinal."
 
@@ -342,7 +322,6 @@ msgid "malloc(%d) failed\n"
 msgstr "A chamada a malloc(%d) fallou\n"
 
 #, fuzzy
-#| msgid "No\n"
 msgid "No"
 msgstr "Non\n"
 
@@ -459,12 +438,10 @@ msgid "%s: PAM authentication failed\n"
 msgstr "%s: a autenticación con PAM fallou\n"
 
 #, fuzzy, c-format
-#| msgid "%s: can't lock files, try again later\n"
 msgid "%s: cannot lock %s; try again later.\n"
 msgstr "%s: non se pode bloquear ficheiros, volva tentalo despois\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot open file %s\n"
 msgid "%s: cannot open %s\n"
 msgstr "%s: non se pode abrir o ficheiro %s\n"
 
@@ -473,7 +450,6 @@ msgid "%s: failure while writing changes to %s\n"
 msgstr "%s: fallo ao lanzar o proceso: %s"
 
 #, fuzzy, c-format
-#| msgid "%s: failed to drop privileges (%s)\n"
 msgid "%s: failed to prepare the new %s entry '%s'\n"
 msgstr "%s: non se puido deixar os privilexios (%s)\n"
 
@@ -514,7 +490,6 @@ msgid "Full Name"
 msgstr "Nome completo"
 
 #, fuzzy, c-format
-#| msgid "%s: %s\n"
 msgid "\t%s: %s\n"
 msgstr "%s: %s\n"
 
@@ -558,7 +533,6 @@ msgid "%s: invalid home phone: '%s'\n"
 msgstr "%s: teléfono da casa non válido: \"%s\"\n"
 
 #, fuzzy, c-format
-#| msgid "%s: '%s' contains illegal characters\n"
 msgid "%s: '%s' contains non-ASCII characters\n"
 msgstr "%s: \"%s\" contén caracteres non válidos\n"
 
@@ -633,12 +607,10 @@ msgid "%s: line %d: missing new password\n"
 msgstr "%s: liña %d: falla o novo contrasinal\n"
 
 #, fuzzy, c-format
-#| msgid "%s: group %s does not exist\n"
 msgid "%s: line %d: group '%s' does not exist\n"
 msgstr "%s: o grupo %s non existe\n"
 
 #, fuzzy, c-format
-#| msgid "%s: line %d: can't update entry\n"
 msgid "%s: line %d: failed to prepare the new %s entry '%s'\n"
 msgstr "%s: liña %d: non se pode actualizar a entrada\n"
 
@@ -647,7 +619,6 @@ msgid "%s: error detected, changes ignored\n"
 msgstr "%s: detectouse un erro, ignóranse os cambios\n"
 
 #, fuzzy, c-format
-#| msgid "Usage: %s [input]\n"
 msgid ""
 "Usage: %s [options]\n"
 "\n"
@@ -697,7 +668,6 @@ msgid "Login Shell"
 msgstr "Intérprete de ordes"
 
 #, fuzzy, c-format
-#| msgid "You may not change the shell for %s.\n"
 msgid "You may not change the shell for '%s'.\n"
 msgstr "Non pode cambiar o intérprete de ordes de %s.\n"
 
@@ -710,17 +680,14 @@ msgid "%s: Invalid entry: %s\n"
 msgstr "%s: Entrada non válida: %s\n"
 
 #, fuzzy, c-format
-#| msgid "%s is an invalid shell.\n"
 msgid "%s: %s is an invalid shell\n"
 msgstr "%s non é un intérprete de ordes válido.\n"
 
 #, fuzzy, c-format
-#| msgid "%s: user %s does not exist\n"
 msgid "%s: Warning: %s does not exist\n"
 msgstr "%s: o usuario %s non existe\n"
 
 #, fuzzy, c-format
-#| msgid "%s: warning: %s not owned by %s\n"
 msgid "%s: Warning: %s is not executable\n"
 msgstr "%s: aviso: %s non pertence a %s\n"
 
@@ -761,7 +728,6 @@ msgid "Login       Failures Maximum Latest                   On\n"
 msgstr "Usuario     Fallos   Máximo  Último                   O\n"
 
 #, fuzzy, c-format
-#| msgid " [%lds left]"
 msgid " [%lus left]"
 msgstr " [fallan %lds]"
 
@@ -786,7 +752,6 @@ msgid "lastlog: Unknown user or range: %s\n"
 msgstr "Usuario descoñecido: %s\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot open file %s\n"
 msgid "faillog: Cannot open %s: %s\n"
 msgstr "%s: non se pode abrir o ficheiro %s\n"
 
@@ -795,7 +760,6 @@ msgid "faillog: Cannot get the size of %s: %s\n"
 msgstr ""
 
 #, fuzzy, c-format
-#| msgid "Usage: %s [input]\n"
 msgid ""
 "Usage: %s [option] GROUP\n"
 "\n"
@@ -824,12 +788,10 @@ msgid ""
 msgstr ""
 
 #, fuzzy
-#| msgid "The password for %s cannot be changed.\n"
 msgid "Except for the -A and -M options, the options cannot be combined.\n"
 msgstr "Non se pode cambiar o contrasinal de %s.\n"
 
 #, fuzzy
-#| msgid "The password for %s cannot be changed.\n"
 msgid "The options cannot be combined.\n"
 msgstr "Non se pode cambiar o contrasinal de %s.\n"
 
@@ -838,7 +800,6 @@ msgid "%s: shadow group passwords required for -A\n"
 msgstr "%s: precísase de contrasinais de grupo shadow para -A\n"
 
 #, fuzzy, c-format
-#| msgid "%s: group %s does not exist\n"
 msgid "%s: group '%s' does not exist in %s\n"
 msgstr "%s: o grupo %s non existe\n"
 
@@ -880,7 +841,6 @@ msgid "%s: Not a tty\n"
 msgstr "%s: Non é un tty\n"
 
 #, fuzzy, c-format
-#| msgid "Usage: %s [input]\n"
 msgid ""
 "Usage: %s [options] GROUP\n"
 "\n"
@@ -913,7 +873,6 @@ msgid "  -r, --system                  create a system account\n"
 msgstr ""
 
 #, fuzzy, c-format
-#| msgid "%s: %s is not a valid group name\n"
 msgid "%s: '%s' is not a valid group name\n"
 msgstr "%s: %s non é un nome de grupo válido\n"
 
@@ -926,12 +885,10 @@ msgid "%s: -K requires KEY=VALUE\n"
 msgstr "%s: -K precisa de CLAVE=VALOR\n"
 
 #, fuzzy, c-format
-#| msgid "%s: group %s exists\n"
 msgid "%s: group '%s' already exists\n"
 msgstr "%s: o grupo %s existe\n"
 
 #, fuzzy, c-format
-#| msgid "Member already exists\n"
 msgid "%s: GID '%lu' already exists\n"
 msgstr "O membro xa existe\n"
 
@@ -939,7 +896,6 @@ msgid "Usage: groupdel group\n"
 msgstr "Emprego: groupdel grupo\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot rename directory %s to %s\n"
 msgid "%s: cannot remove entry '%s' from %s\n"
 msgstr "%s: non se pode cambiar o nome do directorio %s a %s\n"
 
@@ -948,12 +904,10 @@ msgid "%s: cannot remove the primary group of user '%s'\n"
 msgstr "%s: non se pode cambiar o usuario \"%s\" no cliente NIS.\n"
 
 #, fuzzy, c-format
-#| msgid "%s: group %s does not exist\n"
 msgid "%s: group '%s' does not exist\n"
 msgstr "%s: o grupo %s non existe\n"
 
 #, fuzzy, c-format
-#| msgid "%s: group '%s' is a NIS group.\n"
 msgid "%s: group '%s' is a NIS group\n"
 msgstr "%s: o grupo \"%s\" é un grupo NIS.\n"
 
@@ -962,7 +916,6 @@ msgid "%s: %s is the NIS master\n"
 msgstr "%s: %s é o mestre NIS\n"
 
 #, fuzzy, c-format
-#| msgid "%s: user %s is a NIS user\n"
 msgid "%s: user '%s' is already a member of '%s'\n"
 msgstr "%s: o usuario %s é un usuario NIS\n"
 
@@ -971,7 +924,6 @@ msgid "%s: Out of memory. Cannot update %s.\n"
 msgstr "%s: esgotouse a memoria en update_group\n"
 
 #, fuzzy, c-format
-#| msgid "Usage: %s [input]\n"
 msgid ""
 "Usage: %s [options] [action]\n"
 "\n"
@@ -1067,7 +1019,6 @@ msgid "invalid group name '%s'\n"
 msgstr "nome de grupo \"%s\" non válido\n"
 
 #, fuzzy, c-format
-#| msgid "invalid group name '%s'\n"
 msgid "invalid group ID '%lu'\n"
 msgstr "nome de grupo \"%s\" non válido\n"
 
@@ -1084,7 +1035,6 @@ msgid "no matching group file entry in %s\n"
 msgstr "non hai unha entrada do ficheiro de grupos que coincida en %s\n"
 
 #, fuzzy, c-format
-#| msgid "add group '%s' in %s ?"
 msgid "add group '%s' in %s? "
 msgstr "¿engadir o grupo \"%s\" en %s? "
 
@@ -1120,17 +1070,14 @@ msgid "%s: no changes\n"
 msgstr "%s: non hai cambios\n"
 
 #, fuzzy
-#| msgid "Usage: groupdel group\n"
 msgid "Usage: grpconv\n"
 msgstr "Emprego: groupdel grupo\n"
 
 #, fuzzy
-#| msgid "Usage: groupdel group\n"
 msgid "Usage: grpunconv\n"
 msgstr "Emprego: groupdel grupo\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot update file %s\n"
 msgid "%s: cannot delete %s\n"
 msgstr "%s: non se pode actualizar o ficheiro %s\n"
 
@@ -1221,9 +1168,6 @@ msgstr ""
 "[Omitida a desconexión -- permítese a entrada coma root.]"
 
 #, fuzzy, c-format
-#| msgid ""
-#| "\n"
-#| "Login timed out after %d seconds.\n"
 msgid ""
 "\n"
 "Login timed out after %u seconds.\n"
@@ -1252,7 +1196,6 @@ msgid "login: "
 msgstr "login: "
 
 #, fuzzy, c-format
-#| msgid "Maximum number of tries exceeded (%d)\n"
 msgid "Maximum number of tries exceeded (%u)\n"
 msgstr "Superouse o número máximo de intentos (%d)\n"
 
@@ -1301,7 +1244,6 @@ msgstr ""
 "\n"
 
 #, fuzzy
-#| msgid "Usage: id\n"
 msgid "Usage: logoutd\n"
 msgstr "Emprego: id\n"
 
@@ -1338,7 +1280,6 @@ msgid "%s: group '%s' is a shadow group, but does not exist in /etc/group\n"
 msgstr "%s: o grupo %s non existe\n"
 
 #, fuzzy, c-format
-#| msgid "%s: invalid user name '%s'\n"
 msgid "%s: invalid user ID '%s'\n"
 msgstr "%s: nome de usuario \"%s\" non válido\n"
 
@@ -1371,12 +1312,10 @@ msgid "%s: line %d: can't update password\n"
 msgstr "%s: liña %d: non se pode actualizar o contrasinal\n"
 
 #, fuzzy, c-format
-#| msgid "%s: line %d: mkdir failed\n"
 msgid "%s: line %d: mkdir %s failed: %s\n"
 msgstr "%s: liña %d: a chamada a mkdir fallou\n"
 
 #, fuzzy, c-format
-#| msgid "%s: line %d: chown failed\n"
 msgid "%s: line %d: chown %s failed: %s\n"
 msgstr "%s: liña %d: a chamada a chown fallou\n"
 
@@ -1503,17 +1442,14 @@ msgid "The password for %s is unchanged.\n"
 msgstr "Non se cambiou o contrasinal de %s\n"
 
 #, fuzzy, c-format
-#| msgid "Password changed."
 msgid "%s: password changed.\n"
 msgstr "Cambiouse o contrasinal."
 
 #, fuzzy, c-format
-#| msgid "Password Expiration Warning"
 msgid "%s: password expiry information changed.\n"
 msgstr "Aviso de caducidade de contrasinal"
 
 #, fuzzy, c-format
-#| msgid "Usage: %s [-q] [-r] [-s] [passwd [shadow]]\n"
 msgid "Usage: %s [-q] [-r] [passwd]\n"
 msgstr "Emprego: %s [-q] [-r] [-s] [passwd [shadow]]\n"
 
@@ -1522,7 +1458,6 @@ msgid "Usage: %s [-q] [-r] [-s] [passwd [shadow]]\n"
 msgstr "Emprego: %s [-q] [-r] [-s] [passwd [shadow]]\n"
 
 #, fuzzy, c-format
-#| msgid "%s: -s and -r are incompatibile\n"
 msgid "%s: -s and -r are incompatible\n"
 msgstr "%s: -s e -r son incompatibles\n"
 
@@ -1541,42 +1476,34 @@ msgid "invalid user name '%s'\n"
 msgstr "nome de usuario \"%s\" non válido\n"
 
 #, fuzzy, c-format
-#| msgid "invalid user name '%s'\n"
 msgid "invalid user ID '%lu'\n"
 msgstr "nome de usuario \"%s\" non válido\n"
 
 #, fuzzy, c-format
-#| msgid "user %s: no group %u\n"
 msgid "user '%s': no group %lu\n"
 msgstr "usuario %s: non existe o grupo %u\n"
 
 #, fuzzy, c-format
-#| msgid "user %s: directory %s does not exist\n"
 msgid "user '%s': directory '%s' does not exist\n"
 msgstr "usuario %s: o directorio %s non existe\n"
 
 #, fuzzy, c-format
-#| msgid "user %s: program %s does not exist\n"
 msgid "user '%s': program '%s' does not exist\n"
 msgstr "usuario %s: o programa %s non existe\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot create directory %s\n"
 msgid "no tcb directory for %s\n"
 msgstr "%s: non se pode crear o directorio %s\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot create directory %s\n"
 msgid "create tcb directory for %s?"
 msgstr "%s: non se pode crear o directorio %s\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot create directory %s\n"
 msgid "failed to create tcb directory for %s\n"
 msgstr "%s: non se pode crear o directorio %s\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot lock file %s\n"
 msgid "%s: cannot lock %s.\n"
 msgstr "%s: non se pode bloquear o ficheiro %s\n"
 
@@ -1604,17 +1531,14 @@ msgid "user %s: last password change in the future\n"
 msgstr "usuario %s: último cambio de contrasinal no futuro\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot open file %s\n"
 msgid "%s: cannot sort entries in %s\n"
 msgstr "%s: non se pode abrir o ficheiro %s\n"
 
 #, fuzzy
-#| msgid "Usage: id\n"
 msgid "Usage: pwconv\n"
 msgstr "Emprego: id\n"
 
 #, fuzzy, c-format
-#| msgid "%s: can't re-write file\n"
 msgid "%s: can't work with tcb enabled\n"
 msgstr "%s: non se pode rescribir o ficheiro\n"
 
@@ -1623,7 +1547,6 @@ msgid "%s: failed to change the mode of %s to 0600\n"
 msgstr ""
 
 #, fuzzy
-#| msgid "Usage: id\n"
 msgid "Usage: pwunconv\n"
 msgstr "Emprego: id\n"
 
@@ -1643,7 +1566,6 @@ msgid " ...waiting for child to terminate.\n"
 msgstr ""
 
 #, fuzzy, c-format
-#| msgid "%s: cannot lock file %s\n"
 msgid "%s: Cannot fork user shell\n"
 msgstr "%s: non se pode bloquear o ficheiro %s\n"
 
@@ -1719,12 +1641,10 @@ msgstr ""
 "(Ignórase)\n"
 
 #, fuzzy, c-format
-#| msgid "%s: PAM authentication failed\n"
 msgid "%s: Authentication failure\n"
 msgstr "%s: a autenticación con PAM fallou\n"
 
 #, fuzzy, c-format
-#| msgid "You are not authorized to su %s\n"
 msgid "%s: You are not authorized to su at that time\n"
 msgstr "Non está autorizado para facer su %s\n"
 
@@ -1769,12 +1689,10 @@ msgid "%s: cannot open new defaults file\n"
 msgstr "%s: non se pode abrir o novo ficheiro de valores por defecto\n"
 
 #, fuzzy, c-format
-#| msgid "%s: line %d: chown failed\n"
 msgid "%s: line too long in %s: %s..."
 msgstr "%s: liña %d: a chamada a chown fallou\n"
 
 #, fuzzy, c-format
-#| msgid "%s: rename: %s"
 msgid "%s: rename: %s: %s"
 msgstr "%s: rename: %s"
 
@@ -1787,7 +1705,6 @@ msgid "%s: too many groups specified (max %d).\n"
 msgstr "%s: especificáronse grupos de máis (máximo %d).\n"
 
 #, fuzzy, c-format
-#| msgid "Usage: %s [input]\n"
 msgid ""
 "Usage: %s [options] LOGIN\n"
 "\n"
@@ -1939,7 +1856,6 @@ msgid "Setting mailbox file permissions"
 msgstr "A estabrecer os permisos do ficheiro da caixa do correo"
 
 #, fuzzy, c-format
-#| msgid "%s: user %s exists\n"
 msgid "%s: user '%s' already exists\n"
 msgstr "%s: o usuario %s existe\n"
 
@@ -1955,12 +1871,10 @@ msgid "%s: can't create user\n"
 msgstr "%s: non se pode crear %s\n"
 
 #, fuzzy, c-format
-#| msgid "%s: UID %u is not unique\n"
 msgid "%s: UID %lu is not unique\n"
 msgstr "%s: o UID %u non é único\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot create directory %s\n"
 msgid "%s: Failed to create tcb directory for %s\n"
 msgstr "%s: non se pode crear o directorio %s\n"
 
@@ -1996,15 +1910,12 @@ msgstr ""
 "\n"
 
 #, fuzzy, c-format
-#| msgid ""
-#| "%s: Cannot remove group %s which is a primary group for another user.\n"
 msgid "%s: group %s is the primary group of another user and is not removed.\n"
 msgstr ""
 "%s: Non se pode eliminar o grupo %s, que é o grupo primario de outro "
 "usuario.\n"
 
 #, fuzzy, c-format
-#| msgid "%s: warning: can't remove "
 msgid "%s: warning: can't remove %s: %s\n"
 msgstr "%s: aviso: non se pode eliminar "
 
@@ -2017,17 +1928,14 @@ msgid "%s: Can't allocate memory, tcb entry for %s not removed.\n"
 msgstr ""
 
 #, fuzzy, c-format
-#| msgid "%s: failed to drop privileges (%s)\n"
 msgid "%s: Cannot drop privileges: %s\n"
 msgstr "%s: non se puido deixar os privilexios (%s)\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot rename directory %s to %s\n"
 msgid "%s: Cannot remove the content of %s: %s\n"
 msgstr "%s: non se pode cambiar o nome do directorio %s a %s\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot rename directory %s to %s\n"
 msgid "%s: Cannot remove tcb files for %s: %s\n"
 msgstr "%s: non se pode cambiar o nome do directorio %s a %s\n"
 
@@ -2040,7 +1948,6 @@ msgid "%s: user %s is currently logged in\n"
 msgstr "%s: o usuario %s está conectado\n"
 
 #, fuzzy, c-format
-#| msgid "%s: invalid home directory '%s'\n"
 msgid "%s: %s home directory (%s) not found\n"
 msgstr "%s: directorio inicial \"%s\" non válido\n"
 
@@ -2118,7 +2025,6 @@ msgid ""
 msgstr ""
 
 #, fuzzy, c-format
-#| msgid "%s: user %s exists\n"
 msgid "%s: user '%s' already exists in %s\n"
 msgstr "%s: o usuario %s existe\n"
 
@@ -2135,7 +2041,6 @@ msgid "%s: the -L, -p, and -U flags are exclusive\n"
 msgstr ""
 
 #, fuzzy, c-format
-#| msgid "Member already exists\n"
 msgid "%s: UID '%lu' already exists\n"
 msgstr "O membro xa existe\n"
 
@@ -2150,7 +2055,6 @@ msgid ""
 msgstr ""
 
 #, fuzzy, c-format
-#| msgid "%s: cannot create directory %s\n"
 msgid "%s: Failed to change ownership of the home directory"
 msgstr "%s: non se pode crear o directorio %s\n"
 
@@ -2189,7 +2093,6 @@ msgid ""
 msgstr ""
 
 #, fuzzy
-#| msgid "Usage: %s [input]\n"
 msgid ""
 "Usage: vipw [options]\n"
 "\n"
@@ -2212,31 +2115,24 @@ msgid "  -u, --user                    which user's tcb shadow file to edit\n"
 msgstr ""
 
 #, fuzzy, c-format
-#| msgid "%s: failed to drop privileges (%s)\n"
 msgid "%s: failed to remove %s\n"
 msgstr "%s: non se puido deixar os privilexios (%s)\n"
 
 #, fuzzy, c-format
-#| msgid ""
-#| "\n"
-#| "%s: %s is unchanged\n"
 msgid "%s: %s is unchanged\n"
 msgstr ""
 "\n"
 "%s: %s non ten cambios\n"
 
 #, fuzzy
-#| msgid "failed to rename mailbox"
 msgid "failed to create scratch directory"
 msgstr "non se puido cambiar o nome da caixa do correo"
 
 #, fuzzy
-#| msgid "%s: failed to drop privileges (%s)\n"
 msgid "failed to drop privileges"
 msgstr "%s: non se puido deixar os privilexios (%s)\n"
 
 #, fuzzy
-#| msgid "Couldn't lock file"
 msgid "Couldn't get file context"
 msgstr "Non se puido bloquear o ficheiro"
 
@@ -2244,7 +2140,6 @@ msgid "setfscreatecon () failed"
 msgstr ""
 
 #, fuzzy
-#| msgid "%s: failed to drop privileges (%s)\n"
 msgid "failed to gain privileges"
 msgstr "%s: non se puido deixar os privilexios (%s)\n"
 
@@ -2255,27 +2150,22 @@ msgid "Couldn't make backup"
 msgstr "Non se puido facer unha copia de seguridade"
 
 #, fuzzy
-#| msgid "Unable to open group file\n"
 msgid "failed to open scratch file"
 msgstr "Non se pode abrir o ficheiro de grupos\n"
 
 #, fuzzy
-#| msgid "%s: fields too long\n"
 msgid "failed to unlink scratch file"
 msgstr "%s: campos longos de máis\n"
 
 #, fuzzy
-#| msgid "failed to rename mailbox"
 msgid "failed to stat edited file"
 msgstr "non se puido cambiar o nome da caixa do correo"
 
 #, fuzzy
-#| msgid "failed to change mailbox owner"
 msgid "failed to allocate memory"
 msgstr "non se puido cambiar o propietario da caixa do correo"
 
 #, fuzzy
-#| msgid "failed to rename mailbox"
 msgid "failed to create backup file"
 msgstr "non se puido cambiar o nome da caixa do correo"
 
@@ -2284,9 +2174,91 @@ msgid "%s: can't restore %s: %s (your changes are in %s)\n"
 msgstr "%s: non se pode restaurar %s: %s (os seus cambios están en %s)\n"
 
 #, fuzzy, c-format
-#| msgid "%s: invalid base directory '%s'\n"
 msgid "%s: failed to find tcb directory for %s\n"
 msgstr "%s: directorio base \"%s\" non válido\n"
+
+#, fuzzy, c-format
+msgid "%s: %s is an invalid shell.\n"
+msgstr "%s non é un intérprete de ordes válido.\n"
+
+msgid ""
+"  -l, --lock-time SEC           after failed login lock account for SEC "
+"seconds\n"
+msgstr ""
+
+#, c-format
+msgid ""
+"Usage: %s [option] GROUP\n"
+"\n"
+"Options:\n"
+"  -a, --add USER                add USER to GROUP\n"
+"  -d, --delete USER             remove USER from GROUP\n"
+"  -r, --remove-password         remove the GROUP's password\n"
+"  -R, --restrict                restrict access to GROUP to its members\n"
+"  -M, --members USER,...        set the list of members of GROUP\n"
+"%s\n"
+"\n"
+msgstr ""
+
+msgid ""
+"  -A, --administrators ADMIN,...\n"
+"                                set the list of administrators for GROUP\n"
+"Except for the -A and -M options, the options cannot be combined.\n"
+msgstr ""
+
+msgid ""
+"Usage: groupmems [options] [action]\n"
+"\n"
+"Options:\n"
+"  -g, --group groupname         change groupname instead of the user's "
+"group\n"
+"                                (root only)\n"
+"\n"
+"Actions:\n"
+"  -a, --add username            add username to the members of the group\n"
+"  -d, --delete username         remove username from the members of the "
+"group\n"
+"  -p, --purge                   purge all members from the group\n"
+"  -l, --list                    list the members of the group\n"
+"\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid ""
+"Usage: useradd [options] LOGIN\n"
+"\n"
+"Options:\n"
+msgstr "Emprego: %s [entrada]\n"
+
+#, c-format
+msgid "%s: can't create %s\n"
+msgstr "%s: non se pode crear %s\n"
+
+#, c-format
+msgid "%s: can't chown %s\n"
+msgstr "%s: non se pode cambiar o propietario de %s\n"
+
+#, fuzzy
+msgid ""
+"Usage: vipw [options]\n"
+"\n"
+"Options:\n"
+"  -g, --group                   edit group database\n"
+"  -h, --help                    display this help message and exit\n"
+"  -p, --passwd                  edit passwd database\n"
+"  -q, --quiet                   quiet mode\n"
+"  -s, --shadow                  edit shadow or gshadow database\n"
+"\n"
+msgstr ""
+"Emprego: vipw [opcións]\n"
+"\n"
+"Opcións:\n"
+"  -g, --group\t\tedita a base de datos de grupos\n"
+"  -h, --help\t\tamosa esta mensaxe de axuda e sae\n"
+"  -p, --passwd\t\tedita a base de datos de contrasinais\n"
+"  -q, --quiet\t\tmodo silencioso\n"
+"  -s, --shadow\t\tedita a base de datos shadow ou gshadow\n"
+"\n"
 
 #, fuzzy
 #~ msgid ""
@@ -2310,20 +2282,6 @@ msgstr "%s: directorio base \"%s\" non válido\n"
 #~ "  -q, --quiet\t\tmodo silencioso\n"
 #~ "  -s, --shadow\t\tedita a base de datos shadow ou gshadow\n"
 #~ "\n"
-
-#, fuzzy
-#~| msgid "Usage: %s [input]\n"
-#~ msgid ""
-#~ "Usage: useradd [options] LOGIN\n"
-#~ "\n"
-#~ "Options:\n"
-#~ msgstr "Emprego: %s [entrada]\n"
-
-#~ msgid "%s: can't create %s\n"
-#~ msgstr "%s: non se pode crear %s\n"
-
-#~ msgid "%s: can't chown %s\n"
-#~ msgstr "%s: non se pode cambiar o propietario de %s\n"
 
 #, fuzzy
 #~ msgid ""

@@ -11,10 +11,10 @@ msgstr ""
 "PO-Revision-Date: 2009-05-10 15:58+0900\n"
 "Last-Translator: NAKANO Takeo <nakano@webmasters.gr.jp>\n"
 "Language-Team: Japanese\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8-bit\n"
+"Language: \n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #, c-format
@@ -51,17 +51,14 @@ msgid "%s: out of memory\n"
 msgstr "%s: メモリが足りません\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot delete %s\n"
 msgid "%s: Cannot stat %s: %s\n"
 msgstr "%s: %s を削除できません\n"
 
 #, fuzzy, c-format
-#| msgid "%s: invalid home directory '%s'\n"
 msgid "%s: %s is neither a directory, nor a symlink.\n"
 msgstr "%s: ホームディレクトリ '%s' は不正です\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot remove entry '%s' from %s\n"
 msgid "%s: Cannot read symbolic link %s: %s\n"
 msgstr "%s: '%s' のエントリを %s から削除できません\n"
 
@@ -70,57 +67,46 @@ msgid "%s: Suspiciously long symlink: %s\n"
 msgstr ""
 
 #, fuzzy, c-format
-#| msgid "%s: cannot create directory %s\n"
 msgid "%s: Cannot create directory %s: %s\n"
 msgstr "%s: ディレクトリ %s を作成できません\n"
 
 #, fuzzy, c-format
-#| msgid "lastlog: Cannot get the size of %s: %s\n"
 msgid "%s: Cannot change owner of %s: %s\n"
 msgstr "lastlog: %s のサイズを取得できませんでした: %s\n"
 
 #, fuzzy, c-format
-#| msgid "%s: warning: can't remove %s: %s"
 msgid "%s: Cannot change mode of %s: %s\n"
 msgstr "%s: 警告: %s を削除できません: %s"
 
 #, fuzzy, c-format
-#| msgid "%s: rename: %s"
 msgid "%s: unlink: %s: %s\n"
 msgstr "%s: ファイル名変更: %s"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot rename directory %s to %s\n"
 msgid "%s: Cannot remove directory %s: %s\n"
 msgstr "%s: ディレクトリ %s の名前を %s に変更できません\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot rename directory %s to %s\n"
 msgid "%s: Cannot rename %s to %s: %s\n"
 msgstr "%s: ディレクトリ %s の名前を %s に変更できません\n"
 
 #, fuzzy, c-format
-#| msgid "%s: warning: can't remove %s: %s"
 msgid "%s: Cannot remove %s: %s\n"
 msgstr "%s: 警告: %s を削除できません: %s"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot create directory %s\n"
 msgid "%s: Cannot create symbolic link %s: %s\n"
 msgstr "%s: ディレクトリ %s を作成できません\n"
 
 #, fuzzy, c-format
-#| msgid "lastlog: Cannot get the size of %s: %s\n"
 msgid "%s: Cannot change owners of %s: %s\n"
 msgstr "lastlog: %s のサイズを取得できませんでした: %s\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot delete %s\n"
 msgid "%s: Cannot lstat %s: %s\n"
 msgstr "%s: %s を削除できません\n"
 
 #, fuzzy, c-format
-#| msgid "%s: line %d: user '%s' does not exist\n"
 msgid "%s: Warning, user %s has no tcb shadow file.\n"
 msgstr "%s: %d 行目: ユーザ '%s' は存在しません\n"
 
@@ -131,12 +117,10 @@ msgid ""
 msgstr ""
 
 #, fuzzy, c-format
-#| msgid "%s: rename: %s"
 msgid "%s: mkdir: %s: %s\n"
 msgstr "%s: ファイル名変更: %s"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot open %s\n"
 msgid "%s: Cannot open %s: %s\n"
 msgstr "%s: %s を開けません\n"
 
@@ -187,7 +171,6 @@ msgid "%s: failed to unlock %s\n"
 msgstr "%s: %s がアンロックできませんでした\n"
 
 #, fuzzy, c-format
-#| msgid "%s: %s\n"
 msgid "%s: "
 msgstr "%s: %s\n"
 
@@ -218,12 +201,11 @@ msgstr ""
 
 #, c-format
 msgid ""
-"%s: Invalid configuration: SYS_GID_MIN (%lu), GID_MIN (%lu), SYS_GID_MAX "
-"(%lu)\n"
+"%s: Invalid configuration: SYS_GID_MIN (%lu), GID_MIN (%lu), SYS_GID_MAX (%"
+"lu)\n"
 msgstr ""
 
 #, fuzzy, c-format
-#| msgid "%s: Can't get unique system UID (no more available UIDs)\n"
 msgid "%s: Can't get unique system GID (no more available GIDs)\n"
 msgstr ""
 "%s: 他と重ならないシステム UID を取得できません (利用できる UID がありませ"
@@ -241,8 +223,8 @@ msgstr ""
 
 #, c-format
 msgid ""
-"%s: Invalid configuration: SYS_UID_MIN (%lu), UID_MIN (%lu), SYS_UID_MAX "
-"(%lu)\n"
+"%s: Invalid configuration: SYS_UID_MIN (%lu), UID_MIN (%lu), SYS_UID_MAX (%"
+"lu)\n"
 msgstr ""
 
 #, c-format
@@ -658,9 +640,6 @@ msgid "  -h, --help                    display this help message and exit\n"
 msgstr ""
 
 #, fuzzy
-#| msgid ""
-#| "  -s, --sha-rounds              number of SHA rounds for the SHA*\n"
-#| "                                crypt algorithms\n"
 msgid ""
 "  -m, --md5                     encrypt the clear text password using\n"
 "                                the MD5 algorithm\n"
@@ -668,7 +647,6 @@ msgstr ""
 "  -s, --sha-rounds              SHA* 暗号化アルゴリズムの SHA ラウンド回数\n"
 
 #, fuzzy, c-format
-#| msgid "%s: line %d: user '%s' does not exist\n"
 msgid "%s: (line %d, user %s) password not changed\n"
 msgstr "%s: %d 行目: ユーザ '%s' は存在しません\n"
 
@@ -707,17 +685,14 @@ msgid "%s: Invalid entry: %s\n"
 msgstr "%s: 不正なエントリ: %s\n"
 
 #, fuzzy, c-format
-#| msgid "%s: %s is an invalid shell.\n"
 msgid "%s: %s is an invalid shell\n"
 msgstr "%s: %s はシェルに指定できません。\n"
 
 #, fuzzy, c-format
-#| msgid "%s: user '%s' does not exist\n"
 msgid "%s: Warning: %s does not exist\n"
 msgstr "%s: ユーザ '%s' は存在しません\n"
 
 #, fuzzy, c-format
-#| msgid "%s: warning: %s not owned by %s\n"
 msgid "%s: Warning: %s is not executable\n"
 msgstr "%s: 警告: %s は %s の所有ではありません\n"
 
@@ -737,9 +712,6 @@ msgid ""
 msgstr ""
 
 #, fuzzy
-#| msgid ""
-#| "  -Z, --selinux-user            new SELinux user mapping for the user "
-#| "account\n"
 msgid "  -r, --reset                   reset the counters of login failures\n"
 msgstr ""
 "  -Z, --selinux-user            このユーザアカウントへの新規 SELinux\n"
@@ -757,7 +729,6 @@ msgid ""
 msgstr ""
 
 #, fuzzy, c-format
-#| msgid "faillog: Failed to get the entry for UID %d\n"
 msgid "faillog: Failed to get the entry for UID %lu\n"
 msgstr "faillog: UID %d のエントリを取得できませんでした\n"
 
@@ -773,17 +744,14 @@ msgid " [%lds lock]"
 msgstr "[ロック %ld 秒]"
 
 #, fuzzy, c-format
-#| msgid "faillog: Failed to reset fail count for UID %d\n"
 msgid "faillog: Failed to reset fail count for UID %lu\n"
 msgstr "faillog: UID %d の失敗回数をリセットできませんでした\n"
 
 #, fuzzy, c-format
-#| msgid "faillog: Failed to set max for UID %d\n"
 msgid "faillog: Failed to set max for UID %lu\n"
 msgstr "faillog: UID %d の最大回数を設定できませんでした\n"
 
 #, fuzzy, c-format
-#| msgid "faillog: Failed to set locktime for UID %d\n"
 msgid "faillog: Failed to set locktime for UID %lu\n"
 msgstr "faillog: UID %d のロック時間を設定できませんでした\n"
 
@@ -807,9 +775,6 @@ msgid ""
 msgstr ""
 
 #, fuzzy
-#| msgid ""
-#| "  -Z, --selinux-user            new SELinux user mapping for the user "
-#| "account\n"
 msgid "  -a, --add USER                add USER to GROUP\n"
 msgstr ""
 "  -Z, --selinux-user            このユーザアカウントへの新規 SELinux\n"
@@ -822,9 +787,6 @@ msgid "  -r, --remove-password         remove the GROUP's password\n"
 msgstr ""
 
 #, fuzzy
-#| msgid ""
-#| "  -Z, --selinux-user            new SELinux user mapping for the user "
-#| "account\n"
 msgid ""
 "  -R, --restrict                restrict access to GROUP to its members\n"
 msgstr ""
@@ -835,10 +797,6 @@ msgid "  -M, --members USER,...        set the list of members of GROUP\n"
 msgstr ""
 
 #, fuzzy
-#| msgid ""
-#| "  -A, --administrators ADMIN,...\n"
-#| "                                set the list of administrators for GROUP\n"
-#| "Except for the -A and -M options, the options cannot be combined.\n"
 msgid ""
 "  -A, --administrators ADMIN,...\n"
 "                                set the list of administrators for GROUP\n"
@@ -848,7 +806,6 @@ msgstr ""
 "-A オプションと -M オプション以外は同時に指定できない\n"
 
 #, fuzzy
-#| msgid "The options cannot be combined.\n"
 msgid "Except for the -A and -M options, the options cannot be combined.\n"
 msgstr "これらのオプションは同時に指定できません。\n"
 
@@ -908,9 +865,6 @@ msgid ""
 msgstr ""
 
 #, fuzzy
-#| msgid ""
-#| "  -s, --sha-rounds              number of SHA rounds for the SHA*\n"
-#| "                                crypt algorithms\n"
 msgid ""
 "  -f, --force                   exit successfully if the group already "
 "exists,\n"
@@ -919,9 +873,6 @@ msgstr ""
 "  -s, --sha-rounds              SHA* 暗号化アルゴリズムの SHA ラウンド回数\n"
 
 #, fuzzy
-#| msgid ""
-#| "  -Z, --selinux-user            new SELinux user mapping for the user "
-#| "account\n"
 msgid "  -g, --gid GID                 use GID for the new group\n"
 msgstr ""
 "  -Z, --selinux-user            このユーザアカウントへの新規 SELinux\n"
@@ -931,9 +882,6 @@ msgid "  -K, --key KEY=VALUE           override /etc/login.defs defaults\n"
 msgstr ""
 
 #, fuzzy
-#| msgid ""
-#| "  -s, --sha-rounds              number of SHA rounds for the SHA*\n"
-#| "                                crypt algorithms\n"
 msgid ""
 "  -o, --non-unique              allow to create groups with duplicate\n"
 "                                (non-unique) GID\n"
@@ -946,9 +894,6 @@ msgid ""
 msgstr ""
 
 #, fuzzy
-#| msgid ""
-#| "  -Z, --selinux-user            new SELinux user mapping for the user "
-#| "account\n"
 msgid "  -r, --system                  create a system account\n"
 msgstr ""
 "  -Z, --selinux-user            このユーザアカウントへの新規 SELinux\n"
@@ -1013,9 +958,6 @@ msgid ""
 msgstr ""
 
 #, fuzzy
-#| msgid ""
-#| "  -s, --sha-rounds              number of SHA rounds for the SHA*\n"
-#| "                                crypt algorithms\n"
 msgid ""
 "  -g, --group groupname         change groupname instead of the user's "
 "group\n"
@@ -1030,9 +972,6 @@ msgid "Actions:\n"
 msgstr ""
 
 #, fuzzy
-#| msgid ""
-#| "  -Z, --selinux-user            new SELinux user mapping for the user "
-#| "account\n"
 msgid ""
 "  -a, --add username            add username to the members of the group\n"
 msgstr ""
@@ -1045,18 +984,12 @@ msgid ""
 msgstr ""
 
 #, fuzzy
-#| msgid ""
-#| "  -Z, --selinux-user            new SELinux user mapping for the user "
-#| "account\n"
 msgid "  -p, --purge                   purge all members from the group\n"
 msgstr ""
 "  -Z, --selinux-user            このユーザアカウントへの新規 SELinux\n"
 "                                ユーザマッピング\n"
 
 #, fuzzy
-#| msgid ""
-#| "  -Z, --selinux-user            new SELinux user mapping for the user "
-#| "account\n"
 msgid "  -l, --list                    list the members of the group\n"
 msgstr ""
 "  -Z, --selinux-user            このユーザアカウントへの新規 SELinux\n"
@@ -1071,9 +1004,6 @@ msgid "%s: only root can use the -g/--group option\n"
 msgstr "%s: -g/--group オプションは root のみが指定できます\n"
 
 #, fuzzy
-#| msgid ""
-#| "  -Z, --selinux-user            new SELinux user mapping for the user "
-#| "account\n"
 msgid "  -g, --gid GID                 change the group ID to GID\n"
 msgstr ""
 "  -Z, --selinux-user            このユーザアカウントへの新規 SELinux\n"
@@ -1221,7 +1151,6 @@ msgstr ""
 "\n"
 
 #, fuzzy, c-format
-#| msgid "lastlog: Failed to get the entry for UID %d\n"
 msgid "lastlog: Failed to get the entry for UID %lu\n"
 msgstr "lastlog: UID %d のエントリを取得できませんでした\n"
 
@@ -1255,7 +1184,6 @@ msgid "       %s [-p] -r host\n"
 msgstr "       %s [-p] -r ホスト\n"
 
 #, fuzzy, c-format
-#| msgid "configuration error - cannot parse %s value: '%s'"
 msgid "configuration error - cannot parse %s value: '%d'"
 msgstr "設定エラー - %s の値 '%s' をパースできません"
 
@@ -1277,9 +1205,6 @@ msgstr ""
 "[切断を迂回 -- root ログインが可能です。]"
 
 #, fuzzy, c-format
-#| msgid ""
-#| "\n"
-#| "Login timed out after %d seconds.\n"
 msgid ""
 "\n"
 "Login timed out after %u seconds.\n"
@@ -1308,7 +1233,6 @@ msgid "login: "
 msgstr "login: "
 
 #, fuzzy, c-format
-#| msgid "Maximum number of tries exceeded (%d)\n"
 msgid "Maximum number of tries exceeded (%u)\n"
 msgstr "最大試行回数 (%d) を越えました\n"
 
@@ -1385,9 +1309,6 @@ msgid "  -c, --crypt-method            the crypt method (one of %s)\n"
 msgstr ""
 
 #, fuzzy
-#| msgid ""
-#| "  -Z, --selinux-user            new SELinux user mapping for the user "
-#| "account\n"
 msgid "  -r, --system                  create system accounts\n"
 msgstr ""
 "  -Z, --selinux-user            このユーザアカウントへの新規 SELinux\n"
@@ -1565,17 +1486,14 @@ msgid "The password for %s is unchanged.\n"
 msgstr "%s のパスワードは変更されません。\n"
 
 #, fuzzy, c-format
-#| msgid "Password changed."
 msgid "%s: password changed.\n"
 msgstr "パスワードは変更されました。"
 
 #, fuzzy, c-format
-#| msgid "Password Expiration Warning"
 msgid "%s: password expiry information changed.\n"
 msgstr "パスワード期限切れ警告日数"
 
 #, fuzzy, c-format
-#| msgid "Usage: %s [-q] [-r] [-s] [passwd [shadow]]\n"
 msgid "Usage: %s [-q] [-r] [passwd]\n"
 msgstr "使い方: %s [-q] [-r] [-s] [パスワード [シャドウ]]\n"
 
@@ -1584,7 +1502,6 @@ msgid "Usage: %s [-q] [-r] [-s] [passwd [shadow]]\n"
 msgstr "使い方: %s [-q] [-r] [-s] [パスワード [シャドウ]]\n"
 
 #, fuzzy, c-format
-#| msgid "%s: -s and -r are incompatibile\n"
 msgid "%s: -s and -r are incompatible\n"
 msgstr "%s: -s と -r は同時に指定できません\n"
 
@@ -1619,22 +1536,18 @@ msgid "user '%s': program '%s' does not exist\n"
 msgstr "ユーザ '%s': プログラム '%s' が存在しません\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot create directory %s\n"
 msgid "no tcb directory for %s\n"
 msgstr "%s: ディレクトリ %s を作成できません\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot create directory %s\n"
 msgid "create tcb directory for %s?"
 msgstr "%s: ディレクトリ %s を作成できません\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot create directory %s\n"
 msgid "failed to create tcb directory for %s\n"
 msgstr "%s: ディレクトリ %s を作成できません\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot open %s\n"
 msgid "%s: cannot lock %s.\n"
 msgstr "%s: %s を開けません\n"
 
@@ -1695,7 +1608,6 @@ msgid " ...waiting for child to terminate.\n"
 msgstr ""
 
 #, fuzzy, c-format
-#| msgid "%s: Cannot determine your user name.\n"
 msgid "%s: Cannot fork user shell\n"
 msgstr "%s: あなたのユーザ名を判定できません。\n"
 
@@ -1818,12 +1730,10 @@ msgid "%s: cannot open new defaults file\n"
 msgstr "%s: 新しいデフォルトファイルを開けません\n"
 
 #, fuzzy, c-format
-#| msgid "%s: line %d: chown %s failed: %s\n"
 msgid "%s: line too long in %s: %s..."
 msgstr "%s: %d 行: chown %s が失敗しました: %s\n"
 
 #, fuzzy, c-format
-#| msgid "%s: rename: %s"
 msgid "%s: rename: %s: %s"
 msgstr "%s: ファイル名変更: %s"
 
@@ -1843,9 +1753,6 @@ msgid ""
 msgstr ""
 
 #, fuzzy
-#| msgid ""
-#| "  -s, --sha-rounds              number of SHA rounds for the SHA*\n"
-#| "                                crypt algorithms\n"
 msgid ""
 "  -b, --base-dir BASE_DIR       base directory for the home directory of "
 "the\n"
@@ -1873,9 +1780,6 @@ msgid ""
 msgstr ""
 
 #, fuzzy
-#| msgid ""
-#| "  -s, --sha-rounds              number of SHA rounds for the SHA*\n"
-#| "                                crypt algorithms\n"
 msgid ""
 "  -g, --gid GROUP               name or ID of the primary group of the new\n"
 "                                account\n"
@@ -1883,9 +1787,6 @@ msgstr ""
 "  -s, --sha-rounds              SHA* 暗号化アルゴリズムの SHA ラウンド回数\n"
 
 #, fuzzy
-#| msgid ""
-#| "  -s, --sha-rounds              number of SHA rounds for the SHA*\n"
-#| "                                crypt algorithms\n"
 msgid ""
 "  -G, --groups GROUPS           list of supplementary groups of the new\n"
 "                                account\n"
@@ -1897,9 +1798,6 @@ msgid ""
 msgstr ""
 
 #, fuzzy
-#| msgid ""
-#| "  -s, --sha-rounds              number of SHA rounds for the SHA*\n"
-#| "                                crypt algorithms\n"
 msgid ""
 "  -l, --no-log-init             do not add the user to the lastlog and\n"
 "                                faillog databases\n"
@@ -1907,9 +1805,6 @@ msgstr ""
 "  -s, --sha-rounds              SHA* 暗号化アルゴリズムの SHA ラウンド回数\n"
 
 #, fuzzy
-#| msgid ""
-#| "  -Z, --selinux-user            new SELinux user mapping for the user "
-#| "account\n"
 msgid "  -m, --create-home             create the user's home directory\n"
 msgstr ""
 "  -Z, --selinux-user            このユーザアカウントへの新規 SELinux\n"
@@ -1920,9 +1815,6 @@ msgid ""
 msgstr ""
 
 #, fuzzy
-#| msgid ""
-#| "  -s, --sha-rounds              number of SHA rounds for the SHA*\n"
-#| "                                crypt algorithms\n"
 msgid ""
 "  -N, --no-user-group           do not create a group with the same name as\n"
 "                                the user\n"
@@ -1930,9 +1822,6 @@ msgstr ""
 "  -s, --sha-rounds              SHA* 暗号化アルゴリズムの SHA ラウンド回数\n"
 
 #, fuzzy
-#| msgid ""
-#| "  -s, --sha-rounds              number of SHA rounds for the SHA*\n"
-#| "                                crypt algorithms\n"
 msgid ""
 "  -o, --non-unique              allow to create users with duplicate\n"
 "                                (non-unique) UID\n"
@@ -1943,18 +1832,12 @@ msgid "  -p, --password PASSWORD       encrypted password of the new account\n"
 msgstr ""
 
 #, fuzzy
-#| msgid ""
-#| "  -Z, --selinux-user            new SELinux user mapping for the user "
-#| "account\n"
 msgid "  -s, --shell SHELL             login shell of the new account\n"
 msgstr ""
 "  -Z, --selinux-user            このユーザアカウントへの新規 SELinux\n"
 "                                ユーザマッピング\n"
 
 #, fuzzy
-#| msgid ""
-#| "  -Z, --selinux-user            new SELinux user mapping for the user "
-#| "account\n"
 msgid "  -u, --uid UID                 user ID of the new account\n"
 msgstr ""
 "  -Z, --selinux-user            このユーザアカウントへの新規 SELinux\n"
@@ -2057,7 +1940,6 @@ msgid "%s: UID %lu is not unique\n"
 msgstr "%s: ユーザ ID %lu は重複しています\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot create directory %s\n"
 msgid "%s: Failed to create tcb directory for %s\n"
 msgstr "%s: ディレクトリ %s を作成できません\n"
 
@@ -2097,7 +1979,6 @@ msgid "%s: group %s is the primary group of another user and is not removed.\n"
 msgstr "%s: グループ %s は他のユーザのプライマリグループなので削除しません。\n"
 
 #, fuzzy, c-format
-#| msgid "%s: warning: can't remove %s: %s"
 msgid "%s: warning: can't remove %s: %s\n"
 msgstr "%s: 警告: %s を削除できません: %s"
 
@@ -2110,17 +1991,14 @@ msgid "%s: Can't allocate memory, tcb entry for %s not removed.\n"
 msgstr ""
 
 #, fuzzy, c-format
-#| msgid "%s: failed to drop privileges (%s)\n"
 msgid "%s: Cannot drop privileges: %s\n"
 msgstr "%s: 特権を落とせませんでした (%s)\n"
 
 #, fuzzy, c-format
-#| msgid "lastlog: Cannot get the size of %s: %s\n"
 msgid "%s: Cannot remove the content of %s: %s\n"
 msgstr "lastlog: %s のサイズを取得できませんでした: %s\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot remove entry '%s' from %s\n"
 msgid "%s: Cannot remove tcb files for %s: %s\n"
 msgstr "%s: '%s' のエントリを %s から削除できません\n"
 
@@ -2133,7 +2011,6 @@ msgid "%s: user %s is currently logged in\n"
 msgstr "%s: ユーザ %s は現在ログイン中です\n"
 
 #, fuzzy, c-format
-#| msgid "%s: invalid home directory '%s'\n"
 msgid "%s: %s home directory (%s) not found\n"
 msgstr "%s: ホームディレクトリ '%s' は不正です\n"
 
@@ -2248,7 +2125,6 @@ msgid ""
 msgstr ""
 
 #, fuzzy, c-format
-#| msgid "%s: cannot create directory %s\n"
 msgid "%s: Failed to change ownership of the home directory"
 msgstr "%s: ディレクトリ %s を作成できません\n"
 
@@ -2297,45 +2173,30 @@ msgid ""
 msgstr ""
 
 #, fuzzy
-#| msgid ""
-#| "  -Z, --selinux-user            new SELinux user mapping for the user "
-#| "account\n"
 msgid "  -g, --group                   edit group database\n"
 msgstr ""
 "  -Z, --selinux-user            このユーザアカウントへの新規 SELinux\n"
 "                                ユーザマッピング\n"
 
 #, fuzzy
-#| msgid ""
-#| "  -Z, --selinux-user            new SELinux user mapping for the user "
-#| "account\n"
 msgid "  -p, --passwd                  edit passwd database\n"
 msgstr ""
 "  -Z, --selinux-user            このユーザアカウントへの新規 SELinux\n"
 "                                ユーザマッピング\n"
 
 #, fuzzy
-#| msgid ""
-#| "  -Z, --selinux-user            new SELinux user mapping for the user "
-#| "account\n"
 msgid "  -q, --quiet                   quiet mode\n"
 msgstr ""
 "  -Z, --selinux-user            このユーザアカウントへの新規 SELinux\n"
 "                                ユーザマッピング\n"
 
 #, fuzzy
-#| msgid ""
-#| "  -Z, --selinux-user            new SELinux user mapping for the user "
-#| "account\n"
 msgid "  -s, --shadow                  edit shadow or gshadow database\n"
 msgstr ""
 "  -Z, --selinux-user            このユーザアカウントへの新規 SELinux\n"
 "                                ユーザマッピング\n"
 
 #, fuzzy
-#| msgid ""
-#| "  -Z, --selinux-user            new SELinux user mapping for the user "
-#| "account\n"
 msgid "  -u, --user                    which user's tcb shadow file to edit\n"
 msgstr ""
 "  -Z, --selinux-user            このユーザアカウントへの新規 SELinux\n"
@@ -2350,12 +2211,10 @@ msgid "%s: %s is unchanged\n"
 msgstr "%s: %s は変更されません\n"
 
 #, fuzzy
-#| msgid "failed to rename mailbox"
 msgid "failed to create scratch directory"
 msgstr "mailbox の名前変更に失敗しました"
 
 #, fuzzy
-#| msgid "%s: failed to drop privileges (%s)\n"
 msgid "failed to drop privileges"
 msgstr "%s: 特権を落とせませんでした (%s)\n"
 
@@ -2366,7 +2225,6 @@ msgid "setfscreatecon () failed"
 msgstr "setfscreatecon () が失敗しました"
 
 #, fuzzy
-#| msgid "%s: failed to drop privileges (%s)\n"
 msgid "failed to gain privileges"
 msgstr "%s: 特権を落とせませんでした (%s)\n"
 
@@ -2377,27 +2235,22 @@ msgid "Couldn't make backup"
 msgstr "バックアップを作成できません"
 
 #, fuzzy
-#| msgid "failed to rename mailbox"
 msgid "failed to open scratch file"
 msgstr "mailbox の名前変更に失敗しました"
 
 #, fuzzy
-#| msgid "%s: failed to unlock %s\n"
 msgid "failed to unlink scratch file"
 msgstr "%s: %s がアンロックできませんでした\n"
 
 #, fuzzy
-#| msgid "failed to rename mailbox"
 msgid "failed to stat edited file"
 msgstr "mailbox の名前変更に失敗しました"
 
 #, fuzzy
-#| msgid "failed to change mailbox owner"
 msgid "failed to allocate memory"
 msgstr "mailbox 所有者の変更に失敗しました"
 
 #, fuzzy
-#| msgid "failed to rename mailbox"
 msgid "failed to create backup file"
 msgstr "mailbox の名前変更に失敗しました"
 
@@ -2406,9 +2259,119 @@ msgid "%s: can't restore %s: %s (your changes are in %s)\n"
 msgstr "%s: %s を復旧できませんでした: %s (あなたの変更は %s にあります)\n"
 
 #, fuzzy, c-format
-#| msgid "%s: invalid base directory '%s'\n"
 msgid "%s: failed to find tcb directory for %s\n"
 msgstr "%s: ベースディレクトリ '%s' は不正です\n"
+
+#, c-format
+msgid "%s: %s is an invalid shell.\n"
+msgstr "%s: %s はシェルに指定できません。\n"
+
+msgid ""
+"  -l, --lock-time SEC           after failed login lock account for SEC "
+"seconds\n"
+msgstr ""
+
+#, c-format
+msgid ""
+"Usage: %s [option] GROUP\n"
+"\n"
+"Options:\n"
+"  -a, --add USER                add USER to GROUP\n"
+"  -d, --delete USER             remove USER from GROUP\n"
+"  -r, --remove-password         remove the GROUP's password\n"
+"  -R, --restrict                restrict access to GROUP to its members\n"
+"  -M, --members USER,...        set the list of members of GROUP\n"
+"%s\n"
+"\n"
+msgstr ""
+"使い方: %s [オプション] GROUP\n"
+"\n"
+"オプション:\n"
+"  -a, --add USER        \n"
+"\n"
+"  -a, --add USER                USER を GROUP に追加する\n"
+"  -d, --delete USER             USER を GROUP から削除する\n"
+"  -r, --remove-password         GROUP のパスワードを削除する\n"
+"  -R, --restrict                GROUP へのアクセスをそのメンバーのみに制限す"
+"る\n"
+"  -M, --members USER,...        GROUP のメンバーリストを設定する\n"
+"%s\n"
+"\n"
+
+msgid ""
+"  -A, --administrators ADMIN,...\n"
+"                                set the list of administrators for GROUP\n"
+"Except for the -A and -M options, the options cannot be combined.\n"
+msgstr ""
+"  -A, --administrators ADMIN,...\n"
+"                                GROUP の管理者のリストを設定する\n"
+"-A オプションと -M オプション以外は同時に指定できない\n"
+
+msgid ""
+"Usage: groupmems [options] [action]\n"
+"\n"
+"Options:\n"
+"  -g, --group groupname         change groupname instead of the user's "
+"group\n"
+"                                (root only)\n"
+"\n"
+"Actions:\n"
+"  -a, --add username            add username to the members of the group\n"
+"  -d, --delete username         remove username from the members of the "
+"group\n"
+"  -p, --purge                   purge all members from the group\n"
+"  -l, --list                    list the members of the group\n"
+"\n"
+msgstr ""
+"使い方: groupmems [オプション] [動作]\n"
+"\n"
+"オプション:\n"
+"  -g, --group groupname         ユーザのグループでなく groupname を使う\n"
+"                                (root のみ)\n"
+"\n"
+"動作:\n"
+"  -a, --add username            username をグループのメンバーに加える\n"
+"  -d, --delete username         username をグループのメンバーから除く\n"
+"  -p, --purge                   すべてのメンバーをグループから削除する\n"
+"  -l, --list                    グループのメンバー一覧を表示する\n"
+"\n"
+
+#, c-format
+msgid ""
+"Usage: useradd [options] LOGIN\n"
+"\n"
+"Options:\n"
+msgstr ""
+
+#, c-format
+msgid "%s: can't create %s\n"
+msgstr "%s: %s を作成できません\n"
+
+#, c-format
+msgid "%s: can't chown %s\n"
+msgstr "%s: %s を chown できません\n"
+
+msgid ""
+"Usage: vipw [options]\n"
+"\n"
+"Options:\n"
+"  -g, --group                   edit group database\n"
+"  -h, --help                    display this help message and exit\n"
+"  -p, --passwd                  edit passwd database\n"
+"  -q, --quiet                   quiet mode\n"
+"  -s, --shadow                  edit shadow or gshadow database\n"
+"\n"
+msgstr ""
+"使い方: vipw [オプション]\n"
+"\n"
+"オプション:\n"
+"  -g, --group                   group データベースを編集する\n"
+"  -h, --help                    このヘルプを表示して終了する\n"
+"  -p, --passwd                  passwd データベースを編集する\n"
+"  -q, --quiet                   表示抑制モード\n"
+"  -s, --shadow                  shadow ないし gshadow データベースを編集す"
+"る\n"
+"\n"
 
 #, fuzzy
 #~| msgid ""
@@ -2443,67 +2406,6 @@ msgstr "%s: ベースディレクトリ '%s' は不正です\n"
 #~ "  -s, --shadow                  shadow ないし gshadow データベースを編集す"
 #~ "る\n"
 #~ "\n"
-
-#~ msgid ""
-#~ "Usage: %s [option] GROUP\n"
-#~ "\n"
-#~ "Options:\n"
-#~ "  -a, --add USER                add USER to GROUP\n"
-#~ "  -d, --delete USER             remove USER from GROUP\n"
-#~ "  -r, --remove-password         remove the GROUP's password\n"
-#~ "  -R, --restrict                restrict access to GROUP to its members\n"
-#~ "  -M, --members USER,...        set the list of members of GROUP\n"
-#~ "%s\n"
-#~ "\n"
-#~ msgstr ""
-#~ "使い方: %s [オプション] GROUP\n"
-#~ "\n"
-#~ "オプション:\n"
-#~ "  -a, --add USER        \n"
-#~ "\n"
-#~ "  -a, --add USER                USER を GROUP に追加する\n"
-#~ "  -d, --delete USER             USER を GROUP から削除する\n"
-#~ "  -r, --remove-password         GROUP のパスワードを削除する\n"
-#~ "  -R, --restrict                GROUP へのアクセスをそのメンバーのみに制限"
-#~ "する\n"
-#~ "  -M, --members USER,...        GROUP のメンバーリストを設定する\n"
-#~ "%s\n"
-#~ "\n"
-
-#~ msgid ""
-#~ "Usage: groupmems [options] [action]\n"
-#~ "\n"
-#~ "Options:\n"
-#~ "  -g, --group groupname         change groupname instead of the user's "
-#~ "group\n"
-#~ "                                (root only)\n"
-#~ "\n"
-#~ "Actions:\n"
-#~ "  -a, --add username            add username to the members of the group\n"
-#~ "  -d, --delete username         remove username from the members of the "
-#~ "group\n"
-#~ "  -p, --purge                   purge all members from the group\n"
-#~ "  -l, --list                    list the members of the group\n"
-#~ "\n"
-#~ msgstr ""
-#~ "使い方: groupmems [オプション] [動作]\n"
-#~ "\n"
-#~ "オプション:\n"
-#~ "  -g, --group groupname         ユーザのグループでなく groupname を使う\n"
-#~ "                                (root のみ)\n"
-#~ "\n"
-#~ "動作:\n"
-#~ "  -a, --add username            username をグループのメンバーに加える\n"
-#~ "  -d, --delete username         username をグループのメンバーから除く\n"
-#~ "  -p, --purge                   すべてのメンバーをグループから削除する\n"
-#~ "  -l, --list                    グループのメンバー一覧を表示する\n"
-#~ "\n"
-
-#~ msgid "%s: can't create %s\n"
-#~ msgstr "%s: %s を作成できません\n"
-
-#~ msgid "%s: can't chown %s\n"
-#~ msgstr "%s: %s を chown できません\n"
 
 #~ msgid ""
 #~ "Usage: faillog [options]\n"

@@ -12,10 +12,10 @@ msgstr ""
 "PO-Revision-Date: 2008-03-29 20:31+0200\n"
 "Last-Translator: Mehmet Türker <mturker@innova.com.tr>\n"
 "Language-Team: Türkçe <tr@li.org>\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: \n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: KBabel 1.11.1\n"
 
@@ -54,17 +54,14 @@ msgid "%s: out of memory\n"
 msgstr "%s: yetersiz bellek\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot update file %s\n"
 msgid "%s: Cannot stat %s: %s\n"
 msgstr "%s: %s dosyası güncellenemiyor\n"
 
 #, fuzzy, c-format
-#| msgid "%s: invalid home directory '%s'\n"
 msgid "%s: %s is neither a directory, nor a symlink.\n"
 msgstr "%s: geçersiz ev dizini '%s'\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot rename directory %s to %s\n"
 msgid "%s: Cannot read symbolic link %s: %s\n"
 msgstr "%s: %s dizini %s olarak yeniden adlandırılamıyor\n"
 
@@ -73,57 +70,46 @@ msgid "%s: Suspiciously long symlink: %s\n"
 msgstr ""
 
 #, fuzzy, c-format
-#| msgid "%s: cannot create directory %s\n"
 msgid "%s: Cannot create directory %s: %s\n"
 msgstr "%s: %s dizini yaratılamıyor\n"
 
 #, fuzzy, c-format
-#| msgid "%s: warning: can't remove "
 msgid "%s: Cannot change owner of %s: %s\n"
 msgstr "%s: uyarı: silinemiyor "
 
 #, fuzzy, c-format
-#| msgid "%s: warning: can't remove "
 msgid "%s: Cannot change mode of %s: %s\n"
 msgstr "%s: uyarı: silinemiyor "
 
 #, fuzzy, c-format
-#| msgid "%s: rename: %s"
 msgid "%s: unlink: %s: %s\n"
 msgstr "%s: yeniden adlandırma: %s"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot rename directory %s to %s\n"
 msgid "%s: Cannot remove directory %s: %s\n"
 msgstr "%s: %s dizini %s olarak yeniden adlandırılamıyor\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot rename directory %s to %s\n"
 msgid "%s: Cannot rename %s to %s: %s\n"
 msgstr "%s: %s dizini %s olarak yeniden adlandırılamıyor\n"
 
 #, fuzzy, c-format
-#| msgid "%s: warning: can't remove "
 msgid "%s: Cannot remove %s: %s\n"
 msgstr "%s: uyarı: silinemiyor "
 
 #, fuzzy, c-format
-#| msgid "%s: cannot create directory %s\n"
 msgid "%s: Cannot create symbolic link %s: %s\n"
 msgstr "%s: %s dizini yaratılamıyor\n"
 
 #, fuzzy, c-format
-#| msgid "%s: warning: can't remove "
 msgid "%s: Cannot change owners of %s: %s\n"
 msgstr "%s: uyarı: silinemiyor "
 
 #, fuzzy, c-format
-#| msgid "%s: cannot update file %s\n"
 msgid "%s: Cannot lstat %s: %s\n"
 msgstr "%s: %s dosyası güncellenemiyor\n"
 
 #, fuzzy, c-format
-#| msgid "%s: can't update shadow file\n"
 msgid "%s: Warning, user %s has no tcb shadow file.\n"
 msgstr "%s: gölge dosyası güncellenemedi\n"
 
@@ -134,12 +120,10 @@ msgid ""
 msgstr ""
 
 #, fuzzy, c-format
-#| msgid "%s: rename: %s"
 msgid "%s: mkdir: %s: %s\n"
 msgstr "%s: yeniden adlandırma: %s"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot open file %s\n"
 msgid "%s: Cannot open %s: %s\n"
 msgstr "%s: %s dosyası açılamıyor\n"
 
@@ -182,17 +166,14 @@ msgid "Cannot open audit interface - aborting.\n"
 msgstr ""
 
 #, fuzzy, c-format
-#| msgid "Unable to change tty %s"
 msgid "Unable to change owner or mode of tty stdin: %s"
 msgstr "Geçilemeyen tty: %s"
 
 #, fuzzy, c-format
-#| msgid "%s: fields too long\n"
 msgid "%s: failed to unlock %s\n"
 msgstr "%s: alanlar çok uzun\n"
 
 #, fuzzy, c-format
-#| msgid "%s: %s\n"
 msgid "%s: "
 msgstr "%s: %s\n"
 
@@ -222,17 +203,15 @@ msgstr ""
 
 #, c-format
 msgid ""
-"%s: Invalid configuration: SYS_GID_MIN (%lu), GID_MIN (%lu), SYS_GID_MAX "
-"(%lu)\n"
+"%s: Invalid configuration: SYS_GID_MIN (%lu), GID_MIN (%lu), SYS_GID_MAX (%"
+"lu)\n"
 msgstr ""
 
 #, fuzzy, c-format
-#| msgid "Can't get unique UID (no more available UIDs)\n"
 msgid "%s: Can't get unique system GID (no more available GIDs)\n"
 msgstr "Benzersiz bir UID alınamıyor (mevcut UID yok)\n"
 
 #, fuzzy, c-format
-#| msgid "Can't get unique GID (no more available GIDs)\n"
 msgid "%s: Can't get unique GID (no more available GIDs)\n"
 msgstr "Tek (benzersiz) bir GID alınamadı (kullanılabilecek mevcut GID yok)\n"
 
@@ -242,17 +221,15 @@ msgstr ""
 
 #, c-format
 msgid ""
-"%s: Invalid configuration: SYS_UID_MIN (%lu), UID_MIN (%lu), SYS_UID_MAX "
-"(%lu)\n"
+"%s: Invalid configuration: SYS_UID_MIN (%lu), UID_MIN (%lu), SYS_UID_MAX (%"
+"lu)\n"
 msgstr ""
 
 #, fuzzy, c-format
-#| msgid "Can't get unique UID (no more available UIDs)\n"
 msgid "%s: Can't get unique system UID (no more available UIDs)\n"
 msgstr "Benzersiz bir UID alınamıyor (mevcut UID yok)\n"
 
 #, fuzzy, c-format
-#| msgid "Can't get unique UID (no more available UIDs)\n"
 msgid "%s: Can't get unique UID (no more available UIDs)\n"
 msgstr "Benzersiz bir UID alınamıyor (mevcut UID yok)\n"
 
@@ -302,7 +279,6 @@ msgid "passwd: %s\n"
 msgstr "passwd: %s\n"
 
 #, fuzzy
-#| msgid "Password changed."
 msgid "passwd: password unchanged\n"
 msgstr "Parola değişti "
 
@@ -348,30 +324,10 @@ msgid "malloc(%d) failed\n"
 msgstr "malloc(%d) başarısız oldu\n"
 
 #, fuzzy
-#| msgid "No\n"
 msgid "No"
 msgstr "Hayır\n"
 
 #, fuzzy
-#| msgid ""
-#| "Usage: chage [options] [LOGIN]\n"
-#| "\n"
-#| "Options:\n"
-#| "  -d, --lastday LAST_DAY        set last password change to LAST_DAY\n"
-#| "  -E, --expiredate EXPIRE_DATE  set account expiration date to "
-#| "EXPIRE_DATE\n"
-#| "  -h, --help                    display this help message and exit\n"
-#| "  -I, --inactive INACTIVE       set password inactive after expiration\n"
-#| "                                to INACTIVE\n"
-#| "  -l, --list                    show account aging information\n"
-#| "  -m, --mindays MIN_DAYS        set minimum number of days before "
-#| "password\n"
-#| "                                change to MIN_DAYS\n"
-#| "  -M, --maxdays MAX_DAYS        set maximim number of days before "
-#| "password\n"
-#| "                                change to MAX_DAYS\n"
-#| "  -W, --warndays WARN_DAYS      set expiration warning days to WARN_DAYS\n"
-#| "\n"
 msgid ""
 "Usage: chage [options] [LOGIN]\n"
 "\n"
@@ -492,22 +448,18 @@ msgid "%s: PAM authentication failed\n"
 msgstr "%s: PAM yetkilendirmesi başarısız oldu\n"
 
 #, fuzzy, c-format
-#| msgid "%s: can't lock files, try again later\n"
 msgid "%s: cannot lock %s; try again later.\n"
 msgstr "%s: dosyalar kilitlenemiyor, daha sonra tekrar deneyin\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot open file %s\n"
 msgid "%s: cannot open %s\n"
 msgstr "%s: %s dosyası açılamıyor\n"
 
 #, fuzzy, c-format
-#| msgid "%s: failure forking: %s\n"
 msgid "%s: failure while writing changes to %s\n"
 msgstr "%s: çatallama (fork) hatası: %s\n"
 
 #, fuzzy, c-format
-#| msgid "%s: failed to drop privileges (%s)\n"
 msgid "%s: failed to prepare the new %s entry '%s'\n"
 msgstr "%s: ayrıcalıklar iptal edilemedi (%s)\n"
 
@@ -520,7 +472,6 @@ msgid "%s: failed to drop privileges (%s)\n"
 msgstr "%s: ayrıcalıklar iptal edilemedi (%s)\n"
 
 #, fuzzy, c-format
-#| msgid "%s: user `%s' does not exist\n"
 msgid "%s: user '%s' does not exist in %s\n"
 msgstr "%s: kullanıcı `%s' mevcut değil\n"
 
@@ -548,7 +499,6 @@ msgid "Full Name"
 msgstr "Tam İsim"
 
 #, fuzzy, c-format
-#| msgid "%s: %s\n"
 msgid "\t%s: %s\n"
 msgstr "%s: %s\n"
 
@@ -592,7 +542,6 @@ msgid "%s: invalid home phone: '%s'\n"
 msgstr "%s: geçersiz ev telefonu: '%s'\n"
 
 #, fuzzy, c-format
-#| msgid "%s: '%s' contains illegal characters\n"
 msgid "%s: '%s' contains non-ASCII characters\n"
 msgstr "%s: '%s' geçersiz karakterler içeriyor\n"
 
@@ -601,7 +550,6 @@ msgid "%s: '%s' contains illegal characters\n"
 msgstr "%s: '%s' geçersiz karakterler içeriyor\n"
 
 #, fuzzy, c-format
-#| msgid "%s: user `%s' does not exist\n"
 msgid "%s: user '%s' does not exist\n"
 msgstr "%s: kullanıcı `%s' mevcut değil\n"
 
@@ -651,7 +599,6 @@ msgstr ""
 "                                SHA yuvarlamaları sayısı\n"
 
 #, fuzzy, c-format
-#| msgid "%s: %s flag is ONLY allowed with the %s flag\n"
 msgid "%s: %s flag is only allowed with the %s flag\n"
 msgstr "%s: %s bayrağına SADECE %s bayrağı ile kullanıldığında izin verilir\n"
 
@@ -672,12 +619,10 @@ msgid "%s: line %d: missing new password\n"
 msgstr "%s: satır %d: yeni parola eksik\n"
 
 #, fuzzy, c-format
-#| msgid "%s: group %s does not exist\n"
 msgid "%s: line %d: group '%s' does not exist\n"
 msgstr "%s: grup %s mevcut değil\n"
 
 #, fuzzy, c-format
-#| msgid "%s: line %d: can't update entry\n"
 msgid "%s: line %d: failed to prepare the new %s entry '%s'\n"
 msgstr "%s: satır %d: kayıt güncellenemiyor\n"
 
@@ -686,7 +631,6 @@ msgid "%s: error detected, changes ignored\n"
 msgstr "%s: hata algılandı, değişiklikler görmezden gelindi\n"
 
 #, fuzzy, c-format
-#| msgid "Usage: %s [input]\n"
 msgid ""
 "Usage: %s [options]\n"
 "\n"
@@ -704,9 +648,6 @@ msgid "  -h, --help                    display this help message and exit\n"
 msgstr ""
 
 #, fuzzy
-#| msgid ""
-#| "  -s, --sha-rounds              number of SHA rounds for the SHA*\n"
-#| "                                crypt algorithms\n"
 msgid ""
 "  -m, --md5                     encrypt the clear text password using\n"
 "                                the MD5 algorithm\n"
@@ -715,12 +656,10 @@ msgstr ""
 "                                SHA yuvarlamaları sayısı\n"
 
 #, fuzzy, c-format
-#| msgid "%s: user `%s' does not exist\n"
 msgid "%s: (line %d, user %s) password not changed\n"
 msgstr "%s: kullanıcı `%s' mevcut değil\n"
 
 #, fuzzy, c-format
-#| msgid "%s: user `%s' does not exist\n"
 msgid "%s: line %d: user '%s' does not exist\n"
 msgstr "%s: kullanıcı `%s' mevcut değil\n"
 
@@ -743,7 +682,6 @@ msgid "Login Shell"
 msgstr "Oturum Kabuğu"
 
 #, fuzzy, c-format
-#| msgid "You may not change the shell for %s.\n"
 msgid "You may not change the shell for '%s'.\n"
 msgstr "%s için kabuğu değiştiremezsiniz.\n"
 
@@ -756,17 +694,14 @@ msgid "%s: Invalid entry: %s\n"
 msgstr "%s: Geçersiz kayıt: %s\n"
 
 #, fuzzy, c-format
-#| msgid "%s is an invalid shell.\n"
 msgid "%s: %s is an invalid shell\n"
 msgstr "%s geçersiz bir kabuk.\n"
 
 #, fuzzy, c-format
-#| msgid "%s: user %s does not exist\n"
 msgid "%s: Warning: %s does not exist\n"
 msgstr "%s: kullanıcı %s mevcut değil\n"
 
 #, fuzzy, c-format
-#| msgid "%s: warning: %s not owned by %s\n"
 msgid "%s: Warning: %s is not executable\n"
 msgstr "%s: uyarı: %s %s kullanıcısına ait değil\n"
 
@@ -807,7 +742,6 @@ msgid "Login       Failures Maximum Latest                   On\n"
 msgstr "Oturum Aç       Failures Maximum Latest                   Açık\n"
 
 #, fuzzy, c-format
-#| msgid " [%lds left]"
 msgid " [%lus left]"
 msgstr " [%lds kaldı]"
 
@@ -828,12 +762,10 @@ msgid "faillog: Failed to set locktime for UID %lu\n"
 msgstr ""
 
 #, fuzzy, c-format
-#| msgid "Unknown user or range: %s\n"
 msgid "lastlog: Unknown user or range: %s\n"
 msgstr "Bilinmeyen kullanıcı veya aralık: %s\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot open file %s\n"
 msgid "faillog: Cannot open %s: %s\n"
 msgstr "%s: %s dosyası açılamıyor\n"
 
@@ -842,7 +774,6 @@ msgid "faillog: Cannot get the size of %s: %s\n"
 msgstr ""
 
 #, fuzzy, c-format
-#| msgid "Usage: %s [input]\n"
 msgid ""
 "Usage: %s [option] GROUP\n"
 "\n"
@@ -871,12 +802,10 @@ msgid ""
 msgstr ""
 
 #, fuzzy
-#| msgid "The password for %s cannot be changed.\n"
 msgid "Except for the -A and -M options, the options cannot be combined.\n"
 msgstr "%s için parola değiştirilemedi.\n"
 
 #, fuzzy
-#| msgid "The password for %s cannot be changed.\n"
 msgid "The options cannot be combined.\n"
 msgstr "%s için parola değiştirilemedi.\n"
 
@@ -885,12 +814,10 @@ msgid "%s: shadow group passwords required for -A\n"
 msgstr "%s: -A için gölge grup parolaları gerekli\n"
 
 #, fuzzy, c-format
-#| msgid "%s: group %s does not exist\n"
 msgid "%s: group '%s' does not exist in %s\n"
 msgstr "%s: grup %s mevcut değil\n"
 
 #, fuzzy, c-format
-#| msgid "%s: failure forking: %s\n"
 msgid "%s: failure while closing read-only %s\n"
 msgstr "%s: çatallama (fork) hatası: %s\n"
 
@@ -920,7 +847,6 @@ msgid "Removing user %s from group %s\n"
 msgstr "%s kullanıcısı %s grubundan çıkarılıyor\n"
 
 #, fuzzy, c-format
-#| msgid "%s: user `%s' does not exist\n"
 msgid "%s: user '%s' is not a member of '%s'\n"
 msgstr "%s: kullanıcı `%s' mevcut değil\n"
 
@@ -929,7 +855,6 @@ msgid "%s: Not a tty\n"
 msgstr "%s: Bir tty değil\n"
 
 #, fuzzy, c-format
-#| msgid "Usage: %s [input]\n"
 msgid ""
 "Usage: %s [options] GROUP\n"
 "\n"
@@ -937,9 +862,6 @@ msgid ""
 msgstr "Kullanım: %s [girdi]\n"
 
 #, fuzzy
-#| msgid ""
-#| "  -s, --sha-rounds              number of SHA rounds for the SHA*\n"
-#| "                                crypt algorithms\n"
 msgid ""
 "  -f, --force                   exit successfully if the group already "
 "exists,\n"
@@ -955,9 +877,6 @@ msgid "  -K, --key KEY=VALUE           override /etc/login.defs defaults\n"
 msgstr ""
 
 #, fuzzy
-#| msgid ""
-#| "  -s, --sha-rounds              number of SHA rounds for the SHA*\n"
-#| "                                crypt algorithms\n"
 msgid ""
 "  -o, --non-unique              allow to create groups with duplicate\n"
 "                                (non-unique) GID\n"
@@ -974,12 +893,10 @@ msgid "  -r, --system                  create a system account\n"
 msgstr ""
 
 #, fuzzy, c-format
-#| msgid "%s: %s is not a valid group name\n"
 msgid "%s: '%s' is not a valid group name\n"
 msgstr "%s: %s geçerli bir grup adı değil\n"
 
 #, fuzzy, c-format
-#| msgid "%s: invalid group name `%s'\n"
 msgid "%s: invalid group ID '%s'\n"
 msgstr "%s: geçersiz grup adı `%s'\n"
 
@@ -988,12 +905,10 @@ msgid "%s: -K requires KEY=VALUE\n"
 msgstr "%s: -K seçeneği ANAHTAR=DEĞER gerektirir\n"
 
 #, fuzzy, c-format
-#| msgid "%s: group %s exists\n"
 msgid "%s: group '%s' already exists\n"
 msgstr "%s: grup %s zaten var\n"
 
 #, fuzzy, c-format
-#| msgid "Member already exists\n"
 msgid "%s: GID '%lu' already exists\n"
 msgstr "Üye zaten mevcut\n"
 
@@ -1001,24 +916,20 @@ msgid "Usage: groupdel group\n"
 msgstr "Kullanım: groupdel grup_adı\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot rename directory %s to %s\n"
 msgid "%s: cannot remove entry '%s' from %s\n"
 msgstr "%s: %s dizini %s olarak yeniden adlandırılamıyor\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot change the primary group of user '%s' from %u to %u.\n"
 msgid "%s: cannot remove the primary group of user '%s'\n"
 msgstr ""
 "%s: '%s' kullanıcısı için birincil grup %u grubundan %u grubuna "
 "değiştirilemiyor.\n"
 
 #, fuzzy, c-format
-#| msgid "%s: group %s does not exist\n"
 msgid "%s: group '%s' does not exist\n"
 msgstr "%s: grup %s mevcut değil\n"
 
 #, fuzzy, c-format
-#| msgid "%s: group '%s' is a NIS group.\n"
 msgid "%s: group '%s' is a NIS group\n"
 msgstr "%s: grup '%s' bir NIS grubu.\n"
 
@@ -1027,17 +938,14 @@ msgid "%s: %s is the NIS master\n"
 msgstr "%s: %s NIS efendisidir\n"
 
 #, fuzzy, c-format
-#| msgid "%s: user %s is a NIS user\n"
 msgid "%s: user '%s' is already a member of '%s'\n"
 msgstr "%s: kullanıcı %s bir NIS kullanıcısı\n"
 
 #, fuzzy, c-format
-#| msgid "%s: Out of memory. Cannot update the group database.\n"
 msgid "%s: Out of memory. Cannot update %s.\n"
 msgstr "%s: Bellek yetersiz. Grup veritabanı güncellenemiyor.\n"
 
 #, fuzzy, c-format
-#| msgid "Usage: %s [input]\n"
 msgid ""
 "Usage: %s [options] [action]\n"
 "\n"
@@ -1045,9 +953,6 @@ msgid ""
 msgstr "Kullanım: %s [girdi]\n"
 
 #, fuzzy
-#| msgid ""
-#| "  -s, --sha-rounds              number of SHA rounds for the SHA*\n"
-#| "                                crypt algorithms\n"
 msgid ""
 "  -g, --group groupname         change groupname instead of the user's "
 "group\n"
@@ -1101,7 +1006,6 @@ msgid ""
 msgstr ""
 
 #, fuzzy, c-format
-#| msgid "%s: invalid group name `%s'\n"
 msgid "%s: invalid group name '%s'\n"
 msgstr "%s: geçersiz grup adı `%s'\n"
 
@@ -1140,7 +1044,6 @@ msgid "invalid group name '%s'\n"
 msgstr "geçersiz grup adı '%s'\n"
 
 #, fuzzy, c-format
-#| msgid "invalid group name '%s'\n"
 msgid "invalid group ID '%lu'\n"
 msgstr "geçersiz grup adı '%s'\n"
 
@@ -1157,7 +1060,6 @@ msgid "no matching group file entry in %s\n"
 msgstr "%s girişi içinde grup dosyası kaydı eşleşmedi\n"
 
 #, fuzzy, c-format
-#| msgid "add group '%s' in %s ?"
 msgid "add group '%s' in %s? "
 msgstr "Grup %s, %s'in içine eklensin mi?"
 
@@ -1193,17 +1095,14 @@ msgid "%s: no changes\n"
 msgstr "%s: değişiklik yok\n"
 
 #, fuzzy
-#| msgid "Usage: groupdel group\n"
 msgid "Usage: grpconv\n"
 msgstr "Kullanım: groupdel grup_adı\n"
 
 #, fuzzy
-#| msgid "Usage: groupdel group\n"
 msgid "Usage: grpunconv\n"
 msgstr "Kullanım: groupdel grup_adı\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot update file %s\n"
 msgid "%s: cannot delete %s\n"
 msgstr "%s: %s dosyası güncellenemiyor\n"
 
@@ -1294,9 +1193,6 @@ msgstr ""
 "[Bağlantı kesilmesi atlandı -- root girişi olanaklı.]"
 
 #, fuzzy, c-format
-#| msgid ""
-#| "\n"
-#| "Login timed out after %d seconds.\n"
 msgid ""
 "\n"
 "Login timed out after %u seconds.\n"
@@ -1325,7 +1221,6 @@ msgid "login: "
 msgstr "giriş: "
 
 #, fuzzy, c-format
-#| msgid "Maximum number of tries exceeded (%d)\n"
 msgid "Maximum number of tries exceeded (%u)\n"
 msgstr "Maksimum giriş denemesi sayısı aşıldı (%d)\n"
 
@@ -1374,7 +1269,6 @@ msgstr ""
 "\n"
 
 #, fuzzy
-#| msgid "Usage: id\n"
 msgid "Usage: logoutd\n"
 msgstr "Kullanım: id\n"
 
@@ -1392,7 +1286,6 @@ msgid "%s: failure forking: %s\n"
 msgstr "%s: çatallama (fork) hatası: %s\n"
 
 #, fuzzy, c-format
-#| msgid "%s: user `%s' does not exist\n"
 msgid "%s: GID '%lu' does not exist\n"
 msgstr "%s: kullanıcı `%s' mevcut değil\n"
 
@@ -1407,12 +1300,10 @@ msgid "  -r, --system                  create system accounts\n"
 msgstr ""
 
 #, fuzzy, c-format
-#| msgid "%s: group %s is a shadow group, but does not exist in /etc/group\n"
 msgid "%s: group '%s' is a shadow group, but does not exist in /etc/group\n"
 msgstr "%s: %s grubu bir shadow grubu, fakat /etc/group içinde mevcut değil\n"
 
 #, fuzzy, c-format
-#| msgid "%s: invalid user name '%s'\n"
 msgid "%s: invalid user ID '%s'\n"
 msgstr "%s: geçersiz kullanıcı adı '%s'\n"
 
@@ -1439,7 +1330,6 @@ msgid "%s: line %d: can't create group\n"
 msgstr "%s: satır %d: grup yaratılamıyor\n"
 
 #, fuzzy, c-format
-#| msgid "%s: user `%s' does not exist\n"
 msgid "%s: line %d: user '%s' does not exist in %s\n"
 msgstr "%s: kullanıcı `%s' mevcut değil\n"
 
@@ -1448,12 +1338,10 @@ msgid "%s: line %d: can't update password\n"
 msgstr "%s: satır %d: parola güncellenemiyor\n"
 
 #, fuzzy, c-format
-#| msgid "%s: line %d: mkdir failed\n"
 msgid "%s: line %d: mkdir %s failed: %s\n"
 msgstr "%s: satır %d: mkdir başarısız oldu\n"
 
 #, fuzzy, c-format
-#| msgid "%s: line %d: chown failed\n"
 msgid "%s: line %d: chown %s failed: %s\n"
 msgstr "%s: satır %d: chown başarısız oldu\n"
 
@@ -1462,33 +1350,6 @@ msgid "%s: line %d: can't update entry\n"
 msgstr "%s: satır %d: kayıt güncellenemiyor\n"
 
 #, fuzzy
-#| msgid ""
-#| "Usage: passwd [options] [LOGIN]\n"
-#| "\n"
-#| "Options:\n"
-#| "  -a, --all                     report password status on all accounts\n"
-#| "  -d, --delete                  delete the password for the named "
-#| "account\n"
-#| "  -e, --expire                  force expire the password for the named "
-#| "account\n"
-#| "  -h, --help                    display this help message and exit\n"
-#| "  -k, --keep-tokens             change password only if expired\n"
-#| "  -i, --inactive INACTIVE       set password inactive after expiration\n"
-#| "                                to INACTIVE\n"
-#| "  -l, --lock                    lock the named account\n"
-#| "  -n, --mindays MIN_DAYS        set minimum number of days before "
-#| "password\n"
-#| "                                change to MIN_DAYS\n"
-#| "  -q, --quiet                   quiet mode\n"
-#| "  -r, --repository REPOSITORY   change password in REPOSITORY repository\n"
-#| "  -S, --status                  report password status on the named "
-#| "account\n"
-#| "  -u, --unlock                  unlock the named account\n"
-#| "  -w, --warndays WARN_DAYS      set expiration warning days to WARN_DAYS\n"
-#| "  -x, --maxdays MAX_DAYS        set maximim number of days before "
-#| "password\n"
-#| "                                change to MAX_DAYS\n"
-#| "\n"
 msgid ""
 "Usage: passwd [options] [LOGIN]\n"
 "\n"
@@ -1586,9 +1447,6 @@ msgid "The password for %s cannot be changed yet.\n"
 msgstr "%s için parola henüz değiştirilemiyor.\n"
 
 #, fuzzy, c-format
-#| msgid ""
-#| "%s: unlocking the user would result in a passwordless account.\n"
-#| "You should set a password with usermod -p to unlock this user account.\n"
 msgid ""
 "%s: unlocking the password would result in a passwordless account.\n"
 "You should set a password with usermod -p to unlock the password of this "
@@ -1620,17 +1478,14 @@ msgid "The password for %s is unchanged.\n"
 msgstr "%s için parola değişmedi\n"
 
 #, fuzzy, c-format
-#| msgid "Password changed."
 msgid "%s: password changed.\n"
 msgstr "Parola değişti "
 
 #, fuzzy, c-format
-#| msgid "Password Expiration Warning"
 msgid "%s: password expiry information changed.\n"
 msgstr "Parola Kullanım Süresi Bitti Uyarısı"
 
 #, fuzzy, c-format
-#| msgid "Usage: %s [-q] [-r] [-s] [passwd [shadow]]\n"
 msgid "Usage: %s [-q] [-r] [passwd]\n"
 msgstr "Kullanım: %s [-q] [-r] [-s] [parola [gölge]]\n"
 
@@ -1639,7 +1494,6 @@ msgid "Usage: %s [-q] [-r] [-s] [passwd [shadow]]\n"
 msgstr "Kullanım: %s [-q] [-r] [-s] [parola [gölge]]\n"
 
 #, fuzzy, c-format
-#| msgid "%s: -s and -r are incompatibile\n"
 msgid "%s: -s and -r are incompatible\n"
 msgstr "%s: -s ve -r uyumsuz\n"
 
@@ -1658,42 +1512,34 @@ msgid "invalid user name '%s'\n"
 msgstr "geçersiz kullanıcı adı '%s'\n"
 
 #, fuzzy, c-format
-#| msgid "invalid user name '%s'\n"
 msgid "invalid user ID '%lu'\n"
 msgstr "geçersiz kullanıcı adı '%s'\n"
 
 #, fuzzy, c-format
-#| msgid "user %s: no group %u\n"
 msgid "user '%s': no group %lu\n"
 msgstr "kullanıcı %s: %u grubu mevcut değil\n"
 
 #, fuzzy, c-format
-#| msgid "user %s: directory %s does not exist\n"
 msgid "user '%s': directory '%s' does not exist\n"
 msgstr "kullanıcı %s: %s dizini mevcut değil\n"
 
 #, fuzzy, c-format
-#| msgid "user %s: program %s does not exist\n"
 msgid "user '%s': program '%s' does not exist\n"
 msgstr "kullanıcı %s: uygulama %s mevcut değil\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot create directory %s\n"
 msgid "no tcb directory for %s\n"
 msgstr "%s: %s dizini yaratılamıyor\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot create directory %s\n"
 msgid "create tcb directory for %s?"
 msgstr "%s: %s dizini yaratılamıyor\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot create directory %s\n"
 msgid "failed to create tcb directory for %s\n"
 msgstr "%s: %s dizini yaratılamıyor\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot lock file %s\n"
 msgid "%s: cannot lock %s.\n"
 msgstr "%s: %s dosyası kilitlenemiyor\n"
 
@@ -1721,17 +1567,14 @@ msgid "user %s: last password change in the future\n"
 msgstr "kullanıcı %s: gelecekteki son parola değişimi\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot open file %s\n"
 msgid "%s: cannot sort entries in %s\n"
 msgstr "%s: %s dosyası açılamıyor\n"
 
 #, fuzzy
-#| msgid "Usage: id\n"
 msgid "Usage: pwconv\n"
 msgstr "Kullanım: id\n"
 
 #, fuzzy, c-format
-#| msgid "%s: can't re-write file\n"
 msgid "%s: can't work with tcb enabled\n"
 msgstr "%s: dosya tekrar yazılamıyor\n"
 
@@ -1740,7 +1583,6 @@ msgid "%s: failed to change the mode of %s to 0600\n"
 msgstr ""
 
 #, fuzzy
-#| msgid "Usage: id\n"
 msgid "Usage: pwunconv\n"
 msgstr "Kullanım: id\n"
 
@@ -1760,7 +1602,6 @@ msgid " ...waiting for child to terminate.\n"
 msgstr ""
 
 #, fuzzy, c-format
-#| msgid "%s: cannot lock file %s\n"
 msgid "%s: Cannot fork user shell\n"
 msgstr "%s: %s dosyası kilitlenemiyor\n"
 
@@ -1836,12 +1677,10 @@ msgstr ""
 "(Dikkate alınmadı)\n"
 
 #, fuzzy, c-format
-#| msgid "%s: PAM authentication failed\n"
 msgid "%s: Authentication failure\n"
 msgstr "%s: PAM yetkilendirmesi başarısız oldu\n"
 
 #, fuzzy, c-format
-#| msgid "You are not authorized to su %s\n"
 msgid "%s: You are not authorized to su at that time\n"
 msgstr "su %s için yetkili değilsiniz\n"
 
@@ -1886,12 +1725,10 @@ msgid "%s: cannot open new defaults file\n"
 msgstr "%s: yeni varsayılanlar dosyası açılamadı\n"
 
 #, fuzzy, c-format
-#| msgid "%s: line %d: chown failed\n"
 msgid "%s: line too long in %s: %s..."
 msgstr "%s: satır %d: chown başarısız oldu\n"
 
 #, fuzzy, c-format
-#| msgid "%s: rename: %s"
 msgid "%s: rename: %s: %s"
 msgstr "%s: yeniden adlandırma: %s"
 
@@ -1904,7 +1741,6 @@ msgid "%s: too many groups specified (max %d).\n"
 msgstr "%s: çok fazla grup verildi (azami %d).\n"
 
 #, fuzzy, c-format
-#| msgid "Usage: %s [input]\n"
 msgid ""
 "Usage: %s [options] LOGIN\n"
 "\n"
@@ -1912,9 +1748,6 @@ msgid ""
 msgstr "Kullanım: %s [girdi]\n"
 
 #, fuzzy
-#| msgid ""
-#| "  -s, --sha-rounds              number of SHA rounds for the SHA*\n"
-#| "                                crypt algorithms\n"
 msgid ""
 "  -b, --base-dir BASE_DIR       base directory for the home directory of "
 "the\n"
@@ -1943,9 +1776,6 @@ msgid ""
 msgstr ""
 
 #, fuzzy
-#| msgid ""
-#| "  -s, --sha-rounds              number of SHA rounds for the SHA*\n"
-#| "                                crypt algorithms\n"
 msgid ""
 "  -g, --gid GROUP               name or ID of the primary group of the new\n"
 "                                account\n"
@@ -1954,9 +1784,6 @@ msgstr ""
 "                                SHA yuvarlamaları sayısı\n"
 
 #, fuzzy
-#| msgid ""
-#| "  -s, --sha-rounds              number of SHA rounds for the SHA*\n"
-#| "                                crypt algorithms\n"
 msgid ""
 "  -G, --groups GROUPS           list of supplementary groups of the new\n"
 "                                account\n"
@@ -1969,9 +1796,6 @@ msgid ""
 msgstr ""
 
 #, fuzzy
-#| msgid ""
-#| "  -s, --sha-rounds              number of SHA rounds for the SHA*\n"
-#| "                                crypt algorithms\n"
 msgid ""
 "  -l, --no-log-init             do not add the user to the lastlog and\n"
 "                                faillog databases\n"
@@ -1987,9 +1811,6 @@ msgid ""
 msgstr ""
 
 #, fuzzy
-#| msgid ""
-#| "  -s, --sha-rounds              number of SHA rounds for the SHA*\n"
-#| "                                crypt algorithms\n"
 msgid ""
 "  -N, --no-user-group           do not create a group with the same name as\n"
 "                                the user\n"
@@ -1998,9 +1819,6 @@ msgstr ""
 "                                SHA yuvarlamaları sayısı\n"
 
 #, fuzzy
-#| msgid ""
-#| "  -s, --sha-rounds              number of SHA rounds for the SHA*\n"
-#| "                                crypt algorithms\n"
 msgid ""
 "  -o, --non-unique              allow to create users with duplicate\n"
 "                                (non-unique) UID\n"
@@ -2092,7 +1910,6 @@ msgid "Setting mailbox file permissions"
 msgstr "Mail kutusu dosyası için yetkiler ayarlanıyor"
 
 #, fuzzy, c-format
-#| msgid "%s: user %s exists\n"
 msgid "%s: user '%s' already exists\n"
 msgstr "%s: kullanıcı %s mevcut\n"
 
@@ -2108,12 +1925,10 @@ msgid "%s: can't create user\n"
 msgstr "%s: kullanıcı yaratılamıyor\n"
 
 #, fuzzy, c-format
-#| msgid "%s: UID %u is not unique\n"
 msgid "%s: UID %lu is not unique\n"
 msgstr "%s: GID %u tek değil\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot create directory %s\n"
 msgid "%s: Failed to create tcb directory for %s\n"
 msgstr "%s: %s dizini yaratılamıyor\n"
 
@@ -2148,14 +1963,11 @@ msgstr ""
 "\n"
 
 #, fuzzy, c-format
-#| msgid ""
-#| "%s: Cannot remove group %s which is a primary group for another user.\n"
 msgid "%s: group %s is the primary group of another user and is not removed.\n"
 msgstr ""
 "%s: Başka bir kullanıcı için birincil grub olan %s grubu kaldırılamıyor.\n"
 
 #, fuzzy, c-format
-#| msgid "%s: warning: can't remove "
 msgid "%s: warning: can't remove %s: %s\n"
 msgstr "%s: uyarı: silinemiyor "
 
@@ -2168,17 +1980,14 @@ msgid "%s: Can't allocate memory, tcb entry for %s not removed.\n"
 msgstr ""
 
 #, fuzzy, c-format
-#| msgid "%s: failed to drop privileges (%s)\n"
 msgid "%s: Cannot drop privileges: %s\n"
 msgstr "%s: ayrıcalıklar iptal edilemedi (%s)\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot rename directory %s to %s\n"
 msgid "%s: Cannot remove the content of %s: %s\n"
 msgstr "%s: %s dizini %s olarak yeniden adlandırılamıyor\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot rename directory %s to %s\n"
 msgid "%s: Cannot remove tcb files for %s: %s\n"
 msgstr "%s: %s dizini %s olarak yeniden adlandırılamıyor\n"
 
@@ -2191,7 +2000,6 @@ msgid "%s: user %s is currently logged in\n"
 msgstr "%s: kullanıcı %s şu an oturumda\n"
 
 #, fuzzy, c-format
-#| msgid "%s: invalid home directory '%s'\n"
 msgid "%s: %s home directory (%s) not found\n"
 msgstr "%s: geçersiz ev dizini '%s'\n"
 
@@ -2204,36 +2012,6 @@ msgid "%s: error removing directory %s\n"
 msgstr "%s: %s dizini silinirken hata oluştu\n"
 
 #, fuzzy, c-format
-#| msgid ""
-#| "Usage: usermod [options] LOGIN\n"
-#| "\n"
-#| "Options:\n"
-#| "  -c, --comment COMMENT         new value of the GECOS field\n"
-#| "  -d, --home HOME_DIR           new home directory for the user account\n"
-#| "  -e, --expiredate EXPIRE_DATE  set account expiration date to "
-#| "EXPIRE_DATE\n"
-#| "  -f, --inactive INACTIVE       set password inactive after expiration\n"
-#| "                                to INACTIVE\n"
-#| "  -g, --gid GROUP               force use GROUP as new primary group\n"
-#| "  -G, --groups GROUPS           new list of supplementary GROUPS\n"
-#| "  -a, --append                  append the user to the supplemental "
-#| "GROUPS\n"
-#| "                                mentioned by the -G option without "
-#| "removing\n"
-#| "                                him/her from other groups\n"
-#| "  -h, --help                    display this help message and exit\n"
-#| "  -l, --login NEW_LOGIN         new value of the login name\n"
-#| "  -L, --lock                    lock the user account\n"
-#| "  -m, --move-home               move contents of the home directory to "
-#| "the\n"
-#| "                                new location (use only with -d)\n"
-#| "  -o, --non-unique              allow using duplicate (non-unique) UID\n"
-#| "  -p, --password PASSWORD       use encrypted password for the new "
-#| "password\n"
-#| "  -s, --shell SHELL             new login shell for the user account\n"
-#| "  -u, --uid UID                 new UID for the user account\n"
-#| "  -U, --unlock                  unlock the user account\n"
-#| "\n"
 msgid ""
 "Usage: usermod [options] LOGIN\n"
 "\n"
@@ -2295,9 +2073,6 @@ msgid ""
 msgstr ""
 
 #, fuzzy, c-format
-#| msgid ""
-#| "%s: unlocking the user would result in a passwordless account.\n"
-#| "You should set a password with usermod -p to unlock this user account.\n"
 msgid ""
 "%s: unlocking the user's password would result in a passwordless account.\n"
 "You should set a password with usermod -p to unlock this user's password.\n"
@@ -2308,7 +2083,6 @@ msgstr ""
 "belirlemelisiniz.\n"
 
 #, fuzzy, c-format
-#| msgid "%s: user %s exists\n"
 msgid "%s: user '%s' already exists in %s\n"
 msgstr "%s: kullanıcı %s mevcut\n"
 
@@ -2325,7 +2099,6 @@ msgid "%s: the -L, -p, and -U flags are exclusive\n"
 msgstr "%s: -L, -p, ve -U bayrakları özel bayraklardır\n"
 
 #, fuzzy, c-format
-#| msgid "Member already exists\n"
 msgid "%s: UID '%lu' already exists\n"
 msgstr "Üye zaten mevcut\n"
 
@@ -2340,7 +2113,6 @@ msgid ""
 msgstr ""
 
 #, fuzzy, c-format
-#| msgid "%s: cannot create directory %s\n"
 msgid "%s: Failed to change ownership of the home directory"
 msgstr "%s: %s dizini yaratılamıyor\n"
 
@@ -2371,10 +2143,6 @@ msgid "failed to rename mailbox"
 msgstr "postakutusu isim değişikliği başarısız"
 
 #, fuzzy, c-format
-#| msgid ""
-#| "You have modified %s.\n"
-#| "You may need to modify %s for consistency.\n"
-#| "Please use the command `%s' to do so.\n"
 msgid ""
 "You have modified %s.\n"
 "You may need to modify %s for consistency.\n"
@@ -2385,7 +2153,6 @@ msgstr ""
 "Bunu yapmak için lütfen `%s' komutunu kullanın.\n"
 
 #, fuzzy
-#| msgid "Usage: %s [input]\n"
 msgid ""
 "Usage: vipw [options]\n"
 "\n"
@@ -2408,31 +2175,24 @@ msgid "  -u, --user                    which user's tcb shadow file to edit\n"
 msgstr ""
 
 #, fuzzy, c-format
-#| msgid "%s: failed to drop privileges (%s)\n"
 msgid "%s: failed to remove %s\n"
 msgstr "%s: ayrıcalıklar iptal edilemedi (%s)\n"
 
 #, fuzzy, c-format
-#| msgid ""
-#| "\n"
-#| "%s: %s is unchanged\n"
 msgid "%s: %s is unchanged\n"
 msgstr ""
 "\n"
 "%s: %s değiştirilmedi\n"
 
 #, fuzzy
-#| msgid "failed to rename mailbox"
 msgid "failed to create scratch directory"
 msgstr "postakutusu isim değişikliği başarısız"
 
 #, fuzzy
-#| msgid "%s: failed to drop privileges (%s)\n"
 msgid "failed to drop privileges"
 msgstr "%s: ayrıcalıklar iptal edilemedi (%s)\n"
 
 #, fuzzy
-#| msgid "Couldn't lock file"
 msgid "Couldn't get file context"
 msgstr "Dosya kilitlenemedi"
 
@@ -2440,7 +2200,6 @@ msgid "setfscreatecon () failed"
 msgstr ""
 
 #, fuzzy
-#| msgid "%s: failed to drop privileges (%s)\n"
 msgid "failed to gain privileges"
 msgstr "%s: ayrıcalıklar iptal edilemedi (%s)\n"
 
@@ -2451,27 +2210,22 @@ msgid "Couldn't make backup"
 msgstr "Yedek alınamadı"
 
 #, fuzzy
-#| msgid "Unable to open group file\n"
 msgid "failed to open scratch file"
 msgstr "Grup dosyası açılamıyor\n"
 
 #, fuzzy
-#| msgid "%s: fields too long\n"
 msgid "failed to unlink scratch file"
 msgstr "%s: alanlar çok uzun\n"
 
 #, fuzzy
-#| msgid "failed to rename mailbox"
 msgid "failed to stat edited file"
 msgstr "postakutusu isim değişikliği başarısız"
 
 #, fuzzy
-#| msgid "failed to change mailbox owner"
 msgid "failed to allocate memory"
 msgstr "postakutusu sahibi değiştirilmedi"
 
 #, fuzzy
-#| msgid "failed to rename mailbox"
 msgid "failed to create backup file"
 msgstr "postakutusu isim değişikliği başarısız"
 
@@ -2480,9 +2234,90 @@ msgid "%s: can't restore %s: %s (your changes are in %s)\n"
 msgstr "%s: %s geri yüklenemiyor: %s (değişiklikleriniz %s içinde)\n"
 
 #, fuzzy, c-format
-#| msgid "%s: invalid base directory '%s'\n"
 msgid "%s: failed to find tcb directory for %s\n"
 msgstr "%s: geçersiz ana dizin '%s'\n"
+
+#, fuzzy, c-format
+msgid "%s: %s is an invalid shell.\n"
+msgstr "%s geçersiz bir kabuk.\n"
+
+msgid ""
+"  -l, --lock-time SEC           after failed login lock account for SEC "
+"seconds\n"
+msgstr ""
+
+#, c-format
+msgid ""
+"Usage: %s [option] GROUP\n"
+"\n"
+"Options:\n"
+"  -a, --add USER                add USER to GROUP\n"
+"  -d, --delete USER             remove USER from GROUP\n"
+"  -r, --remove-password         remove the GROUP's password\n"
+"  -R, --restrict                restrict access to GROUP to its members\n"
+"  -M, --members USER,...        set the list of members of GROUP\n"
+"%s\n"
+"\n"
+msgstr ""
+
+msgid ""
+"  -A, --administrators ADMIN,...\n"
+"                                set the list of administrators for GROUP\n"
+"Except for the -A and -M options, the options cannot be combined.\n"
+msgstr ""
+
+msgid ""
+"Usage: groupmems [options] [action]\n"
+"\n"
+"Options:\n"
+"  -g, --group groupname         change groupname instead of the user's "
+"group\n"
+"                                (root only)\n"
+"\n"
+"Actions:\n"
+"  -a, --add username            add username to the members of the group\n"
+"  -d, --delete username         remove username from the members of the "
+"group\n"
+"  -p, --purge                   purge all members from the group\n"
+"  -l, --list                    list the members of the group\n"
+"\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid ""
+"Usage: useradd [options] LOGIN\n"
+"\n"
+"Options:\n"
+msgstr "Kullanım: %s [girdi]\n"
+
+#, c-format
+msgid "%s: can't create %s\n"
+msgstr "%s: %s yaratılamıyor\n"
+
+#, c-format
+msgid "%s: can't chown %s\n"
+msgstr "%s: chown %s gerçekleştirilemiyor\n"
+
+msgid ""
+"Usage: vipw [options]\n"
+"\n"
+"Options:\n"
+"  -g, --group                   edit group database\n"
+"  -h, --help                    display this help message and exit\n"
+"  -p, --passwd                  edit passwd database\n"
+"  -q, --quiet                   quiet mode\n"
+"  -s, --shadow                  edit shadow or gshadow database\n"
+"\n"
+msgstr ""
+"Kullanım: vipw [seçenekler]\n"
+"\n"
+"Seçenekler:\n"
+"  -g, --group                   grub veri tabanını düzenler\n"
+"  -h, --help                    bu yardım dosyasını gösterir ve çıkar\n"
+"  -p, --passwd                  şifre veri tabanını düzenler\n"
+"  -q, --quiet                   sessiz kip\n"
+"  -s, --shadow                  shadow veya gshadow veri tabanını düzenler\n"
+"\n"
 
 #, fuzzy
 #~| msgid ""
@@ -2517,20 +2352,6 @@ msgstr "%s: geçersiz ana dizin '%s'\n"
 #~ "  -s, --shadow                  shadow veya gshadow veri tabanını "
 #~ "düzenler\n"
 #~ "\n"
-
-#, fuzzy
-#~| msgid "Usage: %s [input]\n"
-#~ msgid ""
-#~ "Usage: useradd [options] LOGIN\n"
-#~ "\n"
-#~ "Options:\n"
-#~ msgstr "Kullanım: %s [girdi]\n"
-
-#~ msgid "%s: can't create %s\n"
-#~ msgstr "%s: %s yaratılamıyor\n"
-
-#~ msgid "%s: can't chown %s\n"
-#~ msgstr "%s: chown %s gerçekleştirilemiyor\n"
 
 #, fuzzy
 #~| msgid ""

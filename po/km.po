@@ -15,10 +15,10 @@ msgstr ""
 "PO-Revision-Date: 2006-06-28 10:08+0700\n"
 "Last-Translator: Khoem Sokhem <khoemsokhem@khmeros.info>\n"
 "Language-Team: Khmer <support@khmeros.info>\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: \n"
 "X-Generator: KBabel 1.11.2\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
@@ -54,17 +54,14 @@ msgid "%s: out of memory\n"
 msgstr "%s ៖ អស់​សតិ​\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot update file %s\n"
 msgid "%s: Cannot stat %s: %s\n"
 msgstr "%s ៖ មិនអាច​ធ្វើឲ្យឯកសារ %s ទាន់សម័យ​បានទេ\n"
 
 #, fuzzy, c-format
-#| msgid "%s: invalid home directory '%s'\n"
 msgid "%s: %s is neither a directory, nor a symlink.\n"
 msgstr "%s ៖ ថត​ផ្ទះ​មិន​ត្រឹមត្រូវ​ '%s'\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot rename directory %s to %s\n"
 msgid "%s: Cannot read symbolic link %s: %s\n"
 msgstr "%s ៖ មិនអាចប្ដូរឈ្មោះ​ថត​ %s ទៅ​ជា​ %s បានឡើយ\n"
 
@@ -73,57 +70,46 @@ msgid "%s: Suspiciously long symlink: %s\n"
 msgstr ""
 
 #, fuzzy, c-format
-#| msgid "%s: cannot create directory %s\n"
 msgid "%s: Cannot create directory %s: %s\n"
 msgstr "%s ៖ មិន​​អាច​បង្កើត​ថត​ %s បានឡើយ\n"
 
 #, fuzzy, c-format
-#| msgid "%s: warning: can't remove "
 msgid "%s: Cannot change owner of %s: %s\n"
 msgstr "%s  ៖ ការព្រមាន​ ៖ មិន​អាច​យកចេញបានឡើយ "
 
 #, fuzzy, c-format
-#| msgid "%s: warning: can't remove "
 msgid "%s: Cannot change mode of %s: %s\n"
 msgstr "%s  ៖ ការព្រមាន​ ៖ មិន​អាច​យកចេញបានឡើយ "
 
 #, fuzzy, c-format
-#| msgid "%s: rename: %s"
 msgid "%s: unlink: %s: %s\n"
 msgstr "%s ៖​ ប្តូរ​ឈ្មោះ​ ៖ %s"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot rename directory %s to %s\n"
 msgid "%s: Cannot remove directory %s: %s\n"
 msgstr "%s ៖ មិនអាចប្ដូរឈ្មោះ​ថត​ %s ទៅ​ជា​ %s បានឡើយ\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot rename directory %s to %s\n"
 msgid "%s: Cannot rename %s to %s: %s\n"
 msgstr "%s ៖ មិនអាចប្ដូរឈ្មោះ​ថត​ %s ទៅ​ជា​ %s បានឡើយ\n"
 
 #, fuzzy, c-format
-#| msgid "%s: warning: can't remove "
 msgid "%s: Cannot remove %s: %s\n"
 msgstr "%s  ៖ ការព្រមាន​ ៖ មិន​អាច​យកចេញបានឡើយ "
 
 #, fuzzy, c-format
-#| msgid "%s: cannot create directory %s\n"
 msgid "%s: Cannot create symbolic link %s: %s\n"
 msgstr "%s ៖ មិន​​អាច​បង្កើត​ថត​ %s បានឡើយ\n"
 
 #, fuzzy, c-format
-#| msgid "%s: warning: can't remove "
 msgid "%s: Cannot change owners of %s: %s\n"
 msgstr "%s  ៖ ការព្រមាន​ ៖ មិន​អាច​យកចេញបានឡើយ "
 
 #, fuzzy, c-format
-#| msgid "%s: cannot update file %s\n"
 msgid "%s: Cannot lstat %s: %s\n"
 msgstr "%s ៖ មិនអាច​ធ្វើឲ្យឯកសារ %s ទាន់សម័យ​បានទេ\n"
 
 #, fuzzy, c-format
-#| msgid "%s: can't update shadow file\n"
 msgid "%s: Warning, user %s has no tcb shadow file.\n"
 msgstr "%s ៖ មិនអាច​ធ្វើឲ្យឯកសារស្រមោល​ទាន់សម័យបានឡើយ​\n"
 
@@ -134,12 +120,10 @@ msgid ""
 msgstr ""
 
 #, fuzzy, c-format
-#| msgid "%s: rename: %s"
 msgid "%s: mkdir: %s: %s\n"
 msgstr "%s ៖​ ប្តូរ​ឈ្មោះ​ ៖ %s"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot open file %s\n"
 msgid "%s: Cannot open %s: %s\n"
 msgstr "%s ៖ មិនអាច​បើក​ឯកសារ​ %s បានទេ\n"
 
@@ -186,17 +170,14 @@ msgid "Cannot open audit interface - aborting.\n"
 msgstr ""
 
 #, fuzzy, c-format
-#| msgid "Unable to change tty %s"
 msgid "Unable to change owner or mode of tty stdin: %s"
 msgstr "មិន​អាច​ប្តូរ​ tty %s បានឡើយ"
 
 #, fuzzy, c-format
-#| msgid "%s: fields too long\n"
 msgid "%s: failed to unlock %s\n"
 msgstr "%s ៖ វាល គឺ​វែងវែងពេក​\n"
 
 #, fuzzy, c-format
-#| msgid "%s: %s\n"
 msgid "%s: "
 msgstr "%s ៖ %s\n"
 
@@ -230,8 +211,8 @@ msgstr ""
 
 #, c-format
 msgid ""
-"%s: Invalid configuration: SYS_GID_MIN (%lu), GID_MIN (%lu), SYS_GID_MAX "
-"(%lu)\n"
+"%s: Invalid configuration: SYS_GID_MIN (%lu), GID_MIN (%lu), SYS_GID_MAX (%"
+"lu)\n"
 msgstr ""
 
 #, fuzzy, c-format
@@ -248,8 +229,8 @@ msgstr ""
 
 #, c-format
 msgid ""
-"%s: Invalid configuration: SYS_UID_MIN (%lu), UID_MIN (%lu), SYS_UID_MAX "
-"(%lu)\n"
+"%s: Invalid configuration: SYS_UID_MIN (%lu), UID_MIN (%lu), SYS_UID_MAX (%"
+"lu)\n"
 msgstr ""
 
 #, fuzzy, c-format
@@ -349,7 +330,6 @@ msgid "malloc(%d) failed\n"
 msgstr "malloc(%d) បាន​បរាជ័យ​\n"
 
 #, fuzzy
-#| msgid "No\n"
 msgid "No"
 msgstr "ទេ\n"
 
@@ -467,12 +447,10 @@ msgid "%s: PAM authentication failed\n"
 msgstr "%s ៖ PAM ការ​ផ្ទៀងផ្ទាត់​ភាព​ត្រឹមត្រូវបាន​បរាជ័យ​\n"
 
 #, fuzzy, c-format
-#| msgid "%s: can't lock files, try again later\n"
 msgid "%s: cannot lock %s; try again later.\n"
 msgstr "%s ៖ មិន​អាច​ចាក់សោ​ឯកសារ​បានឡើយ សូមព្យាយាម​ម្តង​ទៀតនៅពេលក្រោយ​\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot open file %s\n"
 msgid "%s: cannot open %s\n"
 msgstr "%s ៖ មិនអាច​បើក​ឯកសារ​ %s បានទេ\n"
 
@@ -481,7 +459,6 @@ msgid "%s: failure while writing changes to %s\n"
 msgstr "%s ៖ ការចែកជាពីរវិធី​​បានបរាជ័យ​ ៖ %s"
 
 #, fuzzy, c-format
-#| msgid "%s: failed to drop privileges (%s)\n"
 msgid "%s: failed to prepare the new %s entry '%s'\n"
 msgstr "%s ៖ បរាជ័យ​ក្នុងការ​ទម្លាក់​សិទ្ធ (%s)\n"
 
@@ -521,7 +498,6 @@ msgid "Full Name"
 msgstr "ឈ្មោះ​ពេញ"
 
 #, fuzzy, c-format
-#| msgid "%s: %s\n"
 msgid "\t%s: %s\n"
 msgstr "%s ៖ %s\n"
 
@@ -565,7 +541,6 @@ msgid "%s: invalid home phone: '%s'\n"
 msgstr "%s ៖ លេខ​ទូរស័ព្ទនៅផ្ទះ​មិន​ត្រឹមត្រូវ​ ៖ '%s'\n"
 
 #, fuzzy, c-format
-#| msgid "%s: '%s' contains illegal characters\n"
 msgid "%s: '%s' contains non-ASCII characters\n"
 msgstr "%s ៖ '%s' មាន​តួអក្សរ​មិន​ត្រឹមត្រូវ​\n"
 
@@ -640,12 +615,10 @@ msgid "%s: line %d: missing new password\n"
 msgstr "%s ៖ បន្ទាត់​ %d ៖ បាត់បង់​ពាក្យ​សម្ងាត់​ថ្មី​\n"
 
 #, fuzzy, c-format
-#| msgid "%s: group %s does not exist\n"
 msgid "%s: line %d: group '%s' does not exist\n"
 msgstr "%s ៖ មិនមានក្រុម​ %sឡើយ​\n"
 
 #, fuzzy, c-format
-#| msgid "%s: line %d: can't update entry\n"
 msgid "%s: line %d: failed to prepare the new %s entry '%s'\n"
 msgstr "%s ៖ បន្ទាត់​ %d ៖ មិនអាចធ្វើឲ្យ​ធាតុបញ្ចូល​ទាន់សម័យបានឡើយ\n"
 
@@ -654,7 +627,6 @@ msgid "%s: error detected, changes ignored\n"
 msgstr "%s ៖ បានរកឃើញ​កំហុស មិនអើពើនឹងការផ្លាស់ប្ដូរ​\n"
 
 #, fuzzy, c-format
-#| msgid "Usage: %s [input]\n"
 msgid ""
 "Usage: %s [options]\n"
 "\n"
@@ -705,7 +677,6 @@ msgid "Login Shell"
 msgstr "សែលចូល"
 
 #, fuzzy, c-format
-#| msgid "You may not change the shell for %s.\n"
 msgid "You may not change the shell for '%s'.\n"
 msgstr "អ្នក​មិនអាច​​ប្តូរ​សែល​សម្រាប់​ %s បានទេ ។\n"
 
@@ -718,17 +689,14 @@ msgid "%s: Invalid entry: %s\n"
 msgstr "%s ៖ ធាតុបញ្ចូល​​មិន​ត្រឹមត្រូវ​ ៖ %s\n"
 
 #, fuzzy, c-format
-#| msgid "%s is an invalid shell.\n"
 msgid "%s: %s is an invalid shell\n"
 msgstr "%s គឺជា​សែល​មិន​ត្រឹមត្រូវ​ ។\n"
 
 #, fuzzy, c-format
-#| msgid "%s: user %s does not exist\n"
 msgid "%s: Warning: %s does not exist\n"
 msgstr "%s ៖ មិនទាន់មានអ្នក​ប្រើ​ %s ទេ​\n"
 
 #, fuzzy, c-format
-#| msgid "%s: warning: %s not owned by %s\n"
 msgid "%s: Warning: %s is not executable\n"
 msgstr "%s ៖ ការព្រមាន ៖​ %s មិនត្រូវបានទទួល​យក​ដោយ %s ឡើយ\n"
 
@@ -769,7 +737,6 @@ msgid "Login       Failures Maximum Latest                   On\n"
 msgstr "ចូល       ភាពបរាជ័យ​នៃការចូល​ចុងក្រោយ​ជាអតិបរមា                   លើ\n"
 
 #, fuzzy, c-format
-#| msgid " [%lds left]"
 msgid " [%lus left]"
 msgstr " [%lds នៅសល់]"
 
@@ -794,7 +761,6 @@ msgid "lastlog: Unknown user or range: %s\n"
 msgstr "មិន​ស្គាល់​អ្នក​ប្រើ ៖ %s\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot open file %s\n"
 msgid "faillog: Cannot open %s: %s\n"
 msgstr "%s ៖ មិនអាច​បើក​ឯកសារ​ %s បានទេ\n"
 
@@ -803,7 +769,6 @@ msgid "faillog: Cannot get the size of %s: %s\n"
 msgstr ""
 
 #, fuzzy, c-format
-#| msgid "Usage: %s [input]\n"
 msgid ""
 "Usage: %s [option] GROUP\n"
 "\n"
@@ -832,12 +797,10 @@ msgid ""
 msgstr ""
 
 #, fuzzy
-#| msgid "The password for %s cannot be changed.\n"
 msgid "Except for the -A and -M options, the options cannot be combined.\n"
 msgstr "មិនអាចប្ដូរ​ពាក្យ​សម្ងាត់​សម្រាប់​ %s បានឡើយ ។\n"
 
 #, fuzzy
-#| msgid "The password for %s cannot be changed.\n"
 msgid "The options cannot be combined.\n"
 msgstr "មិនអាចប្ដូរ​ពាក្យ​សម្ងាត់​សម្រាប់​ %s បានឡើយ ។\n"
 
@@ -846,7 +809,6 @@ msgid "%s: shadow group passwords required for -A\n"
 msgstr "%s ៖ បានទាមទារ​ពាក្យសម្ងាត់​ក្រុម​ស្រមោល​សម្រាប់​ -A\n"
 
 #, fuzzy, c-format
-#| msgid "%s: group %s does not exist\n"
 msgid "%s: group '%s' does not exist in %s\n"
 msgstr "%s ៖ មិនមានក្រុម​ %sឡើយ​\n"
 
@@ -888,7 +850,6 @@ msgid "%s: Not a tty\n"
 msgstr "%s ៖ មិនមែន​ tty\n"
 
 #, fuzzy, c-format
-#| msgid "Usage: %s [input]\n"
 msgid ""
 "Usage: %s [options] GROUP\n"
 "\n"
@@ -921,7 +882,6 @@ msgid "  -r, --system                  create a system account\n"
 msgstr ""
 
 #, fuzzy, c-format
-#| msgid "%s: %s is not a valid group name\n"
 msgid "%s: '%s' is not a valid group name\n"
 msgstr "%s  ៖ %s ជា​ឈ្មោះ​ក្រុម​មិន​ត្រឹមត្រូវ​\n"
 
@@ -934,7 +894,6 @@ msgid "%s: -K requires KEY=VALUE\n"
 msgstr "%s: -K ទាមទារ​ KEY=VALUE\n"
 
 #, fuzzy, c-format
-#| msgid "%s: group %s exists\n"
 msgid "%s: group '%s' already exists\n"
 msgstr "%s ៖ មានក្រុម​ %s រួច​ហើយ​\n"
 
@@ -946,7 +905,6 @@ msgid "Usage: groupdel group\n"
 msgstr "របៀបប្រើ​ ៖ ក្រុម​ groupdel \n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot rename directory %s to %s\n"
 msgid "%s: cannot remove entry '%s' from %s\n"
 msgstr "%s ៖ មិនអាចប្ដូរឈ្មោះ​ថត​ %s ទៅ​ជា​ %s បានឡើយ\n"
 
@@ -955,12 +913,10 @@ msgid "%s: cannot remove the primary group of user '%s'\n"
 msgstr "%s ៖ មិនអាចផ្លាស់​​ប្តូរ​អ្នក​ប្រើបានទេ​ '%s' លើ​ម៉ាស៊ីន​ភ្ញៀវ NIS បានទេ ។\n"
 
 #, fuzzy, c-format
-#| msgid "%s: group %s does not exist\n"
 msgid "%s: group '%s' does not exist\n"
 msgstr "%s ៖ មិនមានក្រុម​ %sឡើយ​\n"
 
 #, fuzzy, c-format
-#| msgid "%s: group '%s' is a NIS group.\n"
 msgid "%s: group '%s' is a NIS group\n"
 msgstr "%s ៖ ក្រុម​ '%s' គឺជាក្រុម​ NIS ។\n"
 
@@ -969,7 +925,6 @@ msgid "%s: %s is the NIS master\n"
 msgstr "%s ៖ %s គឺជា​មេ NIS\n"
 
 #, fuzzy, c-format
-#| msgid "%s: user %s is a NIS user\n"
 msgid "%s: user '%s' is already a member of '%s'\n"
 msgstr "%s ៖ អ្នកប្រើ​ %s គឺជា​អ្នក​​ប្រើ​ NIS\n"
 
@@ -978,7 +933,6 @@ msgid "%s: Out of memory. Cannot update %s.\n"
 msgstr "%s: អស់​សតិ​ក្នុង​ក្នុងការធ្វើឲ្យ​ក្រុមទាន់សម័យ\n"
 
 #, fuzzy, c-format
-#| msgid "Usage: %s [input]\n"
 msgid ""
 "Usage: %s [options] [action]\n"
 "\n"
@@ -1076,7 +1030,6 @@ msgid "invalid group name '%s'\n"
 msgstr "ឈ្មោះ​ក្រុម​ '%s' មិនត្រឹមត្រូវ\n"
 
 #, fuzzy, c-format
-#| msgid "invalid group name '%s'\n"
 msgid "invalid group ID '%lu'\n"
 msgstr "ឈ្មោះ​ក្រុម​ '%s' មិនត្រឹមត្រូវ\n"
 
@@ -1093,7 +1046,6 @@ msgid "no matching group file entry in %s\n"
 msgstr "គ្មាន​ធាតុបញ្ចូល​ឯកសារ​ក្រុមផ្គូរផ្គង​នៅក្នុង​​ %s ទេ\n"
 
 #, fuzzy, c-format
-#| msgid "add group '%s' in %s ?"
 msgid "add group '%s' in %s? "
 msgstr "បន្ថែម​ក្រុម​ '%s' ទៅក្នុង​ %s ឬ ?"
 
@@ -1131,17 +1083,14 @@ msgid "%s: no changes\n"
 msgstr "%s ៖គ្មាន​ការផ្លាស់ប្ដូរ​\n"
 
 #, fuzzy
-#| msgid "Usage: groupdel group\n"
 msgid "Usage: grpconv\n"
 msgstr "របៀបប្រើ​ ៖ ក្រុម​ groupdel \n"
 
 #, fuzzy
-#| msgid "Usage: groupdel group\n"
 msgid "Usage: grpunconv\n"
 msgstr "របៀបប្រើ​ ៖ ក្រុម​ groupdel \n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot update file %s\n"
 msgid "%s: cannot delete %s\n"
 msgstr "%s ៖ មិនអាច​ធ្វើឲ្យឯកសារ %s ទាន់សម័យ​បានទេ\n"
 
@@ -1236,9 +1185,6 @@ msgstr ""
 "[បាន​វៀង​ការ​ផ្ដាច់ -- បាន​អនុញ្ញាត​ការ​ចូល​ជា root ។]\n"
 
 #, fuzzy, c-format
-#| msgid ""
-#| "\n"
-#| "Login timed out after %d seconds.\n"
 msgid ""
 "\n"
 "Login timed out after %u seconds.\n"
@@ -1265,7 +1211,6 @@ msgid "login: "
 msgstr "ចូល​ ៖ "
 
 #, fuzzy, c-format
-#| msgid "Maximum number of tries exceeded (%d)\n"
 msgid "Maximum number of tries exceeded (%u)\n"
 msgstr "បាន​លើសពី​ចំនួន​អតិបរ​មា​នៃ​ការ​សាកល្បង​ (%d)\n"
 
@@ -1315,7 +1260,6 @@ msgstr ""
 "\n"
 
 #, fuzzy
-#| msgid "Usage: id\n"
 msgid "Usage: logoutd\n"
 msgstr "របៀបប្រើ​ ៖ លេខសម្គាល់\n"
 
@@ -1352,7 +1296,6 @@ msgid "%s: group '%s' is a shadow group, but does not exist in /etc/group\n"
 msgstr "%s ៖ មិនមានក្រុម​ %sឡើយ​\n"
 
 #, fuzzy, c-format
-#| msgid "%s: invalid user name '%s'\n"
 msgid "%s: invalid user ID '%s'\n"
 msgstr "%s ៖ឈ្មោះ​អ្នក​ប្រើ​មិន​ត្រឹមត្រូវ​ '%s'\n"
 
@@ -1385,12 +1328,10 @@ msgid "%s: line %d: can't update password\n"
 msgstr "%s ៖ បន្ទាត់​ %d ៖ មិន​អាច​ធ្វើ​ឲ្យ​ពាក្យ​សម្ងាត់​ទាន់សម័យ​បានឡើយ​\n"
 
 #, fuzzy, c-format
-#| msgid "%s: line %d: mkdir failed\n"
 msgid "%s: line %d: mkdir %s failed: %s\n"
 msgstr "%s ៖ បន្ទាត់​ %d ៖ mkdir បានបរាជ័យ​\n"
 
 #, fuzzy, c-format
-#| msgid "%s: line %d: chown failed\n"
 msgid "%s: line %d: chown %s failed: %s\n"
 msgstr "%s ៖ បន្ទាត់​ %d ៖ chown បានបរាជ័យ​\n"
 
@@ -1522,12 +1463,10 @@ msgid "%s: password changed.\n"
 msgstr "ពាក្យ​សម្ងាត់​បាន​ប្តូរ​ ។\n"
 
 #, fuzzy, c-format
-#| msgid "Password Expiration Warning"
 msgid "%s: password expiry information changed.\n"
 msgstr "ការព្រមាន​ការផុត​កំណត់​នៃ​ពាក្យ​សម្ងាត់​"
 
 #, fuzzy, c-format
-#| msgid "Usage: %s [-q] [-r] [-s] [passwd [shadow]]\n"
 msgid "Usage: %s [-q] [-r] [passwd]\n"
 msgstr "របៀបប្រើ ៖ %s [-q] [-r] [-s] [passwd [shadow]]\n"
 
@@ -1536,7 +1475,6 @@ msgid "Usage: %s [-q] [-r] [-s] [passwd [shadow]]\n"
 msgstr "របៀបប្រើ ៖ %s [-q] [-r] [-s] [passwd [shadow]]\n"
 
 #, fuzzy, c-format
-#| msgid "%s: -s and -r are incompatibile\n"
 msgid "%s: -s and -r are incompatible\n"
 msgstr "%s ៖ -s និង​ -r គឺមិន​ត្រូវ​គ្នាទេ​\n"
 
@@ -1557,42 +1495,34 @@ msgid "invalid user name '%s'\n"
 msgstr "ឈ្មោះ​អ្នក​ប្រើ​មិន​ត្រឹមត្រូវ​ '%s'\n"
 
 #, fuzzy, c-format
-#| msgid "invalid user name '%s'\n"
 msgid "invalid user ID '%lu'\n"
 msgstr "ឈ្មោះ​អ្នក​ប្រើ​មិន​ត្រឹមត្រូវ​ '%s'\n"
 
 #, fuzzy, c-format
-#| msgid "user %s: no group %u\n"
 msgid "user '%s': no group %lu\n"
 msgstr "អ្នក​ប្រើ​ %s ៖ គ្មាន​ក្រុម​ %u\n"
 
 #, fuzzy, c-format
-#| msgid "user %s: directory %s does not exist\n"
 msgid "user '%s': directory '%s' does not exist\n"
 msgstr "អ្នក​ប្រើ %s ៖ មិនទាន់មាន​ថត​ %s នៅ​ឡើយ​ទេ​\n"
 
 #, fuzzy, c-format
-#| msgid "user %s: program %s does not exist\n"
 msgid "user '%s': program '%s' does not exist\n"
 msgstr "អ្នកប្រើ​ %s ៖ មិនទាន់មាន​កម្មវិធី​ %s នៅឡើយទេ\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot create directory %s\n"
 msgid "no tcb directory for %s\n"
 msgstr "%s ៖ មិន​​អាច​បង្កើត​ថត​ %s បានឡើយ\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot create directory %s\n"
 msgid "create tcb directory for %s?"
 msgstr "%s ៖ មិន​​អាច​បង្កើត​ថត​ %s បានឡើយ\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot create directory %s\n"
 msgid "failed to create tcb directory for %s\n"
 msgstr "%s ៖ មិន​​អាច​បង្កើត​ថត​ %s បានឡើយ\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot lock file %s\n"
 msgid "%s: cannot lock %s.\n"
 msgstr "%s ៖ មិន​អាច​ចាក់សោ​ឯកសារ​ %s បានទេ\n"
 
@@ -1622,17 +1552,14 @@ msgid "user %s: last password change in the future\n"
 msgstr "អ្នកប្រើ​ %s ៖ ពាក្យ​សម្ងាត់​ចុងក្រោយ​​ប្ដូរនៅក្នុង​អនាគត\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot open file %s\n"
 msgid "%s: cannot sort entries in %s\n"
 msgstr "%s ៖ មិនអាច​បើក​ឯកសារ​ %s បានទេ\n"
 
 #, fuzzy
-#| msgid "Usage: id\n"
 msgid "Usage: pwconv\n"
 msgstr "របៀបប្រើ​ ៖ លេខសម្គាល់\n"
 
 #, fuzzy, c-format
-#| msgid "%s: can't re-write file\n"
 msgid "%s: can't work with tcb enabled\n"
 msgstr "%s ៖ មិន​អាច​សរសេរ​ឯកសារ​ឡើង​វិញបានទេ​\n"
 
@@ -1641,7 +1568,6 @@ msgid "%s: failed to change the mode of %s to 0600\n"
 msgstr ""
 
 #, fuzzy
-#| msgid "Usage: id\n"
 msgid "Usage: pwunconv\n"
 msgstr "របៀបប្រើ​ ៖ លេខសម្គាល់\n"
 
@@ -1661,7 +1587,6 @@ msgid " ...waiting for child to terminate.\n"
 msgstr ""
 
 #, fuzzy, c-format
-#| msgid "%s: cannot lock file %s\n"
 msgid "%s: Cannot fork user shell\n"
 msgstr "%s ៖ មិន​អាច​ចាក់សោ​ឯកសារ​ %s បានទេ\n"
 
@@ -1737,12 +1662,10 @@ msgstr ""
 "(មិន​អើពើ​)\n"
 
 #, fuzzy, c-format
-#| msgid "%s: PAM authentication failed\n"
 msgid "%s: Authentication failure\n"
 msgstr "%s ៖ PAM ការ​ផ្ទៀងផ្ទាត់​ភាព​ត្រឹមត្រូវបាន​បរាជ័យ​\n"
 
 #, fuzzy, c-format
-#| msgid "You are not authorized to su %s\n"
 msgid "%s: You are not authorized to su at that time\n"
 msgstr "អ្នកគ្មាន​ការ​អនុញ្ញាតឲ្យ​ចូល​ទៅ​កាន់​ su ទេ​ %s\n"
 
@@ -1790,12 +1713,10 @@ msgid "%s: cannot open new defaults file\n"
 msgstr "%s ៖ មិន​អាច​បើក​ឯកសារ​លំនាំដើម​ថ្មី​​បានលឡើយ\n"
 
 #, fuzzy, c-format
-#| msgid "%s: line %d: chown failed\n"
 msgid "%s: line too long in %s: %s..."
 msgstr "%s ៖ បន្ទាត់​ %d ៖ chown បានបរាជ័យ​\n"
 
 #, fuzzy, c-format
-#| msgid "%s: rename: %s"
 msgid "%s: rename: %s: %s"
 msgstr "%s ៖​ ប្តូរ​ឈ្មោះ​ ៖ %s"
 
@@ -1808,7 +1729,6 @@ msgid "%s: too many groups specified (max %d).\n"
 msgstr "%s ៖ ក្រុម​ដែលបានបញ្ជាក់​ច្រើនពេក​ (អតិ​ %d) ។\n"
 
 #, fuzzy, c-format
-#| msgid "Usage: %s [input]\n"
 msgid ""
 "Usage: %s [options] LOGIN\n"
 "\n"
@@ -1958,7 +1878,6 @@ msgid "Setting mailbox file permissions"
 msgstr "ការកំណត់​សិទ្ធ​លើ​ឯកសារ​ប្រអប់​សំបុត្រ​"
 
 #, fuzzy, c-format
-#| msgid "%s: user %s exists\n"
 msgid "%s: user '%s' already exists\n"
 msgstr "%s ៖ អ្នក​ប្រើ​ %s មាន​រួច​ហើយ​\n"
 
@@ -1972,12 +1891,10 @@ msgid "%s: can't create user\n"
 msgstr "%s ៖ មិន​អាច​បង្កើត​ %s បានឡើយ\n"
 
 #, fuzzy, c-format
-#| msgid "%s: UID %u is not unique\n"
 msgid "%s: UID %lu is not unique\n"
 msgstr "%s ៖ UID %u មិន​មែន​មាន​តែមួយទេ​\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot create directory %s\n"
 msgid "%s: Failed to create tcb directory for %s\n"
 msgstr "%s ៖ មិន​​អាច​បង្កើត​ថត​ %s បានឡើយ\n"
 
@@ -2013,13 +1930,10 @@ msgstr ""
 "\n"
 
 #, fuzzy, c-format
-#| msgid ""
-#| "%s: Cannot remove group %s which is a primary group for another user.\n"
 msgid "%s: group %s is the primary group of another user and is not removed.\n"
 msgstr "%s ៖ មិនអាច​យកក្រុម %s ដែលជា​ក្រុម​ចម្បង​សម្រាប់​អ្នកប្រើដទៃទៀតចេញបានទេ ។\n"
 
 #, fuzzy, c-format
-#| msgid "%s: warning: can't remove "
 msgid "%s: warning: can't remove %s: %s\n"
 msgstr "%s  ៖ ការព្រមាន​ ៖ មិន​អាច​យកចេញបានឡើយ "
 
@@ -2032,17 +1946,14 @@ msgid "%s: Can't allocate memory, tcb entry for %s not removed.\n"
 msgstr ""
 
 #, fuzzy, c-format
-#| msgid "%s: failed to drop privileges (%s)\n"
 msgid "%s: Cannot drop privileges: %s\n"
 msgstr "%s ៖ បរាជ័យ​ក្នុងការ​ទម្លាក់​សិទ្ធ (%s)\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot rename directory %s to %s\n"
 msgid "%s: Cannot remove the content of %s: %s\n"
 msgstr "%s ៖ មិនអាចប្ដូរឈ្មោះ​ថត​ %s ទៅ​ជា​ %s បានឡើយ\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot rename directory %s to %s\n"
 msgid "%s: Cannot remove tcb files for %s: %s\n"
 msgstr "%s ៖ មិនអាចប្ដូរឈ្មោះ​ថត​ %s ទៅ​ជា​ %s បានឡើយ\n"
 
@@ -2055,7 +1966,6 @@ msgid "%s: user %s is currently logged in\n"
 msgstr "%s ៖ បច្ចុប្បន្ន ​អ្នក​ប្រើ​ %s បាន​ចូលហើយ​\n"
 
 #, fuzzy, c-format
-#| msgid "%s: invalid home directory '%s'\n"
 msgid "%s: %s home directory (%s) not found\n"
 msgstr "%s ៖ ថត​ផ្ទះ​មិន​ត្រឹមត្រូវ​ '%s'\n"
 
@@ -2129,7 +2039,6 @@ msgid ""
 msgstr ""
 
 #, fuzzy, c-format
-#| msgid "%s: user %s exists\n"
 msgid "%s: user '%s' already exists in %s\n"
 msgstr "%s ៖ អ្នក​ប្រើ​ %s មាន​រួច​ហើយ​\n"
 
@@ -2160,7 +2069,6 @@ msgid ""
 msgstr ""
 
 #, fuzzy, c-format
-#| msgid "%s: cannot create directory %s\n"
 msgid "%s: Failed to change ownership of the home directory"
 msgstr "%s ៖ មិន​​អាច​បង្កើត​ថត​ %s បានឡើយ\n"
 
@@ -2198,7 +2106,6 @@ msgid ""
 msgstr ""
 
 #, fuzzy
-#| msgid "Usage: %s [input]\n"
 msgid ""
 "Usage: vipw [options]\n"
 "\n"
@@ -2221,31 +2128,24 @@ msgid "  -u, --user                    which user's tcb shadow file to edit\n"
 msgstr ""
 
 #, fuzzy, c-format
-#| msgid "%s: failed to drop privileges (%s)\n"
 msgid "%s: failed to remove %s\n"
 msgstr "%s ៖ បរាជ័យ​ក្នុងការ​ទម្លាក់​សិទ្ធ (%s)\n"
 
 #, fuzzy, c-format
-#| msgid ""
-#| "\n"
-#| "%s: %s is unchanged\n"
 msgid "%s: %s is unchanged\n"
 msgstr ""
 "\n"
 "%s ៖ %s មិនត្រូវបានប្ដូរឡើយ​\n"
 
 #, fuzzy
-#| msgid "failed to rename mailbox"
 msgid "failed to create scratch directory"
 msgstr "​បរាជ័យ​ក្នុងការប្ដូរឈ្មោះប្រអប់"
 
 #, fuzzy
-#| msgid "%s: failed to drop privileges (%s)\n"
 msgid "failed to drop privileges"
 msgstr "%s ៖ បរាជ័យ​ក្នុងការ​ទម្លាក់​សិទ្ធ (%s)\n"
 
 #, fuzzy
-#| msgid "Couldn't lock file"
 msgid "Couldn't get file context"
 msgstr "មិនអាច​ចាក់សោ​ឯកសារបានឡើយ"
 
@@ -2253,7 +2153,6 @@ msgid "setfscreatecon () failed"
 msgstr ""
 
 #, fuzzy
-#| msgid "%s: failed to drop privileges (%s)\n"
 msgid "failed to gain privileges"
 msgstr "%s ៖ បរាជ័យ​ក្នុងការ​ទម្លាក់​សិទ្ធ (%s)\n"
 
@@ -2268,22 +2167,18 @@ msgid "failed to open scratch file"
 msgstr "%s ៖ មិនអាច​បើក​ឯកសារក្រុម​បានទេ​\n"
 
 #, fuzzy
-#| msgid "%s: fields too long\n"
 msgid "failed to unlink scratch file"
 msgstr "%s ៖ វាល គឺ​វែងវែងពេក​\n"
 
 #, fuzzy
-#| msgid "failed to rename mailbox"
 msgid "failed to stat edited file"
 msgstr "​បរាជ័យ​ក្នុងការប្ដូរឈ្មោះប្រអប់"
 
 #, fuzzy
-#| msgid "failed to change mailbox owner"
 msgid "failed to allocate memory"
 msgstr "បរាជ័យ​ក្នុងការ​ផ្លាស់ប្ដូរ​ម្ចាស់​ប្រអប់សំបុត្រ"
 
 #, fuzzy
-#| msgid "failed to rename mailbox"
 msgid "failed to create backup file"
 msgstr "​បរាជ័យ​ក្នុងការប្ដូរឈ្មោះប្រអប់"
 
@@ -2292,9 +2187,91 @@ msgid "%s: can't restore %s: %s (your changes are in %s)\n"
 msgstr "%s ៖ មិន​អាច​ស្តារ %s ៖ %s (ការប្ដូរ​របស់អ្នក​គឺនៅក្នុង​ %s)\n"
 
 #, fuzzy, c-format
-#| msgid "%s: invalid base directory '%s'\n"
 msgid "%s: failed to find tcb directory for %s\n"
 msgstr "%s  ៖ ថត​មូលដ្ឋាន​មិន​ត្រឹមត្រូវ​ '%s'\n"
+
+#, fuzzy, c-format
+msgid "%s: %s is an invalid shell.\n"
+msgstr "%s គឺជា​សែល​មិន​ត្រឹមត្រូវ​ ។\n"
+
+msgid ""
+"  -l, --lock-time SEC           after failed login lock account for SEC "
+"seconds\n"
+msgstr ""
+
+#, c-format
+msgid ""
+"Usage: %s [option] GROUP\n"
+"\n"
+"Options:\n"
+"  -a, --add USER                add USER to GROUP\n"
+"  -d, --delete USER             remove USER from GROUP\n"
+"  -r, --remove-password         remove the GROUP's password\n"
+"  -R, --restrict                restrict access to GROUP to its members\n"
+"  -M, --members USER,...        set the list of members of GROUP\n"
+"%s\n"
+"\n"
+msgstr ""
+
+msgid ""
+"  -A, --administrators ADMIN,...\n"
+"                                set the list of administrators for GROUP\n"
+"Except for the -A and -M options, the options cannot be combined.\n"
+msgstr ""
+
+msgid ""
+"Usage: groupmems [options] [action]\n"
+"\n"
+"Options:\n"
+"  -g, --group groupname         change groupname instead of the user's "
+"group\n"
+"                                (root only)\n"
+"\n"
+"Actions:\n"
+"  -a, --add username            add username to the members of the group\n"
+"  -d, --delete username         remove username from the members of the "
+"group\n"
+"  -p, --purge                   purge all members from the group\n"
+"  -l, --list                    list the members of the group\n"
+"\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid ""
+"Usage: useradd [options] LOGIN\n"
+"\n"
+"Options:\n"
+msgstr "របៀបប្រើ ៖ %s [input]\n"
+
+#, c-format
+msgid "%s: can't create %s\n"
+msgstr "%s ៖ មិន​អាច​បង្កើត​ %s បានឡើយ\n"
+
+#, c-format
+msgid "%s: can't chown %s\n"
+msgstr "%s ៖ មិន​អាច​ chown %s បានឡើយ\n"
+
+#, fuzzy
+msgid ""
+"Usage: vipw [options]\n"
+"\n"
+"Options:\n"
+"  -g, --group                   edit group database\n"
+"  -h, --help                    display this help message and exit\n"
+"  -p, --passwd                  edit passwd database\n"
+"  -q, --quiet                   quiet mode\n"
+"  -s, --shadow                  edit shadow or gshadow database\n"
+"\n"
+msgstr ""
+"របៀបប្រើ ៖ vipw [ជម្រើស]\n"
+"\n"
+"ជម្រើស ៖\n"
+"  -g, --group\t\t\tកែសម្រួល​មូលដ្ឋាន​ទិន្នន័យ​ក្រុម\n"
+"  -h, --help\t\t\tបង្ហាញ​សារ​ជំនួយ​នេះ និង​ចេញ\n"
+"  -p, --passwd\t\t\tកែសម្រួល​មូលដ្ឋាន​ទិន្នន័យ passwd\n"
+"  -q, --quiet\t\t\tរបៀប​ស្ងាត់\n"
+"  -s, --shadow\t\t\tកែសម្រួល​មូលដ្ឋាន​ទិន្នន័យ​ស្រមោល ឬ gshadow\n"
+"\n"
 
 #, fuzzy
 #~ msgid ""
@@ -2318,20 +2295,6 @@ msgstr "%s  ៖ ថត​មូលដ្ឋាន​មិន​ត្រឹ�
 #~ "  -q, --quiet\t\t\tរបៀប​ស្ងាត់\n"
 #~ "  -s, --shadow\t\t\tកែសម្រួល​មូលដ្ឋាន​ទិន្នន័យ​ស្រមោល ឬ gshadow\n"
 #~ "\n"
-
-#, fuzzy
-#~| msgid "Usage: %s [input]\n"
-#~ msgid ""
-#~ "Usage: useradd [options] LOGIN\n"
-#~ "\n"
-#~ "Options:\n"
-#~ msgstr "របៀបប្រើ ៖ %s [input]\n"
-
-#~ msgid "%s: can't create %s\n"
-#~ msgstr "%s ៖ មិន​អាច​បង្កើត​ %s បានឡើយ\n"
-
-#~ msgid "%s: can't chown %s\n"
-#~ msgstr "%s ៖ មិន​អាច​ chown %s បានឡើយ\n"
 
 #, fuzzy
 #~ msgid ""

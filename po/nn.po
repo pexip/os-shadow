@@ -10,10 +10,10 @@ msgstr ""
 "PO-Revision-Date: 2004-06-03 21:41+0200\n"
 "Last-Translator: Håvard Korsvoll <korsvoll@skulelinux.no>\n"
 "Language-Team: Norwegian (Nynorsk) <i18n-nn@lister.ping.uio.no>\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: \n"
 "X-Generator: KBabel 1.3.1\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
@@ -49,7 +49,6 @@ msgid "%s: out of memory\n"
 msgstr "%s: tomt for minne\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot update file %s\n"
 msgid "%s: Cannot stat %s: %s\n"
 msgstr "%s: klarer ikkje oppdatere fila %s\n"
 
@@ -58,7 +57,6 @@ msgid "%s: %s is neither a directory, nor a symlink.\n"
 msgstr "%s: ugyldig heimemappe «%s»\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot rename directory %s to %s\n"
 msgid "%s: Cannot read symbolic link %s: %s\n"
 msgstr "%s: klarte ikkje endra namn på mappa %s til %s\n"
 
@@ -67,57 +65,46 @@ msgid "%s: Suspiciously long symlink: %s\n"
 msgstr ""
 
 #, fuzzy, c-format
-#| msgid "%s: cannot create directory %s\n"
 msgid "%s: Cannot create directory %s: %s\n"
 msgstr "%s: kan ikkje oppretta mappa %s\n"
 
 #, fuzzy, c-format
-#| msgid "%s: warning: can't remove "
 msgid "%s: Cannot change owner of %s: %s\n"
 msgstr "%s: åtvaring: kan ikkje fjerna "
 
 #, fuzzy, c-format
-#| msgid "%s: warning: can't remove "
 msgid "%s: Cannot change mode of %s: %s\n"
 msgstr "%s: åtvaring: kan ikkje fjerna "
 
 #, fuzzy, c-format
-#| msgid "%s: rename: %s"
 msgid "%s: unlink: %s: %s\n"
 msgstr "%s: gje nytt namn: %s"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot rename directory %s to %s\n"
 msgid "%s: Cannot remove directory %s: %s\n"
 msgstr "%s: klarte ikkje endra namn på mappa %s til %s\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot rename directory %s to %s\n"
 msgid "%s: Cannot rename %s to %s: %s\n"
 msgstr "%s: klarte ikkje endra namn på mappa %s til %s\n"
 
 #, fuzzy, c-format
-#| msgid "%s: warning: can't remove "
 msgid "%s: Cannot remove %s: %s\n"
 msgstr "%s: åtvaring: kan ikkje fjerna "
 
 #, fuzzy, c-format
-#| msgid "%s: cannot create directory %s\n"
 msgid "%s: Cannot create symbolic link %s: %s\n"
 msgstr "%s: kan ikkje oppretta mappa %s\n"
 
 #, fuzzy, c-format
-#| msgid "%s: warning: can't remove "
 msgid "%s: Cannot change owners of %s: %s\n"
 msgstr "%s: åtvaring: kan ikkje fjerna "
 
 #, fuzzy, c-format
-#| msgid "%s: cannot update file %s\n"
 msgid "%s: Cannot lstat %s: %s\n"
 msgstr "%s: klarer ikkje oppdatere fila %s\n"
 
 #, fuzzy, c-format
-#| msgid "%s: can't update shadow file\n"
 msgid "%s: Warning, user %s has no tcb shadow file.\n"
 msgstr "%s: klarer ikkje oppdatere skuggepassordfil\n"
 
@@ -128,12 +115,10 @@ msgid ""
 msgstr ""
 
 #, fuzzy, c-format
-#| msgid "%s: rename: %s"
 msgid "%s: mkdir: %s: %s\n"
 msgstr "%s: gje nytt namn: %s"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot open file %s\n"
 msgid "%s: Cannot open %s: %s\n"
 msgstr "%s: klarer ikkje opna fila %s\n"
 
@@ -176,12 +161,10 @@ msgid "Cannot open audit interface - aborting.\n"
 msgstr ""
 
 #, fuzzy, c-format
-#| msgid "Unable to change tty %s"
 msgid "Unable to change owner or mode of tty stdin: %s"
 msgstr "Klarer ikkje skifta tty %s"
 
 #, fuzzy, c-format
-#| msgid "%s: fields too long\n"
 msgid "%s: failed to unlock %s\n"
 msgstr "%s: felta er for lange\n"
 
@@ -215,8 +198,8 @@ msgstr ""
 
 #, c-format
 msgid ""
-"%s: Invalid configuration: SYS_GID_MIN (%lu), GID_MIN (%lu), SYS_GID_MAX "
-"(%lu)\n"
+"%s: Invalid configuration: SYS_GID_MIN (%lu), GID_MIN (%lu), SYS_GID_MAX (%"
+"lu)\n"
 msgstr ""
 
 #, fuzzy, c-format
@@ -233,8 +216,8 @@ msgstr ""
 
 #, c-format
 msgid ""
-"%s: Invalid configuration: SYS_UID_MIN (%lu), UID_MIN (%lu), SYS_UID_MAX "
-"(%lu)\n"
+"%s: Invalid configuration: SYS_UID_MIN (%lu), UID_MIN (%lu), SYS_UID_MAX (%"
+"lu)\n"
 msgstr ""
 
 #, fuzzy, c-format
@@ -292,7 +275,6 @@ msgid "passwd: %s\n"
 msgstr "passwd: %s\n"
 
 #, fuzzy
-#| msgid "Password changed."
 msgid "passwd: password unchanged\n"
 msgstr "Passord er endra."
 
@@ -440,12 +422,10 @@ msgid "%s: PAM authentication failed\n"
 msgstr "%s: PAM-autentisering feila\n"
 
 #, fuzzy, c-format
-#| msgid "%s: can't lock files, try again later\n"
 msgid "%s: cannot lock %s; try again later.\n"
 msgstr "%s: klarer ikkje låsa filer, prøv igjen seinare\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot open file %s\n"
 msgid "%s: cannot open %s\n"
 msgstr "%s: klarer ikkje opna fila %s\n"
 
@@ -582,7 +562,6 @@ msgid ""
 msgstr ""
 
 #, fuzzy, c-format
-#| msgid "%s: do not include \"l\" with other flags\n"
 msgid "%s: %s flag is only allowed with the %s flag\n"
 msgstr "%s: ta ikkje med «l» med andre flagg\n"
 
@@ -603,12 +582,10 @@ msgid "%s: line %d: missing new password\n"
 msgstr "%s: linje %d: manglar nytt passord\n"
 
 #, fuzzy, c-format
-#| msgid "%s: group %s does not exist\n"
 msgid "%s: line %d: group '%s' does not exist\n"
 msgstr "%s: gruppe %s eksisterer ikkje\n"
 
 #, fuzzy, c-format
-#| msgid "%s: line %d: can't update entry\n"
 msgid "%s: line %d: failed to prepare the new %s entry '%s'\n"
 msgstr "%s: linje %d: kan ikkje oppdatere oppføring\n"
 
@@ -617,7 +594,6 @@ msgid "%s: error detected, changes ignored\n"
 msgstr "%s: feil funne, endringar er ikkje utført\n"
 
 #, fuzzy, c-format
-#| msgid "Usage: %s [input]\n"
 msgid ""
 "Usage: %s [options]\n"
 "\n"
@@ -660,7 +636,6 @@ msgid "Login Shell"
 msgstr "Innloggingskal"
 
 #, fuzzy, c-format
-#| msgid "You may not change the shell for %s.\n"
 msgid "You may not change the shell for '%s'.\n"
 msgstr "Du treng ikkje endra skal for %s.\n"
 
@@ -673,17 +648,14 @@ msgid "%s: Invalid entry: %s\n"
 msgstr "%s: Ugyldig inntasting: %s\n"
 
 #, fuzzy, c-format
-#| msgid "%s is an invalid shell.\n"
 msgid "%s: %s is an invalid shell\n"
 msgstr "%s er eit ugyldig skal.\n"
 
 #, fuzzy, c-format
-#| msgid "%s: user %s does not exist\n"
 msgid "%s: Warning: %s does not exist\n"
 msgstr "%s: brukar %s finst ikkje\n"
 
 #, fuzzy, c-format
-#| msgid "%s: warning: %s not owned by %s\n"
 msgid "%s: Warning: %s is not executable\n"
 msgstr "%s: åtvaring: %s er ikkje eigd av %s\n"
 
@@ -724,7 +696,6 @@ msgid "Login       Failures Maximum Latest                   On\n"
 msgstr ""
 
 #, fuzzy, c-format
-#| msgid " [%lds left]"
 msgid " [%lus left]"
 msgstr " [%lds igjen]"
 
@@ -749,7 +720,6 @@ msgid "lastlog: Unknown user or range: %s\n"
 msgstr "Ukjent brukar: %s\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot open file %s\n"
 msgid "faillog: Cannot open %s: %s\n"
 msgstr "%s: klarer ikkje opna fila %s\n"
 
@@ -758,7 +728,6 @@ msgid "faillog: Cannot get the size of %s: %s\n"
 msgstr ""
 
 #, fuzzy, c-format
-#| msgid "Usage: %s [input]\n"
 msgid ""
 "Usage: %s [option] GROUP\n"
 "\n"
@@ -787,12 +756,10 @@ msgid ""
 msgstr ""
 
 #, fuzzy
-#| msgid "The password for %s cannot be changed.\n"
 msgid "Except for the -A and -M options, the options cannot be combined.\n"
 msgstr "Passordet for %s kan ikkje endrast.\n"
 
 #, fuzzy
-#| msgid "The password for %s cannot be changed.\n"
 msgid "The options cannot be combined.\n"
 msgstr "Passordet for %s kan ikkje endrast.\n"
 
@@ -801,7 +768,6 @@ msgid "%s: shadow group passwords required for -A\n"
 msgstr "%s: skuggepassord for gruppe krevst for -A\n"
 
 #, fuzzy, c-format
-#| msgid "%s: group %s does not exist\n"
 msgid "%s: group '%s' does not exist in %s\n"
 msgstr "%s: gruppe %s eksisterer ikkje\n"
 
@@ -843,7 +809,6 @@ msgid "%s: Not a tty\n"
 msgstr "%s: Ikkje ein tty\n"
 
 #, fuzzy, c-format
-#| msgid "Usage: %s [input]\n"
 msgid ""
 "Usage: %s [options] GROUP\n"
 "\n"
@@ -876,7 +841,6 @@ msgid "  -r, --system                  create a system account\n"
 msgstr ""
 
 #, fuzzy, c-format
-#| msgid "%s: %s is not a valid group name\n"
 msgid "%s: '%s' is not a valid group name\n"
 msgstr "%s: %s er ikkje eit gyldig gruppenamn\n"
 
@@ -889,7 +853,6 @@ msgid "%s: -K requires KEY=VALUE\n"
 msgstr "%s: -O krev NAME=VERDI\n"
 
 #, fuzzy, c-format
-#| msgid "%s: group %s exists\n"
 msgid "%s: group '%s' already exists\n"
 msgstr "%s: gruppa %s finst allereie\n"
 
@@ -901,7 +864,6 @@ msgid "Usage: groupdel group\n"
 msgstr "Bruk: goupdel gruppe\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot rename directory %s to %s\n"
 msgid "%s: cannot remove entry '%s' from %s\n"
 msgstr "%s: klarte ikkje endra namn på mappa %s til %s\n"
 
@@ -910,7 +872,6 @@ msgid "%s: cannot remove the primary group of user '%s'\n"
 msgstr "%s: klarer ikkje endra brukar «%s» på NIS-klient.\n"
 
 #, fuzzy, c-format
-#| msgid "%s: group %s does not exist\n"
 msgid "%s: group '%s' does not exist\n"
 msgstr "%s: gruppe %s eksisterer ikkje\n"
 
@@ -923,7 +884,6 @@ msgid "%s: %s is the NIS master\n"
 msgstr "%s: %s er NIS-hovudet\n"
 
 #, fuzzy, c-format
-#| msgid "%s: user %s is a NIS user\n"
 msgid "%s: user '%s' is already a member of '%s'\n"
 msgstr "%s: brukar %s er ikkje ein NIS brukar\n"
 
@@ -932,7 +892,6 @@ msgid "%s: Out of memory. Cannot update %s.\n"
 msgstr "%s: slapp opp for minne i update_group\n"
 
 #, fuzzy, c-format
-#| msgid "Usage: %s [input]\n"
 msgid ""
 "Usage: %s [options] [action]\n"
 "\n"
@@ -1079,17 +1038,14 @@ msgid "%s: no changes\n"
 msgstr "%s: ingen endringar\n"
 
 #, fuzzy
-#| msgid "Usage: groupdel group\n"
 msgid "Usage: grpconv\n"
 msgstr "Bruk: goupdel gruppe\n"
 
 #, fuzzy
-#| msgid "Usage: groupdel group\n"
 msgid "Usage: grpunconv\n"
 msgstr "Bruk: goupdel gruppe\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot update file %s\n"
 msgid "%s: cannot delete %s\n"
 msgstr "%s: klarer ikkje oppdatere fila %s\n"
 
@@ -1169,9 +1125,6 @@ msgstr ""
 "[Fråkopling omgått -- innlogging av root er tillete.]"
 
 #, fuzzy, c-format
-#| msgid ""
-#| "\n"
-#| "Login timed out after %d seconds.\n"
 msgid ""
 "\n"
 "Login timed out after %u seconds.\n"
@@ -1249,7 +1202,6 @@ msgid ""
 msgstr ""
 
 #, fuzzy
-#| msgid "Usage: id\n"
 msgid "Usage: logoutd\n"
 msgstr "Bruk: id\n"
 
@@ -1286,7 +1238,6 @@ msgid "%s: group '%s' is a shadow group, but does not exist in /etc/group\n"
 msgstr "%s: gruppe %s eksisterer ikkje\n"
 
 #, fuzzy, c-format
-#| msgid "%s: invalid user name '%s'\n"
 msgid "%s: invalid user ID '%s'\n"
 msgstr "%s: ugyldig brukarnamn «%s»\n"
 
@@ -1319,12 +1270,10 @@ msgid "%s: line %d: can't update password\n"
 msgstr "%s: linje %d: klarer ikkje oppdatere passord\n"
 
 #, fuzzy, c-format
-#| msgid "%s: line %d: mkdir failed\n"
 msgid "%s: line %d: mkdir %s failed: %s\n"
 msgstr "%s: linje %d: mkdir feila\n"
 
 #, fuzzy, c-format
-#| msgid "%s: line %d: chown failed\n"
 msgid "%s: line %d: chown %s failed: %s\n"
 msgstr "%s: linje %d: chown feila\n"
 
@@ -1428,17 +1377,14 @@ msgid "The password for %s is unchanged.\n"
 msgstr "Passordet til %s er ikkje endra.\n"
 
 #, fuzzy, c-format
-#| msgid "Password changed."
 msgid "%s: password changed.\n"
 msgstr "Passord er endra."
 
 #, fuzzy, c-format
-#| msgid "Password Expiration Warning"
 msgid "%s: password expiry information changed.\n"
 msgstr "Åtvaring for utgått passord"
 
 #, fuzzy, c-format
-#| msgid "Usage: %s [-q] [-r] [-s] [passwd [shadow]]\n"
 msgid "Usage: %s [-q] [-r] [passwd]\n"
 msgstr "Bruk: %s [-q] [-r] [-s] [passord [skugge]]\n"
 
@@ -1447,7 +1393,6 @@ msgid "Usage: %s [-q] [-r] [-s] [passwd [shadow]]\n"
 msgstr "Bruk: %s [-q] [-r] [-s] [passord [skugge]]\n"
 
 #, fuzzy, c-format
-#| msgid "%s: -s and -r are incompatibile\n"
 msgid "%s: -s and -r are incompatible\n"
 msgstr "%s: -s og -r er inkompatible\n"
 
@@ -1466,42 +1411,34 @@ msgid "invalid user name '%s'\n"
 msgstr "ugyldig brukarnamn «%s»\n"
 
 #, fuzzy, c-format
-#| msgid "invalid user name '%s'\n"
 msgid "invalid user ID '%lu'\n"
 msgstr "ugyldig brukarnamn «%s»\n"
 
 #, fuzzy, c-format
-#| msgid "user %s: no group %u\n"
 msgid "user '%s': no group %lu\n"
 msgstr "brukar %s: inga gruppe %u\n"
 
 #, fuzzy, c-format
-#| msgid "user %s: directory %s does not exist\n"
 msgid "user '%s': directory '%s' does not exist\n"
 msgstr "brukar %s: mappe %s finst ikkje\n"
 
 #, fuzzy, c-format
-#| msgid "user %s: program %s does not exist\n"
 msgid "user '%s': program '%s' does not exist\n"
 msgstr "brukar %s: program %s finst ikkje\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot create directory %s\n"
 msgid "no tcb directory for %s\n"
 msgstr "%s: kan ikkje oppretta mappa %s\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot create directory %s\n"
 msgid "create tcb directory for %s?"
 msgstr "%s: kan ikkje oppretta mappa %s\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot create directory %s\n"
 msgid "failed to create tcb directory for %s\n"
 msgstr "%s: kan ikkje oppretta mappa %s\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot lock file %s\n"
 msgid "%s: cannot lock %s.\n"
 msgstr "%s: klarer ikkje låse fila %s\n"
 
@@ -1529,17 +1466,14 @@ msgid "user %s: last password change in the future\n"
 msgstr "brukar %s: siste passordendring i framtida\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot open file %s\n"
 msgid "%s: cannot sort entries in %s\n"
 msgstr "%s: klarer ikkje opna fila %s\n"
 
 #, fuzzy
-#| msgid "Usage: id\n"
 msgid "Usage: pwconv\n"
 msgstr "Bruk: id\n"
 
 #, fuzzy, c-format
-#| msgid "%s: can't re-write file\n"
 msgid "%s: can't work with tcb enabled\n"
 msgstr "%s: klarer ikkje skriva ny fila\n"
 
@@ -1548,7 +1482,6 @@ msgid "%s: failed to change the mode of %s to 0600\n"
 msgstr ""
 
 #, fuzzy
-#| msgid "Usage: id\n"
 msgid "Usage: pwunconv\n"
 msgstr "Bruk: id\n"
 
@@ -1568,7 +1501,6 @@ msgid " ...waiting for child to terminate.\n"
 msgstr ""
 
 #, fuzzy, c-format
-#| msgid "%s: cannot lock file %s\n"
 msgid "%s: Cannot fork user shell\n"
 msgstr "%s: klarer ikkje låse fila %s\n"
 
@@ -1632,12 +1564,10 @@ msgstr ""
 "(Ignorert)\n"
 
 #, fuzzy, c-format
-#| msgid "%s: PAM authentication failed\n"
 msgid "%s: Authentication failure\n"
 msgstr "%s: PAM-autentisering feila\n"
 
 #, fuzzy, c-format
-#| msgid "You are not authorized to su %s\n"
 msgid "%s: You are not authorized to su at that time\n"
 msgstr "Du er ikkje autorisert til su %s\n"
 
@@ -1682,12 +1612,10 @@ msgid "%s: cannot open new defaults file\n"
 msgstr "%s: klarer ikkje opna fil for standardverdiar\n"
 
 #, fuzzy, c-format
-#| msgid "%s: line %d: chown failed\n"
 msgid "%s: line too long in %s: %s..."
 msgstr "%s: linje %d: chown feila\n"
 
 #, fuzzy, c-format
-#| msgid "%s: rename: %s"
 msgid "%s: rename: %s: %s"
 msgstr "%s: gje nytt namn: %s"
 
@@ -1700,7 +1628,6 @@ msgid "%s: too many groups specified (max %d).\n"
 msgstr "%s: for mange grupper spesifisert (maks %d).\n"
 
 #, fuzzy, c-format
-#| msgid "Usage: %s [input]\n"
 msgid ""
 "Usage: %s [options] LOGIN\n"
 "\n"
@@ -1850,7 +1777,6 @@ msgid "Setting mailbox file permissions"
 msgstr ""
 
 #, fuzzy, c-format
-#| msgid "%s: user %s exists\n"
 msgid "%s: user '%s' already exists\n"
 msgstr "%s: brukar %s finst\n"
 
@@ -1870,7 +1796,6 @@ msgid "%s: UID %lu is not unique\n"
 msgstr "%s: gid %u er ikkje unikt\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot create directory %s\n"
 msgid "%s: Failed to create tcb directory for %s\n"
 msgstr "%s: kan ikkje oppretta mappa %s\n"
 
@@ -1900,7 +1825,6 @@ msgid "%s: group %s is the primary group of another user and is not removed.\n"
 msgstr "%s: klarer ikkje fjerna primærgruppa til brukaren.\n"
 
 #, fuzzy, c-format
-#| msgid "%s: warning: can't remove "
 msgid "%s: warning: can't remove %s: %s\n"
 msgstr "%s: åtvaring: kan ikkje fjerna "
 
@@ -1913,17 +1837,14 @@ msgid "%s: Can't allocate memory, tcb entry for %s not removed.\n"
 msgstr ""
 
 #, fuzzy, c-format
-#| msgid "%s: cannot update file %s\n"
 msgid "%s: Cannot drop privileges: %s\n"
 msgstr "%s: klarer ikkje oppdatere fila %s\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot rename directory %s to %s\n"
 msgid "%s: Cannot remove the content of %s: %s\n"
 msgstr "%s: klarte ikkje endra namn på mappa %s til %s\n"
 
 #, fuzzy, c-format
-#| msgid "%s: cannot rename directory %s to %s\n"
 msgid "%s: Cannot remove tcb files for %s: %s\n"
 msgstr "%s: klarte ikkje endra namn på mappa %s til %s\n"
 
@@ -1988,7 +1909,6 @@ msgid ""
 msgstr ""
 
 #, fuzzy, c-format
-#| msgid "%s: user %s exists\n"
 msgid "%s: user '%s' already exists in %s\n"
 msgstr "%s: brukar %s finst\n"
 
@@ -2019,7 +1939,6 @@ msgid ""
 msgstr ""
 
 #, fuzzy, c-format
-#| msgid "%s: cannot create directory %s\n"
 msgid "%s: Failed to change ownership of the home directory"
 msgstr "%s: kan ikkje oppretta mappa %s\n"
 
@@ -2057,7 +1976,6 @@ msgid ""
 msgstr ""
 
 #, fuzzy
-#| msgid "Usage: %s [input]\n"
 msgid ""
 "Usage: vipw [options]\n"
 "\n"
@@ -2084,16 +2002,12 @@ msgid "%s: failed to remove %s\n"
 msgstr "%s: ugyldig telefonnummer, arbeid: «%s»\n"
 
 #, fuzzy, c-format
-#| msgid ""
-#| "\n"
-#| "%s: %s is unchanged\n"
 msgid "%s: %s is unchanged\n"
 msgstr ""
 "\n"
 "%s: %s er ikkje endra\n"
 
 #, fuzzy
-#| msgid "failed to rename mailbox"
 msgid "failed to create scratch directory"
 msgstr "klarte ikkje endra namn på mailbox"
 
@@ -2102,7 +2016,6 @@ msgid "failed to drop privileges"
 msgstr "%s: ugyldig telefonnummer, arbeid: «%s»\n"
 
 #, fuzzy
-#| msgid "Couldn't lock file"
 msgid "Couldn't get file context"
 msgstr "Klarte ikkje låsa fil"
 
@@ -2123,22 +2036,18 @@ msgid "failed to open scratch file"
 msgstr "%s: klarer ikkje opna gruppefil\n"
 
 #, fuzzy
-#| msgid "%s: fields too long\n"
 msgid "failed to unlink scratch file"
 msgstr "%s: felta er for lange\n"
 
 #, fuzzy
-#| msgid "failed to rename mailbox"
 msgid "failed to stat edited file"
 msgstr "klarte ikkje endra namn på mailbox"
 
 #, fuzzy
-#| msgid "failed to change mailbox owner"
 msgid "failed to allocate memory"
 msgstr "klarte ikke å endra eigar av mailbox"
 
 #, fuzzy
-#| msgid "failed to rename mailbox"
 msgid "failed to create backup file"
 msgstr "klarte ikkje endra namn på mailbox"
 
@@ -2150,19 +2059,78 @@ msgstr "%s: klarer ikkje gjenoppretta %s: %s (endringane dine er i %s)\n"
 msgid "%s: failed to find tcb directory for %s\n"
 msgstr "%s: ugyldig startmappe «%s»\n"
 
-#, fuzzy
-#~| msgid "Usage: %s [input]\n"
-#~ msgid ""
-#~ "Usage: useradd [options] LOGIN\n"
-#~ "\n"
-#~ "Options:\n"
-#~ msgstr "Bruk: %s [inndata]\n"
+#, fuzzy, c-format
+msgid "%s: %s is an invalid shell.\n"
+msgstr "%s er eit ugyldig skal.\n"
 
-#~ msgid "%s: can't create %s\n"
-#~ msgstr "%s: kan ikkje oppretta %s\n"
+msgid ""
+"  -l, --lock-time SEC           after failed login lock account for SEC "
+"seconds\n"
+msgstr ""
 
-#~ msgid "%s: can't chown %s\n"
-#~ msgstr "%s: kan ikkje chown %s\n"
+#, c-format
+msgid ""
+"Usage: %s [option] GROUP\n"
+"\n"
+"Options:\n"
+"  -a, --add USER                add USER to GROUP\n"
+"  -d, --delete USER             remove USER from GROUP\n"
+"  -r, --remove-password         remove the GROUP's password\n"
+"  -R, --restrict                restrict access to GROUP to its members\n"
+"  -M, --members USER,...        set the list of members of GROUP\n"
+"%s\n"
+"\n"
+msgstr ""
+
+msgid ""
+"  -A, --administrators ADMIN,...\n"
+"                                set the list of administrators for GROUP\n"
+"Except for the -A and -M options, the options cannot be combined.\n"
+msgstr ""
+
+msgid ""
+"Usage: groupmems [options] [action]\n"
+"\n"
+"Options:\n"
+"  -g, --group groupname         change groupname instead of the user's "
+"group\n"
+"                                (root only)\n"
+"\n"
+"Actions:\n"
+"  -a, --add username            add username to the members of the group\n"
+"  -d, --delete username         remove username from the members of the "
+"group\n"
+"  -p, --purge                   purge all members from the group\n"
+"  -l, --list                    list the members of the group\n"
+"\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid ""
+"Usage: useradd [options] LOGIN\n"
+"\n"
+"Options:\n"
+msgstr "Bruk: %s [inndata]\n"
+
+#, c-format
+msgid "%s: can't create %s\n"
+msgstr "%s: kan ikkje oppretta %s\n"
+
+#, c-format
+msgid "%s: can't chown %s\n"
+msgstr "%s: kan ikkje chown %s\n"
+
+msgid ""
+"Usage: vipw [options]\n"
+"\n"
+"Options:\n"
+"  -g, --group                   edit group database\n"
+"  -h, --help                    display this help message and exit\n"
+"  -p, --passwd                  edit passwd database\n"
+"  -q, --quiet                   quiet mode\n"
+"  -s, --shadow                  edit shadow or gshadow database\n"
+"\n"
+msgstr ""
 
 #, fuzzy
 #~ msgid "Password set to expire."
