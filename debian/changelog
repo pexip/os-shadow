@@ -1,3 +1,9 @@
+shadow (1:4.1.4.2+svn3283-3ubuntu5.1pexip1) pexip; urgency=low
+
+  * Prepare Pexip packaging
+
+ -- John-Mark Bell <jmb@pexip.com>  Wed, 25 Dec 2013 04:42:30 +0000
+
 shadow (1:4.1.4.2+svn3283-3ubuntu5.1) precise-proposed; urgency=low
 
   * debian/passwd.upstart: Add an upstrat job to clear locks on
