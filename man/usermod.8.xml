@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
    Copyright (c) 1991 - 1994, Julianne Frances Haugh
-   Copyright (c) 2007 - 2009, Nicolas François
+   Copyright (c) 2007 - 2011, Nicolas François
    All rights reserved.
   
    Redistribution and use in source and binary forms, with or without
@@ -32,15 +32,39 @@
   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
 <!ENTITY MAIL_DIR              SYSTEM "login.defs.d/MAIL_DIR.xml">
 <!ENTITY MAX_MEMBERS_PER_GROUP SYSTEM "login.defs.d/MAX_MEMBERS_PER_GROUP.xml">
+<!ENTITY SUB_GID_COUNT         SYSTEM "login.defs.d/SUB_GID_COUNT.xml">
+<!ENTITY SUB_UID_COUNT         SYSTEM "login.defs.d/SUB_UID_COUNT.xml">
 <!ENTITY TCB_SYMLINKS          SYSTEM "login.defs.d/TCB_SYMLINKS.xml">
 <!ENTITY USE_TCB               SYSTEM "login.defs.d/USE_TCB.xml">
+<!-- SHADOW-CONFIG-HERE -->
 ]>
 <refentry id='usermod.8'>
-  <!--  $Id: usermod.8.xml 3207 2010-04-04 21:23:02Z nekral-guest $  -->
+  <!--  $Id$  -->
+  <refentryinfo>
+    <author>
+      <firstname>Julianne Frances</firstname>
+      <surname>Haugh</surname>
+      <contrib>Creation, 1991</contrib>
+    </author>
+    <author>
+      <firstname>Thomas</firstname>
+      <surname>Kłoczko</surname>
+      <email>kloczek@pld.org.pl</email>
+      <contrib>shadow-utils maintainer, 2000 - 2007</contrib>
+    </author>
+    <author>
+      <firstname>Nicolas</firstname>
+      <surname>François</surname>
+      <email>nicolas.francois@centraliens.net</email>
+      <contrib>shadow-utils maintainer, 2007 - now</contrib>
+    </author>
+  </refentryinfo>
   <refmeta>
     <refentrytitle>usermod</refentrytitle>
     <manvolnum>8</manvolnum>
     <refmiscinfo class="sectdesc">System Management Commands</refmiscinfo>
+    <refmiscinfo class="source">shadow-utils</refmiscinfo>
+    <refmiscinfo class="version">&SHADOW_UTILS_VERSION;</refmiscinfo>
   </refmeta>
   <refnamediv id='name'>
     <refname>usermod</refname>
@@ -85,8 +109,7 @@
       </varlistentry>
       <varlistentry>
 	<term>
-	  <option>-c</option>, <option>--comment</option>
-	  <replaceable>COMMENT</replaceable>
+	  <option>-c</option>, <option>--comment</option>&nbsp;<replaceable>COMMENT</replaceable>
 	</term>
 	<listitem>
 	  <para>
@@ -99,8 +122,7 @@
       </varlistentry>
       <varlistentry>
 	<term>
-	  <option>-d</option>, <option>--home</option>
-	  <replaceable>HOME_DIR</replaceable>
+	  <option>-d</option>, <option>--home</option>&nbsp;<replaceable>HOME_DIR</replaceable>
 	</term>
 	<listitem>
 	  <para>
@@ -116,20 +138,27 @@
       </varlistentry>
       <varlistentry>
 	<term>
-	  <option>-e</option>, <option>--expiredate</option>
-	  <replaceable>EXPIRE_DATE</replaceable>
+	  <option>-e</option>, <option>--expiredate</option>&nbsp;<replaceable>EXPIRE_DATE</replaceable>
 	</term>
 	<listitem>
 	  <para>
 	    The date on which the user account will be disabled. The date is
 	    specified in the format <emphasis remap='I'>YYYY-MM-DD</emphasis>.
 	  </para>
+	  <para>
+	    An empty <replaceable>EXPIRE_DATE</replaceable> argument will
+	    disable the expiration of the account.
+	  </para>
+	  <para>
+	    This option requires a <filename>/etc/shadow</filename> file.
+	    A <filename>/etc/shadow</filename> entry will be created if
+	    there were none.
+	  </para>
 	</listitem>
       </varlistentry>
       <varlistentry>
 	<term>
-	  <option>-f</option>, <option>--inactive</option>
-	  <replaceable>INACTIVE</replaceable>
+	  <option>-f</option>, <option>--inactive</option>&nbsp;<replaceable>INACTIVE</replaceable>
 	</term>
 	<listitem>
 	  <para>
@@ -141,12 +170,16 @@
 	    as the password has expired, and a value of -1 disables the
 	    feature.
 	  </para>
+	  <para>
+	    This option requires a <filename>/etc/shadow</filename> file.
+	    A <filename>/etc/shadow</filename> entry will be created if
+	    there were none.
+	  </para>
 	</listitem>
       </varlistentry>
       <varlistentry>
 	<term>
-	  <option>-g</option>, <option>--gid</option>
-	  <replaceable>GROUP</replaceable>
+	  <option>-g</option>, <option>--gid</option>&nbsp;<replaceable>GROUP</replaceable>
 	</term>
 	<listitem>
 	  <para>
@@ -165,8 +198,7 @@
       </varlistentry>
       <varlistentry>
 	<term>
-	  <option>-G</option>, <option>--groups</option>
-	  <replaceable>GROUP1</replaceable>[<emphasis remap='I'>,GROUP2,...</emphasis>[<emphasis remap='I'>,GROUPN</emphasis>]]]
+	  <option>-G</option>, <option>--groups</option>&nbsp;<replaceable>GROUP1</replaceable>[<emphasis remap='I'>,GROUP2,...</emphasis>[<emphasis remap='I'>,GROUPN</emphasis>]]]
 	</term>
 	<listitem>
 	  <para>
@@ -186,16 +218,15 @@
       </varlistentry>
       <varlistentry>
 	<term>
-	  <option>-l</option>, <option>--login</option>
-	  <replaceable>NEW_LOGIN</replaceable>
+	  <option>-l</option>, <option>--login</option>&nbsp;<replaceable>NEW_LOGIN</replaceable>
 	</term>
 	<listitem>
 	  <para>
 	    The name of the user will be changed from
 	    <replaceable>LOGIN</replaceable> to
 	    <replaceable>NEW_LOGIN</replaceable>. Nothing else is changed. In
-	    particular, the user's home directory name should probably be
-	    changed manually to reflect the new login name.
+	    particular, the user's home directory or mail spool should
+	    probably be renamed manually to reflect the new login name.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -251,8 +282,7 @@
       </varlistentry>
       <varlistentry>
 	<term>
-	  <option>-p</option>, <option>--password</option>
-	  <replaceable>PASSWORD</replaceable>
+	  <option>-p</option>, <option>--password</option>&nbsp;<replaceable>PASSWORD</replaceable>
 	</term>
 	<listitem>
 	  <para>
@@ -279,8 +309,19 @@
       </varlistentry>
       <varlistentry>
 	<term>
-	  <option>-s</option>, <option>--shell</option>
-	  <replaceable>SHELL</replaceable>
+	  <option>-R</option>, <option>--root</option>&nbsp;<replaceable>CHROOT_DIR</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    Apply changes in the <replaceable>CHROOT_DIR</replaceable>
+	    directory and use the configuration files from the
+	    <replaceable>CHROOT_DIR</replaceable> directory.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <option>-s</option>, <option>--shell</option>&nbsp;<replaceable>SHELL</replaceable>
 	</term>
 	<listitem>
 	  <para>
@@ -291,8 +332,7 @@
       </varlistentry>
       <varlistentry>
 	<term>
-	  <option>-u</option>, <option>--uid</option>
-	  <replaceable>UID</replaceable>
+	  <option>-u</option>, <option>--uid</option>&nbsp;<replaceable>UID</replaceable>
 	</term>
 	<listitem>
 	  <para>
@@ -301,8 +341,7 @@
 	  <para>
 	    This value must be unique,
 	    unless the <option>-o</option> option is used. The value must be
-	    non-negative. Values between 0 and 999 are typically reserved
-	    for system accounts.
+	    non-negative.
 	  </para>
 	  <para>
 	    The user's mailbox, and any files which the user owns and which are
@@ -312,6 +351,12 @@
 	  <para>
 	    The ownership of files outside of the user's home directory
 	    must be fixed manually.
+	  </para>
+	  <para>
+	    No checks will be performed with regard to the
+	    <option>UID_MIN</option>, <option>UID_MAX</option>,
+	    <option>SYS_UID_MIN</option>, or <option>SYS_UID_MAX</option>
+	    from <filename>/etc/login.defs</filename>.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -335,19 +380,97 @@
 	  </para>
 	</listitem>
       </varlistentry>
-	<varlistentry>
-	  <term>
-	    <option>-Z</option>, <option>--selinux-user</option>
-	    <replaceable>SEUSER</replaceable>
-	  </term>
-	  <listitem>
-	    <para>
-	      The SELinux user for the user's login. The default is to leave
-	      this field the blank, which causes the system to select the
-	      default SELinux user.
-	    </para>
-	  </listitem>
-	</varlistentry>
+      <varlistentry condition="subids">
+	<term>
+	  <option>-v</option>, <option>--add-sub-uids</option>&nbsp;<replaceable>FIRST</replaceable>-<replaceable>LAST</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    Add a range of subordinate uids to the user's account. 
+	  </para>
+	  <para>
+	    This option may be specified multiple times to add multiple ranges to a users account.
+	  </para>
+	  <para>
+	     No checks will be performed with regard to
+	     <option>SUB_UID_MIN</option>, <option>SUB_UID_MAX</option>, or
+	     <option>SUB_UID_COUNT</option> from /etc/login.defs.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry condition="subids">
+	<term>
+	  <option>-V</option>, <option>--del-sub-uids</option>&nbsp;<replaceable>FIRST</replaceable>-<replaceable>LAST</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    Remove a range of subordinate uids from the user's account.
+	  </para>
+	  <para>
+	    This option may be specified multiple times to remove multiple ranges to a users account.
+	    When both <option>--del-sub-uids</option> and <option>--add-sub-uids</option> are specified,
+	    the removal of all subordinate uid ranges happens before any subordinate uid range is added.
+	  </para>
+	  <para>
+	     No checks will be performed with regard to
+	     <option>SUB_UID_MIN</option>, <option>SUB_UID_MAX</option>, or
+	     <option>SUB_UID_COUNT</option> from /etc/login.defs.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry condition="subids">
+	<term>
+	  <option>-w</option>, <option>--add-sub-gids</option>&nbsp;<replaceable>FIRST</replaceable>-<replaceable>LAST</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    Add a range of subordinate gids to the user's account.
+	  </para>
+	  <para>
+	    This option may be specified multiple times to add multiple ranges to a users account.
+	  </para>
+	  <para>
+	     No checks will be performed with regard to
+	     <option>SUB_GID_MIN</option>, <option>SUB_GID_MAX</option>, or
+	     <option>SUB_GID_COUNT</option> from /etc/login.defs.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry condition="subids">
+	<term>
+	  <option>-W</option>, <option>--del-sub-gids</option>&nbsp;<replaceable>FIRST</replaceable>-<replaceable>LAST</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    Remove a range of subordinate gids from the user's account.
+	  </para>
+	  <para>
+	    This option may be specified multiple times to remove multiple ranges to a users account.
+	    When both <option>--del-sub-gids</option> and <option>--add-sub-gids</option> are specified,
+	    the removal of all subordinate gid ranges happens before any subordinate gid range is added.
+	  </para>
+	  <para>
+	     No checks will be performed with regard to
+	     <option>SUB_GID_MIN</option>, <option>SUB_GID_MAX</option>, or
+	     <option>SUB_GID_COUNT</option> from /etc/login.defs.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <option>-Z</option>, <option>--selinux-user</option>&nbsp;<replaceable>SEUSER</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The new SELinux user for the user's login.
+	  </para>
+	  <para>
+	    A blank <replaceable>SEUSER</replaceable> will remove the
+	    SELinux user mapping for user <replaceable>LOGIN</replaceable>
+	    (if any).
+	  </para>
+	</listitem>
+      </varlistentry>
     </variablelist>
   </refsect1>
 
@@ -380,6 +503,8 @@
     <variablelist>
       &MAIL_DIR; <!-- documents also MAIL_FILE -->
       &MAX_MEMBERS_PER_GROUP;
+      &SUB_GID_COUNT; <!-- documents also SUB_GID_MAX and SUB_GID_MIN -->
+      &SUB_UID_COUNT; <!-- documents also SUB_UID_MAX and SUB_UID_MIN -->
       &TCB_SYMLINKS;
       &USE_TCB;
     </variablelist>
@@ -401,6 +526,12 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
+	<term><filename>/etc/login.defs</filename></term>
+	<listitem>
+	  <para>Shadow password suite configuration.</para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
 	<term><filename>/etc/passwd</filename></term>
 	<listitem>
 	  <para>User account information.</para>
@@ -410,6 +541,18 @@
 	<term><filename>/etc/shadow</filename></term>
 	<listitem>
 	  <para>Secure user account information.</para>
+	</listitem>
+      </varlistentry>
+      <varlistentry condition="subids">
+	<term><filename>/etc/subgid</filename></term>
+	<listitem>
+	  <para>Per user subordinate group IDs.</para>
+	</listitem>
+      </varlistentry>
+      <varlistentry condition="subids">
+	<term><filename>/etc/subuid</filename></term>
+	<listitem>
+	  <para>Per user subordinate user IDs.</para>
 	</listitem>
       </varlistentry>
     </variablelist>
@@ -445,6 +588,14 @@
       <citerefentry>
 	<refentrytitle>login.defs</refentrytitle><manvolnum>5</manvolnum>
       </citerefentry>,
+      <phrase condition="subids">
+	<citerefentry>
+	  <refentrytitle>subgid</refentrytitle><manvolnum>5</manvolnum>
+	</citerefentry>,
+	<citerefentry>
+	  <refentrytitle>subuid</refentrytitle><manvolnum>5</manvolnum>
+	</citerefentry>,
+      </phrase>
       <citerefentry>
 	<refentrytitle>useradd</refentrytitle><manvolnum>8</manvolnum>
       </citerefentry>,

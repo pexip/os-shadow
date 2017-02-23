@@ -42,10 +42,12 @@
 #endif
 
 #include <assert.h>
+#include <sys/types.h>
+#include <sys/socket.h>
 #include <netdb.h>
 #include <stdio.h>
 
-#ident "$Id: utmp.c 3064 2009-09-07 19:50:00Z nekral-guest $"
+#ident "$Id$"
 
 
 /*
@@ -129,6 +131,7 @@ static bool is_my_tty (const char *tty)
 	return ret;
 }
 
+#ifndef USE_PAM
 /*
  * Some systems already have updwtmp() and possibly updwtmpx().  Others
  * don't, so we re-implement these functions if necessary.
@@ -160,6 +163,7 @@ static void updwtmpx (const char *filename, const struct utmpx *utx)
 }
 #endif				/* ! HAVE_UPDWTMPX */
 #endif				/* ! USE_UTMPX */
+#endif				/* ! USE_PAM */
 
 
 /*
@@ -313,7 +317,10 @@ int setutmp (struct utmp *ut)
 	}
 	endutent ();
 
+#ifndef USE_PAM
+	/* This is done by pam_lastlog */
 	updwtmp (_WTMP_FILE, ut);
+#endif				/* ! USE_PAM */
 
 	return err;
 }
@@ -446,7 +453,10 @@ int setutmpx (struct utmpx *utx)
 	}
 	endutxent ();
 
+#ifndef USE_PAM
+	/* This is done by pam_lastlog */
 	updwtmpx (_WTMP_FILE "x", utx);
+#endif				/* ! USE_PAM */
 
 	return err;
 }

@@ -14,6 +14,7 @@ libshadow_la_SOURCES = \
 	encrypt.c \
 	exitcodes.h \
 	faillog.h \
+	fields.c \
 	fputsx.c \
 	getdef.c \
 	getdef.h \
@@ -38,6 +39,10 @@ libshadow_la_SOURCES = \
 	pwio.c \
 	pwio.h \
 	pwmem.c \
+	subordinateio.h \
+	subordinateio.c \
+	selinux.c \
+	semanage.c \
 	sgetgrent.c \
 	sgetpwent.c \
 	sgetspent.c \
@@ -47,6 +52,7 @@ libshadow_la_SOURCES = \
 	shadowio.c \
 	shadowio.h \
 	shadowmem.c \
+	spawn.c \
 	utent.c
 
 if WITH_TCB

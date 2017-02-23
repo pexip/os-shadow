@@ -32,7 +32,7 @@
 
 #include <config.h>
 
-#ident "$Id: newgrp.c 3233 2010-08-22 19:36:09Z nekral-guest $"
+#ident "$Id$"
 
 #include <errno.h>
 #include <grp.h>
@@ -183,6 +183,16 @@ static void check_perms (const struct group *grp,
 		 */
 		cpasswd = pw_encrypt (cp, grp->gr_passwd);
 		strzero (cp);
+
+		if (NULL == cpasswd) {
+			fprintf (stderr,
+			         _("%s: failed to crypt password with previous salt: %s\n"),
+			         Prog, strerror (errno));
+			SYSLOG ((LOG_INFO,
+			         "Failed to crypt password with previous salt of group '%s'",
+			         groupname));
+			goto failure;
+		}
 
 		if (grp->gr_passwd[0] == '\0' ||
 		    strcmp (cpasswd, grp->gr_passwd) != 0) {
@@ -806,7 +816,7 @@ int main (int argc, char **argv)
 	 */
 	err = shell (prog, initflag ? (char *) 0 : cp, newenvp);
 	exit ((err == ENOENT) ? E_CMD_NOTFOUND : E_CMD_NOEXEC);
-	/* @notreached@ */
+	/*@notreached@*/
       failure:
 
 	/*

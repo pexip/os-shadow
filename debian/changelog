@@ -1,57 +1,283 @@
-shadow (1:4.1.4.2+svn3283-3ubuntu5.1) precise-proposed; urgency=low
+shadow (1:4.2-3+deb8u3) jessie-security; urgency=high
 
-  * debian/passwd.upstart: Add an upstrat job to clear locks on
-    [shadow-]passwd/group. (LP: #523896).
+  * Fix integer overflow in getulong.c (CVE-2016-6252) (Closes: #832170)
+  * Refresh patches
+  * Add myself to uploaders replacing Nicolas FRANCOIS (Nekral)
 
- -- Dmitrijs Ledkovs <dmitrij.ledkov@ubuntu.com>  Fri, 31 Aug 2012 13:00:33 +0100
+ -- Balint Reczey <balint@balintreczey.hu>  Fri, 24 Feb 2017 00:57:31 +0100
 
-shadow (1:4.1.4.2+svn3283-3ubuntu5) precise; urgency=low
+shadow (1:4.2-3+deb8u2) jessie-security; urgency=high
 
-  * Build-depend on gettext:any for cross-building support.
+  * Non-maintainer upload by the Security Team.
+  * su: properly clear child PID (CVE-2017-2616) (Closes: #855943)
 
- -- Colin Watson <cjwatson@ubuntu.com>  Mon, 09 Apr 2012 00:28:03 +0100
+ -- Salvatore Bonaccorso <carnil@debian.org>  Thu, 23 Feb 2017 17:21:08 +0100
 
-shadow (1:4.1.4.2+svn3283-3ubuntu4) precise; urgency=low
+shadow (1:4.2-3+deb8u1) jessie; urgency=medium
 
-  * Allow LXC devices (lxc/console, lxc/tty[1234]) that we'll start using
-    in LXC with Precise.
+  * Non-maintainer upload.
+  * Fix error handling in busy user detection. (Closes: #778287)
 
- -- Stéphane Graber <stgraber@ubuntu.com>  Fri, 10 Feb 2012 15:34:05 -0500
+ -- Bastian Blank <bastian.blank@credativ.de>  Wed, 18 Nov 2015 08:07:09 +0000
 
-shadow (1:4.1.4.2+svn3283-3ubuntu3) precise; urgency=low
+shadow (1:4.2-3) unstable; urgency=low
 
-  * Fix case of ttyAMA0-3 devices and move them near the ttyAM0-15 ones;
-    Debian #544184; fixes console on Vexpress boards (e.g. in QEMU).
+  * Enforce hardened builds to workaround cdbs sometimes not building
+    with hardening flags as in 1:4.2-2+b1
+    Thanks to Dr. Markus Waldeck for pointing the issue and Simon Ruderich
+    For providing a working patch.
 
- -- Loïc Minier <loic.minier@ubuntu.com>  Wed, 30 Nov 2011 22:47:47 +0100
+ -- Christian Perrier <bubulle@debian.org>  Wed, 19 Nov 2014 21:59:09 +0100
 
-shadow (1:4.1.4.2+svn3283-3ubuntu2) oneiric; urgency=low
+shadow (1:4.2-2) unstable; urgency=low
 
-  * debian/login.defs:
-    - Update documentation of USERGROUPS_ENAB: with pam_umask, the UPG
-      handling does not only apply to "former (pre-PAM) uses".
-    - Update documentation of UMASK: Explain that USERGROUPS_ENAB will modify
-      this default for UPGs. (Closes: #583971)
+  * The "Soumaintrain" release
+  * The "Rigotte de Condrieu" release was 4.2-1
+  * Upload to unstable
+  * Last upload integrates the use of dh_autoreconf which has the same
+    effect then Eric Dorland's patch in 1:4.1.5.1-1.1 NMU to drop the
+    use of automake1.9. Closes: #724434
 
- -- Martin Pitt <martin.pitt@ubuntu.com>  Fri, 24 Jun 2011 11:07:34 +0200
+  [ Samuel Thibault ]
+  * Enable the login package on hurd-any, but without /bin/login, still provided
+    by the hurd package. Closes: #737805.
+    This fix was accidentally forgotten in 1:4.2-1
 
-shadow (1:4.1.4.2+svn3283-3ubuntu1) natty; urgency=low
+  [ Josh Triplett ]
+  * use the new pam_exec functionality from pam 1.1.8-1 to implement the
+    dynamic motd, rather than using /run/motd.dynamic from initscripts.
+    This will allow initscripts to drop /etc/init.d/motd.
+    Closes: #741129
 
-  * The "string cheese" release.
-  * Merge from Debian unstable.  Remaining changes:
-    - Ubuntu specific:
-      + debian/login.defs: use SHA512 by default for password crypt routine.
-    - debian/{source_shadow.py,rules}: Add apport hook
-    - debian/rules: fix FTBFS from newer libtools
-    - debian/patches/495_stdout-encrypted-password: chpasswd can report
-      password hashes on stdout (Debian bug 505640).
-  * Dropped changes, merged in Debian:
-    - debian/patches/300_CVE-2011-0721: reject newlines in GECOS updates.
-    - CVE-2011-0721
-  * Mark passwd Multi-Arch: foreign, so packages that aren't of the same
-    arch can depend on it.
+  [ Laurent Bigonville ]
+  * Enable libaudit support. Closes: #745774
 
- -- Steve Langasek <steve.langasek@ubuntu.com>  Sun, 20 Feb 2011 15:59:15 -0800
+  [ Trần Ngọc Quân ]
+  * Vietnamese translation update.
+
+  [ Christian Perrier ]
+  * Add a lintian override for newuidmap and newgidmap setuid binaries
+  * Add upstream signing key as debian/upstream-signing-key.asc
+  * Check upstream signing key in debian/watch
+
+ -- Christian Perrier <bubulle@debian.org>  Sun, 04 May 2014 19:39:07 +0200
+
+shadow (1:4.2-1) experimental; urgency=low
+
+  [ Nicolas FRANCOIS (Nekral) ]
+  * New upstream release. Fixes:
+    - Invalid free() in su fixed by using strdup(). Thanks to Serge
+      Hallyn for the patch. Closes: #691459
+    - Kill the child process group, rather than just the
+      immediate child; this is needed now that su no
+      longer starts a controlling terminal when not running an
+      interactive shell. Thanks to Colin Watson for the patch.
+      Closes: #713979
+    - German manpages translation update. Closes: #679152
+    - Improve login.defs (typographic errors and better format).
+      Closes: #685415
+    - Russian translation update. Closes: #718356
+    - Do not assume random() is limited by RAND_MAX.  Closes: #677275
+    - Support C libraries with unknown fields in struct passwd.
+      Closes: #675824
+    - su: child cleanup is performed before terminating PAM sessions. This
+      avoids anoying "...terminated" messages when PAM module send signal to
+      su during session close. Closes: #670132
+    - vipw/vigr is checking arguments provided after options. Closes: #677812
+    - Updated Japanese translation. Closes: #720004
+    - vipw: Fix error reporting when editor fails. Closes: #688260
+  * Moved to git: replace Vcs-Git in place of Vcs-Svn and adapt
+    Vcs-Browser.
+  * Add pam_loginuid to login PAM settings. Closes: #677441
+  * passwd.install: add new subuid.5 and subgid.5 manpages
+  * debian/rules, debian/control, debian/uidmap.install: create new uidmap
+    package containing the new setuid-root binaries newuidmap and newgidmap 
+    Set uidmap as priority optional.
+  * debian/login.su.pam: Enable pam_limits by default. Closes: #705301
+  * debian/rules: Set default editor to sensible-editor for vipw.
+    Closes: #688252
+
+  [ Micah Anderson ]
+  * added debian/patches/userns to enable use of subuids, plus some bugfix 
+    patches on top of them, patches from Eric Biederman, pulled from
+    Ubuntu. Closes: #739981
+  * Allow LXC devices (lxc/console, lxc/tty[1234]) in securetty.linux
+  * Update documentation of UMASK: Explain that USERGROUPS_ENAB will modify
+    this default for UPGs. (Closes: #583971)
+  * login.postinst: install a default /etc/subuid and /etc/subgid
+  * fix installation of setuid/setgid/newuidmap/newgid/map man pages
+
+  [ Laurent Bigonville ]
+  * Switch to dpkg-source 3.0 (quilt) format
+  * Add build-dependency against bison
+  * Call dh-autoreconf since we need to regenerate all the autofoo files
+  
+  [ Philippe Grégoire ]
+  * Fix 1000_configure_userns to avoid dropping a needed #endif
+    Closes: #744877
+
+  [ Christian Perrier ]
+  * Bump Standards to 3.9.5 (checked)
+  * Use 'set -e' in postinst scripts and not in thei shebang line
+  * Explicitly point to GPL-2 document in debian/copyright
+
+ -- Christian Perrier <bubulle@debian.org>  Tue, 22 Apr 2014 09:01:42 +0200
+
+shadow (1:4.1.5.1-1.1) unstable; urgency=medium
+
+  * Non-maintainer upload.
+
+  [ Eric Dorland ]
+  * Switch to automake1.11. (Closes: #724434)
+
+  [ Samuel Thibault ]
+  * Enable the login package on hurd-any, but without /bin/login, still provided
+    by the hurd package. Closes: #737805.
+
+ -- Samuel Thibault <sthibault@debian.org>  Sun, 16 Mar 2014 20:58:24 +0100
+
+shadow (1:4.1.5.1-1) unstable; urgency=low
+
+  * The "Gruyère" release.
+
+  [ Nicolas FRANCOIS (Nekral) ]
+  * New upstream release:
+    - login: log into utmp(x) but not into wtmp (this is done by pam_lastlog).
+      Log to utmp(x) was broken by the fix for #605329. Closes: 659957
+    - userdel: Fix segfault when userdel removes the user's group.
+      Closes: #660406
+    - manpages: .so links point to paths relative to the top-level manual
+      hierarchy. Closes: #661025
+    - useradd(8): Return code 13 no more documented. Closes: #661802
+  * debian/patches/series, debian/patches/428_grpck_add_prune_option: Removed.
+    The -p option was not documented and was meant to fix consequences of a
+    bug now fixed more than 10 years ago.
+  * debian/shadowconfig.sh: Display issues, but dot not prompt interactively
+    to fix passwd/group/shadow/gshadow issues. Closes: #638263
+  * debian/control: Bump Standards-Version to 3.9.3 (no changes needed).
+  * debian/rules: Simplify setting of hardening flags. cdbs 0.4.103 needed to
+    get hardened version of shadow-utils. Restore previous requirement on
+    dpkg-dev to 1.13.5.
+
+  [ Christian Perrier ]
+  * Complete Polish translation of logoutd(8). Closes: #668880
+  * German translation of manpages completed. Closes: #673234
+
+  [ Roger Leigh ]
+  * Separation of static and dynamic motd components in login PAM module
+    Closes: #669698
+
+ -- Nicolas FRANCOIS (Nekral) <nicolas.francois@centraliens.net>  Fri, 25 May 2012 15:42:01 +0200
+
+shadow (1:4.1.5-1) unstable; urgency=low
+
+  * The "Charolais" release.
+
+  [ Nicolas FRANCOIS (Nekral) ]
+  * New upstream release:
+    - su: Fix possible tty hijacking by dropping the controlling terminal when
+      executing a command (CVE-2005-4890). Closes: #628843
+    - userdel: Check the existence of the user's mail spool before trying to
+      remove it. If it does not exist, a warning is issued, but no failure.
+      Closes: #617295
+    - userdel: Do not remove a group with the same name as the user
+      (usergroup) if this group isn't the user's primary group.
+      Closes: #584868
+    - su: Close the PAM session as root (fix issues with pam_mount and
+      pam_systemd). Closes: #580434
+    - Fix several typos in manpages. Thanks to Simon Brandmair.
+      Closes: #628776
+    - userdel error message has been clarified when the user is still
+      executing processes (it used to complain that the user is logged in).
+      Closes: #603315
+    - passwd(1) references chpasswd(8). Closes: #609117
+    - Spaces have been added between options and arguments in the Russian
+      manpages. Closes: #606159
+    - Fix handling of numerical dates in usermod -e. Closes: #621810
+    - usermod: When the shadow file exists but there are no shadow entries, an
+      entry is created if the password is changed and passwd requires a shadow
+      entry, or if aging features are used (-e or -f). Closes: 632461
+    - Added diagnosis for lock failures. Closes: #616167
+    - grpck/pwck: NIS entries were dropped by -s (sort). Closes: #622765
+    - login does not log into utmp(x) and wtmp. This is already done by
+      pam_lastlog. Closes: #605329
+    - groupmod: document that /etc/passwd can be modified by groupmod -g.
+      Closes: #647308
+    - Updated patches
+      + debian/patches/008_login_log_failure_in_FTMP
+      + debian/patches/401_cppw_src.dpatch
+      + debian/patches/402_cppw_selinux
+      + debian/patches/428_grpck_add_prune_option
+      + debian/patches/429_login_FAILLOG_ENAB
+      + debian/patches/463_login_delay_obeys_to_PAM
+      + debian/patches/501_commonio_group_shadow
+      + debian/patches/505_useradd_recommend_adduser
+      + debian/patches/506_relaxed_usernames
+      + debian/patches/508_nologin_in_usr_sbin
+      + debian/patches/523_su_arguments_are_concatenated
+      + debian/patches/523_su_arguments_are_no_more_concatenated_by_default
+      + debian/patches/542_useradd-O_option
+      + debian/patches/900_testsuite_groupmems
+    - debian/patches/008_su_get_PAM_username: Removed, feature supported
+      upstream.
+    - debian/patches/300_CVE-2011-0721: Removed, applied upstream.
+    - Upstream translation updates from Debian BTS:
+      + Brazilian Portuguese. Closes: #622834
+      + Catalan. Closes: #627526, #657763
+      + Danish. Closes: #621330, #657514
+      + German. Closes: #622908, #656503
+      + French. Closes: #623608, #657621
+      + Japanese. Closes: #620978
+      + Kazakh. Closes: #620930
+      + Portuguese. Closes: #623722, #656686
+      + Russian. Closes: #622106, #655194
+      + Spanish (Closes: #630618)
+      + Swedish. Closes: #621126
+      + Simplified Chinese. Closes: #655858
+    - Upstream manpages translation updates from Debian BTS:
+      + French. Closes: #630250, #657622
+      + German. Closes: #628777
+      + Simplified Chinese. Closes: #602264, #655858
+      + Danish added. Closes: #657516
+      + Russian. Closes: #657710
+  * debian/control: mark passwd as 'Multi-Arch: foreign'. Closes: #614321
+  * debian/securetty.linux: Add IBM pSeries console ports. Closes: #597661
+  * debian/securetty.linux: Add serial Console for MIPS Swarm.
+    (http://lists.debian.org/debian-release/2011/02/msg00320.html)
+  * debian/securetty.linux: Add s390/s390x ports ttysclp0. Closes: #647469
+  * debian/securetty.linux: Fixed typo: ttyama -> ttyAMA. Closes: #544184
+  * debian/rules, debian/man.insert, debian/man.insert.sed: Bug #507673 has
+    been closed. It is no more needed to patch the generated manpages. This
+    also fix failures to build twice is a row. Closes: #636047
+  * debian/patches/401_cppw_src.dpatch: Replace progname by Prog. Rename
+    create_backup_file to create_copy. The lock functions do not set errno.
+    Do not report the error string on cppwexit.
+  * debian/patches/401_cppw_src.dpatch, debian/patches/402_cppw_selinux:
+    Synchronize with coding style.
+  * debian/patches/401_cppw_src.dpatch: Detect as well too many and too
+    few arguments.
+  * debian/patches/506_relaxed_usernames: Really check if the user/group
+    name starts with a dash. Also forbid names starting with '+' or '~'.
+    Document the naming policy in useradd.8 / groupadd.8.
+  * debian/patches/506_relaxed_usernames: Also forbid names containing a
+    comma.
+  * debian/patches/901_testsuite_gcov: Do not revert the locale when testing
+    with gcov to avoid coverage false negatives. This does not impact the
+    debian binary package, only the test package.
+  * debian/control: Add Build-Depends on libsemanage1-dev [linux-any]
+  * debian/rules: Do not hard-code CFLAGS and LDFLAGS. Build with all
+    hardening flags set. Closes: #657010
+  * debian/control: depends on dpkg-dev (>= 1.16.1~) for including
+    /usr/share/dpkg/buildflags.mk
+  * debian/control: Standards-Version: bumped to 3.9.2. No changes.
+  * debian/login.defs: Set the default encryption method to SHA512.
+    Closes: #657717
+
+  [ Christian Perrier ]
+  * Use "linux-any" instead of a negated list of architectures in
+    Build-Depends. Closes: #634465
+
+ -- Nicolas FRANCOIS (Nekral) <nicolas.francois@centraliens.net>  Sun, 12 Feb 2012 22:27:03 +0100
 
 shadow (1:4.1.4.2+svn3283-3) unstable; urgency=high
 
@@ -62,34 +288,6 @@ shadow (1:4.1.4.2+svn3283-3) unstable; urgency=high
     leading to possible user or group creation in NIS environments.
 
  -- Nicolas FRANCOIS (Nekral) <nicolas.francois@centraliens.net>  Mon, 13 Feb 2011 23:20:05 +0100
-
-shadow (1:4.1.4.2+svn3283-2ubuntu3) natty; urgency=low
-
-  * SECURITY UPDATE: could inject NIS groups memberships into /etc/passwd.
-    - debian/patches/300_CVE-2011-0721: reject newlines in GECOS updates.
-    - CVE-2011-0721
-
- -- Kees Cook <kees@ubuntu.com>  Tue, 15 Feb 2011 13:57:01 -0800
-
-shadow (1:4.1.4.2+svn3283-2ubuntu2) natty; urgency=low
-
-  * debian/patches/495_stdout-encrypted-password: adjust patch for changes 
-    in src/chpasswd.c to fix FTBFS
-
- -- Oliver Grawert <ogra@ubuntu.com>  Tue, 04 Jan 2011 15:48:49 +0100
-
-shadow (1:4.1.4.2+svn3283-2ubuntu1) natty; urgency=low
-
-  * Merge from debian unstable.  Remaining changes:
-    - Ubuntu specific:
-      + debian/login.defs: use SHA512 by default for password crypt routine.
-    - debian/{source_shadow.py,rules}: Add apport hook
-    - debian/rules: fix FTBFS from newer libtools
-    - debian/patches/495_stdout-encrypted-password: chpasswd can report
-      password hashes on stdout (Debian bug 505640).
-    - Rework 495_stdout-encrypted-password to cope with chpasswd using PAM.
-
- -- Oliver Grawert <ogra@ubuntu.com>  Wed, 24 Nov 2010 13:42:42 +0100
 
 shadow (1:4.1.4.2+svn3283-2) unstable; urgency=low
 
@@ -162,32 +360,6 @@ shadow (1:4.1.4.2+svn3283-1) unstable; urgency=low
 
  -- Nicolas FRANCOIS (Nekral) <nicolas.francois@centraliens.net>  Sun, 29 Aug 2010 21:14:12 +0200
 
-shadow (1:4.1.4.2-1ubuntu3) maverick; urgency=low
-
-  * add ttyO0-3 to debian/securetty.linux, if OMAP kernels are built with
-    TI's DMA-offloaded driver instead of the default 8250 one the serial tty's
-    are called like that (LP: #512845).
-
- -- Oliver Grawert <ogra@ubuntu.com>  Tue, 31 Aug 2010 14:45:17 +0200
-
-shadow (1:4.1.4.2-1ubuntu2) lucid; urgency=low
-
-  * debian/{source_shadow.py,rules}: Add apport hook
-  * debian/rules: fix FTBFS from newer libtools
-
- -- Marc Deslauriers <marc.deslauriers@ubuntu.com>  Tue, 26 Jan 2010 08:54:59 -0500
-
-shadow (1:4.1.4.2-1ubuntu1) lucid; urgency=low
-
-  * Merged with debian unstable. Remaning changes (LP: #477299):
-    - Ubuntu specific:
-      + debian/login.defs: use SHA512 by default for password crypt routine.
-    - debian/patches/495_stdout-encrypted-password: chpasswd can report
-      password hashes on stdout (Debian bug 505640).
-    - Rework 495_stdout-encrypted-password to cope with chpasswd using PAM.
-
- -- Nicolas Valcárcel Scerpella (Canonical) <nvalcarcel@canonical.com>  Sat, 07 Nov 2009 04:55:18 -0500
-
 shadow (1:4.1.4.2-1) unstable; urgency=low
 
   * The "Tome des Bauges" release.
@@ -214,25 +386,6 @@ shadow (1:4.1.4.2-1) unstable; urgency=low
   * debian/control: Standards-Version: bumped to 3.8.2. No changes.
 
  -- Nicolas FRANCOIS (Nekral) <nicolas.francois@centraliens.net>  Fri, 24 Jul 2009 05:03:23 +0200
-
-shadow (1:4.1.4.1-1ubuntu2) karmic; urgency=low
-
-  * debian/securetty.linux: also list ttyS2 and ttyS3; beagleboard uses ttyS2
-    as serial port.
-
- -- Loïc Minier <loic.minier@ubuntu.com>  Fri, 31 Jul 2009 15:34:56 +0200
-
-shadow (1:4.1.4.1-1ubuntu1) karmic; urgency=low
-
-  * Resynchronise with Debian. Remaining changes:
-    - Ubuntu specific:
-      + debian/login.defs: use SHA512 by default for password crypt routine.
-    - debian/patches/495_stdout-encrypted-password: chpasswd can report
-      password hashes on stdout (Debian bug 505640).
-  * Rework 495_stdout-encrypted-password to cope with chpasswd using PAM.
-    It's looking a bit ugly now ...
-
- -- Colin Watson <cjwatson@ubuntu.com>  Wed, 03 Jun 2009 11:16:51 +0100
 
 shadow (1:4.1.4.1-1) unstable; urgency=low
 
@@ -320,21 +473,6 @@ shadow (1:4.1.4-1) unstable; urgency=low
     Pre-Depends.
 
  -- Nicolas FRANCOIS (Nekral) <nicolas.francois@centraliens.net>  Mon, 11 May 2009 00:25:11 +0200
-
-shadow (1:4.1.3.1-1ubuntu1) karmic; urgency=low
-
-  * Merge from debian unstable, remaining changes:
-    - Ubuntu specific:
-      + debian/login.defs: use SHA512 by default for password crypt routine.
-    - debian/patches/stdout-encrypted-password.patch: chpasswd can report
-      password hashes on stdout (debian bug 505640).
-    - debian/login.pam: Enable SELinux support (debian bug 527106).
-    - debian/securetty.linux: support Freescale MX-series (debian bug 527095).
-  * Add debian/patches/300_lastlog_failure: fixed upstream (debian bug 524873).
-  * Drop debian/patches/593_omit_lastchange_field_if_clock_is_misset: fixed
-    upstream.
-
- -- Kees Cook <kees@ubuntu.com>  Tue, 05 May 2009 09:45:21 -0700
 
 shadow (1:4.1.3.1-1) unstable; urgency=low
 
@@ -431,108 +569,6 @@ shadow (1:4.1.3-1) unstable; urgency=low
 
  -- Nicolas FRANCOIS (Nekral) <nicolas.francois@centraliens.net>  Tue, 14 Apr 2009 23:33:22 +0200
 
-shadow (1:4.1.1-6ubuntu6) jaunty; urgency=low
-
-  * debian/login.preinst: fix typo in grep (LP: #354887).
-
- -- Kees Cook <kees@ubuntu.com>  Fri, 03 Apr 2009 22:12:07 -0700
-
-shadow (1:4.1.1-6ubuntu5) jaunty; urgency=low
-
-  * debian/login.preinst: add special-case handling to restore the
-    original white-space in /etc/login.defs that is changed by
-    system-tools-backends (LP: #316756).
-
- -- Kees Cook <kees@ubuntu.com>  Fri, 03 Apr 2009 14:33:43 -0700
-
-shadow (1:4.1.1-6ubuntu4) jaunty; urgency=low
-
-  * debian/patches/593_omit_lastchange_field_if_clock_is_misset (LP: #349504)
-    - If the system clock is set to Jan 01, 1970, and a new user is created
-      the last changed field gets set to 0, which tells login that the 
-      password is expired and must be changed. During installation, 
-      this can cause autologin to fail. Having the clock set to 01/01/1970
-      on a fresh install is common on the ARM architecture, so this is a high
-      priority bug since its likely to affect most ARM users on first install
-
- -- Michael Casadevall <mcasadevall@ubuntu.com>  Thu, 02 Apr 2009 14:05:31 -0400
-
-shadow (1:4.1.1-6ubuntu3) jaunty; urgency=low
-
-  [ Bryan McLellan ]
-  * Don't do the vm-builder root password check on fresh installations
-    (LP: #340841).
-
- -- Colin Watson <cjwatson@ubuntu.com>  Tue, 17 Mar 2009 13:32:55 +0000
-
-shadow (1:4.1.1-6ubuntu2) jaunty; urgency=low
-
-  * debian/securetty.linux (LP: #316841)
-    - Updated securetty support for Freescale MX-series boards
-
- -- Michael Casadevall <sonicmctails@gmail.com>  Tue, 13 Jan 2009 12:56:38 -0500
-
-shadow (1:4.1.1-6ubuntu1) jaunty; urgency=low
-
-  * Merge from debian unstable, remaining changes:
-    - Ubuntu specific:
-      + debian/login.pam: Enable SELinux support in login.pam.
-      + debian/rules: regenerate autoconf to avoid libtool-caused FTBFS.
-      + debian/login.defs: use SHA512 by default for password crypt routine.
-      + debian/passwd.postinst: disable the root password for virtual
-        machines created with vm-builder on Ubuntu 8.10.
-    - debian/patches/stdout-encrypted-password.patch: allow chpasswd to
-      report encrypted passwords to stdout for tools needing encrypted
-      passwords (debian bug 505640).
-
- -- Kees Cook <kees@ubuntu.com>  Mon, 08 Dec 2008 00:44:46 -0800
-
-shadow (1:4.1.1-6) unstable; urgency=medium
-
-  * The "Rollot" release.
-  * debian/patches/303_login_symlink_attack: Fix a race condition that could
-    lead to gaining ownership or changing mode of arbitrary files.
-    Closes: #505271 
-  * debian/patches/304_su.1_synopsis: Fix the su synopsis. username is
-    referenced in the manpage, not LOGIN. Closes: #501830
-  * debian/patches/305_login.1_japanese: Fix the path of the utmp and wtmp
-    files. Closes: #501353
-
- -- Nicolas FRANCOIS (Nekral) <nicolas.francois@centraliens.net>  Fri, 14 Nov 2008 21:52:42 +0100
-
-shadow (1:4.1.1-5ubuntu3) jaunty; urgency=low
-
-  * disable the root password for virtual machines created with vm-builder
-    on Ubuntu 8.10. (LP: #296841)
-
- -- Jamie Strandboge <jamie@ubuntu.com>  Thu, 13 Nov 2008 20:32:42 -0600
-
-shadow (1:4.1.1-5ubuntu2) jaunty; urgency=low
-
-  * debian/login.defs: use SHA512 by default for password crypt routine
-    (LP: #51551, currently Ubuntu specific).
-  * debian/patches/stdout-encrypted-password.patch: allow chpasswd to report
-    encrypted passwords to stdout for tools needing encrypted passwords
-    (debian bug 505640).
-  * debian/rules: regenerate autoconf to avoid libtool-caused FTBFS.
-
- -- Kees Cook <kees@ubuntu.com>  Thu, 13 Nov 2008 16:43:48 -0800
-
-shadow (1:4.1.1-5ubuntu1) jaunty; urgency=low
-
-  * Merge from debian unstable, remaining changes:
-    - debian/login.pam: Enable SELinux support in login.pam.
-
- -- Scott James Remnant <scott@ubuntu.com>  Wed, 05 Nov 2008 07:26:43 +0000
-
-shadow (1:4.1.1-5) unstable; urgency=low
-
-  * The "Bergues" release.
-  * debian/login.pam: restore the Etch behavior of pam_securetty.so in case of
-    unknown user. Closes: #443322, #495831
-
- -- Nicolas FRANCOIS (Nekral) <nicolas.francois@centraliens.net>  Sun, 14 Sep 2008 19:13:34 +0200
-
 shadow (1:4.1.1-4) unstable; urgency=low
 
   * The "Rocamadour" release.
@@ -609,13 +645,6 @@ shadow (1:4.1.1-2) unstable; urgency=low
     remove an user, not to add one. Closes: #475795
 
  -- Nicolas FRANCOIS (Nekral) <nicolas.francois@centraliens.net>  Fri, 13 Jun 2008 01:27:16 +0200
-
-shadow (1:4.1.1-1ubuntu1) intrepid; urgency=low
-
-  * Merge from debian unstable, remaining changes:
-    - debian/login.pam: Enable SELinux support in login.pam.
-
- -- Kees Cook <kees@ubuntu.com>  Mon, 09 Jun 2008 10:08:38 -0700
 
 shadow (1:4.1.1-1) unstable; urgency=low
 
@@ -741,20 +770,6 @@ shadow (1:4.1.0-1) unstable; urgency=low
     - Updated to Standards: 3.7.3.0 (checked, no change needed)
 
  -- Christian Perrier <bubulle@debian.org>  Sat, 12 Jan 2008 20:40:02 +0100
-
-shadow (1:4.0.18.2-1ubuntu2) hardy; urgency=low
-
-  * Add 498_make_useradd_faster_with_ldap: make useradd faster when
-    nsswitch uses LDAP or some other remote names database (LP: #120015),
-    thanks to Vince Busam.
-
- -- Matt T. Proud <mtp@google.com>  Fri, 08 Feb 2008 18:30:51 -0800
-
-shadow (1:4.0.18.2-1ubuntu1) hardy; urgency=low
-
-  * debian/login.pam: Enable SELinux support in login.pam (LP: #191326).
-
- -- Caleb Case <ccase@tresys.com>  Fri, 08 Feb 2008 02:20:06 -0500
 
 shadow (1:4.0.18.2-1) unstable; urgency=low
 
@@ -1698,7 +1713,7 @@ shadow (1:4.0.12-5) unstable; urgency=low
   * Really add /etc/pam.d/su. Closes: #330291
   
  -- Christian Perrier <bubulle@debian.org>  Wed, 28 Sep 2005 19:59:31 +0200
-
+   
 shadow (1:4.0.12-4) unstable; urgency=low
 
   * The "Epoisses" release
@@ -3030,7 +3045,7 @@ shadow (20000902-6.1) unstable; urgency=low
   * Upgrade to latest config.sub and config.guess.  Closes: #88547
  
  -- Gerhard Tonn <gt@debian.org>  Fri,  1 Jun 2001 20:38:43 +0200
-
+                                                              
 shadow (20000902-6) unstable; urgency=medium
 
   * actually set root's password when appropriate
