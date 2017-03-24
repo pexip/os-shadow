@@ -10,7 +10,7 @@ Build-Depends: autoconf, automake1.9, libtool, gettext:any, libpam0g-dev, debhel
 Vcs-Svn: svn://svn.debian.org/svn/pkg-shadow/debian/trunk
 Vcs-Browser: http://svn.debian.org/viewsvn/pkg-shadow/debian/trunk
 Homepage: http://pkg-shadow.alioth.debian.org/
-XS-Pexip-Upstream: http://archive.ubuntu.com/ubuntu/ precise
+XS-Pexip-Upstream: http://ftp.debian.org/debian/ jessie
 
 Package: passwd
 Architecture: any
