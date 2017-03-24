@@ -35,12 +35,14 @@
  *
  * prototypes of libmisc functions, and private lib functions.
  *
- * $Id: prototypes.h 3272 2010-08-28 19:58:00Z nekral-guest $
+ * $Id$
  *
  */
 
 #ifndef _PROTOTYPES_H
 #define _PROTOTYPES_H
+
+#include <config.h>
 
 #include <sys/stat.h>
 #ifdef USE_UTMPX
@@ -72,7 +74,7 @@ extern int isexpired (const struct passwd *, /*@null@*/const struct spwd *);
 
 /* basename() renamed to Basename() to avoid libc name space confusion */
 /* basename.c */
-extern /*@observer@*/const char *Basename (char *str);
+extern /*@observer@*/const char *Basename (const char *str);
 
 /* chowndir.c */
 extern int chown_tree (const char *root,
@@ -83,16 +85,16 @@ extern int chown_tree (const char *root,
 extern void chown_tty (const struct passwd *);
 
 /* cleanup.c */
-typedef void (*cleanup_function) (/*@null@*/void *arg);
-void add_cleanup (cleanup_function pcf, /*@null@*/void *arg);
-void del_cleanup (cleanup_function pcf);
+typedef /*@null@*/void (*cleanup_function) (/*@null@*/void *arg);
+void add_cleanup (/*@notnull@*/cleanup_function pcf, /*@null@*/void *arg);
+void del_cleanup (/*@notnull@*/cleanup_function pcf);
 void do_cleanups (void);
 
 /* cleanup_group.c */
 struct cleanup_info_mod {
 	char *audit_msg;
 	char *action;
-	char *name;
+	/*@observer@*/const char *name;
 };
 void cleanup_report_add_group (void *group_name);
 void cleanup_report_add_group_group (void *group_name);
@@ -122,13 +124,9 @@ extern int copy_tree (const char *src_root, const char *dst_root,
                       bool reset_selinux,
                       uid_t old_uid, uid_t new_uid,
                       gid_t old_gid, gid_t new_gid);
-#ifdef WITH_SELINUX
-extern int set_selinux_file_context (const char *dst_name);
-extern int reset_selinux_file_context (void);
-#endif
 
 /* encrypt.c */
-extern /*@exposed@*/char *pw_encrypt (const char *, const char *);
+extern /*@exposed@*//*@null@*/char *pw_encrypt (const char *, const char *);
 
 /* entry.c */
 extern void pw_entry (const char *, struct passwd *);
@@ -153,11 +151,22 @@ extern int find_new_uid (bool sys_user,
                          uid_t *uid,
                          /*@null@*/uid_t const *preferred_uid);
 
+#ifdef ENABLE_SUBIDS
+/* find_new_sub_gids.c */
+extern int find_new_sub_gids (const char *owner,
+			      gid_t *range_start, unsigned long *range_count);
+
+/* find_new_sub_uids.c */
+extern int find_new_sub_uids (const char *owner,
+			      uid_t *range_start, unsigned long *range_count);
+#endif				/* ENABLE_SUBIDS */
+
+
 /* get_gid.c */
 extern int get_gid (const char *gidstr, gid_t *gid);
 
 /* getgr_nam_gid.c */
-extern /*@null@*/struct group *getgr_nam_gid (/*@null@*/const char *grname);
+extern /*@only@*//*@null@*/struct group *getgr_nam_gid (/*@null@*/const char *grname);
 
 /* getlong.c */
 extern int getlong (const char *numstr, /*@out@*/long int *result);
@@ -240,7 +249,7 @@ extern void mailcheck (void);
 extern void motd (void);
 
 /* myname.c */
-extern /*@null@*/struct passwd *get_my_pwent (void);
+extern /*@null@*//*@only@*/struct passwd *get_my_pwent (void);
 
 /* pam_pass_non_interractive.c */
 #ifdef USE_PAM
@@ -291,8 +300,23 @@ extern int remove_tree (const char *root, bool remove_root);
 extern int do_rlogin (const char *remote_host, char *name, size_t namelen,
                       char *term, size_t termlen);
 
+/* root_flag.c */
+extern void process_root_flag (const char* short_opt, int argc, char **argv);
+
 /* salt.c */
-extern /*@observer@*/const char *crypt_make_salt (/*@null@*/const char *meth, /*@null@*/void *arg);
+extern /*@observer@*/const char *crypt_make_salt (/*@null@*//*@observer@*/const char *meth, /*@null@*/void *arg);
+
+/* selinux.c */
+#ifdef WITH_SELINUX
+extern int set_selinux_file_context (const char *dst_name);
+extern int reset_selinux_file_context (void);
+#endif
+
+/* semanage.c */
+#ifdef WITH_SELINUX
+extern int set_seuser(const char *login_name, const char *seuser_name);
+extern int del_seuser(const char *login_name);
+#endif
 
 /* setugid.c */
 extern int setup_groups (const struct passwd *info);
@@ -338,17 +362,17 @@ extern void spw_free (/*@out@*/ /*@only@*/struct spwd *spent);
 /* shell.c */
 extern int shell (const char *file, /*@null@*/const char *arg, char *const envp[]);
 
-/* system.c */
-extern int safe_system (const char *command,
-                        const char *argv[],
-                        /*@null@*/const char *env[],
-                        bool ignore_stderr);
+/* spawn.c */
+extern int run_command (const char *cmd, const char *argv[],
+                        /*@null@*/const char *envp[], /*@out@*/int *status);
 
 /* strtoday.c */
 extern long strtoday (const char *);
 
 /* suauth.c */
-extern int check_su_auth (const char *actual_id, const char *wanted_id);
+extern int check_su_auth (const char *actual_id,
+                          const char *wanted_id,
+                          bool su_to_root);
 
 /* sulog.c */
 extern void sulog (const char *tty,

@@ -23,14 +23,17 @@ libmisc_a_SOURCES = \
 	env.c \
 	failure.c \
 	failure.h \
-	fields.c \
 	find_new_gid.c \
 	find_new_uid.c \
+	find_new_sub_gids.c \
+	find_new_sub_uids.c \
 	getdate.h \
 	getdate.y \
 	getgr_nam_gid.c \
 	getrange.c \
 	hushed.c \
+	idmapping.h \
+	idmapping.c \
 	isexpired.c \
 	limits.c \
 	list.c log.c \
@@ -46,11 +49,11 @@ libmisc_a_SOURCES = \
 	pwd_init.c \
 	remove_tree.c \
 	rlogin.c \
+	root_flag.c \
 	salt.c \
 	setugid.c \
 	setupenv.c \
 	shell.c \
-	system.c \
 	strtoday.c \
 	sub.c \
 	sulog.c \
