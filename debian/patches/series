@@ -3,9 +3,9 @@
 #901_testsuite_gcov
 
 503_shadowconfig.8
-008_su_get_PAM_username
-428_grpck_add_prune_option
 008_login_log_failure_in_FTMP
+301-CVE-2017-2616-su-properly-clear-child-PID.patch
+302-CVE-2016-6252-fix-integer-overflow.patch
 429_login_FAILLOG_ENAB
 401_cppw_src.dpatch
 # 402 should be merged in 401, but should be reviewed by SE Linux experts first
@@ -18,5 +18,22 @@
 523_su_arguments_are_no_more_concatenated_by_default
 508_nologin_in_usr_sbin
 505_useradd_recommend_adduser
-300_CVE-2011-0721
-495_stdout-encrypted-password 
+#userns/01_userns_doc
+#userns/02_userns_doc_login.defs
+#userns/03_userns_implement_commonio_append
+#userns/04_userns_add_backend_support
+#userns/05_userns_implemend_find_new_sub_xids
+#userns/06_userns_userdel
+#userns/07_userns_useradd
+#userns/08_userns_detect_busy_subids
+#userns/09_userns_usermod
+#userns/10_userns_newusers
+#userns/11_userns_newxidmap
+#userns/12_userns_selinuxlibs
+#userns/13_subordinate_parse_static_buf
+#userns/14_fix_getopt
+#userns/manpagetypo
+#userns/16_add-argument-sanity-checking.patch
+1000_configure_userns
+1010_vietnamese_translation
+1020_fix_user_busy_errors

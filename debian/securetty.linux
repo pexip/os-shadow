@@ -361,6 +361,10 @@ ttyY1
 hvc0
 hvc1
 #...
+#IBM pSeries console ports
+hvsi0
+hvsi1
+hvsi2
 
 # Equinox SST multi-port serial boards
 ttyEQ0
@@ -369,7 +373,7 @@ ttyEQ1
 
 # ==========================================================
 #
-# Not in Documentation/Devicess.txt
+# Not in Documentation/Devices.txt
 #
 # ==========================================================
 
@@ -388,3 +392,9 @@ lxc/tty2
 lxc/tty3
 lxc/tty4
 
+# Serial Console for MIPS Swarm
+duart0
+duart1
+
+# s390 and s390x ports in LPAR mode
+ttysclp0
