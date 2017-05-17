@@ -5,10 +5,10 @@
 ## DP: Add cppw / cpgr
 
 @DPATCH@
-Index: git/src/cppw.c
+Index: shadow-4.4/src/cppw.c
 ===================================================================
 --- /dev/null
-+++ git/src/cppw.c
++++ shadow-4.4/src/cppw.c
 @@ -0,0 +1,238 @@
 +/*
 +  cppw, cpgr  copy with locking given file over the password or group file
@@ -248,11 +248,11 @@ Index: git/src/cppw.c
 +	return 0;
 +}
 +
-Index: git/src/Makefile.am
+Index: shadow-4.4/src/Makefile.am
 ===================================================================
---- git.orig/src/Makefile.am
-+++ git/src/Makefile.am
-@@ -29,6 +29,7 @@
+--- shadow-4.4.orig/src/Makefile.am
++++ shadow-4.4/src/Makefile.am
+@@ -29,6 +29,7 @@ if ENABLE_SUBIDS
  ubin_PROGRAMS += newgidmap newuidmap
  endif
  usbin_PROGRAMS = \
@@ -260,7 +260,7 @@ Index: git/src/Makefile.am
  	chgpasswd \
  	chpasswd \
  	groupadd \
-@@ -87,6 +88,7 @@
+@@ -90,6 +91,7 @@ chfn_LDADD     = $(LDADD) $(LIBPAM) $(LI
  chgpasswd_LDADD = $(LDADD) $(LIBPAM_SUID) $(LIBSELINUX) $(LIBCRYPT)
  chsh_LDADD     = $(LDADD) $(LIBPAM) $(LIBSELINUX) $(LIBCRYPT_NOPAM) $(LIBSKEY) $(LIBMD)
  chpasswd_LDADD = $(LDADD) $(LIBPAM) $(LIBSELINUX) $(LIBCRYPT)
@@ -268,11 +268,11 @@ Index: git/src/Makefile.am
  gpasswd_LDADD  = $(LDADD) $(LIBAUDIT) $(LIBSELINUX) $(LIBCRYPT)
  groupadd_LDADD = $(LDADD) $(LIBPAM_SUID) $(LIBAUDIT) $(LIBSELINUX)
  groupdel_LDADD = $(LDADD) $(LIBPAM_SUID) $(LIBAUDIT) $(LIBSELINUX)
-Index: git/po/POTFILES.in
+Index: shadow-4.4/po/POTFILES.in
 ===================================================================
---- git.orig/po/POTFILES.in
-+++ git/po/POTFILES.in
-@@ -85,6 +85,7 @@
+--- shadow-4.4.orig/po/POTFILES.in
++++ shadow-4.4/po/POTFILES.in
+@@ -85,6 +85,7 @@ src/chfn.c
  src/chgpasswd.c
  src/chpasswd.c
  src/chsh.c

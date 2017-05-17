@@ -1,0 +1,44 @@
+From bdd68116b7c5f3cbb29ea4fe3bb81e338e9544f7 Mon Sep 17 00:00:00 2001
+From: Simon Kainz <simon@familiekainz.at>
+Date: Wed, 18 Jan 2017 17:24:04 +0100
+Subject: [PATCH 1/2] Typos fix in german translation of man pages
+
+Reported to Debian BTS in #734609
+---
+ man/po/de.po | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/man/po/de.po b/man/po/de.po
+index b4d7218..340e15d 100644
+--- a/man/po/de.po
++++ b/man/po/de.po
+@@ -3087,7 +3087,7 @@ msgstr "5"
+ #: limits.5.xml:61(refmiscinfo) gshadow.5.xml:48(refmiscinfo)
+ #: faillog.5.xml:59(refmiscinfo)
+ msgid "File Formats and Conversions"
+-msgstr "Dateiformate und -konvertierung"
++msgstr "Dateiformate und konvertierung"
+ 
+ #: suauth.5.xml:65(refpurpose)
+ msgid "detailed su control file"
+@@ -4370,7 +4370,7 @@ msgstr ""
+ 
+ #: shadow.5.xml:235(para)
+ msgid "An empty field means that the account will never expire."
+-msgstr "Ein leeren Feld bedeutet, dass das Konto nicht verfallen wird."
++msgstr "Ein leeres Feld bedeutet, dass das Konto nicht verfallen wird."
+ 
+ #: shadow.5.xml:238(para)
+ msgid ""
+@@ -6961,7 +6961,7 @@ msgid ""
+ "contents of this file should be a message indicating why logins are "
+ "inhibited."
+ msgstr ""
+-"Falls angegeben, der Name einer Datei, dessen Existenz Anmeldungen außer von "
++"Falls angegeben, der Name einer Datei, deren Existenz Anmeldungen außer von "
+ "Root verhindert. Der Inhalt der Datei sollte die Gründe enthalten, weshalb "
+ "Anmeldungen untersagt sind."
+ 
+-- 
+2.1.4
+

@@ -2,10 +2,10 @@ Goal: save the [g]shadow files with the 'shadow' group and mode 0440
 
 Fixes: #166793
 
-Index: git/lib/commonio.c
+Index: shadow-4.4/lib/commonio.c
 ===================================================================
---- git.orig/lib/commonio.c
-+++ git/lib/commonio.c
+--- shadow-4.4.orig/lib/commonio.c
++++ shadow-4.4/lib/commonio.c
 @@ -44,6 +44,7 @@
  #include <errno.h>
  #include <stdio.h>
@@ -14,26 +14,53 @@ Index: git/lib/commonio.c
  #include "nscd.h"
  #ifdef WITH_TCB
  #include <tcb.h>
-@@ -966,13 +967,20 @@
+@@ -966,12 +967,23 @@ int commonio_close (struct commonio_db *
  			goto fail;
  		}
  	} else {
 +		struct group *grp;
  		/*
  		 * Default permissions for new [g]shadow files.
- 		 * (passwd and group always exist...)
  		 */
--		sb.st_mode = 0400;
-+		sb.st_mode = 0440;
- 		sb.st_uid = 0;
--		sb.st_gid = 0;
+ 		sb.st_mode = db->st_mode;
+ 		sb.st_uid = db->st_uid;
+ 		sb.st_gid = db->st_gid;
++
 +		/*
 +		 * Try to retrieve the shadow's GID, and fall back to GID 0.
 +		 */
-+		if ((grp = getgrnam("shadow")) != NULL)
-+			sb.st_gid = grp->gr_gid;
-+		else
-+			sb.st_gid = 0;
++		if (sb.st_gid == 0) {
++			if ((grp = getgrnam("shadow")) != NULL)
++				sb.st_gid = grp->gr_gid;
++			else
++				sb.st_gid = 0;
++		}
  	}
  
  	snprintf (buf, sizeof buf, "%s+", db->filename);
+Index: shadow-4.4/lib/sgroupio.c
+===================================================================
+--- shadow-4.4.orig/lib/sgroupio.c
++++ shadow-4.4/lib/sgroupio.c
+@@ -228,7 +228,7 @@ static struct commonio_db gshadow_db = {
+ #ifdef WITH_SELINUX
+ 	NULL,			/* scontext */
+ #endif
+-	0400,                   /* st_mode */
++	0440,                   /* st_mode */
+ 	0,                      /* st_uid */
+ 	0,                      /* st_gid */
+ 	NULL,			/* head */
+Index: shadow-4.4/lib/shadowio.c
+===================================================================
+--- shadow-4.4.orig/lib/shadowio.c
++++ shadow-4.4/lib/shadowio.c
+@@ -104,7 +104,7 @@ static struct commonio_db shadow_db = {
+ #ifdef WITH_SELINUX
+ 	NULL,			/* scontext */
+ #endif				/* WITH_SELINUX */
+-	0400,                   /* st_mode */
++	0440,                   /* st_mode */
+ 	0,                      /* st_uid */
+ 	0,                      /* st_gid */
+ 	NULL,			/* head */

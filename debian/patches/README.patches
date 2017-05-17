@@ -1,6 +1,8 @@
 Small intro to the system for numbering the patches here...
 
--The 0xx series of patches are patches isolated from the latest
+-The 00xx-... patches are forwarded to upstream's git repository
+
+-The 0xx_... series of patches are patches isolated from the latest
  version of the shadow Debian package not using quilt in order to
  separate upstream from Debian-specific stuff.
 
