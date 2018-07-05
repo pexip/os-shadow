@@ -56,7 +56,7 @@ static bool verify_range(struct passwd *pw, struct map_range *range)
 	if (have_sub_gids(pw->pw_name, range->lower, range->count))
 		return true;
 
-	/* Allow a process to map it's own gid */
+	/* Allow a process to map its own gid */
 	if ((range->count == 1) && (pw->pw_gid == range->lower))
 		return true;
 
@@ -94,7 +94,7 @@ static void usage(void)
  */
 int main(int argc, char **argv)
 {
-	char proc_dir_name[PATH_MAX];
+	char proc_dir_name[32];
 	char *target_str;
 	pid_t target, parent;
 	int proc_dir_fd;
@@ -113,13 +113,14 @@ int main(int argc, char **argv)
 	if (argc < 2)
 		usage();
 
-	/* Find the process that needs it's user namespace
+	/* Find the process that needs its user namespace
 	 * gid mapping set.
 	 */
 	target_str = argv[1];
 	if (!get_pid(target_str, &target))
 		usage();
 
+	/* max string length is 6 + 10 + 1 + 1 = 18, allocate 32 bytes */
 	written = snprintf(proc_dir_name, sizeof(proc_dir_name), "/proc/%u/",
 		target);
 	if ((written <= 0) || (written >= sizeof(proc_dir_name))) {
@@ -160,8 +161,10 @@ int main(int argc, char **argv)
 	    (getgid() != pw->pw_gid) ||
 	    (pw->pw_uid != st.st_uid) ||
 	    (pw->pw_gid != st.st_gid)) {
-		fprintf(stderr, _( "%s: Target %u is owned by a different user\n" ),
-			Prog, target);
+		fprintf(stderr, _( "%s: Target %u is owned by a different user: uid:%lu pw_uid:%lu st_uid:%lu, gid:%lu pw_gid:%lu st_gid:%lu\n" ),
+			Prog, target,
+			(unsigned long int)getuid(), (unsigned long int)pw->pw_uid, (unsigned long int)st.st_uid,
+			(unsigned long int)getgid(), (unsigned long int)pw->pw_gid, (unsigned long int)st.st_gid);
 		return EXIT_FAILURE;
 	}
 

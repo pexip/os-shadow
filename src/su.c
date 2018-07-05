@@ -105,6 +105,8 @@ static char caller_name[BUFSIZ];
 static bool change_environment = true;
 
 #ifdef USE_PAM
+static char kill_msg[256];
+static char wait_msg[256];
 static pam_handle_t *pamh = NULL;
 static int caught = 0;
 /* PID of the child, in case it needs to be killed */
@@ -161,8 +163,7 @@ static RETSIGTYPE die (int killed)
 	}
 
 	if (killed != 0) {
-		closelog ();
-		exit (128+killed);
+		_exit (128+killed);
 	}
 }
 
@@ -182,12 +183,11 @@ static RETSIGTYPE kill_child (int unused(s))
 {
 	if (0 != pid_child) {
 		(void) kill (-pid_child, SIGKILL);
-		(void) fputs (_(" ...killed.\n"), stderr);
+		(void) write (STDERR_FILENO, kill_msg, strlen (kill_msg));
 	} else {
-		(void) fputs (_(" ...waiting for child to terminate.\n"),
-		              stderr);
+		(void) write (STDERR_FILENO, wait_msg, strlen (wait_msg));
 	}
-	exit (255);
+	_exit (255);
 }
 #endif				/* USE_PAM */
 
@@ -373,6 +373,9 @@ static void prepare_pam_close_session (void)
 		              stderr);
 		(void) kill (-pid_child, caught);
 
+		snprintf (kill_msg, 256, _(" ...killed.\n"));
+		snprintf (wait_msg, 256, _(" ...waiting for child to terminate.\n"));
+
 		(void) signal (SIGALRM, kill_child);
 		(void) alarm (2);
 
@@ -422,7 +425,7 @@ static void check_perms_pam (const struct passwd *pw)
 	int ret;
 	ret = pam_authenticate (pamh, 0);
 	if (PAM_SUCCESS != ret) {
-		SYSLOG ((LOG_ERR, "pam_authenticate: %s",
+		SYSLOG (((pw->pw_uid != 0)? LOG_NOTICE : LOG_WARN, "pam_authenticate: %s",
 		         pam_strerror (pamh, ret)));
 		fprintf (stderr, _("%s: %s\n"), Prog, pam_strerror (pamh, ret));
 		(void) pam_end (pamh, ret);
@@ -585,7 +588,7 @@ static /*@only@*/struct passwd * check_perms (void)
 	if (NULL == pw) {
 		(void) fprintf (stderr,
 		                _("No passwd entry for user '%s'\n"), name);
-		SYSLOG ((LOG_ERR, "No passwd entry for user '%s'", name));
+		SYSLOG ((LOG_NOTICE, "No passwd entry for user '%s'", name));
 		su_failure (caller_tty, true);
 	}
 
@@ -615,7 +618,7 @@ static /*@only@*/struct passwd * check_perms (void)
 			(void) fprintf (stderr,
 			                _("No passwd entry for user '%s'\n"),
 			                name);
-			SYSLOG ((LOG_ERR,
+			SYSLOG ((LOG_NOTICE,
 			         "No passwd entry for user '%s'", name));
 			su_failure (caller_tty, true);
 		}

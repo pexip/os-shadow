@@ -1537,7 +1537,7 @@ static void open_files (void)
 		exit (E_PW_UPDATE);
 	}
 	pw_locked = true;
-	if (pw_open (O_RDWR) == 0) {
+	if (pw_open (O_CREAT | O_RDWR) == 0) {
 		fprintf (stderr, _("%s: cannot open %s\n"), Prog, pw_dbname ());
 		fail_exit (E_PW_UPDATE);
 	}
@@ -1554,7 +1554,7 @@ static void open_files (void)
 		fail_exit (E_GRP_UPDATE);
 	}
 	gr_locked = true;
-	if (gr_open (O_RDWR) == 0) {
+	if (gr_open (O_CREAT | O_RDWR) == 0) {
 		fprintf (stderr, _("%s: cannot open %s\n"), Prog, gr_dbname ());
 		fail_exit (E_GRP_UPDATE);
 	}
@@ -1567,7 +1567,7 @@ static void open_files (void)
 			fail_exit (E_GRP_UPDATE);
 		}
 		sgr_locked = true;
-		if (sgr_open (O_RDWR) == 0) {
+		if (sgr_open (O_CREAT | O_RDWR) == 0) {
 			fprintf (stderr,
 			         _("%s: cannot open %s\n"),
 			         Prog, sgr_dbname ());
@@ -1584,7 +1584,7 @@ static void open_files (void)
 			fail_exit (E_SUB_UID_UPDATE);
 		}
 		sub_uid_locked = true;
-		if (sub_uid_open (O_RDWR) == 0) {
+		if (sub_uid_open (O_CREAT | O_RDWR) == 0) {
 			fprintf (stderr,
 			         _("%s: cannot open %s\n"),
 			         Prog, sub_uid_dbname ());
@@ -1599,7 +1599,7 @@ static void open_files (void)
 			fail_exit (E_SUB_GID_UPDATE);
 		}
 		sub_gid_locked = true;
-		if (sub_gid_open (O_RDWR) == 0) {
+		if (sub_gid_open (O_CREAT | O_RDWR) == 0) {
 			fprintf (stderr,
 			         _("%s: cannot open %s\n"),
 			         Prog, sub_gid_dbname ());
@@ -1621,7 +1621,7 @@ static void open_shadow (void)
 		fail_exit (E_PW_UPDATE);
 	}
 	spw_locked = true;
-	if (spw_open (O_RDWR) == 0) {
+	if (spw_open (O_CREAT | O_RDWR) == 0) {
 		fprintf (stderr,
 		         _("%s: cannot open %s\n"),
 		         Prog, spw_dbname ());
@@ -1993,6 +1993,11 @@ int main (int argc, char **argv)
 #endif				/* USE_PAM */
 #endif				/* ACCT_TOOLS_SETUID */
 
+#ifdef ENABLE_SUBIDS
+	uid_t uid_min = (uid_t) getdef_ulong ("UID_MIN", 1000UL);
+	uid_t uid_max = (uid_t) getdef_ulong ("UID_MAX", 60000UL);
+#endif
+
 	/*
 	 * Get my name so that I can use it to report errors.
 	 */
@@ -2021,14 +2026,17 @@ int main (int argc, char **argv)
 #ifdef SHADOWGRP
 	is_shadow_grp = sgr_file_present ();
 #endif
+
+	process_flags (argc, argv);
+
 #ifdef ENABLE_SUBIDS
-	is_sub_uid = sub_uid_file_present ();
-	is_sub_gid = sub_gid_file_present ();
+	is_sub_uid = sub_uid_file_present () && !rflg &&
+	    (!user_id || (user_id <= uid_max && user_id >= uid_min));
+	is_sub_gid = sub_gid_file_present () && !rflg &&
+	    (!user_id || (user_id <= uid_max && user_id >= uid_min));
 #endif				/* ENABLE_SUBIDS */
 
 	get_defaults ();
-
-	process_flags (argc, argv);
 
 #ifdef ACCT_TOOLS_SETUID
 #ifdef USE_PAM
