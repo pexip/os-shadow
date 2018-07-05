@@ -11,7 +11,7 @@ Build-Depends: dh-autoreconf, gettext, libpam0g-dev, debhelper (>= 6.0.7~), quil
 Vcs-Git: git://anonscm.debian.org/git/pkg-shadow/shadow.git
 Vcs-Browser: http://anonscm.debian.org/gitweb/?p=pkg-shadow/shadow.git;a=summary
 Homepage: http://pkg-shadow.alioth.debian.org/
-XS-Pexip-Upstream: http://ftp.debian.org/debian/ jessie
+XS-Pexip-Upstream: http://ftp.debian.org/debian/ stretch
 
 Package: passwd
 Architecture: any
