@@ -1361,6 +1361,7 @@ static void process_flags (int argc, char **argv)
 		exit (E_UID_IN_USE);
 	}
 
+#ifdef ENABLE_SUBIDS
 	if (   (vflg || Vflg)
 	    && !is_sub_uid) {
 		fprintf (stderr,
@@ -1376,6 +1377,7 @@ static void process_flags (int argc, char **argv)
 		         Prog, sub_gid_dbname (), "-w", "-W");
 		exit (E_USAGE);
 	}
+#endif				/* ENABLE_SUBIDS */
 }
 
 /*
@@ -1530,7 +1532,7 @@ static void open_files (void)
 		fail_exit (E_PW_UPDATE);
 	}
 	pw_locked = true;
-	if (pw_open (O_RDWR) == 0) {
+	if (pw_open (O_CREAT | O_RDWR) == 0) {
 		fprintf (stderr,
 		         _("%s: cannot open %s\n"),
 		         Prog, pw_dbname ());
@@ -1543,7 +1545,7 @@ static void open_files (void)
 		fail_exit (E_PW_UPDATE);
 	}
 	spw_locked = true;
-	if (is_shadow_pwd && (spw_open (O_RDWR) == 0)) {
+	if (is_shadow_pwd && (spw_open (O_CREAT | O_RDWR) == 0)) {
 		fprintf (stderr,
 		         _("%s: cannot open %s\n"),
 		         Prog, spw_dbname ());
@@ -1562,7 +1564,7 @@ static void open_files (void)
 			fail_exit (E_GRP_UPDATE);
 		}
 		gr_locked = true;
-		if (gr_open (O_RDWR) == 0) {
+		if (gr_open (O_CREAT | O_RDWR) == 0) {
 			fprintf (stderr,
 			         _("%s: cannot open %s\n"),
 			         Prog, gr_dbname ());
@@ -1576,7 +1578,7 @@ static void open_files (void)
 			fail_exit (E_GRP_UPDATE);
 		}
 		sgr_locked = true;
-		if (is_shadow_grp && (sgr_open (O_RDWR) == 0)) {
+		if (is_shadow_grp && (sgr_open (O_CREAT | O_RDWR) == 0)) {
 			fprintf (stderr,
 			         _("%s: cannot open %s\n"),
 			         Prog, sgr_dbname ());
@@ -1593,7 +1595,7 @@ static void open_files (void)
 			fail_exit (E_SUB_UID_UPDATE);
 		}
 		sub_uid_locked = true;
-		if (sub_uid_open (O_RDWR) == 0) {
+		if (sub_uid_open (O_CREAT | O_RDWR) == 0) {
 			fprintf (stderr,
 			         _("%s: cannot open %s\n"),
 			         Prog, sub_uid_dbname ());
@@ -1608,7 +1610,7 @@ static void open_files (void)
 			fail_exit (E_SUB_GID_UPDATE);
 		}
 		sub_gid_locked = true;
-		if (sub_gid_open (O_RDWR) == 0) {
+		if (sub_gid_open (O_CREAT | O_RDWR) == 0) {
 			fprintf (stderr,
 			         _("%s: cannot open %s\n"),
 			         Prog, sub_gid_dbname ());
@@ -1717,60 +1719,6 @@ static void usr_update (void)
 			fail_exit (E_PW_UPDATE);
 		}
 	}
-#ifdef ENABLE_SUBIDS
-	if (Vflg) {
-		struct ulong_range_list_entry *ptr;
-		for (ptr = del_sub_uids; ptr != NULL; ptr = ptr->next) {
-			unsigned long count = ptr->range.last - ptr->range.first + 1;
-			if (sub_uid_remove(user_name, ptr->range.first, count) == 0) {
-				fprintf (stderr,
-					_("%s: failed to remove uid range %lu-%lu from '%s'\n"),
-					Prog, ptr->range.first, ptr->range.last, 
-					sub_uid_dbname ());
-				fail_exit (E_SUB_UID_UPDATE);
-			}
-		}
-	}
-	if (vflg) {
-		struct ulong_range_list_entry *ptr;
-		for (ptr = add_sub_uids; ptr != NULL; ptr = ptr->next) {
-			unsigned long count = ptr->range.last - ptr->range.first + 1;
-			if (sub_uid_add(user_name, ptr->range.first, count) == 0) {
-				fprintf (stderr,
-					_("%s: failed to add uid range %lu-%lu from '%s'\n"),
-					Prog, ptr->range.first, ptr->range.last, 
-					sub_uid_dbname ());
-				fail_exit (E_SUB_UID_UPDATE);
-			}
-		}
-	}
-	if (Wflg) {
-		struct ulong_range_list_entry *ptr;
-		for (ptr = del_sub_gids; ptr != NULL; ptr = ptr->next) {
-			unsigned long count = ptr->range.last - ptr->range.first + 1;
-			if (sub_gid_remove(user_name, ptr->range.first, count) == 0) {
-				fprintf (stderr,
-					_("%s: failed to remove gid range %lu-%lu from '%s'\n"),
-					Prog, ptr->range.first, ptr->range.last, 
-					sub_gid_dbname ());
-				fail_exit (E_SUB_GID_UPDATE);
-			}
-		}
-	}
-	if (wflg) {
-		struct ulong_range_list_entry *ptr;
-		for (ptr = add_sub_gids; ptr != NULL; ptr = ptr->next) {
-			unsigned long count = ptr->range.last - ptr->range.first + 1;
-			if (sub_gid_add(user_name, ptr->range.first, count) == 0) {
-				fprintf (stderr,
-					_("%s: failed to add gid range %lu-%lu from '%s'\n"),
-					Prog, ptr->range.first, ptr->range.last, 
-					sub_gid_dbname ());
-				fail_exit (E_SUB_GID_UPDATE);
-			}
-		}
-	}
-#endif				/* ENABLE_SUBIDS */
 }
 
 /*
@@ -2174,16 +2122,66 @@ int main (int argc, char **argv)
 	 */
 	open_files ();
 	if (   cflg || dflg || eflg || fflg || gflg || Lflg || lflg || pflg
-	    || sflg || uflg || Uflg
-#ifdef ENABLE_SUBIDS
-	    || vflg || Vflg || wflg || Wflg
-#endif				/* ENABLE_SUBIDS */
-	    ) {
+	    || sflg || uflg || Uflg) {
 		usr_update ();
 	}
 	if (Gflg || lflg) {
 		grp_update ();
 	}
+#ifdef ENABLE_SUBIDS
+	if (Vflg) {
+		struct ulong_range_list_entry *ptr;
+		for (ptr = del_sub_uids; ptr != NULL; ptr = ptr->next) {
+			unsigned long count = ptr->range.last - ptr->range.first + 1;
+			if (sub_uid_remove(user_name, ptr->range.first, count) == 0) {
+				fprintf (stderr,
+					_("%s: failed to remove uid range %lu-%lu from '%s'\n"),
+					Prog, ptr->range.first, ptr->range.last, 
+					sub_uid_dbname ());
+				fail_exit (E_SUB_UID_UPDATE);
+			}
+		}
+	}
+	if (vflg) {
+		struct ulong_range_list_entry *ptr;
+		for (ptr = add_sub_uids; ptr != NULL; ptr = ptr->next) {
+			unsigned long count = ptr->range.last - ptr->range.first + 1;
+			if (sub_uid_add(user_name, ptr->range.first, count) == 0) {
+				fprintf (stderr,
+					_("%s: failed to add uid range %lu-%lu from '%s'\n"),
+					Prog, ptr->range.first, ptr->range.last, 
+					sub_uid_dbname ());
+				fail_exit (E_SUB_UID_UPDATE);
+			}
+		}
+	}
+	if (Wflg) {
+		struct ulong_range_list_entry *ptr;
+		for (ptr = del_sub_gids; ptr != NULL; ptr = ptr->next) {
+			unsigned long count = ptr->range.last - ptr->range.first + 1;
+			if (sub_gid_remove(user_name, ptr->range.first, count) == 0) {
+				fprintf (stderr,
+					_("%s: failed to remove gid range %lu-%lu from '%s'\n"),
+					Prog, ptr->range.first, ptr->range.last, 
+					sub_gid_dbname ());
+				fail_exit (E_SUB_GID_UPDATE);
+			}
+		}
+	}
+	if (wflg) {
+		struct ulong_range_list_entry *ptr;
+		for (ptr = add_sub_gids; ptr != NULL; ptr = ptr->next) {
+			unsigned long count = ptr->range.last - ptr->range.first + 1;
+			if (sub_gid_add(user_name, ptr->range.first, count) == 0) {
+				fprintf (stderr,
+					_("%s: failed to add gid range %lu-%lu from '%s'\n"),
+					Prog, ptr->range.first, ptr->range.last, 
+					sub_gid_dbname ());
+				fail_exit (E_SUB_GID_UPDATE);
+			}
+		}
+	}
+#endif				/* ENABLE_SUBIDS */
 	close_files ();
 
 #ifdef WITH_TCB

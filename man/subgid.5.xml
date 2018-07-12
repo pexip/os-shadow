@@ -57,7 +57,7 @@
     </para>
     <itemizedlist mark='bullet'>
       <listitem>
-	<para>login name</para>
+	<para>login name or UID</para>
       </listitem>
       <listitem>
 	<para>numerical subordinate group ID</para>
@@ -75,6 +75,13 @@
 
     <para>
       Multiple ranges may be specified per user.
+    </para>
+
+    <para>
+      When large number of entries (10000-100000 or more) are defined in
+      <filename>/etc/subgid</filename>, parsing performance penalty will
+      become noticeable. In this case it is recommended to use UIDs
+      instead of login names. Benchmarks have shown speed-ups up to 20x.
     </para>
 
   </refsect1>

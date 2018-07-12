@@ -200,7 +200,7 @@ int main (int argc, char **argv)
 		fail_exit (E_PWDBUSY);
 	}
 	pw_locked = true;
-	if (pw_open (O_RDWR) == 0) {
+	if (pw_open (O_CREAT | O_RDWR) == 0) {
 		fprintf (stderr,
 		         _("%s: cannot open %s\n"), Prog, pw_dbname ());
 		fail_exit (E_MISSING);
@@ -305,7 +305,8 @@ int main (int argc, char **argv)
 	}
 
 	/* /etc/passwd- (backup file) */
-	if (chmod (PASSWD_FILE "-", 0600) != 0) {
+	errno = 0;
+	if ((chmod (PASSWD_FILE "-", 0600) != 0) && (errno != ENOENT)) {
 		fprintf (stderr,
 		         _("%s: failed to change the mode of %s to 0600\n"),
 		         Prog, PASSWD_FILE "-");

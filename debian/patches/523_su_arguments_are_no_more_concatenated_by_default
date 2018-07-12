@@ -8,9 +8,11 @@ Etch.
 
 Status wrt upstream: This patch is Debian specific.
 
---- a/src/su.c
-+++ b/src/su.c
-@@ -104,6 +104,19 @@
+Index: shadow-4.4/src/su.c
+===================================================================
+--- shadow-4.4.orig/src/su.c
++++ shadow-4.4/src/su.c
+@@ -104,6 +104,19 @@ static char caller_name[BUFSIZ];
  /* If nonzero, change some environment vars to indicate the user su'd to. */
  static bool change_environment = true;
  
@@ -28,9 +30,9 @@ Status wrt upstream: This patch is Debian specific.
 +static int old_debian_behavior;
 +
  #ifdef USE_PAM
- static pam_handle_t *pamh = NULL;
- static int caught = 0;
-@@ -964,6 +977,8 @@
+ static char kill_msg[256];
+ static char wait_msg[256];
+@@ -952,6 +965,8 @@ int main (int argc, char **argv)
  	int ret;
  #endif				/* USE_PAM */
  
@@ -39,7 +41,7 @@ Status wrt upstream: This patch is Debian specific.
  	(void) setlocale (LC_ALL, "");
  	(void) bindtextdomain (PACKAGE, LOCALEDIR);
  	(void) textdomain (PACKAGE);
-@@ -1171,7 +1186,7 @@
+@@ -1159,7 +1174,7 @@ int main (int argc, char **argv)
  		 * resulting string is always given to the shell with its
  		 * -c option.
  		 */

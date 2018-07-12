@@ -60,6 +60,7 @@ const char *Prog;
 
 static char *group_name;
 static gid_t group_id = -1;
+static bool check_group_busy = true;
 
 #ifdef	SHADOWGRP
 static bool is_shadow_grp;
@@ -96,6 +97,7 @@ static /*@noreturn@*/void usage (int status)
 	                Prog);
 	(void) fputs (_("  -h, --help                    display this help message and exit\n"), usageout);
 	(void) fputs (_("  -R, --root CHROOT_DIR         directory to chroot into\n"), usageout);
+	(void) fputs (_("  -f, --force                   delete group even if it is the primary group of a user\n"), usageout);
 	(void) fputs ("\n", usageout);
 	exit (status);
 }
@@ -246,7 +248,7 @@ static void open_files (void)
 	add_cleanup (cleanup_report_del_group, group_name);
 
 	/* An now open the databases */
-	if (gr_open (O_RDWR) == 0) {
+	if (gr_open (O_CREAT | O_RDWR) == 0) {
 		fprintf (stderr,
 		         _("%s: cannot open %s\n"),
 		         Prog, gr_dbname ());
@@ -255,7 +257,7 @@ static void open_files (void)
 	}
 #ifdef	SHADOWGRP
 	if (is_shadow_grp) {
-		if (sgr_open (O_RDWR) == 0) {
+		if (sgr_open (O_CREAT | O_RDWR) == 0) {
 			fprintf (stderr,
 			         _("%s: cannot open %s\n"),
 			         Prog, sgr_dbname ());
@@ -321,13 +323,16 @@ static void process_flags (int argc, char **argv)
 		{NULL, 0, NULL, '\0'}
 	};
 
-	while ((c = getopt_long (argc, argv, "hR:",
+	while ((c = getopt_long (argc, argv, "hfR:",
 	                         long_options, NULL)) != -1) {
 		switch (c) {
 		case 'h':
 			usage (E_SUCCESS);
 			/*@notreached@*/break;
 		case 'R': /* no-op, handled in process_root_flag () */
+			break;
+		case 'f':
+			check_group_busy = false;
 			break;
 		default:
 			usage (E_USAGE);
@@ -465,7 +470,9 @@ int main (int argc, char **argv)
 	/*
 	 * Make sure this isn't the primary group of anyone.
 	 */
-	group_busy (group_id);
+	if (check_group_busy) {
+		group_busy (group_id);
+	}
 
 	/*
 	 * Do the hard stuff - open the files, delete the group entries,

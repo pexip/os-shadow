@@ -1,17 +1,147 @@
+shadow (1:4.4-4.1pexip1) pexip; urgency=medium
+
+  * Migrate to Stretch
+
+ -- Vincent Sanders <vince@pexip.com>  Thu, 12 Jul 2018 16:54:27 +0000
+
+shadow (1:4.4-4.1) unstable; urgency=high
+
+  * Non-maintainer upload.
+  * Reset pid_child only if waitpid was successful.
+    This is a regression fix for CVE-2017-2616. If su receives a signal like
+    SIGTERM, it is not propagated to the child. (Closes: #862806)
+
+ -- Salvatore Bonaccorso <carnil@debian.org>  Wed, 17 May 2017 13:59:59 +0200
+
+shadow (1:4.4-4) unstable; urgency=high
+
+  * su: properly clear child PID (CVE-2017-2616) (Closes: #855943)
+
+ -- Balint Reczey <balint@balintreczey.hu>  Fri, 24 Feb 2017 01:33:25 +0100
+
+shadow (1:4.4-3) unstable; urgency=medium
+
+  [ Balint Reczey ]
+  * Clean up stale locks on boot (Closes: #478771)
+  * Sync motd handling with sshd.
+    Using patch from Ubuntu (Closes: #757148)
+
+  [ Stéphane Graber ]
+  * Add missing /etc/{subgid|subuid} in postinst
+
+ -- Balint Reczey <balint@balintreczey.hu>  Wed, 25 Jan 2017 16:43:09 +0100
+
+shadow (1:4.4-2) unstable; urgency=medium
+
+  [ Balint Reczey ]
+  * Update homepage to new upstream
+  * Always use /bin/sh shell in the build (Closes: #817971)
+  * Replace user´s -> user's to make login.def file valid ASCII
+    (Closes: #850338)
+  * Update patch naming docmentation
+  * Fix typos in German man pages (Closes: #734609)
+  * Send 1000_configure_userns patch upstream
+  * Add call to pam_keyinit for login pam service.
+    This module is linux-any only, so copy what openssh has already done and
+    remove the call at build time for other architectures.
+    The call to this module is needed to have proper per-session kernel
+    keyring. (Closes: #734671)
+  * Add pts/0 and pts/1 to securetty (Closes: #830255)
+  * Add ttySAC* to securetty (Closes: #824391)
+  * Add ttySC[4-9] to securetty (Closes: #768020)
+
+  [ Laurent Bigonville ]
+  * Move pam_selinux open call higher in the session stack (Closes: #747313)
+
+  [ Christian Perrier ]
+  * Fix typos in login.pam (thanks to Jakub Wilk for reporting)
+    (Closes: #747115)
+  * Include groupmems(8) in the passwd package (Closes: #663117)
+
+  [ Frans Spiesschaert ]
+  * Dutch translation update (Closes: #772470)
+
+  [ Trần Ngọc Quân ]
+  * Update Vietnamese translation (Closes: #777107)
+
+  [ Miroslav Kuře ]
+  * Updated Czech translation. (Closes: #759113)
+
+  [ Holger Wansing ]
+  * Update for German man pages
+
+  [ Thomas Blein ]
+  * French manpage translation (Closes: #805182)
+
+  [ Lars Bahner ]
+  * Fix some spelling issues in the Norwegian translation (Closes: #800553)
+
+ -- Balint Reczey <balint@balintreczey.hu>  Thu, 19 Jan 2017 18:22:49 +0100
+
+shadow (1:4.4-1) unstable; urgency=medium
+
+  [ Christian Perrier ]
+  * Imported Upstream version 4.2
+  * Debian patch: Fix typo in su.1.xml
+  * Configure userns
+  * Vietnamese translation update
+  * French translation update (Closes: #725793)
+  * German translation update
+  * Update NEWS file
+  * Issue a warning if no manpages have been generated
+  * Regenerate PO files
+  * Regenerate manpages PO files
+  * Imported Upstream version 4.2.1
+
+  [ Serge Hallyn ]
+  * Import new upstream
+  * Patch changes:
+    - Update 501_commonio_group_shadow to work with upstream changes
+    - Update 1010_vietnamese_translation
+    - Drop userns patches which are now all upstream
+
+  [ Balint Reczey ]
+  * Update debian/watch to use GitHub releases
+  * Imported Upstream version 4.4
+    - Fix incorrect integer handling (CVE-2016-6252) (Closes: #832170)
+  * Disable Vietnamese translation patch because it does not apply cleanly
+  * Bump debhelper compat level to 10
+  * ACK NMU by Samuel Thibault dropping the patch which is integrated
+    upstream
+  * Stop build-depending on build-essential dpkg-dev
+  * Tag login package as essential properly
+  * Adopt the package under the Shadow Team's umbrella (Closes: #801707)
+
+ -- Balint Reczey <balint@balintreczey.hu>  Fri, 06 Jan 2017 16:19:18 +0100
+
+shadow (1:4.2-3.3) unstable; urgency=medium
+
+  * Non-maintainer upload.
+  * Apply upstream patch to fix build on hurd-i386. (Closes: #750480)
+
+ -- Samuel Thibault <sthibault@debian.org>  Tue, 22 Nov 2016 18:31:28 +0000
+
+shadow (1:4.2-3.2) unstable; urgency=medium
+
+  * Non-maintainer upload.
+  * Use HTTPS in Vcs-Git.
+  * Stop using hardening-wrapper and instead use /usr/share/dpkg/buildflags.mk.
+    Closes: #836653
+
+ -- Mattia Rizzolo <mattia@debian.org>  Sun, 18 Sep 2016 14:42:16 +0000
+
+shadow (1:4.2-3.1) unstable; urgency=medium
+
+  * Non-maintainer upload.
+  * Fix error handling in busy user detection. (Closes: #778287)
+
+ -- Bastian Blank <bastian.blank@credativ.de>  Thu, 12 Nov 2015 14:33:33 +0000
+
 shadow (1:4.2-3+deb8u4pexip1) pexip; urgency=low
 
   * New upstream release
 
  -- John-Mark Bell <jmb@pexip.com>  Mon, 05 Jun 2017 20:05:13 +0100
-
-shadow (1:4.2-3+deb8u4) jessie-security; urgency=high
-
-  * Non-maintainer upload by the Security Team.
-  * Reset pid_child only if waitpid was successful.
-    This is a regression fix for CVE-2017-2616. If su receives a signal like
-    SIGTERM, it is not propagated to the child. (Closes: #862806)
-
- -- Salvatore Bonaccorso <carnil@debian.org>  Wed, 17 May 2017 12:58:54 +0200
 
 shadow (1:4.2-3+deb8u3pexip1) pexip; urgency=low
 
@@ -28,28 +158,6 @@ shadow (1:4.2-3+deb8u3pexip1) pexip; urgency=low
   * debian/login.pam: use /run/motd.dynamic
 
  -- John-Mark Bell <jmb@pexip.com>  Fri, 24 Mar 2017 15:31:08 +0000
-
-shadow (1:4.2-3+deb8u3) jessie-security; urgency=high
-
-  * Fix integer overflow in getulong.c (CVE-2016-6252) (Closes: #832170)
-  * Refresh patches
-  * Add myself to uploaders replacing Nicolas FRANCOIS (Nekral)
-
- -- Balint Reczey <balint@balintreczey.hu>  Fri, 24 Feb 2017 00:57:31 +0100
-
-shadow (1:4.2-3+deb8u2) jessie-security; urgency=high
-
-  * Non-maintainer upload by the Security Team.
-  * su: properly clear child PID (CVE-2017-2616) (Closes: #855943)
-
- -- Salvatore Bonaccorso <carnil@debian.org>  Thu, 23 Feb 2017 17:21:08 +0100
-
-shadow (1:4.2-3+deb8u1) jessie; urgency=medium
-
-  * Non-maintainer upload.
-  * Fix error handling in busy user detection. (Closes: #778287)
-
- -- Bastian Blank <bastian.blank@credativ.de>  Wed, 18 Nov 2015 08:07:09 +0000
 
 shadow (1:4.2-3) unstable; urgency=low
 

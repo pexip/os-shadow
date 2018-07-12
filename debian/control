@@ -1,23 +1,40 @@
 Source: shadow
-Section: admin
-Priority: required
 Maintainer: Pexip AS <packaging@pexip.com>
 XSBC-Pexip-Original-Maintainer: Shadow package maintainers <pkg-shadow-devel@lists.alioth.debian.org>
-Standards-Version: 3.9.5
 XSBC-Pexip-Original-Uploaders: Christian Perrier <bubulle@debian.org>,
-           Balint Reczey <balint@balintreczey.hu>
-Build-Depends: dh-autoreconf, gettext, libpam0g-dev, debhelper (>= 6.0.7~), quilt, dpkg-dev (>= 1.13.5), xsltproc, docbook-xsl, docbook-xml, libxml2-utils, cdbs, libselinux1-dev [linux-any], libsemanage1-dev [linux-any], gnome-doc-utils (>= 0.4.3), bison, libaudit-dev [linux-any]
- ,hardening-wrapper, autopoint
-Vcs-Git: git://anonscm.debian.org/git/pkg-shadow/shadow.git
-Vcs-Browser: http://anonscm.debian.org/gitweb/?p=pkg-shadow/shadow.git;a=summary
-Homepage: http://pkg-shadow.alioth.debian.org/
+           Balint Reczey <balint@balintreczey.hu>,
+           Serge Hallyn <serge@hallyn.com>
+Section: admin
+Priority: required
+Build-Depends: dh-autoreconf,
+               gettext,
+               libpam0g-dev,
+               debhelper (>= 10~),
+               quilt,
+               xsltproc,
+               docbook-xsl,
+               docbook-xml,
+               libxml2-utils,
+               cdbs,
+               libselinux1-dev [linux-any],
+               libsemanage1-dev [linux-any],
+               gnome-doc-utils,
+               bison,
+               libaudit-dev [linux-any]
+Standards-Version: 3.9.5
+Vcs-Browser: https://anonscm.debian.org/git/pkg-shadow/shadow.git
+Vcs-Git: https://anonscm.debian.org/git/pkg-shadow/shadow.git
+Homepage: https://github.com/shadow-maint/shadow
 XS-Pexip-Upstream: http://ftp.debian.org/debian/ stretch
 
 Package: passwd
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libpam-modules, debianutils (>= 2.15.2)
-Replaces: manpages-tr (<<1.0.5), manpages-zh (<<1.5.1-1)
 Multi-Arch: foreign
+Depends: ${shlibs:Depends},
+         ${misc:Depends},
+         libpam-modules
+Replaces: manpages-tr (<< 1.0.5),
+          manpages-zh (<< 1.5.1-1)
 Description: change and administer password and group data
  This package includes passwd, chsh, chfn, and many other programs to
  maintain password and group data.
@@ -26,11 +43,25 @@ Description: change and administer password and group data
 
 Package: login
 Architecture: any
-Pre-Depends: ${shlibs:Depends}, ${misc:Depends}, libpam-runtime, libpam-modules (>= 1.1.8-1)
-Conflicts: gnunet (<< 0.7.0c-2), amavisd-new (<<2.3.3-8), python-4suite (<< 0.99cvs20060405-1), backupninja (<< 0.9.3-5), echolot (<< 2.1.8-4)
-Breaks: coreutils (<< 8.21~) [hurd-any], passwd (<< 1:4.1.5.1-2~) [hurd-any], hurd (<< 20140206~) [hurd-any]
-Replaces: manpages-de (<< 0.5-3), manpages-tr (<<1.0.5), manpages-zh (<<1.5.1-1), passwd (<< 1:4.1.5.1-2~) [hurd-any], coreutils (<< 8.21~) [hurd-any], hurd (<< 20140206~) [hurd-any]
 Essential: yes
+Pre-Depends: ${shlibs:Depends},
+             ${misc:Depends},
+             libpam-runtime,
+             libpam-modules (>= 1.1.8-1)
+Breaks: coreutils (<< 8.21~) [hurd-any],
+        passwd (<< 1:4.1.5.1-2~) [hurd-any],
+        hurd (<< 20140206~) [hurd-any]
+Conflicts: gnunet (<< 0.7.0c-2),
+           amavisd-new (<< 2.3.3-8),
+           python-4suite (<< 0.99cvs20060405-1),
+           backupninja (<< 0.9.3-5),
+           echolot (<< 2.1.8-4)
+Replaces: manpages-de (<< 0.5-3),
+          manpages-tr (<< 1.0.5),
+          manpages-zh (<< 1.5.1-1),
+          passwd (<< 1:4.1.5.1-2~) [hurd-any],
+          coreutils (<< 8.21~) [hurd-any],
+          hurd (<< 20140206~) [hurd-any]
 Description: system login tools
  These tools are required to be able to login and use your system. The
  login program invokes your user shell and enables command execution. The
@@ -39,9 +70,10 @@ Description: system login tools
  user ID (useful being able to execute commands as another user).
 
 Package: uidmap
-Priority: optional
-Depends: ${shlibs:Depends}, ${misc:Depends}
 Architecture: any
+Priority: optional
+Depends: ${shlibs:Depends},
+         ${misc:Depends}
 Description: programs to help use subuids
  These programs help unprivileged users to create uid and gid mappings in
  user namespaces.

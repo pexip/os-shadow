@@ -5,12 +5,12 @@ Note: useradd.8 needs to be regenerated.
 Status wrt upstream: not included as this is just specific 
                      backward compatibility for Debian
 
-Index: git/man/useradd.8.xml
+Index: shadow-4.4/man/useradd.8.xml
 ===================================================================
---- git.orig/man/useradd.8.xml
-+++ git/man/useradd.8.xml
+--- shadow-4.4.orig/man/useradd.8.xml
++++ shadow-4.4/man/useradd.8.xml
 @@ -329,6 +329,11 @@
- 	    databases are resetted to avoid reusing the entry from a previously
+ 	    databases are reset to avoid reusing the entry from a previously
  	    deleted user.
  	  </para>
 +          <para>
@@ -21,11 +21,11 @@ Index: git/man/useradd.8.xml
  	</listitem>
        </varlistentry>
        <varlistentry>
-Index: git/src/useradd.c
+Index: shadow-4.4/src/useradd.c
 ===================================================================
---- git.orig/src/useradd.c
-+++ git/src/useradd.c
-@@ -1056,9 +1056,9 @@
+--- shadow-4.4.orig/src/useradd.c
++++ shadow-4.4/src/useradd.c
+@@ -1056,9 +1056,9 @@ static void process_flags (int argc, cha
  		};
  		while ((c = getopt_long (argc, argv,
  #ifdef WITH_SELINUX
@@ -37,7 +37,7 @@ Index: git/src/useradd.c
  #endif				/* !WITH_SELINUX */
  		                         long_options, NULL)) != -1) {
  			switch (c) {
-@@ -1181,6 +1181,7 @@
+@@ -1181,6 +1181,7 @@ static void process_flags (int argc, cha
  				kflg = true;
  				break;
  			case 'K':

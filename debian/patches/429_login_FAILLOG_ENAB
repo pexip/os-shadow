@@ -7,11 +7,11 @@ Fixes: #192849
 Note: It could be removed if pam_tally could report the number of failures
       preceding a successful login.
 
-Index: git/src/login.c
+Index: shadow-4.4/src/login.c
 ===================================================================
---- git.orig/src/login.c
-+++ git/src/login.c
-@@ -131,9 +131,9 @@
+--- shadow-4.4.orig/src/login.c
++++ shadow-4.4/src/login.c
+@@ -131,9 +131,9 @@ static void update_utmp (const char *use
                           const char *host,
                           /*@null@*/const struct utmp *utent);
  
@@ -22,7 +22,7 @@ Index: git/src/login.c
  static void bad_time_notify (void);
  static void check_nologin (bool login_to_root);
  #else
-@@ -791,6 +791,9 @@
+@@ -794,6 +794,9 @@ int main (int argc, char **argv)
  				SYSLOG ((LOG_NOTICE,
  				         "TOO MANY LOGIN TRIES (%u)%s FOR '%s'",
  				         failcount, fromhost, failent_user));
@@ -32,7 +32,7 @@ Index: git/src/login.c
  				fprintf (stderr,
  				         _("Maximum number of tries exceeded (%u)\n"),
  				         failcount);
-@@ -808,6 +811,14 @@
+@@ -811,6 +814,14 @@ int main (int argc, char **argv)
  				         pam_strerror (pamh, retcode)));
  				failed = true;
  			}
@@ -47,7 +47,7 @@ Index: git/src/login.c
  
  			if (!failed) {
  				break;
-@@ -831,6 +842,10 @@
+@@ -834,6 +845,10 @@ int main (int argc, char **argv)
  			(void) puts ("");
  			(void) puts (_("Login incorrect"));
  
@@ -58,7 +58,7 @@ Index: git/src/login.c
  			if (getdef_str("FTMP_FILE") != NULL) {
  #ifdef USE_UTMPX
  				struct utmpx *failent =
-@@ -1285,6 +1300,7 @@
+@@ -1288,6 +1303,7 @@ int main (int argc, char **argv)
  		 */
  #ifndef USE_PAM
  		motd ();	/* print the message of the day */
@@ -66,7 +66,7 @@ Index: git/src/login.c
  		if (   getdef_bool ("FAILLOG_ENAB")
  		    && (0 != faillog.fail_cnt)) {
  			failprint (&faillog);
-@@ -1297,6 +1313,7 @@
+@@ -1300,6 +1316,7 @@ int main (int argc, char **argv)
  				         username, (int) faillog.fail_cnt));
  			}
  		}
@@ -74,11 +74,11 @@ Index: git/src/login.c
  		if (   getdef_bool ("LASTLOG_ENAB")
  		    && (ll.ll_time != 0)) {
  			time_t ll_time = ll.ll_time;
-Index: git/lib/getdef.c
+Index: shadow-4.4/lib/getdef.c
 ===================================================================
---- git.orig/lib/getdef.c
-+++ git/lib/getdef.c
-@@ -61,6 +61,7 @@
+--- shadow-4.4.orig/lib/getdef.c
++++ shadow-4.4/lib/getdef.c
+@@ -86,6 +86,7 @@ static struct itemdef def_table[] = {
  	{"ENV_SUPATH", NULL},
  	{"ERASECHAR", NULL},
  	{"FAIL_DELAY", NULL},
@@ -86,11 +86,3 @@ Index: git/lib/getdef.c
  	{"FAKE_SHELL", NULL},
  	{"FTMP_FILE", NULL},
  	{"GID_MAX", NULL},
-@@ -109,7 +110,6 @@
- 	{"ENV_HZ", NULL},
- 	{"ENVIRON_FILE", NULL},
- 	{"ENV_TZ", NULL},
--	{"FAILLOG_ENAB", NULL},
- 	{"ISSUE_FILE", NULL},
- 	{"LASTLOG_ENAB", NULL},
- 	{"LOGIN_STRING", NULL},

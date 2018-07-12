@@ -4,11 +4,11 @@ Notes:
  * I'm not sure login should add an entry in the FTMP file when PAM is used.
    (but nothing in /etc/login.defs indicates that the failure is not logged)
 
-Index: git/src/login.c
+Index: shadow-4.4/src/login.c
 ===================================================================
---- git.orig/src/login.c
-+++ git/src/login.c
-@@ -831,6 +831,24 @@
+--- shadow-4.4.orig/src/login.c
++++ shadow-4.4/src/login.c
+@@ -834,6 +834,24 @@ int main (int argc, char **argv)
  			(void) puts ("");
  			(void) puts (_("Login incorrect"));
  
@@ -33,11 +33,19 @@ Index: git/src/login.c
  			if (failcount >= retries) {
  				SYSLOG ((LOG_NOTICE,
  				         "TOO MANY LOGIN TRIES (%u)%s FOR '%s'",
-Index: git/lib/getdef.c
+Index: shadow-4.4/lib/getdef.c
 ===================================================================
---- git.orig/lib/getdef.c
-+++ git/lib/getdef.c
-@@ -62,6 +62,7 @@
+--- shadow-4.4.orig/lib/getdef.c
++++ shadow-4.4/lib/getdef.c
+@@ -57,7 +57,6 @@ struct itemdef {
+ 	{"ENVIRON_FILE", NULL},			\
+ 	{"ENV_TZ", NULL},			\
+ 	{"FAILLOG_ENAB", NULL},			\
+-	{"FTMP_FILE", NULL},			\
+ 	{"ISSUE_FILE", NULL},			\
+ 	{"LASTLOG_ENAB", NULL},			\
+ 	{"LOGIN_STRING", NULL},			\
+@@ -88,6 +87,7 @@ static struct itemdef def_table[] = {
  	{"ERASECHAR", NULL},
  	{"FAIL_DELAY", NULL},
  	{"FAKE_SHELL", NULL},
@@ -45,11 +53,3 @@ Index: git/lib/getdef.c
  	{"GID_MAX", NULL},
  	{"GID_MIN", NULL},
  	{"HUSHLOGIN_FILE", NULL},
-@@ -109,7 +110,6 @@
- 	{"ENVIRON_FILE", NULL},
- 	{"ENV_TZ", NULL},
- 	{"FAILLOG_ENAB", NULL},
--	{"FTMP_FILE", NULL},
- 	{"ISSUE_FILE", NULL},
- 	{"LASTLOG_ENAB", NULL},
- 	{"LOGIN_STRING", NULL},
