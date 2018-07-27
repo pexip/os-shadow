@@ -496,7 +496,7 @@ static int add_passwd (struct passwd *pwd, const char *password)
 			}
 			spent.sp_pwdp = cp;
 		}
-		spent.sp_lstchg = (long) time ((time_t *) 0) / SCALE;
+		spent.sp_lstchg = (long) gettime () / SCALE;
 		if (0 == spent.sp_lstchg) {
 			/* Better disable aging than requiring a password
 			 * change */
@@ -553,7 +553,7 @@ static int add_passwd (struct passwd *pwd, const char *password)
 	 */
 	spent.sp_pwdp = "!";
 #endif
-	spent.sp_lstchg = (long) time ((time_t *) 0) / SCALE;
+	spent.sp_lstchg = (long) gettime () / SCALE;
 	if (0 == spent.sp_lstchg) {
 		/* Better disable aging than requiring a password change */
 		spent.sp_lstchg = -1;
@@ -988,8 +988,8 @@ int main (int argc, char **argv)
 	is_shadow_grp = sgr_file_present ();
 #endif
 #ifdef ENABLE_SUBIDS
-	is_sub_uid = sub_uid_file_present ();
-	is_sub_gid = sub_gid_file_present ();
+	is_sub_uid = sub_uid_file_present () && !rflg;
+	is_sub_gid = sub_gid_file_present () && !rflg;
 #endif				/* ENABLE_SUBIDS */
 
 	open_files ();

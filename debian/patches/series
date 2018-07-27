@@ -1,13 +1,3 @@
-0001-Typos-fix-in-german-translation-of-man-pages.patch
-0002-Last-bits-of-enabling-subuids.patch
-0003-Dutch-translation-update.patch
-0004-Updated-Czech-translation.patch
-0005-Update-for-German-man-pages.patch
-0006-French-manpage-translation.patch
-0007-Fix-some-spelling-issues-in-the-Norwegian-translatio.patch
-0008-su-properly-clear-child-PID.patch
-301-Reset-pid_child-only-if-waitpid-was-successful.patch
-
 # These patches are only for the testsuite:
 #900_testsuite_groupmems
 #901_testsuite_gcov
@@ -21,10 +11,6 @@
 506_relaxed_usernames
 542_useradd-O_option
 463_login_delay_obeys_to_PAM
-523_su_arguments_are_concatenated
-523_su_arguments_are_no_more_concatenated_by_default
 508_nologin_in_usr_sbin
 505_useradd_recommend_adduser
 501_commonio_group_shadow
-# does not apply cleanly, please merge at upstream
-1010_vietnamese_translation

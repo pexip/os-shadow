@@ -50,7 +50,6 @@ ifneq ($(DEB_HOST_ARCH_OS),linux)
 	sed -i 's/session    optional   pam_keyinit.so/# Linux only # session    optional   pam_keyinit.so/' debian/login.pam
 endif
 	dh_installpam -p login
-	dh_installpam -p login --name=su
 	install -c -m 444 debian/login.defs debian/login/etc/login.defs
 	install -c -m 444 debian/securetty.$(DEB_HOST_ARCH_OS) debian/login/etc/securetty
 	dh_lintian -p login
@@ -81,7 +80,6 @@ binary-predeb/uidmap::
 binary-predeb/login::
 	# No real need for login to be setuid root
 	# chmod u+s debian/login/bin/login
-	chmod u+s debian/login/bin/su
 	chmod u+s debian/login/usr/bin/newgrp
 
 binary-predeb/passwd::

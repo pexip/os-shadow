@@ -1,7 +1,7 @@
 
 EXTRA_DIST = .indent.pro xgetXXbyYY.c
 
-INCLUDES = -I$(top_srcdir)/lib
+AM_CPPFLAGS = -I$(top_srcdir)/lib
 
 noinst_LIBRARIES = libmisc.a
 
@@ -31,6 +31,7 @@ libmisc_a_SOURCES = \
 	getdate.y \
 	getgr_nam_gid.c \
 	getrange.c \
+	gettime.c \
 	hushed.c \
 	idmapping.h \
 	idmapping.c \

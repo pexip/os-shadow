@@ -2,10 +2,8 @@ Goal: save the [g]shadow files with the 'shadow' group and mode 0440
 
 Fixes: #166793
 
-Index: shadow-4.4/lib/commonio.c
-===================================================================
---- shadow-4.4.orig/lib/commonio.c
-+++ shadow-4.4/lib/commonio.c
+--- a/lib/commonio.c
++++ b/lib/commonio.c
 @@ -44,6 +44,7 @@
  #include <errno.h>
  #include <stdio.h>
@@ -14,7 +12,7 @@ Index: shadow-4.4/lib/commonio.c
  #include "nscd.h"
  #ifdef WITH_TCB
  #include <tcb.h>
-@@ -966,12 +967,23 @@ int commonio_close (struct commonio_db *
+@@ -963,12 +964,23 @@
  			goto fail;
  		}
  	} else {
@@ -38,11 +36,9 @@ Index: shadow-4.4/lib/commonio.c
  	}
  
  	snprintf (buf, sizeof buf, "%s+", db->filename);
-Index: shadow-4.4/lib/sgroupio.c
-===================================================================
---- shadow-4.4.orig/lib/sgroupio.c
-+++ shadow-4.4/lib/sgroupio.c
-@@ -228,7 +228,7 @@ static struct commonio_db gshadow_db = {
+--- a/lib/sgroupio.c
++++ b/lib/sgroupio.c
+@@ -229,7 +229,7 @@
  #ifdef WITH_SELINUX
  	NULL,			/* scontext */
  #endif
@@ -51,11 +47,9 @@ Index: shadow-4.4/lib/sgroupio.c
  	0,                      /* st_uid */
  	0,                      /* st_gid */
  	NULL,			/* head */
-Index: shadow-4.4/lib/shadowio.c
-===================================================================
---- shadow-4.4.orig/lib/shadowio.c
-+++ shadow-4.4/lib/shadowio.c
-@@ -104,7 +104,7 @@ static struct commonio_db shadow_db = {
+--- a/lib/shadowio.c
++++ b/lib/shadowio.c
+@@ -105,7 +105,7 @@
  #ifdef WITH_SELINUX
  	NULL,			/* scontext */
  #endif				/* WITH_SELINUX */
