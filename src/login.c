@@ -129,7 +129,12 @@ static /*@observer@*/const char *get_failent_user (/*@returned@*/const char *use
 static void update_utmp (const char *user,
                          const char *tty,
                          const char *host,
-                         /*@null@*/const struct utmp *utent);
+#ifdef USE_UTMPX
+                         /*@null@*/const struct utmpx *utent
+#else
+                         /*@null@*/const struct utmp *utent
+#endif
+			);
 
 #ifndef USE_PAM
 static struct faillog faillog;
@@ -230,7 +235,7 @@ static void bad_time_notify (void)
 
 static void check_nologin (bool login_to_root)
 {
-	char *fname;
+	const char *fname;
 
 	/*
 	 * Check to see if system is turned off for non-root users.
@@ -370,7 +375,7 @@ static void process_flags (int argc, char *const *argv)
 static void init_env (void)
 {
 #ifndef USE_PAM
-	char *cp;
+	const char *cp;
 #endif
 	char *tmp;
 
@@ -481,17 +486,23 @@ static /*@observer@*/const char *get_failent_user (/*@returned@*/const char *use
 static void update_utmp (const char *user,
                          const char *tty,
                          const char *host,
-                         /*@null@*/const struct utmp *utent)
+#ifdef USE_UTMPX
+                         /*@null@*/const struct utmpx *utent
+#else
+                         /*@null@*/const struct utmp *utent
+#endif
+			 )
 {
-	struct utmp  *ut  = prepare_utmp  (user, tty, host, utent);
 #ifdef USE_UTMPX
 	struct utmpx *utx = prepare_utmpx (user, tty, host, utent);
+#else
+	struct utmp  *ut  = prepare_utmp  (user, tty, host, utent);
 #endif				/* USE_UTMPX */
 
+#ifndef USE_UTMPX
 	(void) setutmp  (ut);	/* make entry in the utmp & wtmp files */
 	free (ut);
-
-#ifdef USE_UTMPX
+#else
 	(void) setutmpx (utx);	/* make entry in the utmpx & wtmpx files */
 	free (utx);
 #endif				/* USE_UTMPX */
@@ -539,7 +550,11 @@ int main (int argc, char **argv)
 	struct passwd *pwd = NULL;
 	char **envp = environ;
 	const char *failent_user;
+#ifdef USE_UTMPX
+	/*@null@*/struct utmpx *utent;
+#else
 	/*@null@*/struct utmp *utent;
+#endif
 
 #ifdef USE_PAM
 	int retcode;
@@ -681,7 +696,7 @@ int main (int argc, char **argv)
 
 	if (rflg || hflg) {
 		cp = hostname;
-#ifdef	HAVE_STRUCT_UTMP_UT_HOST
+#if defined(HAVE_STRUCT_UTMP_UT_HOST) || defined(USE_UTMPX)
 	} else if ((NULL != utent) && ('\0' != utent->ut_host[0])) {
 		cp = utent->ut_host;
 #endif				/* HAVE_STRUCT_UTMP_UT_HOST */
@@ -1147,7 +1162,9 @@ int main (int argc, char **argv)
 #endif				/* WITH_AUDIT */
 
 #ifndef USE_PAM			/* pam_lastlog handles this */
-	if (getdef_bool ("LASTLOG_ENAB")) {	/* give last login and log this one */
+	if (   getdef_bool ("LASTLOG_ENAB")
+	    && pwd->pw_uid <= (uid_t) getdef_ulong ("LASTLOG_UID_MAX", 0xFFFFFFFFUL)) {
+		/* give last login and log this one */
 		dolastlog (&ll, pwd, tty, hostname);
 	}
 #endif
@@ -1163,7 +1180,7 @@ int main (int argc, char **argv)
 			 * entries.
 			 * Use the x variants because we need to keep the
 			 * entry for a long time, and there might be other
-			 * getxxyy in between.
+			 * getxxyyy in between.
 			 */
 			pw_free (pwd);
 			pwd = xgetpwnam (username);
@@ -1283,6 +1300,7 @@ int main (int argc, char **argv)
 			}
 		}
 		if (   getdef_bool ("LASTLOG_ENAB")
+		    && pwd->pw_uid <= (uid_t) getdef_ulong ("LASTLOG_UID_MAX", 0xFFFFFFFFUL)
 		    && (ll.ll_time != 0)) {
 			time_t ll_time = ll.ll_time;
 

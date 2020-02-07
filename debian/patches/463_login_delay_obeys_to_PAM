@@ -7,11 +7,9 @@ Status wrt upstream: Forwarded but not applied yet
 
 Note: If removed, FAIL_DELAY must be re-added to /etc/login.defs
 
-Index: shadow-4.4/src/login.c
-===================================================================
---- shadow-4.4.orig/src/login.c
-+++ shadow-4.4/src/login.c
-@@ -525,7 +525,6 @@ int main (int argc, char **argv)
+--- a/src/login.c
++++ b/src/login.c
+@@ -536,7 +536,6 @@
  #if defined(HAVE_STRFTIME) && !defined(USE_PAM)
  	char ptime[80];
  #endif
@@ -19,7 +17,7 @@ Index: shadow-4.4/src/login.c
  	unsigned int retries;
  	bool subroot = false;
  #ifndef USE_PAM
-@@ -546,6 +545,7 @@ int main (int argc, char **argv)
+@@ -561,6 +560,7 @@
  	pid_t child;
  	char *pam_user = NULL;
  #else
@@ -27,7 +25,7 @@ Index: shadow-4.4/src/login.c
  	struct spwd *spwd = NULL;
  #endif
  	/*
-@@ -708,7 +708,6 @@ int main (int argc, char **argv)
+@@ -723,7 +723,6 @@
  	}
  
  	environ = newenvp;	/* make new environment active */
@@ -35,7 +33,7 @@ Index: shadow-4.4/src/login.c
  	retries = getdef_unum ("LOGIN_RETRIES", RETRIES);
  
  #ifdef USE_PAM
-@@ -724,8 +723,7 @@ int main (int argc, char **argv)
+@@ -739,8 +738,7 @@
  
  	/*
  	 * hostname & tty are either set to NULL or their correct values,
@@ -45,7 +43,7 @@ Index: shadow-4.4/src/login.c
  	 *
  	 * PAM_RHOST and PAM_TTY are used for authentication, only use
  	 * information coming from login or from the caller (e.g. no utmp)
-@@ -734,10 +732,6 @@ int main (int argc, char **argv)
+@@ -749,10 +747,6 @@
  	PAM_FAIL_CHECK;
  	retcode = pam_set_item (pamh, PAM_TTY, tty);
  	PAM_FAIL_CHECK;
@@ -56,7 +54,7 @@ Index: shadow-4.4/src/login.c
  	/* if fflg, then the user has already been authenticated */
  	if (!fflg) {
  		unsigned int failcount = 0;
-@@ -778,12 +772,6 @@ int main (int argc, char **argv)
+@@ -793,12 +787,6 @@
  			bool failed = false;
  
  			failcount++;
@@ -69,7 +67,7 @@ Index: shadow-4.4/src/login.c
  
  			retcode = pam_authenticate (pamh, 0);
  
-@@ -1106,14 +1094,17 @@ int main (int argc, char **argv)
+@@ -1121,14 +1109,17 @@
  		free (username);
  		username = NULL;
  
@@ -87,11 +85,9 @@ Index: shadow-4.4/src/login.c
  
  		(void) puts (_("Login incorrect"));
  
-Index: shadow-4.4/lib/getdef.c
-===================================================================
---- shadow-4.4.orig/lib/getdef.c
-+++ shadow-4.4/lib/getdef.c
-@@ -85,7 +85,6 @@ static struct itemdef def_table[] = {
+--- a/lib/getdef.c
++++ b/lib/getdef.c
+@@ -88,7 +88,6 @@
  	{"ENV_PATH", NULL},
  	{"ENV_SUPATH", NULL},
  	{"ERASECHAR", NULL},

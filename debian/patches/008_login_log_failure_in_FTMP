@@ -4,11 +4,9 @@ Notes:
  * I'm not sure login should add an entry in the FTMP file when PAM is used.
    (but nothing in /etc/login.defs indicates that the failure is not logged)
 
-Index: shadow-4.4/src/login.c
-===================================================================
---- shadow-4.4.orig/src/login.c
-+++ shadow-4.4/src/login.c
-@@ -834,6 +834,24 @@ int main (int argc, char **argv)
+--- a/src/login.c
++++ b/src/login.c
+@@ -849,6 +849,24 @@
  			(void) puts ("");
  			(void) puts (_("Login incorrect"));
  
@@ -33,11 +31,9 @@ Index: shadow-4.4/src/login.c
  			if (failcount >= retries) {
  				SYSLOG ((LOG_NOTICE,
  				         "TOO MANY LOGIN TRIES (%u)%s FOR '%s'",
-Index: shadow-4.4/lib/getdef.c
-===================================================================
---- shadow-4.4.orig/lib/getdef.c
-+++ shadow-4.4/lib/getdef.c
-@@ -57,7 +57,6 @@ struct itemdef {
+--- a/lib/getdef.c
++++ b/lib/getdef.c
+@@ -60,7 +60,6 @@
  	{"ENVIRON_FILE", NULL},			\
  	{"ENV_TZ", NULL},			\
  	{"FAILLOG_ENAB", NULL},			\
@@ -45,11 +41,11 @@ Index: shadow-4.4/lib/getdef.c
  	{"ISSUE_FILE", NULL},			\
  	{"LASTLOG_ENAB", NULL},			\
  	{"LOGIN_STRING", NULL},			\
-@@ -88,6 +87,7 @@ static struct itemdef def_table[] = {
+@@ -91,6 +90,7 @@
  	{"ERASECHAR", NULL},
  	{"FAIL_DELAY", NULL},
  	{"FAKE_SHELL", NULL},
 +	{"FTMP_FILE", NULL},
  	{"GID_MAX", NULL},
  	{"GID_MIN", NULL},
- 	{"HUSHLOGIN_FILE", NULL},
+ 	{"HOME_MODE", NULL},

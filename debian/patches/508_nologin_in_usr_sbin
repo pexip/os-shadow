@@ -3,12 +3,12 @@
 @@ -24,7 +24,6 @@
  # $prefix/bin and $prefix/sbin, no install-data hacks...)
  
- bin_PROGRAMS   = groups login su
+ bin_PROGRAMS   = groups login
 -sbin_PROGRAMS  = nologin
  ubin_PROGRAMS  = faillog lastlog chage chfn chsh expiry gpasswd newgrp passwd
  if ENABLE_SUBIDS
  ubin_PROGRAMS += newgidmap newuidmap
-@@ -42,6 +41,7 @@
+@@ -45,6 +44,7 @@
  	grpunconv \
  	logoutd \
  	newusers \

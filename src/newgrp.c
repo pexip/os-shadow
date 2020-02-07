@@ -83,15 +83,29 @@ static void usage (void)
 	}
 }
 
-/*
- * find_matching_group - search all groups of a given group id for
- *                       membership of a given username
- */
-static /*@null@*/struct group *find_matching_group (const char *name, gid_t gid)
+static bool ingroup(const char *name, struct group *gr)
 {
-	struct group *gr;
 	char **look;
 	bool notfound = true;
+
+	look = gr->gr_mem;
+	while (*look && notfound)
+		notfound = strcmp (*look++, name);
+
+	return !notfound;
+}
+
+/*
+ * find_matching_group - search all groups of a gr's group id for
+ *                       membership of a given username
+ *                       but check gr itself first
+ */
+static /*@null@*/struct group *find_matching_group (const char *name, struct group *gr)
+{
+	gid_t gid = gr->gr_gid;
+
+	if (ingroup(name, gr))
+		return gr;
 
 	setgrent ();
 	while ((gr = getgrent ()) != NULL) {
@@ -103,14 +117,8 @@ static /*@null@*/struct group *find_matching_group (const char *name, gid_t gid)
 		 * A group with matching GID was found.
 		 * Test for membership of 'name'.
 		 */
-		look = gr->gr_mem;
-		while ((NULL != *look) && notfound) {
-			notfound = (strcmp (*look, name) != 0);
-			look++;
-		}
-		if (!notfound) {
+		if (ingroup(name, gr))
 			break;
-		}
 	}
 	endgrent ();
 	return gr;
@@ -248,7 +256,7 @@ failure:
 /*
  * syslog_sg - log the change of group to syslog
  *
- *	The loggout will also be logged when the user will quit the
+ *	The logout will also be logged when the user will quit the
  *	sg/newgrp session.
  */
 static void syslog_sg (const char *name, const char *group)
@@ -387,10 +395,12 @@ int main (int argc, char **argv)
 {
 	bool initflag = false;
 	int i;
+	bool is_member = false;
 	bool cflag = false;
 	int err = 0;
 	gid_t gid;
 	char *cp;
+	char *progbase;
 	const char *name, *prog;
 	char *group = NULL;
 	char *command = NULL;
@@ -625,22 +635,36 @@ int main (int argc, char **argv)
 		goto failure;
 	}
 
+#ifdef HAVE_SETGROUPS
+	/* when using pam_group, she will not be listed in the groups
+	 * database. However getgroups() will return the group. So
+	 * if she is listed there already it is ok to grant membership.
+	 */
+	for (i = 0; i < ngroups; i++) {
+		if (grp->gr_gid == grouplist[i]) {
+			is_member = true;
+			break;
+		}
+	}
+#endif                          /* HAVE_SETGROUPS */
 	/*
 	 * For splitted groups (due to limitations of NIS), check all 
 	 * groups of the same GID like the requested group for
 	 * membership of the current user.
 	 */
-	grp = find_matching_group (name, grp->gr_gid);
-	if (NULL == grp) {
-		/*
-		 * No matching group found. As we already know that
-		 * the group exists, this happens only in the case
-		 * of a requested group where the user is not member.
-		 *
-		 * Re-read the group entry for further processing.
-		 */
-		grp = xgetgrnam (group);
-		assert (NULL != grp);
+	if (!is_member) {
+		grp = find_matching_group (name, grp);
+		if (NULL == grp) {
+			/*
+			 * No matching group found. As we already know that
+			 * the group exists, this happens only in the case
+			 * of a requested group where the user is not member.
+			 *
+			 * Re-read the group entry for further processing.
+			 */
+			grp = xgetgrnam (group);
+			assert (NULL != grp);
+		}
 	}
 #ifdef SHADOWGRP
 	sgrp = getsgnam (group);
@@ -653,7 +677,9 @@ int main (int argc, char **argv)
 	/*
 	 * Check if the user is allowed to access this group.
 	 */
-	check_perms (grp, pwd, group);
+	if (!is_member) {
+		check_perms (grp, pwd, group);
+	}
 
 	/*
 	 * all successful validations pass through this point. The group id
@@ -781,7 +807,7 @@ int main (int argc, char **argv)
 	 * Now I try to find the basename of the login shell. This will
 	 * become argv[0] of the spawned command.
 	 */
-	cp = Basename ((char *) prog);
+	progbase = (char *) Basename ((char *) prog);
 
 	/*
 	 * Switch back to her home directory if i am doing login
@@ -819,7 +845,7 @@ int main (int argc, char **argv)
 	 * Exec the login shell and go away. We are trying to get back to
 	 * the previous environment which should be the user's login shell.
 	 */
-	err = shell (prog, initflag ? (char *) 0 : cp, newenvp);
+	err = shell (prog, initflag ? (char *) 0 : progbase, newenvp);
 	exit ((err == ENOENT) ? E_CMD_NOTFOUND : E_CMD_NOEXEC);
 	/*@notreached@*/
       failure:

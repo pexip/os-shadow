@@ -1,8 +1,105 @@
-2016-05-17  Serge Hallyn <serge@hallyn.com>
+2020-01-23  Serge Hallyn <serge@hallyn.com>
+
+	* selinux: inclue stdio (Michael Vetter)
+	* man: don't suggest making groupmems user-writeable (Michael Weiser)
+	* Makefile: bail out on error in for loops (Wolfgang Bumiller)
+	* Adding logging of SSH_ORIGINAL_COMMAND to nologin. (ed@s5h.net)
+	* add new HOME_MODE login.defs option (Duncan Overbruck)
+	* Add tty logging to useradd (ed@s5h.net)
+	* Useradd: make non-executable shell check only a warning (Tomas Mraz)
+	* Update Dutch translation (Frans-Spiesschaert)
+	* user_busy: Do not mistake a regular user process for a namespaced one (Tomas Mraz)
+	* Revert "Honor --sbindir and --bindir for binary installation" Patrick McLean)
+
+2019-12-20  Dave Reisner <dreisner@archlinux.org>
+
+	* Do not auto-enable acct_tools_setuid just because
+	  pam is enabled.  NOTE - any distros which are relying
+	  on this behavior will need to switch to configure
+	  --enable-account-tools-setuid
+
+2019-12-01  Serge Hallyn <serge@hallyn.com>
+
+	* Release 4.8
+	* Initial optional bcrypt support.
+	* Make build/install of 'su' optional.
+	* Fix for vipw not resuming correctly when suspended
+	* Sync password field descriptions in manpages
+	* Check for valid shell argument in useradd
+	* Allow translation of new strings through POTFILES.in
+	* Migrate to itstool for translations
+	* Migrate to new SELinux api
+	* Support --enable-vendordir
+	* pwck: Only check homedir if set and not a system user
+	* Support nonstandard usernames
+	* sget{pw,gr}ent: check for data at EOL
+	* Add YYY-MM-DD support in chage
+	* Fix failing chmod calls for suidubins
+	* Fix --sbindir and --bindir for binary installations
+	* Fix LASTLOG_UID_MAX in login.defs
+	* Fix configure error with dash
+
+2019-06-13  Serge Hallyn <serge@hallyn.com>
+
+	* Release 4.7
+	* Spawn: don't loop forever on ECHILD
+	* Do not fail locking if there is a stale lockfile Tomas Mraz)
+	* Use lckpwdf if prefix not set (Tomas Mraz)
+	* Build: check correct DocBook version (Jan Tojnar)
+	* Usermod: Print 'no changes' to stdout, not stderr (Serge Hallyn)
+	* Add support for btrfs subvolumes for home (Adam Majer)
+	* Fix chpasswd long line handling (Nathan Ruiz)
+	* Use secure_getenv for gettime (Chris Lamb)
+	* Make sp_lstchg reproducible (Chris Lamb)
+	* Do not crash commonio_close if db file is not open (Tomas Mraz)
+	* Don't flush nscd and sssd cache in read-only mode (Charlie Vuillemez)
+	* French manpage update (Alban VIDAL)
+	* Fix manpage defaults for SUB_UID/GID_COUNT (Tomas Mraz)
+	* Sync po files from shadow.pot (Alban VIDAL)
+	* Usermod: guard against unsafe chown of homedir contents (Tomas Mraz)
+	* Add LASTLOG_UID_MAX to login.defs (Tomas Mraz)
+	* new[ug]idmap file capabilities support (Giuseppe Scrivano and Christian Brauner)
+	* Fix segfault in useradd (Tomas Mraz)
+	* Coverity issues (Tomas Mraz)
+	* Flush sssd caches (Jakub Hrozek)
+	* Log UID in nologin (Vladimir Ivanov)
+	* run pam_getenvlist after setup_env in su.c (Michael Vogt)
+	* Support systems with only utmpx (A. Wilcox)
+	* Fix unguarded ENABLE_SUBIDS code (Jan Chren (rindeal))
+	* Update po/zh_CN translation (Lion Yang)
+	* Create parent dirs for useradd -m (Michael Vetter)
+	* Prevent usermod segv
+	* Fix usermod crash (fariouche)
+
+2018-04-29  Serge Hallyn <serge@hallyn.com>
+
+	* Release 4.6
+	* Newgrp: avoid unnecessary lookups
+	* Make language less binary
+	* Add error when turning off man switch
+	* Spelling fixes
+	* Make userdel work with -R
+	* newgidmap: enforce setgroups=deny if self-mapping a group
+	* Norwegian bokmål translation
+	* pwck: prevent crash by not passing O_CREAT
+	* WITH_TCB fixes from Mandriva
+	* Fix pwconv and grpconv entry skips
+	* Fix -- slurping in su
+	* add --prefix option
+
+2017-07-16  Serge Hallyn <serge@hallyn.com>
+
+	* Import new Dutch translations.
+
+2017-07-10  Serge Hallyn <serge@hallyn.com>
+
+	* Expand error codes for groupmod.
+
+2017-05-17  Serge Hallyn <serge@hallyn.com>
 
 	* Release 4.5
 
-2016-05-17  Serge Hallyn <serge@hallyn.com>
+2017-05-17  Serge Hallyn <serge@hallyn.com>
 
 	* Patch from Tobias Stoeckmann fixing regression in previous CVE fix
 	  preventing SIGTERM to su from being propagated to the job.
@@ -10,18 +107,18 @@
 	* Merge Russian translation updates from Yuri Kozlov
 	* Fix missing close of subuid file on error
 
-2016-02-23  Serge Hallyn <serge@hallyn.com>
+2017-02-23  Serge Hallyn <serge@hallyn.com>
 
 	* Merge patch by Tobias Stoeckmann <tobias@stoeckmann.org> to fix
 	  the equivalent of util-linux CVE-2017-2616.
 
-2016-02-08  Serge Hallyn <serge@hallyn.com>
+2017-02-08  Serge Hallyn <serge@hallyn.com>
 
 	* Update Kazakh translations
 	* Consult configuration before calculating subuids
 	* Remove misplaced semicolon
 
-2016-01-29  Serge Hallyn <serge@hallyn.com>
+2017-01-29  Serge Hallyn <serge@hallyn.com>
 
 	* Patch from Fedora to improve performance with SSSD, Winbind,
 	  or nss_ldap. (Tomas Mraz)

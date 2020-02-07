@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ([2.64])
-AC_INIT([shadow], [4.5], [pkg-shadow-devel@lists.alioth.debian.org], [],
+AC_INIT([shadow], [4.8.1], [pkg-shadow-devel@lists.alioth.debian.org], [],
 	[https://github.com/shadow-maint/shadow])
 AM_INIT_AUTOMAKE([1.11 foreign dist-xz])
 AM_SILENT_RULES([yes])
@@ -34,7 +34,7 @@ AC_HEADER_STDBOOL
 
 AC_CHECK_HEADERS(errno.h fcntl.h limits.h unistd.h sys/time.h utmp.h \
 	utmpx.h termios.h termio.h sgtty.h sys/ioctl.h syslog.h paths.h \
-	utime.h ulimit.h sys/resource.h gshadow.h lastlog.h \
+	utime.h ulimit.h sys/capability.h sys/resource.h gshadow.h lastlog.h \
 	locale.h rpc/key_prot.h netdb.h acl/libacl.h attr/libattr.h \
 	attr/error_context.h)
 
@@ -74,12 +74,6 @@ AC_CHECK_MEMBERS([struct utmp.ut_type,
                   struct utmp.ut_time,
                   struct utmp.ut_xtime,
                   struct utmp.ut_tv],,,[[#include <utmp.h>]])
-dnl There are dependencies:
-dnl If UTMPX has to be used, the utmp structure shall have a ut_id field.
-if test "$ac_cv_header_utmpx_h" = "yes" &&
-   test "$ac_cv_member_struct_utmp_ut_id" != "yes"; then
-	AC_MSG_ERROR(Systems with UTMPX and no ut_id field in the utmp structure are not supported)
-fi
 
 AC_CHECK_MEMBERS([struct utmpx.ut_name,
                   struct utmpx.ut_host,
@@ -116,6 +110,9 @@ AC_REPLACE_FUNCS(sgetgrent sgetpwent sgetspent)
 AC_REPLACE_FUNCS(snprintf strcasecmp strdup strerror strstr)
 
 AC_CHECK_FUNC(setpgrp)
+AC_CHECK_FUNC(secure_getenv, [AC_DEFINE(HAS_SECURE_GETENV,
+                                        1,
+                                        [Defined to 1 if you have the declaration of 'secure_getenv'])])
 
 if test "$ac_cv_header_shadow_h" = "yes"; then
 	AC_CACHE_CHECK(for working shadow group support,
@@ -229,7 +226,7 @@ AC_ARG_ENABLE(account-tools-setuid,
 	   *) AC_MSG_ERROR(bad value ${enableval} for --enable-account-tools-setuid)
 	   ;;
 	 esac],
-	[enable_acct_tools_setuid="maybe"]
+	[enable_acct_tools_setuid="no"]
 )
 
 AC_ARG_ENABLE(utmpx,
@@ -250,12 +247,15 @@ AC_ARG_ENABLE(subordinate-ids,
 	[enable_subids="maybe"]
 )
 
-AC_ARG_WITH(audit, 
+AC_ARG_WITH(audit,
 	[AC_HELP_STRING([--with-audit], [use auditing support @<:@default=yes if found@:>@])],
 	[with_audit=$withval], [with_audit=maybe])
 AC_ARG_WITH(libpam,
 	[AC_HELP_STRING([--with-libpam], [use libpam for PAM support @<:@default=yes if found@:>@])],
 	[with_libpam=$withval], [with_libpam=maybe])
+AC_ARG_WITH(btrfs,
+	[AC_HELP_STRING([--with-btrfs], [add BtrFS support @<:@default=yes if found@:>@])],
+	[with_btrfs=$withval], [with_btrfs=maybe])
 AC_ARG_WITH(selinux,
 	[AC_HELP_STRING([--with-selinux], [use SELinux support @<:@default=yes if found@:>@])],
 	[with_selinux=$withval], [with_selinux=maybe])
@@ -277,12 +277,21 @@ AC_ARG_WITH(libcrack,
 AC_ARG_WITH(sha-crypt,
 	[AC_HELP_STRING([--with-sha-crypt], [allow the SHA256 and SHA512 password encryption algorithms @<:@default=yes@:>@])],
 	[with_sha_crypt=$withval], [with_sha_crypt=yes])
+AC_ARG_WITH(bcrypt,
+	[AC_HELP_STRING([--with-bcrypt], [allow the bcrypt password encryption algorithm @<:@default=no@:>@])],
+	[with_bcrypt=$withval], [with_bcrypt=no])
 AC_ARG_WITH(nscd,
 	[AC_HELP_STRING([--with-nscd], [enable support for nscd @<:@default=yes@:>@])],
 	[with_nscd=$withval], [with_nscd=yes])
+AC_ARG_WITH(sssd,
+	[AC_HELP_STRING([--with-sssd], [enable support for flushing sssd caches @<:@default=yes@:>@])],
+	[with_sssd=$withval], [with_sssd=yes])
 AC_ARG_WITH(group-name-max-length,
 	[AC_HELP_STRING([--with-group-name-max-length], [set max group name length @<:@default=16@:>@])],
 	[with_group_name_max_length=$withval], [with_group_name_max_length=yes])
+AC_ARG_WITH(su,
+	[AC_HELP_STRING([--with-su], [build and install su program and man page @<:@default=yes@:>@])],
+	[with_su=$withval], [with_su=yes])
 
 if test "$with_group_name_max_length" = "no" ; then
 	with_group_name_max_length=0
@@ -298,11 +307,25 @@ if test "$with_sha_crypt" = "yes"; then
 	AC_DEFINE(USE_SHA_CRYPT, 1, [Define to allow the SHA256 and SHA512 password encryption algorithms])
 fi
 
+AM_CONDITIONAL(USE_BCRYPT, test "x$with_bcrypt" = "xyes")
+if test "$with_bcrypt" = "yes"; then
+	AC_DEFINE(USE_BCRYPT, 1, [Define to allow the bcrypt password encryption algorithm])
+fi
+
 if test "$with_nscd" = "yes"; then
 	AC_CHECK_FUNC(posix_spawn,
 	              [AC_DEFINE(USE_NSCD, 1, [Define to support flushing of nscd caches])],
 	              [AC_MSG_ERROR([posix_spawn is needed for nscd support])])
 fi
+
+if test "$with_sssd" = "yes"; then
+	AC_CHECK_FUNC(posix_spawn,
+	              [AC_DEFINE(USE_SSSD, 1, [Define to support flushing of sssd caches])],
+	              [AC_MSG_ERROR([posix_spawn is needed for sssd support])])
+fi
+
+AS_IF([test "$with_su" != "no"], AC_DEFINE(WITH_SU, 1, [Build with su])])
+AM_CONDITIONAL([WITH_SU], [test "x$with_su" != "xno"])
 
 dnl Check for some functions in libc first, only if not found check for
 dnl other libraries.  This should prevent linking libnsl if not really
@@ -311,6 +334,17 @@ dnl needed (Linux glibc, Irix), but still link it if needed (Solaris).
 AC_SEARCH_LIBS(inet_ntoa, inet)
 AC_SEARCH_LIBS(socket, socket)
 AC_SEARCH_LIBS(gethostbyname, nsl)
+
+AC_CHECK_LIB([econf],[econf_readDirs],[LIBECONF="-leconf"],[LIBECONF=""])
+if test -n "$LIBECONF"; then
+	ECONF_CPPFLAGS="-DUSE_ECONF=1"
+	AC_ARG_ENABLE([vendordir],
+		AS_HELP_STRING([--enable-vendordir=DIR], [Directory for distribution provided configuration files]),,[])
+fi
+AC_SUBST(ECONF_CPPFLAGS)
+AC_SUBST(LIBECONF)
+AC_SUBST([VENDORDIR], [$enable_vendordir])
+AM_CONDITIONAL([HAVE_VENDORDIR], [test "x$enable_vendordir" != x])
 
 if test "$enable_shadowgrp" = "yes"; then
 	AC_DEFINE(SHADOWGRP, 1, [Define to support the shadow group file.])
@@ -324,11 +358,12 @@ if test "$enable_man" = "yes"; then
 	AC_PATH_PROG([XSLTPROC], [xsltproc])
 	if test -z "$XSLTPROC"; then
 		enable_man=no
+		AC_MSG_ERROR([xsltproc is missing.])
 	fi
 
 	dnl check for DocBook DTD and stylesheets in the local catalog.
-	JH_CHECK_XML_CATALOG([-//OASIS//DTD DocBook XML V4.1.2//EN],
-		[DocBook XML DTD V4.1.2], [], enable_man=no)
+	JH_CHECK_XML_CATALOG([-//OASIS//DTD DocBook XML V4.5//EN],
+		[DocBook XML DTD V4.5], [], enable_man=no)
 	JH_CHECK_XML_CATALOG([http://docbook.sourceforge.net/release/xsl/current/manpages/docbook.xsl],
 		[DocBook XSL Stylesheets >= 1.70.1], [], enable_man=no)
 fi
@@ -452,6 +487,20 @@ if test "$with_libcrack" = "yes"; then
 		AC_DEFINE(HAVE_LIBCRACK_PW, 1, [Defined if it includes *Pw functions.]))
 fi
 
+if test "$with_btrfs" != "no"; then
+	AC_CHECK_HEADERS([sys/statfs.h linux/magic.h linux/btrfs_tree.h], \
+		[btrfs_headers="yes"], [btrfs_headers="no"])
+	if test "$btrfs_headers$with_btrfs" = "noyes" ; then
+		AC_MSG_ERROR([One of sys/statfs.h linux/magic.h linux/btrfs_tree.h is missing])
+	fi
+
+	if test "$btrfs_headers" = "yes" ; then
+		AC_DEFINE(WITH_BTRFS, 1, [Build shadow with BtrFS support])
+		with_btrfs="yes"
+	fi
+fi
+AM_CONDITIONAL(WITH_BTRFS, test x$with_btrfs = xyes)
+
 AC_SUBST(LIBSELINUX)
 AC_SUBST(LIBSEMANAGE)
 if test "$with_selinux" != "no"; then
@@ -476,7 +525,7 @@ if test "$with_selinux" != "no"; then
 			AC_MSG_ERROR([libsemanage not found])
 		fi
 
-		if test "$selinux_lib$semanage_lib" == "yesyes" ; then
+		if test "$selinux_lib$semanage_lib" = "yesyes" ; then
 			AC_DEFINE(WITH_SELINUX, 1,
 			          [Build shadow with SELinux support])
 			LIBSELINUX="-lselinux"
@@ -566,7 +615,7 @@ if test "$with_libpam" = "yes"; then
 	LIBS=$save_libs
 
 	AC_DEFINE(USE_PAM, 1, [Define to support Pluggable Authentication Modules])
-	AC_DEFINE_UNQUOTED(SHADOW_PAM_CONVERSATION, [$pam_conv_function],[PAM converstation to use])
+	AC_DEFINE_UNQUOTED(SHADOW_PAM_CONVERSATION, [$pam_conv_function],[PAM conversation to use])
 	AM_CONDITIONAL(USE_PAM, [true])
 
 	AC_MSG_CHECKING(use login and su access checking if PAM not used)
@@ -595,6 +644,19 @@ if test "$enable_acct_tools_setuid" != "no"; then
 	fi
 fi
 AM_CONDITIONAL(ACCT_TOOLS_SETUID, test "x$enable_acct_tools_setuid" = "xyes")
+
+
+AC_ARG_WITH(fcaps,
+	[AC_HELP_STRING([--with-fcaps], [use file capabilities instead of suid binaries for newuidmap/newgidmap @<:@default=no@:>@])],
+	[with_fcaps=$withval], [with_fcaps=no])
+AM_CONDITIONAL(FCAPS, test "x$with_fcaps" = "xyes")
+
+if test "x$with_fcaps" = "xyes"; then
+	AC_CHECK_PROGS(capcmd, "setcap")
+	if test "x$capcmd" = "x" ; then
+		AC_MSG_ERROR([setcap command not available])
+	fi
+fi
 
 AC_SUBST(LIBSKEY)
 AC_SUBST(LIBMD)
@@ -671,12 +733,17 @@ if test "$with_libpam" = "yes"; then
 echo "	suid account management tools:	$enable_acct_tools_setuid"
 fi
 echo "	SELinux support:		$with_selinux"
+echo "	BtrFS support:			$with_btrfs"
 echo "	ACL support:			$with_acl"
 echo "	Extended Attributes support:	$with_attr"
 echo "	tcb support (incomplete):	$with_tcb"
 echo "	shadow group support:		$enable_shadowgrp"
 echo "	S/Key support:			$with_skey"
 echo "	SHA passwords encryption:	$with_sha_crypt"
+echo "	bcrypt passwords encryption:	$with_bcrypt"
 echo "	nscd support:			$with_nscd"
+echo "	sssd support:			$with_sssd"
 echo "	subordinate IDs support:	$enable_subids"
+echo "	use file caps:			$with_fcaps"
+echo "	install su:			$with_su"
 echo

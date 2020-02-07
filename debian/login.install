@@ -1,3 +1,4 @@
+debian/login.defs etc
 usr/share/locale/*/LC_MESSAGES/shadow.mo
 usr/share/man/*/man1/login.1
 usr/share/man/*/man1/newgrp.1

@@ -1,0 +1,1 @@
+rm_conffile /etc/cron.daily/passwd 1:4.7-2~

@@ -1,3 +1,11 @@
+shadow (1:4.7-1) unstable; urgency=medium
+
+  * /etc/securetty is no longer shipped by this package and it is no longer
+    honored in login's PAM configuration by default. Please see #731656 for the
+    details.
+
+ -- Balint Reczey <rbalint@ubuntu.com>  Thu, 20 Jun 2019 13:46:52 +0200
+
 shadow (1:4.0.15-5) unstable; urgency=low
 
   * commands passed in argument to su must use su's -c option and must quote

@@ -7,7 +7,7 @@ Status wrt upstream: not included as this is just specific
 
 --- a/man/useradd.8.xml
 +++ b/man/useradd.8.xml
-@@ -329,6 +329,11 @@
+@@ -341,6 +341,11 @@
  	    databases are reset to avoid reusing the entry from a previously
  	    deleted user.
  	  </para>
@@ -21,19 +21,19 @@ Status wrt upstream: not included as this is just specific
        <varlistentry>
 --- a/src/useradd.c
 +++ b/src/useradd.c
-@@ -1059,9 +1059,9 @@
+@@ -1143,9 +1143,9 @@
  		};
  		while ((c = getopt_long (argc, argv,
  #ifdef WITH_SELINUX
--		                         "b:c:d:De:f:g:G:hk:K:lmMNop:rR:s:u:UZ:",
-+		                         "b:c:d:De:f:g:G:hk:O:K:lmMNop:rR:s:u:UZ:",
+-		                         "b:c:d:De:f:g:G:hk:K:lmMNop:rR:P:s:u:UZ:",
++		                         "b:c:d:De:f:g:G:hk:O:K:lmMNop:rR:P:s:u:UZ:",
  #else				/* !WITH_SELINUX */
--		                         "b:c:d:De:f:g:G:hk:K:lmMNop:rR:s:u:U",
-+		                         "b:c:d:De:f:g:G:hk:O:K:lmMNop:rR:s:u:U",
+-		                         "b:c:d:De:f:g:G:hk:K:lmMNop:rR:P:s:u:U",
++		                         "b:c:d:De:f:g:G:hk:O:K:lmMNop:rR:P:s:u:U",
  #endif				/* !WITH_SELINUX */
  		                         long_options, NULL)) != -1) {
  			switch (c) {
-@@ -1184,6 +1184,7 @@
+@@ -1274,6 +1274,7 @@
  				kflg = true;
  				break;
  			case 'K':
