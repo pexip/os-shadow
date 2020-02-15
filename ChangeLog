@@ -1,3 +1,84 @@
+2016-05-17  Serge Hallyn <serge@hallyn.com>
+
+	* Release 4.5
+
+2016-05-17  Serge Hallyn <serge@hallyn.com>
+
+	* Patch from Tobias Stoeckmann fixing regression in previous CVE fix
+	  preventing SIGTERM to su from being propagated to the job.
+	* Patch from Chris Lamb making sp_lstchg shadow field reproducible.
+	* Merge Russian translation updates from Yuri Kozlov
+	* Fix missing close of subuid file on error
+
+2016-02-23  Serge Hallyn <serge@hallyn.com>
+
+	* Merge patch by Tobias Stoeckmann <tobias@stoeckmann.org> to fix
+	  the equivalent of util-linux CVE-2017-2616.
+
+2016-02-08  Serge Hallyn <serge@hallyn.com>
+
+	* Update Kazakh translations
+	* Consult configuration before calculating subuids
+	* Remove misplaced semicolon
+
+2016-01-29  Serge Hallyn <serge@hallyn.com>
+
+	* Patch from Fedora to improve performance with SSSD, Winbind,
+	  or nss_ldap. (Tomas Mraz)
+	* Make sure knowndef_table is NULL-terminated.  (Bernhard Rosenkränzer)
+
+2016-12-21  Serge Hallyn <serge@hallyn.com>
+
+	* Drop leading underscore from _COMMONIO_H and _SHADOWIO_H
+	* Fix readability in usermod error messages.
+	* Reset user in tallylog
+	* Add audit support to su
+
+2016-12-02  Serge Hallyn <serge@hallyn.com>
+
+	* changes since 4.4
+	  - Use sizeof rather than hardcoding snprintf args
+	  - Fix useradd improper default loading
+	  - Update Vietnamese translations
+	  - Update Polish translations
+	  - Remove non-POSIX chmod option in Makefile
+	  - Fix suidubins assignments
+	  - Fix --add-subuids etc spelling in manpages
+	  - Audit homedir ownership change.
+	  - Print error on selinux file context update failure
+	  - Keep original file perms when creating a backup
+
+	* (henceforth we'll update Changelog with each commit
+	  and proper credit)
+
+2016-12-02  Serge Hallyn <serge@hallyn.com>
+
+	* Changes since 4.2.1:
+	  - Documentation, error report and translations updates
+	  - Replace path_max with 32
+	  - User namespace support fixes/updates including:
+	    - Correct sanity checks in newXidmap
+	    - Fix building without subuid support
+	    - Add /etc/subuid support for UID matching
+	    - Support subuid for nonlocal users
+	    - Default to 65536 subuid allocations
+	    - Respect -r
+	    - Check for range overflows
+	  - Add tests from svn tree
+	  - Use AC_CHECK_SIZEOF for uid_t size checks
+	  - Accomodate missing /etc and login.defs
+	  - Support FORCE_SHADOW
+	  - Be more robust in hostile environment
+	  - Allow removing a primary group
+	  - Clear passwords on __pw_dup errors
+	  - Memory leak fix in commonio_update and get_map_ranges
+	  - Fix resource leak in syslog_sg
+	  - Fix user busy error at userdel
+	  - Support set/clear lastlog record via lastlog command
+	  - Add --no-create-home as longopt for -M
+	  - Fix signal races
+	  - Reduce syslog priority of common usage events
+
 2013-08-25  Nicolas François  <nicolas.francois@centraliens.net>
 
 	* src/vipw.c: After waitpid(), use errno only if waitpid returned

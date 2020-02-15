@@ -641,7 +641,7 @@ static void new_spent (struct spwd *spent)
 	spent->sp_pwdp = new_pw_passwd (spent->sp_pwdp);
 
 	if (pflg) {
-		spent->sp_lstchg = (long) time ((time_t *) 0) / SCALE;
+		spent->sp_lstchg = (long) gettime () / SCALE;
 		if (0 == spent->sp_lstchg) {
 			/* Better disable aging than requiring a password
 			 * change. */
@@ -1673,7 +1673,7 @@ static void usr_update (void)
 			spent.sp_pwdp   = xstrdup (pwent.pw_passwd);
 			pwent.pw_passwd = xstrdup (SHADOW_PASSWD_STRING);
 
-			spent.sp_lstchg = (long) time ((time_t *) 0) / SCALE;
+			spent.sp_lstchg = (long) gettime () / SCALE;
 			if (0 == spent.sp_lstchg) {
 				/* Better disable aging than
 				 * requiring a password change */
@@ -1755,6 +1755,14 @@ static void move_home (void)
 			         Prog, user_home);
 			fail_exit (E_HOMEDIR);
 		}
+
+#ifdef WITH_AUDIT
+		if (uflg || gflg) {
+			audit_logger (AUDIT_USER_CHAUTHTOK, Prog,
+				      "changing home directory owner",
+				      user_newname, (unsigned int) user_newid, 1);
+		}
+#endif
 
 		if (rename (user_home, user_newhome) == 0) {
 			/* FIXME: rename above may have broken symlinks
@@ -2148,7 +2156,7 @@ int main (int argc, char **argv)
 			unsigned long count = ptr->range.last - ptr->range.first + 1;
 			if (sub_uid_add(user_name, ptr->range.first, count) == 0) {
 				fprintf (stderr,
-					_("%s: failed to add uid range %lu-%lu from '%s'\n"),
+					_("%s: failed to add uid range %lu-%lu to '%s'\n"),
 					Prog, ptr->range.first, ptr->range.last, 
 					sub_uid_dbname ());
 				fail_exit (E_SUB_UID_UPDATE);
@@ -2174,7 +2182,7 @@ int main (int argc, char **argv)
 			unsigned long count = ptr->range.last - ptr->range.first + 1;
 			if (sub_gid_add(user_name, ptr->range.first, count) == 0) {
 				fprintf (stderr,
-					_("%s: failed to add gid range %lu-%lu from '%s'\n"),
+					_("%s: failed to add gid range %lu-%lu to '%s'\n"),
 					Prog, ptr->range.first, ptr->range.last, 
 					sub_gid_dbname ());
 				fail_exit (E_SUB_GID_UPDATE);
@@ -2252,6 +2260,13 @@ int main (int argc, char **argv)
 			 * ownership.
 			 *
 			 */
+#ifdef WITH_AUDIT
+			if (uflg || gflg) {
+				audit_logger (AUDIT_USER_CHAUTHTOK, Prog,
+					      "changing home directory owner",
+					      user_newname, (unsigned int) user_newid, 1);
+			}
+#endif
 			if (chown_tree (dflg ? user_newhome : user_home,
 			                user_id,
 			                uflg ? user_newid  : (uid_t)-1,

@@ -301,15 +301,12 @@ static int create_backup (const char *backup, FILE * fp)
 	struct utimbuf ub;
 	FILE *bkfp;
 	int c;
-	mode_t mask;
 
 	if (fstat (fileno (fp), &sb) != 0) {
 		return -1;
 	}
 
-	mask = umask (077);
-	bkfp = fopen (backup, "w");
-	(void) umask (mask);
+	bkfp = fopen_set_perms (backup, "w", &sb);
 	if (NULL == bkfp) {
 		return -1;
 	}
@@ -754,16 +751,16 @@ commonio_sort (struct commonio_db *db, int (*cmp) (const void *, const void *))
 	for (ptr = db->head;
 	        (NULL != ptr)
 #if KEEP_NIS_AT_END
-	     && (NULL != ptr->line)
-	     && (   ('+' != ptr->line[0])
-	         && ('-' != ptr->line[0]))
+	     && ((NULL == ptr->line)
+	         || (('+' != ptr->line[0])
+	             && ('-' != ptr->line[0])))
 #endif
 	     ;
 	     ptr = ptr->next) {
 		n++;
 	}
 #if KEEP_NIS_AT_END
-	if ((NULL != ptr) && (NULL != ptr->line)) {
+	if (NULL != ptr) {
 		nis = ptr;
 	}
 #endif

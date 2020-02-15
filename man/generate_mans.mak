@@ -42,12 +42,11 @@ man1/% man3/% man5/% man8/%: %.xml-config Makefile config.xml
 	            -nonet http://docbook.sourceforge.net/release/xsl/current/manpages/profile-docbook.xsl $<
 
 clean-local:
-	for d in man1 man3 man5 man8; do [ -d $$d ] && rmdir $$d; done
+	rm -rf man1 man3 man5 man8
 
 else
 $(man_MANS):
 	@echo you need to run configure with --enable-man to generate man pages
-	@false
 endif
 
 man8/grpconv.8 man8/grpunconv.8 man8/pwunconv.8: man8/pwconv.8
