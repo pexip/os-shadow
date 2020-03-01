@@ -1,3 +1,9 @@
+shadow (1:4.5-1.1pexip1) pexip; urgency=medium
+
+  * Migrate to Buster
+
+ -- Vincent Sanders <vince@pexip.com>  Sun, 01 Mar 2020 19:54:07 +0000
+
 shadow (1:4.5-1.1) unstable; urgency=medium
 
   * Non-maintainer upload (greetings from DebCamp/DebConf Taiwan).
