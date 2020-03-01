@@ -51,7 +51,9 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <sys/wait.h>
 #include <time.h>
+#include <unistd.h>
 #include "chkname.h"
 #include "defines.h"
 #include "faillog.h"
@@ -213,6 +215,7 @@ static void open_files (void);
 static void open_shadow (void);
 static void faillog_reset (uid_t);
 static void lastlog_reset (uid_t);
+static void tallylog_reset (char *);
 static void usr_update (void);
 static void create_home (void);
 static void create_mail (void);
@@ -825,7 +828,7 @@ static void new_spent (struct spwd *spent)
 	memzero (spent, sizeof *spent);
 	spent->sp_namp = (char *) user_name;
 	spent->sp_pwdp = (char *) user_pass;
-	spent->sp_lstchg = (long) time ((time_t *) 0) / SCALE;
+	spent->sp_lstchg = (long) gettime () / SCALE;
 	if (0 == spent->sp_lstchg) {
 		/* Better disable aging than requiring a password change */
 		spent->sp_lstchg = -1;
@@ -1789,6 +1792,52 @@ static void lastlog_reset (uid_t uid)
 	}
 }
 
+static void tallylog_reset (char *user_name)
+{
+	const char pam_tally2[] = "/sbin/pam_tally2";
+	const char *pname;
+	pid_t childpid;
+	int failed;
+	int status;
+
+	if (access(pam_tally2, X_OK) == -1)
+		return;
+
+	failed = 0;
+	switch (childpid = fork())
+	{
+	case -1: /* error */
+		failed = 1;
+		break;
+	case 0: /* child */
+		pname = strrchr(pam_tally2, '/');
+		if (pname == NULL)
+			pname = pam_tally2;
+		else
+			pname++;        /* Skip the '/' */
+		execl(pam_tally2, pname, "--user", user_name, "--reset", "--quiet", NULL);
+		/* If we come here, something has gone terribly wrong */
+		perror(pam_tally2);
+		exit(42);       /* don't continue, we now have 2 processes running! */
+		/* NOTREACHED */
+		break;
+	default: /* parent */
+		if (waitpid(childpid, &status, 0) == -1 || !WIFEXITED(status) || WEXITSTATUS(status) != 0)
+			failed = 1;
+		break;
+	}
+
+	if (failed)
+	{
+		fprintf (stderr,
+		         _("%s: failed to reset the tallylog entry of user \"%s\"\n"),
+		         Prog, user_name);
+		SYSLOG ((LOG_WARN, "failed to reset the tallylog entry of user \"%s\"", user_name));
+	}
+
+	return;
+}
+
 /*
  * usr_update - create the user entries
  *
@@ -1896,6 +1945,9 @@ static void create_home (void)
 	if (access (user_home, F_OK) != 0) {
 #ifdef WITH_SELINUX
 		if (set_selinux_file_context (user_home) != 0) {
+			fprintf (stderr,
+			         _("%s: cannot set SELinux context for home directory %s\n"),
+			         Prog, user_home);
 			fail_exit (E_HOMEDIR);
 		}
 #endif
@@ -1925,6 +1977,9 @@ static void create_home (void)
 #ifdef WITH_SELINUX
 		/* Reset SELinux to create files with default contexts */
 		if (reset_selinux_file_context () != 0) {
+			fprintf (stderr,
+			         _("%s: cannot reset SELinux file creation context\n"),
+			         Prog);
 			fail_exit (E_HOMEDIR);
 		}
 #endif
@@ -1994,8 +2049,8 @@ int main (int argc, char **argv)
 #endif				/* ACCT_TOOLS_SETUID */
 
 #ifdef ENABLE_SUBIDS
-	uid_t uid_min = (uid_t) getdef_ulong ("UID_MIN", 1000UL);
-	uid_t uid_max = (uid_t) getdef_ulong ("UID_MAX", 60000UL);
+	uid_t uid_min;
+	uid_t uid_max;
 #endif
 
 	/*
@@ -2027,16 +2082,18 @@ int main (int argc, char **argv)
 	is_shadow_grp = sgr_file_present ();
 #endif
 
+	get_defaults ();
+
 	process_flags (argc, argv);
 
 #ifdef ENABLE_SUBIDS
+	uid_min = (uid_t) getdef_ulong ("UID_MIN", 1000UL);
+	uid_max = (uid_t) getdef_ulong ("UID_MAX", 60000UL);
 	is_sub_uid = sub_uid_file_present () && !rflg &&
 	    (!user_id || (user_id <= uid_max && user_id >= uid_min));
 	is_sub_gid = sub_gid_file_present () && !rflg &&
 	    (!user_id || (user_id <= uid_max && user_id >= uid_min));
 #endif				/* ENABLE_SUBIDS */
-
-	get_defaults ();
 
 #ifdef ACCT_TOOLS_SETUID
 #ifdef USE_PAM
@@ -2224,6 +2281,15 @@ int main (int argc, char **argv)
 	}
 
 	close_files ();
+
+	/*
+	 * tallylog_reset needs to be able to lookup
+	 * a valid existing user name,
+	 * so we canot call it before close_files()
+	 */
+	if (!lflg && getpwuid (user_id) != NULL) {
+		tallylog_reset (user_name);
+	}
 
 #ifdef WITH_SELINUX
 	if (Zflg) {

@@ -219,6 +219,22 @@ static /*@noreturn@*/void su_failure (const char *tty, bool su_to_root)
 	}
 	closelog ();
 #endif
+
+#ifdef WITH_AUDIT
+	audit_fd = audit_open ();
+	audit_log_acct_message (audit_fd,
+				AUDIT_USER_ROLE_CHANGE,
+				NULL,    /* Prog. name */
+				"su",
+				('\0' != caller_name[0]) ? caller_name : "???",
+				AUDIT_NO_ID,
+				"localhost",
+				NULL,    /* addr */
+				tty,
+				0);      /* result */
+	close (audit_fd);
+#endif				/* WITH_AUDIT */
+
 	exit (1);
 }
 
@@ -363,23 +379,38 @@ static void prepare_pam_close_session (void)
 				/* wake child when resumed */
 				kill (pid, SIGCONT);
 				stop = false;
+			} else if (   (pid_t)-1 != pid) {
+				pid_child = 0;
 			}
 		} while (!stop);
 	}
 
-	if (0 != caught) {
+	if (0 != caught && 0 != pid_child) {
 		(void) fputs ("\n", stderr);
 		(void) fputs (_("Session terminated, terminating shell..."),
 		              stderr);
 		(void) kill (-pid_child, caught);
 
-		snprintf (kill_msg, 256, _(" ...killed.\n"));
-		snprintf (wait_msg, 256, _(" ...waiting for child to terminate.\n"));
+		snprintf (kill_msg, sizeof kill_msg, _(" ...killed.\n"));
+		snprintf (wait_msg, sizeof wait_msg, _(" ...waiting for child to terminate.\n"));
 
 		(void) signal (SIGALRM, kill_child);
+		(void) signal (SIGCHLD, catch_signals);
 		(void) alarm (2);
 
-		(void) wait (&status);
+		sigemptyset (&ourset);
+		if ((sigaddset (&ourset, SIGALRM) != 0)
+		    || (sigprocmask (SIG_BLOCK, &ourset, NULL) != 0)) {
+			fprintf (stderr, _("%s: signal masking malfunction\n"), Prog);
+			kill_child (0);
+		} else {
+			while (0 == waitpid (pid_child, &status, WNOHANG)) {
+				sigsuspend (&ourset);
+			}
+			pid_child = 0;
+			(void) sigprocmask (SIG_UNBLOCK, &ourset, NULL);
+		}
+
 		(void) fputs (_(" ...terminated.\n"), stderr);
 	}
 
@@ -1075,6 +1106,21 @@ int main (int argc, char **argv)
 		exit (1);
 	}
 #endif				/* !USE_PAM */
+
+#ifdef WITH_AUDIT
+	audit_fd = audit_open ();
+	audit_log_acct_message (audit_fd,
+				AUDIT_USER_ROLE_CHANGE,
+				NULL,    /* Prog. name */
+				"su",
+				('\0' != caller_name[0]) ? caller_name : "???",
+				AUDIT_NO_ID,
+				"localhost",
+				NULL,    /* addr */
+				caller_tty,
+				1);      /* result */
+	close (audit_fd);
+#endif				/* WITH_AUDIT */
 
 	set_environment (pw);
 

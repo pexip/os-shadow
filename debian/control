@@ -2,7 +2,7 @@ Source: shadow
 Maintainer: Pexip AS <packaging@pexip.com>
 XSBC-Pexip-Original-Maintainer: Shadow package maintainers <pkg-shadow-devel@lists.alioth.debian.org>
 XSBC-Pexip-Original-Uploaders: Christian Perrier <bubulle@debian.org>,
-           Balint Reczey <balint@balintreczey.hu>,
+           Balint Reczey <rbalint@ubuntu.com>,
            Serge Hallyn <serge@hallyn.com>
 Section: admin
 Priority: required
@@ -50,7 +50,8 @@ Pre-Depends: ${shlibs:Depends},
              libpam-modules (>= 1.1.8-1)
 Breaks: coreutils (<< 8.21~) [hurd-any],
         passwd (<< 1:4.1.5.1-2~) [hurd-any],
-        hurd (<< 20140206~) [hurd-any]
+        hurd (<< 20140206~) [hurd-any],
+        util-linux (<< 2.32-0.2~)
 Conflicts: gnunet (<< 0.7.0c-2),
            amavisd-new (<< 2.3.3-8),
            python-4suite (<< 0.99cvs20060405-1),

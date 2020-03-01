@@ -7,9 +7,10 @@ usbindir = ${prefix}/sbin
 suidperms = 4755
 sgidperms = 2755
 
-INCLUDES = \
+AM_CPPFLAGS = \
 	-I${top_srcdir}/lib \
-	-I$(top_srcdir)/libmisc
+	-I$(top_srcdir)/libmisc \
+	-DLOCALEDIR=\"$(datadir)/locale\"
 
 # XXX why are login and su in /bin anyway (other than for
 # historical reasons)?
@@ -54,10 +55,10 @@ noinst_PROGRAMS = id sulogin
 suidbins       = su
 suidubins      = chage chfn chsh expiry gpasswd newgrp passwd
 if ACCT_TOOLS_SETUID
-	suidubins += chage chgpasswd chpasswd groupadd groupdel groupmod newusers useradd userdel usermod
+suidubins += chage chgpasswd chpasswd groupadd groupdel groupmod newusers useradd userdel usermod
 endif
 if ENABLE_SUBIDS
-	suidubins += newgidmap newuidmap
+suidubins += newgidmap newuidmap
 endif
 
 if WITH_TCB
@@ -69,7 +70,6 @@ LDADD          = $(INTLLIBS) \
 		 $(LIBTCB) \
 		 $(top_builddir)/libmisc/libmisc.a \
 		 $(top_builddir)/lib/libshadow.la
-AM_CPPFLAGS    = -DLOCALEDIR=\"$(datadir)/locale\"
 
 if ACCT_TOOLS_SETUID
 LIBPAM_SUID  = $(LIBPAM)
@@ -113,7 +113,7 @@ pwunconv_LDADD = $(LDADD) $(LIBSELINUX)
 su_SOURCES     = \
 	su.c \
 	suauth.c
-su_LDADD       = $(LDADD) $(LIBPAM) $(LIBCRYPT_NOPAM) $(LIBSKEY) $(LIBMD)
+su_LDADD       = $(LDADD) $(LIBPAM) $(LIBAUDIT) $(LIBCRYPT_NOPAM) $(LIBSKEY) $(LIBMD)
 sulogin_LDADD  = $(LDADD) $(LIBCRYPT)
 useradd_LDADD  = $(LDADD) $(LIBPAM_SUID) $(LIBAUDIT) $(LIBSELINUX) $(LIBSEMANAGE) $(LIBACL) $(LIBATTR)
 userdel_LDADD  = $(LDADD) $(LIBPAM_SUID) $(LIBAUDIT) $(LIBSELINUX) $(LIBSEMANAGE)
@@ -125,14 +125,14 @@ install-am: all-am
 	ln -sf newgrp	$(DESTDIR)$(ubindir)/sg
 	ln -sf vipw	$(DESTDIR)$(usbindir)/vigr
 	for i in $(suidbins); do \
-		chmod -f $(suidperms) $(DESTDIR)$(bindir)/$$i; \
+		chmod $(suidperms) $(DESTDIR)$(bindir)/$$i; \
 	done
 	for i in $(suidubins); do \
-		chmod -f $(suidperms) $(DESTDIR)$(ubindir)/$$i; \
+		chmod $(suidperms) $(DESTDIR)$(ubindir)/$$i; \
 	done
 if WITH_TCB
 	for i in $(shadowsgidubins); do \
 		chown root:shadow $(DESTDIR)$(ubindir)/$$i; \
-		chmod -f $(sgidperms) $(DESTDIR)$(ubindir)/$$i; \
+		chmod $(sgidperms) $(DESTDIR)$(ubindir)/$$i; \
 	done
 endif
