@@ -152,11 +152,6 @@ static struct commonio_ops subordinate_ops = {
 	NULL,			/* close_hook */
 };
 
-static /*@observer@*/ /*@null*/const struct subordinate_range *subordinate_next(struct commonio_db *db)
-{
-	return (const struct subordinate_range *)commonio_next (db);
-}
-
 /*
  * range_exists: Check whether @owner owns any ranges
  *
@@ -181,7 +176,7 @@ static const bool range_exists(struct commonio_db *db, const char *owner)
  *             subuid @val.
  *
  * @db: database to query
- * @owner: owning uid being queuried
+ * @owner: owning uid being queried
  * @val: subuid being searched for.
  *
  * Returns a range of subuids belonging to @owner and including the subuid
@@ -221,7 +216,7 @@ static const struct subordinate_range *find_range(struct commonio_db *db,
 
         /*
          * Search loop above did not produce any result. Let's rerun it,
-         * but this time try to matcha actual UIDs. The first entry that
+         * but this time try to match actual UIDs. The first entry that
          * matches is considered a success.
          * (It may be specified as literal UID or as another username which
          * has the same UID as the username we are looking for.)
@@ -418,7 +413,7 @@ fail:
  * @start: the first uid in the owned range
  * @count: the number of uids in the range
  *
- * Return 1 if the range is already present or on succcess.  On error
+ * Return 1 if the range is already present or on success.  On error
  * return 0 and set errno appropriately.
  */
 static int add_range(struct commonio_db *db,
@@ -550,7 +545,8 @@ static struct commonio_db subordinate_uid_db = {
 	false,			/* changed */
 	false,			/* isopen */
 	false,			/* locked */
-	false			/* readonly */
+	false,			/* readonly */
+	false			/* setname */
 };
 
 int sub_uid_setdbname (const char *filename)
@@ -631,7 +627,8 @@ static struct commonio_db subordinate_gid_db = {
 	false,			/* changed */
 	false,			/* isopen */
 	false,			/* locked */
-	false			/* readonly */
+	false,			/* readonly */
+	false			/* setname */
 };
 
 int sub_gid_setdbname (const char *filename)

@@ -23,11 +23,14 @@ AM_CPPFLAGS = \
 # and installation would be much simpler (just two directories,
 # $prefix/bin and $prefix/sbin, no install-data hacks...)
 
-bin_PROGRAMS   = groups login su
+bin_PROGRAMS   = groups login
 sbin_PROGRAMS  = nologin
 ubin_PROGRAMS  = faillog lastlog chage chfn chsh expiry gpasswd newgrp passwd
 if ENABLE_SUBIDS
 ubin_PROGRAMS += newgidmap newuidmap
+endif
+if WITH_SU
+bin_PROGRAMS  += su
 endif
 usbin_PROGRAMS = \
 	chgpasswd \
@@ -52,24 +55,32 @@ usbin_PROGRAMS = \
 # id and groups are from gnu, sulogin from sysvinit
 noinst_PROGRAMS = id sulogin
 
-suidbins       = su
-suidubins      = chage chfn chsh expiry gpasswd newgrp passwd
+suidusbins     =
+suidbins       =
+suidubins      = chage chfn chsh expiry gpasswd newgrp
+if WITH_SU
+suidbins      += su
+endif
+if !WITH_TCB
+suidubins += passwd
+endif
 if ACCT_TOOLS_SETUID
-suidubins += chage chgpasswd chpasswd groupadd groupdel groupmod newusers useradd userdel usermod
+suidusbins += chgpasswd chpasswd groupadd groupdel groupmod newusers useradd userdel usermod
 endif
 if ENABLE_SUBIDS
+if !FCAPS
 suidubins += newgidmap newuidmap
+endif
 endif
 
 if WITH_TCB
-suidubins -= passwd
 shadowsgidubins = passwd
 endif
 
 LDADD          = $(INTLLIBS) \
-		 $(LIBTCB) \
 		 $(top_builddir)/libmisc/libmisc.a \
-		 $(top_builddir)/lib/libshadow.la
+		 $(top_builddir)/lib/libshadow.la \
+		 $(LIBTCB)
 
 if ACCT_TOOLS_SETUID
 LIBPAM_SUID  = $(LIBPAM)
@@ -83,56 +94,66 @@ else
 LIBCRYPT_NOPAM = $(LIBCRYPT)
 endif
 
-chage_LDADD    = $(LDADD) $(LIBPAM_SUID) $(LIBAUDIT) $(LIBSELINUX)
-newuidmap_LDADD    = $(LDADD) $(LIBSELINUX)
-newgidmap_LDADD    = $(LDADD) $(LIBSELINUX)
-chfn_LDADD     = $(LDADD) $(LIBPAM) $(LIBSELINUX) $(LIBCRYPT_NOPAM) $(LIBSKEY) $(LIBMD)
-chgpasswd_LDADD = $(LDADD) $(LIBPAM_SUID) $(LIBSELINUX) $(LIBCRYPT)
-chsh_LDADD     = $(LDADD) $(LIBPAM) $(LIBSELINUX) $(LIBCRYPT_NOPAM) $(LIBSKEY) $(LIBMD)
-chpasswd_LDADD = $(LDADD) $(LIBPAM) $(LIBSELINUX) $(LIBCRYPT)
-gpasswd_LDADD  = $(LDADD) $(LIBAUDIT) $(LIBSELINUX) $(LIBCRYPT)
-groupadd_LDADD = $(LDADD) $(LIBPAM_SUID) $(LIBAUDIT) $(LIBSELINUX)
-groupdel_LDADD = $(LDADD) $(LIBPAM_SUID) $(LIBAUDIT) $(LIBSELINUX)
-groupmems_LDADD = $(LDADD) $(LIBPAM) $(LIBSELINUX)
-groupmod_LDADD = $(LDADD) $(LIBPAM_SUID) $(LIBAUDIT) $(LIBSELINUX)
-grpck_LDADD    = $(LDADD) $(LIBSELINUX)
-grpconv_LDADD  = $(LDADD) $(LIBSELINUX)
-grpunconv_LDADD = $(LDADD) $(LIBSELINUX)
-lastlog_LDADD   = $(LDADD) $(LIBAUDIT)
+chage_LDADD    = $(LDADD) $(LIBPAM_SUID) $(LIBAUDIT) $(LIBSELINUX) $(LIBECONF)
+newuidmap_LDADD    = $(LDADD) $(LIBAUDIT) $(LIBSELINUX) $(LIBCAP)
+newgidmap_LDADD    = $(LDADD) $(LIBAUDIT) $(LIBSELINUX) $(LIBCAP)
+chfn_LDADD     = $(LDADD) $(LIBPAM) $(LIBAUDIT) $(LIBSELINUX) $(LIBCRYPT_NOPAM) $(LIBSKEY) $(LIBMD) $(LIBECONF)
+chgpasswd_LDADD = $(LDADD) $(LIBPAM_SUID) $(LIBAUDIT) $(LIBSELINUX) $(LIBCRYPT) $(LIBECONF)
+chsh_LDADD     = $(LDADD) $(LIBPAM) $(LIBAUDIT) $(LIBSELINUX) $(LIBCRYPT_NOPAM) $(LIBSKEY) $(LIBMD) $(LIBECONF)
+chpasswd_LDADD = $(LDADD) $(LIBPAM) $(LIBAUDIT) $(LIBSELINUX) $(LIBCRYPT) $(LIBECONF)
+expiry_LDADD = $(LDADD) $(LIBECONF)
+gpasswd_LDADD  = $(LDADD) $(LIBAUDIT) $(LIBSELINUX) $(LIBCRYPT) $(LIBECONF)
+groupadd_LDADD = $(LDADD) $(LIBPAM_SUID) $(LIBAUDIT) $(LIBSELINUX) $(LIBECONF)
+groupdel_LDADD = $(LDADD) $(LIBPAM_SUID) $(LIBAUDIT) $(LIBSELINUX) $(LIBECONF)
+groupmems_LDADD = $(LDADD) $(LIBPAM) $(LIBAUDIT) $(LIBSELINUX) $(LIBECONF)
+groupmod_LDADD = $(LDADD) $(LIBPAM_SUID) $(LIBAUDIT) $(LIBSELINUX) $(LIBECONF)
+grpck_LDADD    = $(LDADD) $(LIBAUDIT) $(LIBSELINUX) $(LIBECONF)
+grpconv_LDADD  = $(LDADD) $(LIBAUDIT) $(LIBSELINUX) $(LIBECONF)
+grpunconv_LDADD = $(LDADD) $(LIBAUDIT) $(LIBSELINUX) $(LIBECONF)
+lastlog_LDADD   = $(LDADD) $(LIBAUDIT) $(LIBECONF)
 login_SOURCES  = \
 	login.c \
 	login_nopam.c
-login_LDADD    = $(LDADD) $(LIBPAM) $(LIBAUDIT) $(LIBCRYPT_NOPAM) $(LIBSKEY) $(LIBMD)
-newgrp_LDADD   = $(LDADD) $(LIBAUDIT) $(LIBCRYPT)
-newusers_LDADD = $(LDADD) $(LIBPAM) $(LIBSELINUX) $(LIBCRYPT)
+login_LDADD    = $(LDADD) $(LIBPAM) $(LIBAUDIT) $(LIBCRYPT_NOPAM) $(LIBSKEY) $(LIBMD) $(LIBECONF)
+newgrp_LDADD   = $(LDADD) $(LIBAUDIT) $(LIBCRYPT) $(LIBECONF)
+newusers_LDADD = $(LDADD) $(LIBPAM) $(LIBAUDIT) $(LIBSELINUX) $(LIBCRYPT) $(LIBECONF)
 nologin_LDADD  =
-passwd_LDADD   = $(LDADD) $(LIBPAM) $(LIBCRACK) $(LIBAUDIT) $(LIBSELINUX) $(LIBCRYPT_NOPAM)
-pwck_LDADD     = $(LDADD) $(LIBSELINUX)
-pwconv_LDADD   = $(LDADD) $(LIBSELINUX)
-pwunconv_LDADD = $(LDADD) $(LIBSELINUX)
+passwd_LDADD   = $(LDADD) $(LIBPAM) $(LIBCRACK) $(LIBAUDIT) $(LIBSELINUX) $(LIBCRYPT_NOPAM) $(LIBECONF)
+pwck_LDADD     = $(LDADD) $(LIBAUDIT) $(LIBSELINUX) $(LIBECONF)
+pwconv_LDADD   = $(LDADD) $(LIBAUDIT) $(LIBSELINUX) $(LIBECONF)
+pwunconv_LDADD = $(LDADD) $(LIBAUDIT) $(LIBSELINUX) $(LIBECONF)
 su_SOURCES     = \
 	su.c \
 	suauth.c
-su_LDADD       = $(LDADD) $(LIBPAM) $(LIBAUDIT) $(LIBCRYPT_NOPAM) $(LIBSKEY) $(LIBMD)
-sulogin_LDADD  = $(LDADD) $(LIBCRYPT)
-useradd_LDADD  = $(LDADD) $(LIBPAM_SUID) $(LIBAUDIT) $(LIBSELINUX) $(LIBSEMANAGE) $(LIBACL) $(LIBATTR)
-userdel_LDADD  = $(LDADD) $(LIBPAM_SUID) $(LIBAUDIT) $(LIBSELINUX) $(LIBSEMANAGE)
-usermod_LDADD  = $(LDADD) $(LIBPAM_SUID) $(LIBAUDIT) $(LIBSELINUX) $(LIBSEMANAGE) $(LIBACL) $(LIBATTR)
-vipw_LDADD     = $(LDADD) $(LIBSELINUX)
+su_LDADD       = $(LDADD) $(LIBPAM) $(LIBAUDIT) $(LIBCRYPT_NOPAM) $(LIBSKEY) $(LIBMD) $(LIBECONF)
+sulogin_LDADD  = $(LDADD) $(LIBCRYPT) $(LIBECONF)
+useradd_LDADD  = $(LDADD) $(LIBPAM_SUID) $(LIBAUDIT) $(LIBSELINUX) $(LIBSEMANAGE) $(LIBACL) $(LIBATTR) $(LIBECONF)
+userdel_LDADD  = $(LDADD) $(LIBPAM_SUID) $(LIBAUDIT) $(LIBSELINUX) $(LIBSEMANAGE) $(LIBECONF)
+usermod_LDADD  = $(LDADD) $(LIBPAM_SUID) $(LIBAUDIT) $(LIBSELINUX) $(LIBSEMANAGE) $(LIBACL) $(LIBATTR) $(LIBECONF)
+vipw_LDADD     = $(LDADD) $(LIBAUDIT) $(LIBSELINUX) $(LIBECONF)
 
 install-am: all-am
 	$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 	ln -sf newgrp	$(DESTDIR)$(ubindir)/sg
 	ln -sf vipw	$(DESTDIR)$(usbindir)/vigr
-	for i in $(suidbins); do \
+	set -e; for i in $(suidbins); do \
 		chmod $(suidperms) $(DESTDIR)$(bindir)/$$i; \
 	done
-	for i in $(suidubins); do \
+	set -e; for i in $(suidubins); do \
 		chmod $(suidperms) $(DESTDIR)$(ubindir)/$$i; \
 	done
+	set -e; for i in $(suidusbins); do \
+		chmod $(suidperms) $(DESTDIR)$(usbindir)/$$i; \
+	done
 if WITH_TCB
-	for i in $(shadowsgidubins); do \
+	set -e; for i in $(shadowsgidubins); do \
 		chown root:shadow $(DESTDIR)$(ubindir)/$$i; \
 		chmod $(sgidperms) $(DESTDIR)$(ubindir)/$$i; \
 	done
+endif
+if ENABLE_SUBIDS
+if FCAPS
+	setcap cap_setuid+ep $(DESTDIR)$(ubindir)/newuidmap
+	setcap cap_setgid+ep $(DESTDIR)$(ubindir)/newgidmap
+endif
 endif

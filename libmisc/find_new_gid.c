@@ -136,7 +136,7 @@ static int check_gid (const gid_t gid,
 	}
 	/* Check if the GID exists according to NSS */
 	errno = 0;
-	if (getgrgid (gid) != NULL) {
+	if (prefix_getgrgid (gid) != NULL) {
 		return EEXIST;
 	} else {
 		/* getgrgid() was NULL
@@ -167,7 +167,7 @@ int find_new_gid (bool sys_group,
 	bool *used_gids;
 	const struct group *grp;
 	gid_t gid_min, gid_max, preferred_min;
-	gid_t group_id, id;
+	gid_t id;
 	gid_t lowest_found, highest_found;
 	int result;
 	int nospam = 0;

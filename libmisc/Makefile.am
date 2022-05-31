@@ -1,7 +1,7 @@
 
 EXTRA_DIST = .indent.pro xgetXXbyYY.c
 
-AM_CPPFLAGS = -I$(top_srcdir)/lib
+AM_CPPFLAGS = -I$(top_srcdir)/lib $(ECONF_CPPFLAGS)
 
 noinst_LIBRARIES = libmisc.a
 
@@ -44,7 +44,8 @@ libmisc_a_SOURCES = \
 	myname.c \
 	obscure.c \
 	pam_pass.c \
-	pam_pass_non_interractive.c \
+	pam_pass_non_interactive.c \
+	prefix_flag.c \
 	pwd2spwd.c \
 	pwdcheck.c \
 	pwd_init.c \
@@ -71,3 +72,8 @@ libmisc_a_SOURCES = \
 	xgetspnam.c \
 	xmalloc.c \
 	yesno.c
+
+if WITH_BTRFS
+libmisc_a_SOURCES += btrfs.c
+endif
+
