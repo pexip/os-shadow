@@ -1,3 +1,83 @@
+shadow (1:4.8.1-1) unstable; urgency=medium
+
+  * debian/default/useradd: Fix typo DHSELL -> DSHELL (Closes: #897028)
+  * New upstream version 4.8.1
+    - Update Dutch translation (Closes: #946608)
+  * Refresh patches
+
+ -- Balint Reczey <rbalint@ubuntu.com>  Fri, 07 Feb 2020 15:54:14 +0100
+
+shadow (1:4.8-1) unstable; urgency=medium
+
+  [ Laurent Bigonville ]
+  * Move the call to pam_motd before pam_selinux open
+
+  [ Justin B Rye ]
+  * login: Update package description (Closes: #808301)
+
+  [ Yuriy M. Kaminskiy ]
+  * Mark uidmap and login as Multi-Arch: foreign (Closes: #934473)
+
+  [ Andreas Henriksson ]
+  * New upstream release.
+    - man: generate translations using itstool instead of xml2po
+  * Replace gnome-doc-utils build-dep with itstool (Closes: #881889)
+  * Use explicit --without-su configure flag
+  * Refresh and massage patches to apply
+  * Cherry-pick upstream patch reverting bindir/sbindir
+  * Fix lintian warning useless-autoreconf-build-depends
+
+  [ Balint Reczey ]
+  * debian/login.su.pam: Drop unused file
+
+ -- Balint Reczey <rbalint@ubuntu.com>  Fri, 20 Dec 2019 16:39:40 +0100
+
+shadow (1:4.7-2) unstable; urgency=medium
+
+  [ Balint Reczey ]
+  * Remove obsolete /etc/cron.daily/passwd in maintainer scripts
+    (Closes: #932017)
+  * Remove Christian Perrier from Uploaders according to his request.
+    Thank you for maintaining shadow for long years! (Closes: #893944, #927576)
+
+  [ Gaudenz Steinlin ]
+  * Improve NEWS entry about securetty.
+
+ -- Balint Reczey <rbalint@ubuntu.com>  Tue, 16 Jul 2019 18:48:12 +0200
+
+shadow (1:4.7-1) unstable; urgency=medium
+
+  [ Ondřej Nový ]
+  * d/changelog: Remove trailing whitespaces
+
+  [ Niels Thykier ]
+  * Declare the explicit requirement for (fake)root.
+    The shadow package currently requires (fake)root to produce the debs
+    due to static non-root:root ownerships in the debs.
+
+  [ Bryan Quigley ]
+  * Remove cron daily backup.
+    It was added in 2010 (#554170) as a split off from a previous cron
+    job.  I haven't seen an argument for why it's useful to keep.
+    Depending on when a mistake occurs in one of the files it backups
+    it will provide variable recovery time of 0 to 24hours.
+
+  [ Balint Reczey ]
+  * Add Salsa CI configuration
+  * Drop Lintian override for su, it is not shipped in login anymore
+  * Stop shipping and honoring /etc/securetty
+    (Closes: #731656, #830255, #879903, #920764, #771675, #917893, #607073)
+  * Migrate to dh from cdbs
+  * Ship some missing man files
+  * Fix checking upstream tarball's OpenPGP signature
+  * New upstream version 4.7
+  * Refresh patches
+  * Run autopkgtest in Salsa CI when it exists
+  * debian/NEWS: Fix version of latest entry
+  * Clean up /etc/securetty properly on upgrade
+
+ -- Balint Reczey <rbalint@ubuntu.com>  Mon, 08 Jul 2019 15:58:46 +0200
+
 shadow (1:4.5-1.1pexip2) pexip; urgency=medium
 
   * Rebuild in buster environment
@@ -273,14 +353,14 @@ shadow (1:4.2-1) experimental; urgency=low
   * Add pam_loginuid to login PAM settings. Closes: #677441
   * passwd.install: add new subuid.5 and subgid.5 manpages
   * debian/rules, debian/control, debian/uidmap.install: create new uidmap
-    package containing the new setuid-root binaries newuidmap and newgidmap 
+    package containing the new setuid-root binaries newuidmap and newgidmap
     Set uidmap as priority optional.
   * debian/login.su.pam: Enable pam_limits by default. Closes: #705301
   * debian/rules: Set default editor to sensible-editor for vipw.
     Closes: #688252
 
   [ Micah Anderson ]
-  * added debian/patches/userns to enable use of subuids, plus some bugfix 
+  * added debian/patches/userns to enable use of subuids, plus some bugfix
     patches on top of them, patches from Eric Biederman, pulled from
     Ubuntu. Closes: #739981
   * Allow LXC devices (lxc/console, lxc/tty[1234]) in securetty.linux
@@ -293,7 +373,7 @@ shadow (1:4.2-1) experimental; urgency=low
   * Switch to dpkg-source 3.0 (quilt) format
   * Add build-dependency against bison
   * Call dh-autoreconf since we need to regenerate all the autofoo files
-  
+
   [ Philippe Grégoire ]
   * Fix 1000_configure_userns to avoid dropping a needed #endif
     Closes: #744877
@@ -583,7 +663,7 @@ shadow (1:4.1.4.1-1) unstable; urgency=low
      - Updated patches:
         + debian/patches/506_relaxed_usernames
   * debian/login.defs: Removed comment about MD5_CRYPT. MD5_CRYPT_ENAB is no
-    more used by chpasswd and newusers. 
+    more used by chpasswd and newusers.
   * debian/patches/*: Updated patches to the new quilt and shadow versions.
   * debian/patches/506_relaxed_usernames: usernames with a slash will not only
     break one option. Move to the discussion on the usernames.
@@ -628,7 +708,7 @@ shadow (1:4.1.4-1) unstable; urgency=low
      - Updated Russian translation. Closes: #527636
      - passwd: Report password properties changes if the password is not
        actually changed. Closes: #525967
-     - Fixed lastlog. 4.1.3 only reported empty logs. Closes: #524873 
+     - Fixed lastlog. 4.1.3 only reported empty logs. Closes: #524873
      - Remove patches applied upstream:
         + debian/patches/403_fix_PATH-MAX_hurd
      - Updated patches:
@@ -1058,7 +1138,7 @@ shadow (1:4.0.18.1-9) unstable; urgency=low
     - 409_man_generate_from_PO: Generate the translated man pages at build
     time.
     - 200_regenerate_manpages: No more needed.
-    
+
 
  -- Christian Perrier <bubulle@debian.org>  Tue, 15 May 2007 23:40:13 +0200
 
@@ -1085,7 +1165,7 @@ shadow (1:4.0.18.1-8) unstable; urgency=low
       neither -n nor -g are specified. See also 407_adduser_disable_PUG_with-n
     - no longer include /usr/bin/X11 in defaults PATH variable. Closes: #395890
     - set debhelper compatibility to 5 through debian/compat
-    - ignore a false positive lintian warning about 
+    - ignore a false positive lintian warning about
       possible-missing-colon-in-closes in line 668 of the changelog
   * Upstream bugs not yet fixed in upstream releases or CVS:
     - 493_pwck_no_SHADOWPWD: SHADOWPWD no more exist.
@@ -1722,7 +1802,7 @@ shadow (1:4.0.13-5) unstable; urgency=low
       Working user password crypted preseeding (it probably failed earlier)
   * Debconf translation updates:
     - Russian updated. Closes: #337370
-  
+
  -- Christian Perrier <bubulle@debian.org>  Tue,  1 Nov 2005 18:10:30 +0100
 
 shadow (1:4.0.13-4) unstable; urgency=low
@@ -1870,7 +1950,7 @@ shadow (1:4.0.12-6) unstable; urgency=low
       - manpages-fi (removed because distributes translations we don't have)
       - manpages-pt (removed because distributes translations we don't have)
       - manpages-tr (removed because distributes translations we don't have)
-      - manpages-zh for login 
+      - manpages-zh for login
                     (removed because distributes translations we don't have)
     - debian/login.pam, debian/login.su.pam:
       - use "readenv=1" with pam_env so that /etc/environment settings are
@@ -1893,9 +1973,9 @@ shadow (1:4.0.12-6) unstable; urgency=low
 shadow (1:4.0.12-5) unstable; urgency=low
 
   * Really add /etc/pam.d/su. Closes: #330291
-  
+
  -- Christian Perrier <bubulle@debian.org>  Wed, 28 Sep 2005 19:59:31 +0200
-   
+
 shadow (1:4.0.12-4) unstable; urgency=low
 
   * The "Epoisses" release
@@ -1955,7 +2035,7 @@ shadow (1:4.0.12-1) experimental; urgency=low
       ULIMIT
     - NEWS.Debian: added
     - Ship a (currently useless) PAM configuration file for chage, useradd,
-      usermod, userdel, groupadd, groupmod, groupdel, including 
+      usermod, userdel, groupadd, groupmod, groupdel, including
       pam_rootok.so alone
     - use dh_installpam to install PAM configuration files
     - start the cleanup of the unused patches list
@@ -2243,7 +2323,7 @@ shadow (1:4.0.3-35) unstable; urgency=low
       (change made in sarge branch also)
       Closes: #300720
     - debian/rules: Add removal of config.log in the clean target
-    - debian/control: 
+    - debian/control:
       - Add Martin to Uploaders
       - Remove Sam Hartman from Uploaders. The team is now setup and this
         does not really have a real meaning now. You're still welcome for
@@ -2495,7 +2575,7 @@ shadow (1:4.0.3-30.6) unstable; urgency=low
 
   * Revert back to Ian Gulliver genuine patch
     to chpasswd. Update man page accordingly.
-    Closes: #283961 
+    Closes: #283961
     (again)
   * Programs translations
     - German updated. Closes: #286522
@@ -2615,7 +2695,7 @@ shadow (1:4.0.3-30) unstable; urgency=high
   * Correct check for root password being already set in passwd.config
     Closes: #260799
 
-  * Acknowledge 29.1 NMU: 
+  * Acknowledge 29.1 NMU:
     Closes: #256664, #257949, #258241, #258563, #258566, #258957,
     #190567, #259389, #260223, #257949, #259663, #259827
 
@@ -2662,14 +2742,14 @@ shadow (1:4.0.3-29) unstable; urgency=low
       Closes: #253792
       this change was already in 28.5 but was forgotten in the
       changelog
-  * Acknowledge NMUs: 
+  * Acknowledge NMUs:
   closes: #244604, #244734, #246302, #246376, #246848, #246859,
           #247084, #247698, #247770, #248386, #248391, #248392,
 	  #248392, #248516, #248516, #248648, #248938, #248957,
 	  #249141, #249257, #249682, #250169, #250339, #250496,
 	  #251140, #251141, #251317, #251495, #251716, #251990,
 	  #252087, #252499, #253165, #253186, #253570, #254503,
-	  #254760 
+	  #254760
 
  -- Karl Ramm <kcr@debian.org>  Sat,  3 Jul 2004 00:24:55 -0400
 
@@ -2867,7 +2947,7 @@ shadow (1:4.0.3-23) unstable; urgency=low
 
 shadow (1:4.0.3-22) unstable; urgency=low
 
-  * Don't assume that lastlog.ll_time or utmp.ut_time or utmpx.ut_tv are made 
+  * Don't assume that lastlog.ll_time or utmp.ut_time or utmpx.ut_tv are made
     up of time_ts and timevals, because they aren't on x86-64.  Dismaying
     but true.
 
@@ -2875,7 +2955,7 @@ shadow (1:4.0.3-22) unstable; urgency=low
 
 shadow (1:4.0.3-21) unstable; urgency=low
 
-  * Try and get the right French translation update in the right place, 
+  * Try and get the right French translation update in the right place,
     Karl, you can do it even if you do only speak English. Closes: #236993
 
  -- Karl Ramm <kcr@debian.org>  Wed, 10 Mar 2004 15:31:35 -0500
@@ -2933,7 +3013,7 @@ shadow (1:4.0.3-17) unstable; urgency=low
 shadow (1:4.0.3-16) unstable; urgency=low
 
   * run dh_installdeb *after* dh_installdebconf,
-    remove . from short description of passwd, 
+    remove . from short description of passwd,
     add versioned conflict with debconf older than 0.5
     closes: #224133
   * replace manpages-it due to man page conflict
@@ -2944,7 +3024,7 @@ shadow (1:4.0.3-16) unstable; urgency=low
   * fix permissions on chage and expiry, closes: #224717
   * run debconf-updatepo
   * remove debian/compat as redundant
-  
+
  -- Karl Ramm <kcr@debian.org>  Mon, 22 Dec 2003 19:53:30 -0500
 
 shadow (1:4.0.3-15) unstable; urgency=low
@@ -2957,7 +3037,7 @@ shadow (1:4.0.3-15) unstable; urgency=low
 
 shadow (1:4.0.3-14) unstable; urgency=low
 
-  * exit 30 when backing all the way out in passwd.conf, and 
+  * exit 30 when backing all the way out in passwd.conf, and
     depend on base-config 2.00, closes: #222772
   * adjust debconf templates for debian-installer work,
     closes: #222832
@@ -2974,11 +3054,11 @@ shadow (1:4.0.3-13) unstable; urgency=low
 shadow (1:4.0.3-12) unstable; urgency=low
 
   * Explicitly use automake-1.7 and aclocal-1.7.  closes: #216594
-  * Update Danish debconf translation.  closes: #216542  
+  * Update Danish debconf translation.  closes: #216542
   * Update French debconf translation.  closes: #206352
   * Update Dutch debconf translation.  closes: #212995
   * Remove redundant dependency on grep.  closes: #216535
-  * Fix chfn documentation bug.  closes: #213931  
+  * Fix chfn documentation bug.  closes: #213931
   * Fix su syslogs to be less ambiguous.  (old:new instead of old-new
     because '-' can appear in usernames.)  Not clearer, mind you, but less
     ambiguous.  closes: #213592
@@ -3094,7 +3174,7 @@ shadow (1:4.0.3-3) unstable; urgency=low
 
   * the "fix the brain damage" release
   * fix pam brain-damage in ch{age,passwd}, {group,user}{add,del,mod}, newusers
-    closes: #162181, #162199, #162228 
+    closes: #162181, #162199, #162228
   * fix vipw symlink brain-damage: closes: #162218
   * fix package description brain damage, closes: #139563
   * install cp{pw,gr} brain damge
@@ -3195,7 +3275,7 @@ shadow (20000902-8) unstable; urgency=low
     from going off on its own.
   * terminate argument validation in login when it hits a '--'.
     closes: #66368
-  
+
  -- Karl Ramm <kcr@debian.org>  Mon, 22 Oct 2001 11:17:35 -0400
 
 shadow (20000902-7) unstable; urgency=low
@@ -3222,12 +3302,12 @@ shadow (20000902-7) unstable; urgency=low
  -- Karl Ramm <kcr@debian.org>  Wed, 22 Aug 2001 12:09:27 -0400
 
 shadow (20000902-6.1) unstable; urgency=low
- 
+
   * Non-maintainer upload.
   * Upgrade to latest config.sub and config.guess.  Closes: #88547
- 
+
  -- Gerhard Tonn <gt@debian.org>  Fri,  1 Jun 2001 20:38:43 +0200
-                                                              
+
 shadow (20000902-6) unstable; urgency=medium
 
   * actually set root's password when appropriate
@@ -3252,7 +3332,7 @@ shadow (20000902-4) unstable; urgency=low
 shadow (20000902-3.1) unstable; urgency=low
 
   * Non-maintainer upload
-  * Recompile to fix ARM lossage 
+  * Recompile to fix ARM lossage
 
  -- Philip Blundell <philb@armlinux.org>  Sun, 11 Mar 2001 07:47:27 -0500
 
@@ -3576,7 +3656,7 @@ shadow (19990827-3) unstable; urgency=low
   * login.defs: documented above change
   * {login,passwd}.postinst: fixed some bashisms, closes: #45159
   * login.defs.pam.linux: documented the FAKE_SHELL option, closes: 31987
-  * su.1,login.1: documented the subsystem root ability in login and su, closes: 
+  * su.1,login.1: documented the subsystem root ability in login and su, closes:
   * doc directory for both packages now includes the README.shadow-paper file
     closes: #15391
 
@@ -3717,7 +3797,7 @@ shadow (980403-0.3.3) unstable; urgency=low
 shadow (980403-0.3.2) unstable; urgency=low
 
   * configure.in patched for utmpx.h (for arm)
-  
+
  -- Jim Pick <jim@jimpick.com>  Sun,  4 Oct 1998 19:06:15 -0700
 
 shadow (980403-0.3.1) frozen unstable; urgency=low
@@ -3745,7 +3825,7 @@ shadow (980403-0.2) frozen unstable; urgency=low
  -- Joel Klecker <jk@espy.org>  Mon, 11 May 1998 11:25:22 -0700
 
 shadow (980403-0.1) frozen unstable; urgency=low
-  
+
   * Non-maintainer release.
   * New upstream release (18225).
   * (debian/login.postinst)
@@ -3774,7 +3854,7 @@ shadow (980403-0.1) frozen unstable; urgency=low
   * Install upstream changelog as 'changelog.gz' as per policy (20052).
   * (secure-su): Changed /etc/suauth to reference the group 'root'
     instead of 'wheel' (17593).
-  
+
  -- Joel Klecker <jk@espy.org>  Thu, 30 Apr 1998 18:32:12 -0700
 
 shadow (970616-1) unstable; urgency=low
@@ -3844,7 +3924,7 @@ shadow (961025-2) frozen unstable; urgency=medium
  -- Guy Maor <maor@ece.utexas.edu>  Sat, 19 Apr 1997 02:34:59 -0500
 
 shadow (961025-1) unstable; urgency=low
-  
+
   * Upstream upgrade, new source format.
 
  -- Guy Maor <maor@ece.utexas.edu>  Mon, 10 Feb 1997 02:56:56 -0600

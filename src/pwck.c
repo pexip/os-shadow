@@ -48,6 +48,7 @@
 #include "shadowio.h"
 #include "getdef.h"
 #include "nscd.h"
+#include "sssd.h"
 #ifdef WITH_TCB
 #include "tcbfuncs.h"
 #endif				/* WITH_TCB */
@@ -93,6 +94,8 @@ static void open_files (void);
 static void close_files (bool changed);
 static void check_pw_file (int *errors, bool *changed);
 static void check_spw_file (int *errors, bool *changed);
+
+extern int allow_bad_names;
 
 /*
  * fail_exit - do some cleanup and exit with the given error code
@@ -147,6 +150,7 @@ static /*@noreturn@*/void usage (int status)
 		                  "Options:\n"),
 		                Prog);
 	}
+	(void) fputs (_("  -b, --badnames                allow bad names\n"), usageout);
 	(void) fputs (_("  -h, --help                    display this help message and exit\n"), usageout);
 	(void) fputs (_("  -q, --quiet                   report errors only\n"), usageout);
 	(void) fputs (_("  -r, --read-only               display errors and warnings\n"
@@ -171,6 +175,7 @@ static void process_flags (int argc, char **argv)
 {
 	int c;
 	static struct option long_options[] = {
+		{"badnames",  no_argument,       NULL, 'b'},
 		{"help",      no_argument,       NULL, 'h'},
 		{"quiet",     no_argument,       NULL, 'q'},
 		{"read-only", no_argument,       NULL, 'r'},
@@ -182,9 +187,12 @@ static void process_flags (int argc, char **argv)
 	/*
 	 * Parse the command line arguments
 	 */
-	while ((c = getopt_long (argc, argv, "ehqrR:s",
+	while ((c = getopt_long (argc, argv, "behqrR:s",
 	                         long_options, NULL)) != -1) {
 		switch (c) {
+		case 'b':
+			allow_bad_names = true;
+			break;
 		case 'h':
 			usage (E_SUCCESS);
 			/*@notreached@*/break;
@@ -281,7 +289,7 @@ static void open_files (void)
 	 * Open the files. Use O_RDONLY if we are in read_only mode, O_RDWR
 	 * otherwise.
 	 */
-	if (pw_open (read_only ? O_RDONLY : O_CREAT | O_RDWR) == 0) {
+	if (pw_open (read_only ? O_RDONLY : O_RDWR) == 0) {
 		fprintf (stderr, _("%s: cannot open %s\n"),
 		         Prog, pw_dbname ());
 		if (use_system_pw_file) {
@@ -290,7 +298,7 @@ static void open_files (void)
 		fail_exit (E_CANTOPEN);
 	}
 	if (is_shadow && !use_tcb) {
-		if (spw_open (read_only ? O_RDONLY : O_CREAT | O_RDWR) == 0) {
+		if (spw_open (read_only ? O_RDONLY : O_RDWR) == 0) {
 			fprintf (stderr, _("%s: cannot open %s\n"),
 			         Prog, spw_dbname ());
 			if (use_system_spw_file) {
@@ -381,6 +389,8 @@ static void check_pw_file (int *errors, bool *changed)
 	struct commonio_entry *pfe, *tpfe;
 	struct passwd *pwd;
 	struct spwd *spw;
+	uid_t min_sys_id = (uid_t) getdef_ulong ("SYS_UID_MIN", 101UL);
+	uid_t max_sys_id = (uid_t) getdef_ulong ("SYS_UID_MAX", 999UL);
 
 	/*
 	 * Loop through the entire password file.
@@ -480,6 +490,7 @@ static void check_pw_file (int *errors, bool *changed)
 		/*
 		 * Check for invalid usernames.  --marekm
 		 */
+
 		if (!is_valid_user_name (pwd->pw_name)) {
 			printf (_("invalid user name '%s'\n"), pwd->pw_name);
 			*errors += 1;
@@ -509,15 +520,20 @@ static void check_pw_file (int *errors, bool *changed)
 		}
 
 		/*
-		 * Make sure the home directory exists
+		 * If uid is system and has a home directory, then check
 		 */
-		if (!quiet && (access (pwd->pw_dir, F_OK) != 0)) {
+		if (!(pwd->pw_uid >= min_sys_id && pwd->pw_uid <= max_sys_id && pwd->pw_dir && pwd->pw_dir[0])) {
 			/*
-			 * Home directory doesn't exist, give a warning
+			 * Make sure the home directory exists
 			 */
-			printf (_("user '%s': directory '%s' does not exist\n"),
-			        pwd->pw_name, pwd->pw_dir);
-			*errors += 1;
+			if (!quiet && (access (pwd->pw_dir, F_OK) != 0)) {
+				/*
+				 * Home directory doesn't exist, give a warning
+				 */
+				printf (_("user '%s': directory '%s' does not exist\n"),
+						pwd->pw_name, pwd->pw_dir);
+				*errors += 1;
+			}
 		}
 
 		/*
@@ -566,7 +582,7 @@ static void check_pw_file (int *errors, bool *changed)
 					continue;
 				}
 				spw_locked = true;
-				if (spw_open (read_only ? O_RDONLY : O_CREAT | O_RDWR) == 0) {
+				if (spw_open (read_only ? O_RDONLY : O_RDWR) == 0) {
 					fprintf (stderr,
 					         _("%s: cannot open %s\n"),
 					         Prog, spw_dbname ());
@@ -608,7 +624,7 @@ static void check_pw_file (int *errors, bool *changed)
 					sp.sp_inact  = -1;
 					sp.sp_expire = -1;
 					sp.sp_flag   = SHADOW_SP_FLAG_UNSET;
-					sp.sp_lstchg = (long) time ((time_t *) 0) / SCALE;
+					sp.sp_lstchg = (long) gettime () / SCALE;
 					if (0 == sp.sp_lstchg) {
 						/* Better disable aging than
 						 * requiring a password change
@@ -876,7 +892,10 @@ int main (int argc, char **argv)
 
 	close_files (changed);
 
-	nscd_flush_cache ("passwd");
+	if (!read_only) {
+		nscd_flush_cache ("passwd");
+		sssd_flush_cache (SSSD_DB_PASSWD);
+	}
 
 	/*
 	 * Tell the user what we did and exit.

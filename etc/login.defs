@@ -32,6 +32,15 @@ LOG_OK_LOGINS		no
 LASTLOG_ENAB		yes
 
 #
+# Limit the highest user ID number for which the lastlog entries should
+# be updated.
+#
+# No LASTLOG_UID_MAX means that there is no user ID limit for writing
+# lastlog entries.
+#
+#LASTLOG_UID_MAX
+
+#
 # Enable checking and display of mailbox status upon login.
 #
 # Disable if the shell startup files already check for mail
@@ -186,11 +195,16 @@ KILLCHAR	025
 # Default initial "umask" value used by login(1) on non-PAM enabled systems.
 # Default "umask" value for pam_umask(8) on PAM enabled systems.
 # UMASK is also used by useradd(8) and newusers(8) to set the mode for new
-# home directories.
+# home directories if HOME_MODE is not set.
 # 022 is the default value, but 027, or even 077, could be considered
 # for increased privacy. There is no One True Answer here: each sysadmin
-# must make up his/her mind.
+# must make up their mind.
 UMASK		022
+
+# HOME_MODE is used by useradd(8) and newusers(8) to set the mode for new
+# home directories.
+# If HOME_MODE is not set, the value of UMASK is used to create the mode.
+#HOME_MODE	0700
 
 #
 # Password aging controls:
@@ -311,6 +325,7 @@ CHFN_RESTRICT		rwh
 # If set to MD5, MD5-based algorithm will be used for encrypting password
 # If set to SHA256, SHA256-based algorithm will be used for encrypting password
 # If set to SHA512, SHA512-based algorithm will be used for encrypting password
+# If set to BCRYPT, BCRYPT-based algorithm will be used for encrypting password
 # If set to DES, DES-based algorithm will be used for encrypting password (default)
 # Overrides the MD5_CRYPT_ENAB option
 #
@@ -332,8 +347,23 @@ CHFN_RESTRICT		rwh
 # If only one of the MIN or MAX values is set, then this value will be used.
 # If MIN > MAX, the highest value will be used.
 #
-# SHA_CRYPT_MIN_ROUNDS 5000
-# SHA_CRYPT_MAX_ROUNDS 5000
+#SHA_CRYPT_MIN_ROUNDS 5000
+#SHA_CRYPT_MAX_ROUNDS 5000
+
+#
+# Only works if ENCRYPT_METHOD is set to BCRYPT.
+#
+# Define the number of BCRYPT rounds.
+# With a lot of rounds, it is more difficult to brute-force the password.
+# However, more CPU resources will be needed to authenticate users if
+# this value is increased.
+#
+# If not specified, 13 rounds will be attempted.
+# If only one of the MIN or MAX values is set, then this value will be used.
+# If MIN > MAX, the highest value will be used.
+#
+#BCRYPT_MIN_ROUNDS 13
+#BCRYPT_MAX_ROUNDS 13
 
 #
 # List of groups to add to the user's supplementary group set

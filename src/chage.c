@@ -48,10 +48,6 @@
 #endif				/* USE_PAM */
 #endif				/* ACCT_TOOLS_SETUID */
 #include <pwd.h>
-#ifdef WITH_SELINUX
-#include <selinux/selinux.h>
-#include <selinux/av_permissions.h>
-#endif
 #include "prototypes.h"
 #include "defines.h"
 #include "pwio.h"
@@ -70,6 +66,7 @@ const char *Prog;
 static bool
     dflg = false,		/* set last password change date */
     Eflg = false,		/* set account expiration date */
+    iflg = false,		/* set iso8601 date formatting */
     Iflg = false,		/* set password inactive after expiration */
     lflg = false,		/* show account aging information */
     mflg = false,		/* set minimum number of days before password change */
@@ -149,12 +146,13 @@ static /*@noreturn@*/void usage (int status)
 	(void) fputs (_("  -d, --lastday LAST_DAY        set date of last password change to LAST_DAY\n"), usageout);
 	(void) fputs (_("  -E, --expiredate EXPIRE_DATE  set account expiration date to EXPIRE_DATE\n"), usageout);
 	(void) fputs (_("  -h, --help                    display this help message and exit\n"), usageout);
+	(void) fputs (_("  -i, --iso8601                 use YYYY-MM-DD when printing dates\n"), usageout);
 	(void) fputs (_("  -I, --inactive INACTIVE       set password inactive after expiration\n"
 	                "                                to INACTIVE\n"), usageout);
 	(void) fputs (_("  -l, --list                    show account aging information\n"), usageout);
 	(void) fputs (_("  -m, --mindays MIN_DAYS        set minimum number of days before password\n"
 	                "                                change to MIN_DAYS\n"), usageout);
-	(void) fputs (_("  -M, --maxdays MAX_DAYS        set maximim number of days before password\n"
+	(void) fputs (_("  -M, --maxdays MAX_DAYS        set maximum number of days before password\n"
 	                "                                change to MAX_DAYS\n"), usageout);
 	(void) fputs (_("  -R, --root CHROOT_DIR         directory to chroot into\n"), usageout);
 	(void) fputs (_("  -W, --warndays WARN_DAYS      set expiration warning days to WARN_DAYS\n"), usageout);
@@ -262,12 +260,20 @@ static void print_date (time_t date)
 #ifdef HAVE_STRFTIME
 	struct tm *tp;
 	char buf[80];
+	char format[80];
+
+	if( iflg ) {
+		(void) snprintf (format, 80, "%%Y-%%m-%%d");
+	}
+	else {
+		(void) snprintf (format, 80, "%%b %%d, %%Y");
+	}
 
 	tp = gmtime (&date);
 	if (NULL == tp) {
 		(void) printf ("time_t: %lu\n", (unsigned long)date);
 	} else {
-		(void) strftime (buf, sizeof buf, "%b %d, %Y", tp);
+		(void) strftime (buf, sizeof buf, format, tp);
 		(void) puts (buf);
 	}
 #else
@@ -362,7 +368,7 @@ static void list_fields (void)
 	/*
 	 * Start with the easy numbers - the number of days before the
 	 * password can be changed, the number of days after which the
-	 * password must be chaged, the number of days before the password
+	 * password must be changed, the number of days before the password
 	 * expires that the user is told, and the number of days after the
 	 * password expires that the account becomes unusable.
 	 */
@@ -395,10 +401,11 @@ static void process_flags (int argc, char **argv)
 		{"maxdays",    required_argument, NULL, 'M'},
 		{"root",       required_argument, NULL, 'R'},
 		{"warndays",   required_argument, NULL, 'W'},
+		{"iso8601",    no_argument,       NULL, 'i'},
 		{NULL, 0, NULL, '\0'}
 	};
 
-	while ((c = getopt_long (argc, argv, "d:E:hI:lm:M:R:W:",
+	while ((c = getopt_long (argc, argv, "d:E:hiI:lm:M:R:W:",
 	                         long_options, NULL)) != -1) {
 		switch (c) {
 		case 'd':
@@ -424,6 +431,9 @@ static void process_flags (int argc, char **argv)
 		case 'h':
 			usage (E_SUCCESS);
 			/*@notreached@*/break;
+		case 'i':
+			iflg = true;
+			break;
 		case 'I':
 			Iflg = true;
 			if (   (getlong (optarg, &inactdays) == 0)
@@ -780,7 +790,7 @@ static void get_defaults (/*@null@*/const struct spwd *sp)
  *	-E	set account expiration date (*)
  *	-I	set password inactive after expiration (*)
  *	-l	show account aging information
- *	-M	set maximim number of days before password change (*)
+ *	-M	set maximum number of days before password change (*)
  *	-m	set minimum number of days before password change (*)
  *	-W	set expiration warning days (*)
  *
@@ -818,8 +828,8 @@ int main (int argc, char **argv)
 	rgid = getgid ();
 	amroot = (ruid == 0);
 #ifdef WITH_SELINUX
-	if (amroot && (is_selinux_enabled () > 0)) {
-		amroot = (selinux_check_passwd_access (PASSWD__ROOTOK) == 0);
+	if (amroot) {
+		amroot = (check_selinux_permit ("rootok") == 0);
 	}
 #endif
 

@@ -1,3 +1,5 @@
+debian/default/useradd etc/default
+debian/shadowconfig sbin
 usr/bin/chage
 usr/bin/chfn
 usr/bin/chsh
@@ -65,6 +67,7 @@ usr/share/man/man8/chgpasswd.8
 usr/share/man/man8/chpasswd.8
 usr/share/man/man8/groupadd.8
 usr/share/man/man8/groupdel.8
+usr/share/man/man8/groupmems.8
 usr/share/man/man8/groupmod.8
 usr/share/man/man8/grpck.8
 usr/share/man/man8/grpconv.8

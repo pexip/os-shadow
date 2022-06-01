@@ -72,6 +72,14 @@ extern int expire (const struct passwd *, /*@null@*/const struct spwd *);
 /* isexpired.c */
 extern int isexpired (const struct passwd *, /*@null@*/const struct spwd *);
 
+/* btrfs.c */
+#ifdef WITH_BTRFS
+extern int btrfs_create_subvolume(const char *path);
+extern int btrfs_remove_subvolume(const char *path);
+extern int btrfs_is_subvolume(const char *path);
+extern int is_btrfs(const char *path);
+#endif
+
 /* basename() renamed to Basename() to avoid libc name space confusion */
 /* basename.c */
 extern /*@observer@*/const char *Basename (const char *str);
@@ -254,9 +262,9 @@ extern void motd (void);
 /* myname.c */
 extern /*@null@*//*@only@*/struct passwd *get_my_pwent (void);
 
-/* pam_pass_non_interractive.c */
+/* pam_pass_non_interactive.c */
 #ifdef USE_PAM
-extern int do_pam_passwd_non_interractive (const char *pam_service,
+extern int do_pam_passwd_non_interactive (const char *pam_service,
                                            const char *username,
                                            const char* password);
 #endif				/* USE_PAM */
@@ -273,6 +281,21 @@ extern void do_pam_passwd (const char *user, bool silent, bool change_expired);
 
 /* port.c */
 extern bool isttytime (const char *, const char *, time_t);
+
+/* prefix_flag.c */
+extern const char* process_prefix_flag (const char* short_opt, int argc, char **argv);
+extern struct group *prefix_getgrnam(const char *name);
+extern struct group *prefix_getgrgid(gid_t gid);
+extern struct passwd *prefix_getpwuid(uid_t uid);
+extern struct passwd *prefix_getpwnam(const char* name);
+extern struct spwd *prefix_getspnam(const char* name);
+extern struct group *prefix_getgr_nam_gid(const char *grname);
+extern void prefix_setpwent();
+extern struct passwd* prefix_getpwent();
+extern void prefix_endpwent();
+extern void prefix_setgrent();
+extern struct group* prefix_getgrent();
+extern void prefix_endgrent();
 
 /* pwd2spwd.c */
 #ifndef USE_PAM
@@ -313,6 +336,7 @@ extern /*@observer@*/const char *crypt_make_salt (/*@null@*//*@observer@*/const 
 #ifdef WITH_SELINUX
 extern int set_selinux_file_context (const char *dst_name);
 extern int reset_selinux_file_context (void);
+extern int check_selinux_permit (const char *perm_name);
 #endif
 
 /* semanage.c */
@@ -401,17 +425,19 @@ extern int set_filesize_limit (int blocks);
 extern int user_busy (const char *name, uid_t uid);
 
 /* utmp.c */
+#ifndef USE_UTMPX
 extern /*@null@*/struct utmp *get_current_utmp (void);
 extern struct utmp *prepare_utmp (const char *name,
                                   const char *line,
                                   const char *host,
                                   /*@null@*/const struct utmp *ut);
 extern int setutmp (struct utmp *ut);
-#ifdef USE_UTMPX
+#else
+extern /*@null@*/struct utmpx *get_current_utmp (void);
 extern struct utmpx *prepare_utmpx (const char *name,
                                     const char *line,
                                     const char *host,
-                                    /*@null@*/const struct utmp *ut);
+                                    /*@null@*/const struct utmpx *ut);
 extern int setutmpx (struct utmpx *utx);
 #endif				/* USE_UTMPX */
 

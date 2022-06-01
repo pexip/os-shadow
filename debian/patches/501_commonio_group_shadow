@@ -10,9 +10,9 @@ Fixes: #166793
  #include <signal.h>
 +#include <grp.h>
  #include "nscd.h"
+ #include "sssd.h"
  #ifdef WITH_TCB
- #include <tcb.h>
-@@ -963,12 +964,23 @@
+@@ -986,12 +987,23 @@
  			goto fail;
  		}
  	} else {

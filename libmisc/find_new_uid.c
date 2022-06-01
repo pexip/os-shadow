@@ -136,7 +136,7 @@ static int check_uid(const uid_t uid,
 	}
 	/* Check if the UID exists according to NSS */
 	errno = 0;
-	if (getpwuid(uid) != NULL) {
+	if (prefix_getpwuid(uid) != NULL) {
 		return EEXIST;
 	} else {
 		/* getpwuid() was NULL
@@ -167,7 +167,7 @@ int find_new_uid(bool sys_user,
 	bool *used_uids;
 	const struct passwd *pwd;
 	uid_t uid_min, uid_max, preferred_min;
-	uid_t user_id, id;
+	uid_t id;
 	uid_t lowest_found, highest_found;
 	int result;
 	int nospam = 0;

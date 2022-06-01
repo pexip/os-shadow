@@ -248,25 +248,25 @@
 +
 --- a/src/Makefile.am
 +++ b/src/Makefile.am
-@@ -30,6 +30,7 @@
- ubin_PROGRAMS += newgidmap newuidmap
+@@ -33,6 +33,7 @@
+ bin_PROGRAMS  += su
  endif
  usbin_PROGRAMS = \
 +	cppw \
  	chgpasswd \
  	chpasswd \
  	groupadd \
-@@ -90,6 +91,7 @@
- chgpasswd_LDADD = $(LDADD) $(LIBPAM_SUID) $(LIBSELINUX) $(LIBCRYPT)
- chsh_LDADD     = $(LDADD) $(LIBPAM) $(LIBSELINUX) $(LIBCRYPT_NOPAM) $(LIBSKEY) $(LIBMD)
- chpasswd_LDADD = $(LDADD) $(LIBPAM) $(LIBSELINUX) $(LIBCRYPT)
-+cppw_LDADD     = $(LDADD) $(LIBSELINUX)
- gpasswd_LDADD  = $(LDADD) $(LIBAUDIT) $(LIBSELINUX) $(LIBCRYPT)
- groupadd_LDADD = $(LDADD) $(LIBPAM_SUID) $(LIBAUDIT) $(LIBSELINUX)
- groupdel_LDADD = $(LDADD) $(LIBPAM_SUID) $(LIBAUDIT) $(LIBSELINUX)
+@@ -101,6 +102,7 @@
+ chgpasswd_LDADD = $(LDADD) $(LIBPAM_SUID) $(LIBAUDIT) $(LIBSELINUX) $(LIBCRYPT) $(LIBECONF)
+ chsh_LDADD     = $(LDADD) $(LIBPAM) $(LIBAUDIT) $(LIBSELINUX) $(LIBCRYPT_NOPAM) $(LIBSKEY) $(LIBMD) $(LIBECONF)
+ chpasswd_LDADD = $(LDADD) $(LIBPAM) $(LIBAUDIT) $(LIBSELINUX) $(LIBCRYPT) $(LIBECONF)
++cppw_LDADD     = $(LDADD) $(LIBSELINUX) $(LIBAUDIT)
+ expiry_LDADD = $(LDADD) $(LIBECONF)
+ gpasswd_LDADD  = $(LDADD) $(LIBAUDIT) $(LIBSELINUX) $(LIBCRYPT) $(LIBECONF)
+ groupadd_LDADD = $(LDADD) $(LIBPAM_SUID) $(LIBAUDIT) $(LIBSELINUX) $(LIBECONF)
 --- a/po/POTFILES.in
 +++ b/po/POTFILES.in
-@@ -85,6 +85,7 @@
+@@ -90,6 +90,7 @@
  src/chgpasswd.c
  src/chpasswd.c
  src/chsh.c

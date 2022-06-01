@@ -436,7 +436,7 @@ static void prepare_pam_close_session (void)
 static void usage (int status)
 {
 	(void)
-	fputs (_("Usage: su [options] [LOGIN]\n"
+	fputs (_("Usage: su [options] [-] [username [args]]\n"
 	         "\n"
 	         "Options:\n"
 	         "  -c, --command COMMAND         pass COMMAND to the invoked shell\n"
@@ -446,7 +446,8 @@ static void usage (int status)
 	         "  --preserve-environment        do not reset environment variables, and\n"
 	         "                                keep the same shell\n"
 	         "  -s, --shell SHELL             use SHELL instead of the default in passwd\n"
-	         "\n"), (E_SUCCESS != status) ? stderr : stdout);
+	         "\n"
+	         "If no username is given, assume root.\n"), (E_SUCCESS != status) ? stderr : stdout);
 	exit (status);
 }
 
@@ -809,23 +810,10 @@ static void process_flags (int argc, char **argv)
 	if ((optind < argc) && (strcmp (argv[optind], "-") == 0)) {
 		fakelogin = true;
 		optind++;
-		if (   (optind < argc)
-		    && (strcmp (argv[optind], "--") == 0)) {
-			optind++;
-		}
 	}
 
-	/*
-	 * The next argument must be either a user ID, or some flag to a
-	 * subshell. Pretty sticky since you can't have an argument which
-	 * doesn't start with a "-" unless you specify the new user name.
-	 * Any remaining arguments will be passed to the user's login shell.
-	 */
-	if ((optind < argc) && ('-' != argv[optind][0])) {
+	if (optind < argc) {
 		STRFCPY (name, argv[optind++]);	/* use this login id */
-		if ((optind < argc) && (strcmp (argv[optind], "--") == 0)) {
-			optind++;
-		}
 	}
 	if ('\0' == name[0]) {		/* use default user */
 		struct passwd *root_pw = getpwnam ("root");
@@ -925,27 +913,7 @@ static void set_environment (struct passwd *pw)
 		addenv ("IFS= \t\n", NULL);	/* ... instead, set a safe IFS */
 	}
 
-#ifdef USE_PAM
-	/* we need to setup the environment *after* pam_open_session(),
-	 * else the UID is changed before stuff like pam_xauth could
-	 * run, and we cannot access /etc/shadow and co
-	 */
 	environ = newenvp;	/* make new environment active */
-
-	if (change_environment) {
-		/* update environment with all pam set variables */
-		char **envcp = pam_getenvlist (pamh);
-		if (NULL != envcp) {
-			while (NULL != *envcp) {
-				addenv (*envcp, NULL);
-				envcp++;
-			}
-		}
-	}
-
-#else				/* !USE_PAM */
-	environ = newenvp;	/* make new environment active */
-#endif				/* !USE_PAM */
 
 	if (change_environment) {
 		if (fakelogin) {
@@ -960,6 +928,21 @@ static void set_environment (struct passwd *pw)
 			addenv ("LOGNAME", pw->pw_name);
 			addenv ("SHELL", shellstr);
 		}
+
+#ifdef USE_PAM
+	        /* we need to setup the environment *after* pam_open_session(),
+                 * else the UID is changed before stuff like pam_xauth could
+                 * run, and we cannot access /etc/shadow and co
+                 */
+		/* update environment with all pam set variables */
+		char **envcp = pam_getenvlist (pamh);
+		if (NULL != envcp) {
+			while (NULL != *envcp) {
+				addenv (*envcp, NULL);
+				envcp++;
+			}
+		}
+#endif				/* !USE_PAM */
 	}
 
 }

@@ -2,30 +2,25 @@ Shadow SITES
 ============
 
 Homepage
-	http://pkg-shadow.alioth.debian.org/
+	http://github.com/shadow-maint/shadow
 
-FTP site
-	ftp://pkg-shadow.alioth.debian.org/pub/pkg-shadow
+Issue tracker
+	http://github.com/shadow-maint/shadow/issues
 
-SVN repository
-	anonymous read only access: svn://svn.debian.org/pkg-shadow/upstream
-
-SVN web interface
-	http://svn.debian.org/wsvn/pkg-shadow/upstream
-	or
-	http://svn.debian.org/viewsvn/pkg-shadow/upstream
+Releases
+	https://github.com/shadow-maint/shadow/releases
 
 Mailing lists
-	for general discuss: pkg-shadow-devel@lists.alioth.debian.org
-	commit list: pkg-shadow-commits@lists.alioth.debian.org
+	for general discuss: pkg-shadow-devel@alioth-lists.debian.net
+	commit list: pkg-shadow-commits@alioth-lists.debian.net
 
 Mailing lists subscription
-	http://lists.alioth.debian.org/mailman/listinfo/pkg-shadow-devel
-	http://lists.alioth.debian.org/mailman/listinfo/pkg-shadow-commits
+	http://alioth-lists.debian.net/mailman/listinfo/pkg-shadow-devel
+	http://alioth-lists.debian.net/mailman/listinfo/pkg-shadow-commits
 
 Mailing lists archives:
-	http://lists.alioth.debian.org/pipermail/pkg-shadow-devel/
-	http://lists.alioth.debian.org/pipermail/pkg-shadow-commits/
+	http://alioth-lists.debian.net/pipermail/pkg-shadow-devel/
+	http://alioth-lists.debian.net/pipermail/pkg-shadow-commits/
 
 S/Key support:
 	Shadow can be built with S/Key support using the S/Key package from:
@@ -44,6 +39,7 @@ a lot of mail...
 
 Adam Rudnicki <adam@v-lo.krakow.pl>
 Alan Curry <pacman@tardis.mars.net>
+Aleksa Sarai <cyphar@cyphar.com>
 Alexander O. Yuriev <alex@bach.cis.temple.edu>
 Algis Rudys <arudys@rice.edu>
 Andreas Jaeger <aj@arthur.rhein-neckar.de>
@@ -55,6 +51,7 @@ Brian R. Gaeke <brg@dgate.org>
 Calle Karlsson <ckn@kash.se>
 Chip Rosenthal <chip@unicom.com>
 Chris Evans <lady0110@sable.ox.ac.uk>
+Chris Lamb <chris@chris-lamb.co.uk>
 Cristian Gafton <gafton@sorosis.ro>
 Dan Walsh <dwalsh@redhat.com>
 Darcy Boese <possum@chardonnay.niagara.com>
@@ -62,6 +59,7 @@ Dave Hagewood <admin@arrowweb.com>
 David A. Holland <dholland@hcs.harvard.edu>
 David Frey <David.Frey@lugs.ch>
 Ed Carp <ecarp@netcom.com>
+Eric W. Biederman" <ebiederm@xmission.com>
 Floody <flood@evcom.net>
 Frank Denis <j@4u.net>
 George Kraft IV <gk4@us.ibm.com>
@@ -92,6 +90,7 @@ Martin Bene <mb@sime.com>
 Martin Mares <mj@gts.cz>
 Michael Meskes <meskes@topsystem.de>
 Michael Talbot-Wilson <mike@calypso.bns.com.au>
+Michael Vetter <jubalh@iodoru.org>
 Mike Frysinger <vapier@gentoo.org>
 Mike Pakovic <mpakovic@users.southeast.net>
 Nicolas François <nicolas.francois@centraliens.net>
@@ -119,4 +118,5 @@ Maintainers
 Tomasz Kłoczko <kloczek@pld.org.pl> (2000-2007)
 Nicolas François <nicolas.francois@centraliens.net> (2007-2014)
 Serge E. Hallyn <serge@hallyn.com> (2014-now)
+Christian Brauner <christian@brauner.io> (2019-now)
 

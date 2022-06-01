@@ -51,6 +51,7 @@
 #include "groupio.h"
 #include "pwio.h"
 #include "nscd.h"
+#include "sssd.h"
 #include "prototypes.h"
 #ifdef	SHADOWGRP
 #include "sgroupio.h"
@@ -66,6 +67,11 @@
 #define E_NOTFOUND	6	/* specified group doesn't exist */
 #define E_NAME_IN_USE	9	/* group name already in use */
 #define E_GRP_UPDATE	10	/* can't update group file */
+#define E_CLEANUP_SERVICE	11	/* can't setup cleanup service */
+#define E_PAM_USERNAME	12	/* can't determine your username for use with pam */
+#define E_PAM_ERROR	13	/* pam returned an error, see Syslog facility id groupmod */
+
+
 /*
  * Global variables
  */
@@ -79,6 +85,8 @@ static char *group_newname;
 static char *group_passwd;
 static gid_t group_id;
 static gid_t group_newid;
+
+static const char* prefix = "";
 
 static struct cleanup_info_mod info_passwd;
 static struct cleanup_info_mod info_group;
@@ -128,6 +136,7 @@ static void usage (int status)
 	(void) fputs (_("  -p, --password PASSWORD       change the password to this (encrypted)\n"
 	                "                                PASSWORD\n"), usageout);
 	(void) fputs (_("  -R, --root CHROOT_DIR         directory to chroot into\n"), usageout);
+	(void) fputs (_("  -P, --prefix PREFIX_DIR       prefix directory where are located the /etc/* files\n"), usageout);
 	(void) fputs ("\n", usageout);
 	exit (status);
 }
@@ -340,7 +349,7 @@ static void check_new_name (void)
 		 * If the entry is found, too bad.
 		 */
 		/* local, no need for xgetgrnam */
-		if (getgrnam (group_newname) != NULL) {
+		if (prefix_getgrnam (group_newname) != NULL) {
 			fprintf (stderr,
 			         _("%s: group '%s' already exists\n"),
 			         Prog, group_newname);
@@ -376,9 +385,10 @@ static void process_flags (int argc, char **argv)
 		{"non-unique", no_argument,       NULL, 'o'},
 		{"password",   required_argument, NULL, 'p'},
 		{"root",       required_argument, NULL, 'R'},
+		{"prefix",     required_argument, NULL, 'P'},
 		{NULL, 0, NULL, '\0'}
 	};
-	while ((c = getopt_long (argc, argv, "g:hn:op:R:",
+	while ((c = getopt_long (argc, argv, "g:hn:op:R:P:",
 		                 long_options, NULL)) != -1) {
 		switch (c) {
 		case 'g':
@@ -406,6 +416,8 @@ static void process_flags (int argc, char **argv)
 			pflg = true;
 			break;
 		case 'R': /* no-op, handled in process_root_flag () */
+			break;
+		case 'P': /* no-op, handled in process_prefix_flag () */
 			break;
 		default:
 			usage (E_USAGE);
@@ -697,8 +709,8 @@ void update_primary_groups (gid_t ogid, gid_t ngid)
 {
 	struct passwd *pwd;
 
-	setpwent ();
-	while ((pwd = getpwent ()) != NULL) {
+	prefix_setpwent ();
+	while ((pwd = prefix_getpwent ()) != NULL) {
 		if (pwd->pw_gid == ogid) {
 			const struct passwd *lpwd;
 			struct passwd npwd;
@@ -720,7 +732,7 @@ void update_primary_groups (gid_t ogid, gid_t ngid)
 			}
 		}
 	}
-	endpwent ();
+	prefix_endpwent ();
 }
 
 /*
@@ -746,6 +758,7 @@ int main (int argc, char **argv)
 	(void) textdomain (PACKAGE);
 
 	process_root_flag ("-R", argc, argv);
+	prefix = process_prefix_flag ("-P", argc, argv);
 
 	OPENLOG ("groupmod");
 #ifdef WITH_AUDIT
@@ -756,7 +769,7 @@ int main (int argc, char **argv)
 		fprintf (stderr,
 		         _("%s: Cannot setup cleanup service.\n"),
 		         Prog);
-		exit (1);
+		exit (E_CLEANUP_SERVICE);
 	}
 
 	process_flags (argc, argv);
@@ -770,7 +783,7 @@ int main (int argc, char **argv)
 			fprintf (stderr,
 			         _("%s: Cannot determine your user name.\n"),
 			         Prog);
-			exit (1);
+			exit (E_PAM_USERNAME);
 		}
 
 		retval = pam_start ("groupmod", pampw->pw_name, &conv, &pamh);
@@ -791,7 +804,7 @@ int main (int argc, char **argv)
 		if (NULL != pamh) {
 			(void) pam_end (pamh, retval);
 		}
-		exit (1);
+		exit (E_PAM_ERROR);
 	}
 	(void) pam_end (pamh, retval);
 #endif				/* USE_PAM */
@@ -805,7 +818,7 @@ int main (int argc, char **argv)
 		/*
 		 * Start with a quick check to see if the group exists.
 		 */
-		grp = getgrnam (group_name); /* local, no need for xgetgrnam */
+		grp = prefix_getgrnam (group_name); /* local, no need for xgetgrnam */
 		if (NULL == grp) {
 			fprintf (stderr,
 			         _("%s: group '%s' does not exist\n"),
@@ -865,6 +878,7 @@ int main (int argc, char **argv)
 	close_files ();
 
 	nscd_flush_cache ("group");
+	sssd_flush_cache (SSSD_DB_GROUP);
 
 	return E_SUCCESS;
 }

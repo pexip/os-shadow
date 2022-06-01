@@ -30,6 +30,7 @@
 -->
 <!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook V4.5//EN"
   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY LASTLOG_UID_MAX       SYSTEM "login.defs.d/LASTLOG_UID_MAX.xml">
 <!ENTITY MAIL_DIR              SYSTEM "login.defs.d/MAIL_DIR.xml">
 <!ENTITY MAX_MEMBERS_PER_GROUP SYSTEM "login.defs.d/MAX_MEMBERS_PER_GROUP.xml">
 <!ENTITY SUB_GID_COUNT         SYSTEM "login.defs.d/SUB_GID_COUNT.xml">
@@ -104,6 +105,16 @@
 	  <para>
 	    Add the user to the supplementary group(s). Use only with the
 	    <option>-G</option> option.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <option>-b</option>, <option>--badnames</option>
+	</term>
+	<listitem>
+	  <para>
+	    Allow names that do not conform to standards.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -321,6 +332,23 @@
       </varlistentry>
       <varlistentry>
 	<term>
+	  <option>-P</option>, <option>--prefix</option>&nbsp;<replaceable>PREFIX_DIR</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    Apply changes in the <replaceable>PREFIX_DIR</replaceable>
+	    directory and use the configuration files from the
+	    <replaceable>PREFIX_DIR</replaceable> directory.
+		This option does not chroot and is intended for preparing 
+		a cross-compilation target.
+		Some limitations: NIS and LDAP users/groups are not verified.
+		PAM authentication is using the host files.
+		No SELINUX support.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
 	  <option>-s</option>, <option>--shell</option>&nbsp;<replaceable>SHELL</replaceable>
 	</term>
 	<listitem>
@@ -500,6 +528,7 @@
       tool:
     </para>
     <variablelist>
+      &LASTLOG_UID_MAX;
       &MAIL_DIR; <!-- documents also MAIL_FILE -->
       &MAX_MEMBERS_PER_GROUP;
       &SUB_GID_COUNT; <!-- documents also SUB_GID_MAX and SUB_GID_MIN -->
