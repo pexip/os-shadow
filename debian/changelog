@@ -1,3 +1,9 @@
+shadow (1:4.8.1-1pexip1) pexip; urgency=medium
+
+  * Initial bullseye build
+
+ -- Mark Hymers <mark.hymers@pexip.com>  Thu, 02 Jun 2022 14:42:56 +0100
+
 shadow (1:4.8.1-1) unstable; urgency=medium
 
   * debian/default/useradd: Fix typo DHSELL -> DSHELL (Closes: #897028)
