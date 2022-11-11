@@ -1,32 +1,9 @@
 /*
- * Copyright (c) 1991 - 1994, Julianne Frances Haugh
- * Copyright (c) 2008 - 2011, Nicolas François
- * Copyright (c) 2014, Red Hat, Inc.
- * All rights reserved.
+ * SPDX-FileCopyrightText: 1991 - 1994, Julianne Frances Haugh
+ * SPDX-FileCopyrightText: 2008 - 2011, Nicolas François
+ * SPDX-FileCopyrightText: 2014, Red Hat, Inc.
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the copyright holders or contributors may not be used to
- *    endorse or promote products derived from this software without
- *    specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
- * PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
- * HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * SPDX-License-Identifier: BSD-3-Clause
  */
 
 #include <config.h>
@@ -38,6 +15,7 @@
 #include "prototypes.h"
 #include "pwio.h"
 #include "getdef.h"
+#include "shadowlog.h"
 
 /*
  * get_ranges - Get the minimum and maximum ID ranges for the search
@@ -74,13 +52,20 @@ static int get_ranges (bool sys_user, uid_t *min_id, uid_t *max_id,
 
 		/* Check that the ranges make sense */
 		if (*max_id < *min_id) {
-			(void) fprintf (stderr,
+			(void) fprintf (log_get_logfd(),
                             _("%s: Invalid configuration: SYS_UID_MIN (%lu), "
                               "UID_MIN (%lu), SYS_UID_MAX (%lu)\n"),
-                            Prog, (unsigned long) *min_id,
+                            log_get_progname(), (unsigned long) *min_id,
                             getdef_ulong ("UID_MIN", 1000UL),
                             (unsigned long) *max_id);
 			return EINVAL;
+		}
+		/*
+		 * Zero is reserved for root and the allocation algorithm does not
+		 * work right with it.
+		 */
+		if (*min_id == 0) {
+			*min_id = (uid_t) 1;
 		}
 	} else {
 		/* Non-system users */
@@ -97,10 +82,10 @@ static int get_ranges (bool sys_user, uid_t *min_id, uid_t *max_id,
 
 		/* Check that the ranges make sense */
 		if (*max_id < *min_id) {
-			(void) fprintf (stderr,
+			(void) fprintf (log_get_logfd(),
 					_("%s: Invalid configuration: UID_MIN (%lu), "
 					  "UID_MAX (%lu)\n"),
-					Prog, (unsigned long) *min_id,
+					log_get_progname(), (unsigned long) *min_id,
 					(unsigned long) *max_id);
 			return EINVAL;
 		}
@@ -120,7 +105,7 @@ static int get_ranges (bool sys_user, uid_t *min_id, uid_t *max_id,
 static int check_uid(const uid_t uid,
 		     const uid_t uid_min,
 		     const uid_t uid_max,
-		     bool *used_uids)
+		     const bool *used_uids)
 {
 	/* First test that the preferred ID is in the range */
 	if (uid < uid_min || uid > uid_max) {
@@ -157,7 +142,7 @@ static int check_uid(const uid_t uid,
  * [UID_MIN:UID_MAX] range.
  * This ID should be higher than all the used UID, but if not possible,
  * the lowest unused ID in the range will be returned.
- * 
+ *
  * Return 0 on success, -1 if no unused UIDs are available.
  */
 int find_new_uid(bool sys_user,
@@ -213,10 +198,10 @@ int find_new_uid(bool sys_user,
 			 * more likely to want to stop and address the
 			 * issue.
 			 */
-			fprintf (stderr,
+			fprintf (log_get_logfd(),
 				_("%s: Encountered error attempting to use "
 				  "preferred UID: %s\n"),
-				Prog, strerror (result));
+				log_get_progname(), strerror (result));
 			return -1;
 		}
 	}
@@ -243,9 +228,9 @@ int find_new_uid(bool sys_user,
 	/* Create an array to hold all of the discovered UIDs */
 	used_uids = malloc (sizeof (bool) * (uid_max +1));
 	if (NULL == used_uids) {
-		fprintf (stderr,
+		fprintf (log_get_logfd(),
 			 _("%s: failed to allocate memory: %s\n"),
-			 Prog, strerror (errno));
+			 log_get_progname(), strerror (errno));
 		return -1;
 	}
 	memset (used_uids, false, sizeof (bool) * (uid_max + 1));
@@ -323,10 +308,10 @@ int find_new_uid(bool sys_user,
 				 *
 				 */
 				if (!nospam) {
-					fprintf (stderr,
+					fprintf (log_get_logfd(),
 						_("%s: Can't get unique system UID (%s). "
 						  "Suppressing additional messages.\n"),
-						Prog, strerror (result));
+						log_get_progname(), strerror (result));
 					SYSLOG ((LOG_ERR,
 						"Error checking available UIDs: %s",
 						strerror (result)));
@@ -366,10 +351,10 @@ int find_new_uid(bool sys_user,
 					 *
 					 */
 					if (!nospam) {
-						fprintf (stderr,
+						fprintf (log_get_logfd(),
 							_("%s: Can't get unique system UID (%s). "
 							  "Suppressing additional messages.\n"),
-							Prog, strerror (result));
+							log_get_progname(), strerror (result));
 						SYSLOG((LOG_ERR,
 							"Error checking available UIDs: %s",
 							strerror (result)));
@@ -426,10 +411,10 @@ int find_new_uid(bool sys_user,
 				 *
 				 */
 				if (!nospam) {
-					fprintf (stderr,
+					fprintf (log_get_logfd(),
 						_("%s: Can't get unique UID (%s). "
 						  "Suppressing additional messages.\n"),
-						Prog, strerror (result));
+						log_get_progname(), strerror (result));
 					SYSLOG ((LOG_ERR,
 						"Error checking available UIDs: %s",
 						strerror (result)));
@@ -469,10 +454,10 @@ int find_new_uid(bool sys_user,
 					 *
 					 */
 					if (!nospam) {
-						fprintf (stderr,
+						fprintf (log_get_logfd(),
 							_("%s: Can't get unique UID (%s). "
 							  "Suppressing additional messages.\n"),
-							Prog, strerror (result));
+							log_get_progname(), strerror (result));
 						SYSLOG ((LOG_ERR,
 							"Error checking available UIDs: %s",
 							strerror (result)));
@@ -488,9 +473,9 @@ int find_new_uid(bool sys_user,
 	}
 
 	/* The code reached here and found no available IDs in the range */
-	fprintf (stderr,
+	fprintf (log_get_logfd(),
 		_("%s: Can't get unique UID (no more available UIDs)\n"),
-		Prog);
+		log_get_progname());
 	SYSLOG ((LOG_WARN, "no more available UIDs on the system"));
 	free (used_uids);
 	return -1;

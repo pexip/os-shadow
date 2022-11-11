@@ -1,13 +1,13 @@
 '\" t
 .\"     Title: newusers
 .\"    Author: Julianne Frances Haugh
-.\" Generator: DocBook XSL Stylesheets v1.79.1 <http://docbook.sf.net/>
-.\"      Date: 01/23/2020
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 11/08/2022
 .\"    Manual: System Management Commands
-.\"    Source: shadow-utils 4.8.1
+.\"    Source: shadow-utils 4.13
 .\"  Language: English
 .\"
-.TH "NEWUSERS" "8" "01/23/2020" "shadow\-utils 4\&.8\&.1" "System Management Commands"
+.TH "NEWUSERS" "8" "11/08/2022" "shadow\-utils 4\&.13" "System Management Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -99,7 +99,9 @@ This field is copied in the GECOS field of the user\&.
 .RS 4
 This field is used to define the home directory of the user\&.
 .sp
-If this field does not specify an existing directory, the specified directory is created, with ownership set to the user being created or updated and its primary group\&.
+If this field does not specify an existing directory, the specified directory is created, with ownership set to the user being created or updated and its primary group\&. Note that
+\fInewusers does not create parent directories \fR
+of the new user\*(Aqs home directory\&. The newusers command will fail to create the home directory if the parent directories do not exist, and will send a message to stderr informing the user of the failure\&. The newusers command will not halt or return a failure to the calling shell if it fails to create the home directory, it will continue to process the batch of new users specified\&.
 .sp
 If the home directory of an existing user is changed,
 \fBnewusers\fR
@@ -159,7 +161,7 @@ Apply changes in the
 \fICHROOT_DIR\fR
 directory and use the configuration files from the
 \fICHROOT_DIR\fR
-directory\&.
+directory\&. Only absolute paths are supported\&.
 .RE
 .PP
 \fB\-s\fR, \fB\-\-sha\-rounds\fR
@@ -193,7 +195,9 @@ This defines the system default encryption algorithm for encrypting passwords (i
 It can take one of these values:
 \fIDES\fR
 (default),
-\fIMD5\fR, \fISHA256\fR, \fISHA512\fR\&.
+\fIMD5\fR, \fISHA256\fR, \fISHA512\fR\&. MD5 and DES should not be used for new hashes, see
+crypt(5)
+for recommendations\&.
 .sp
 Note: this parameter overrides the
 \fBMD5_CRYPT_ENAB\fR
@@ -263,7 +267,7 @@ The maximum number of days a password may be used\&. If the password is older th
 .PP
 \fBPASS_MIN_DAYS\fR (number)
 .RS 4
-The minimum number of days allowed between password changes\&. Any password changes attempted sooner than this will be rejected\&. If not specified, \-1 will be assumed (which disables the restriction)\&.
+The minimum number of days allowed between password changes\&. Any password changes attempted sooner than this will be rejected\&. If not specified, 0 will be assumed (which disables the restriction)\&.
 .RE
 .PP
 \fBPASS_WARN_AGE\fR (number)
@@ -282,7 +286,7 @@ or
 .sp
 With a lot of rounds, it is more difficult to brute forcing the password\&. But note also that more CPU resources will be needed to authenticate users\&.
 .sp
-If not specified, the libc will choose the default number of rounds (5000)\&.
+If not specified, the libc will choose the default number of rounds (5000), which is orders of magnitude too low for modern hardware\&.
 .sp
 The values must be inside the 1000\-999,999,999 range\&.
 .sp

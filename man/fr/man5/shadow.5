@@ -1,13 +1,13 @@
 '\" t
 .\"     Title: shadow
 .\"    Author: Julianne Frances Haugh
-.\" Generator: DocBook XSL Stylesheets v1.79.1 <http://docbook.sf.net/>
-.\"      Date: 23/01/2020
-.\"    Manual: Formats et conversions de fichiers
-.\"    Source: shadow-utils 4.8.1
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 08/11/2022
+.\"    Manual: File Formats and Configuration Files
+.\"    Source: shadow-utils 4.13
 .\"  Language: French
 .\"
-.TH "SHADOW" "5" "23/01/2020" "shadow\-utils 4\&.8\&.1" "Formats et conversions de fich"
+.TH "SHADOW" "5" "08/11/2022" "shadow\-utils 4\&.13" "File Formats and Configuration"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -61,7 +61,7 @@ If the password field contains some string that is not a valid result of
 .PP
 \fBdate du dernier changement de mot de passe\fR
 .RS 4
-La date du dernier changement de mot de passe, exprim\('ee en nombre de jours depuis le 1er\ \&janvier\ \&1970\&.
+The date of the last password change, expressed as the number of days since Jan 1, 1970 00:00 UTC\&.
 .sp
 La valeur 0 a une signification particuli\(`ere\ \&: l\*(Aqutilisateur devra changer son mot de passe la prochaine fois qu\*(Aqil se connectera au syst\(`eme\&.
 .sp
@@ -72,7 +72,7 @@ Un champ vide indique que les fonctionnalit\('es de vieillissement de mot de pas
 .RS 4
 L\*(Aq\(^age minimum du mot de passe est la dur\('ee (en jour) que l\*(Aqutilisateur devra attendre avant de pouvoir le changer de nouveau\&.
 .sp
-Un champ vide ou une valeur de 0 signifie qu\*(Aqil n\*(Aqy a pas d\*(Aq\(^age minimum pour le mot de passe\&.
+An empty field and value 0 mean that there is no minimum password age\&.
 .RE
 .PP
 \fB\(^age maximum du mot de passe\fR
@@ -97,14 +97,14 @@ Un champ vide ou une valeur de 0 signifie qu\*(Aqil n\*(Aqy aura pas de p\('erio
 .RS 4
 La dur\('ee (en jour) pendant laquelle le mot de passe sera quand m\(^eme accept\('e apr\(`es son expiration (voir l\*(Aq\(^age maximum du mot de passe ci\-dessus)\&. L\*(Aqutilisateur devra mettre \(`a jour son mot de passe \(`a la prochaine connexion\&.
 .sp
-Apr\(`es expiration du mot de passe suivie de la p\('eriode d\*(Aqexpiration, plus aucune connexion n\*(Aqest possible en utilisant le mot de passe de l\*(Aqutilisateur\&. L\*(Aqutilisateur doit contacter son administrateur\&.
+After expiration of the password and this expiration period is elapsed, no login is possible for the user\&. The user should contact her administrator\&.
 .sp
 Un champ vide signifie qu\*(Aqaucune p\('eriode d\*(Aqinactivit\('e n\*(Aqest impos\('ee\&.
 .RE
 .PP
 \fBdate de fin de validit\('e du compte\fR
 .RS 4
-La date d\*(Aqexpiration du compte, exprim\('e en nombre de jours depuis le 1er\ \&janvier\ \&1970\&.
+The date of expiration of the account, expressed as the number of days since Jan 1, 1970 00:00 UTC\&.
 .sp
 Veuillez noter que l\*(Aqexpiration d\*(Aqun compte diff\(`ere de l\*(Aqexpiration d\*(Aqun mot de passe\&. En cas d\*(Aqexpiration d\*(Aqun compte, l\*(Aqutilisateur ne sera plus autoris\('e \(`a se connecter\&. En cas d\*(Aqexpiration d\*(Aqun mot de passe, l\*(Aqutilisateur n\*(Aqest pas autoris\('e \(`a se connecter en utilisant son mot de passe\&.
 .sp

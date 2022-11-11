@@ -1,13 +1,13 @@
 '\" t
 .\"     Title: lastlog
 .\"    Author: Julianne Frances Haugh
-.\" Generator: DocBook XSL Stylesheets v1.79.1 <http://docbook.sf.net/>
-.\"      Date: 01/23/2020
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 11/08/2022
 .\"    Manual: System Management Commands
-.\"    Source: shadow-utils 4.8.1
+.\"    Source: shadow-utils 4.13
 .\"  Language: English
 .\"
-.TH "LASTLOG" "8" "01/23/2020" "shadow\-utils 4\&.8\&.1" "System Management Commands"
+.TH "LASTLOG" "8" "11/08/2022" "shadow\-utils 4\&.13" "System Management Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -73,7 +73,7 @@ Apply changes in the
 \fICHROOT_DIR\fR
 directory and use the configuration files from the
 \fICHROOT_DIR\fR
-directory\&.
+directory\&. Only absolute paths are supported\&.
 .RE
 .PP
 \fB\-S\fR, \fB\-\-set\fR
@@ -135,3 +135,7 @@ Database times of previous user logins\&.
 .SH "CAVEATS"
 .PP
 Large gaps in UID numbers will cause the lastlog program to run longer with no output to the screen (i\&.e\&. if in lastlog database there is no entries for users with UID between 170 and 800 lastlog will appear to hang as it processes entries with UIDs 171\-799)\&.
+.PP
+Having high UIDs can create problems when handling the
+<term> /var/log/lastlog</term>
+with external tools\&. Although the actual file is sparse and does not use too much space, certain applications are not designed to identify sparse files by default and may require a specific option to handle them\&.

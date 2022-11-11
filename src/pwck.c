@@ -1,34 +1,11 @@
 /*
- * Copyright (c) 1992 - 1994, Julianne Frances Haugh
- * Copyright (c) 1996 - 2000, Marek Michałkiewicz
- * Copyright (c) 2001       , Michał Moskal
- * Copyright (c) 2001 - 2006, Tomasz Kłoczko
- * Copyright (c) 2007 - 2011, Nicolas François
- * All rights reserved.
+ * SPDX-FileCopyrightText: 1992 - 1994, Julianne Frances Haugh
+ * SPDX-FileCopyrightText: 1996 - 2000, Marek Michałkiewicz
+ * SPDX-FileCopyrightText: 2001       , Michał Moskal
+ * SPDX-FileCopyrightText: 2001 - 2006, Tomasz Kłoczko
+ * SPDX-FileCopyrightText: 2007 - 2011, Nicolas François
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the copyright holders or contributors may not be used to
- *    endorse or promote products derived from this software without
- *    specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
- * PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
- * HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * SPDX-License-Identifier: BSD-3-Clause
  */
 
 #include <config.h>
@@ -52,6 +29,7 @@
 #ifdef WITH_TCB
 #include "tcbfuncs.h"
 #endif				/* WITH_TCB */
+#include "shadowlog.h"
 
 /*
  * Exit codes
@@ -150,7 +128,7 @@ static /*@noreturn@*/void usage (int status)
 		                  "Options:\n"),
 		                Prog);
 	}
-	(void) fputs (_("  -b, --badnames                allow bad names\n"), usageout);
+	(void) fputs (_("  -b, --badname                 allow bad names\n"), usageout);
 	(void) fputs (_("  -h, --help                    display this help message and exit\n"), usageout);
 	(void) fputs (_("  -q, --quiet                   report errors only\n"), usageout);
 	(void) fputs (_("  -r, --read-only               display errors and warnings\n"
@@ -175,7 +153,7 @@ static void process_flags (int argc, char **argv)
 {
 	int c;
 	static struct option long_options[] = {
-		{"badnames",  no_argument,       NULL, 'b'},
+		{"badname",   no_argument,       NULL, 'b'},
 		{"help",      no_argument,       NULL, 'h'},
 		{"quiet",     no_argument,       NULL, 'q'},
 		{"read-only", no_argument,       NULL, 'r'},
@@ -388,7 +366,7 @@ static void check_pw_file (int *errors, bool *changed)
 {
 	struct commonio_entry *pfe, *tpfe;
 	struct passwd *pwd;
-	struct spwd *spw;
+	const struct spwd *spw;
 	uid_t min_sys_id = (uid_t) getdef_ulong ("SYS_UID_MIN", 101UL);
 	uid_t max_sys_id = (uid_t) getdef_ulong ("SYS_UID_MAX", 999UL);
 
@@ -492,7 +470,8 @@ static void check_pw_file (int *errors, bool *changed)
 		 */
 
 		if (!is_valid_user_name (pwd->pw_name)) {
-			printf (_("invalid user name '%s'\n"), pwd->pw_name);
+			printf (_("invalid user name '%s': use --badname to ignore\n"),
+					pwd->pw_name);
 			*errors += 1;
 		}
 
@@ -520,19 +499,23 @@ static void check_pw_file (int *errors, bool *changed)
 		}
 
 		/*
-		 * If uid is system and has a home directory, then check
+		 * If uid is not system and has a home directory, then check
 		 */
-		if (!(pwd->pw_uid >= min_sys_id && pwd->pw_uid <= max_sys_id && pwd->pw_dir && pwd->pw_dir[0])) {
+		if (!(pwd->pw_uid >= min_sys_id && pwd->pw_uid <= max_sys_id ) && pwd->pw_dir && pwd->pw_dir[0]) {
 			/*
 			 * Make sure the home directory exists
 			 */
 			if (!quiet && (access (pwd->pw_dir, F_OK) != 0)) {
+				const char *nonexistent = getdef_str("NONEXISTENT");
+
 				/*
-				 * Home directory doesn't exist, give a warning
+				 * Home directory does not exist, give a warning (unless intentional)
 				 */
-				printf (_("user '%s': directory '%s' does not exist\n"),
-						pwd->pw_name, pwd->pw_dir);
-				*errors += 1;
+				if (NULL == nonexistent || strcmp (pwd->pw_dir, nonexistent) != 0) {
+					printf (_("user '%s': directory '%s' does not exist\n"),
+							pwd->pw_name, pwd->pw_dir);
+					*errors += 1;
+				}
 			}
 		}
 
@@ -602,7 +585,7 @@ static void check_pw_file (int *errors, bool *changed)
 				spw_opened = true;
 			}
 #endif				/* WITH_TCB */
-			spw = (struct spwd *) spw_locate (pwd->pw_name);
+			spw = spw_locate (pwd->pw_name);
 			if (NULL == spw) {
 				printf (_("no matching password file entry in %s\n"),
 				        spw_dbname ());
@@ -852,6 +835,8 @@ int main (int argc, char **argv)
 	 * Get my name so that I can use it to report errors.
 	 */
 	Prog = Basename (argv[0]);
+	log_set_progname(Prog);
+	log_set_logfd(stderr);
 
 	(void) setlocale (LC_ALL, "");
 	(void) bindtextdomain (PACKAGE, LOCALEDIR);

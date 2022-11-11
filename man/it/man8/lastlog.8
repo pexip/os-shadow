@@ -1,13 +1,13 @@
 '\" t
 .\"     Title: lastlog
 .\"    Author: Julianne Frances Haugh
-.\" Generator: DocBook XSL Stylesheets v1.79.1 <http://docbook.sf.net/>
-.\"      Date: 23/01/2020
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 08/11/2022
 .\"    Manual: Comandi per la gestione del sistema
-.\"    Source: shadow-utils 4.8.1
+.\"    Source: shadow-utils 4.13
 .\"  Language: Italian
 .\"
-.TH "LASTLOG" "8" "23/01/2020" "shadow\-utils 4\&.8\&.1" "Comandi per la gestione del si"
+.TH "LASTLOG" "8" "08/11/2022" "shadow\-utils 4\&.13" "Comandi per la gestione del si"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -73,7 +73,7 @@ Apply changes in the
 \fICHROOT_DIR\fR
 directory and use the configuration files from the
 \fICHROOT_DIR\fR
-directory\&.
+directory\&. Only absolute paths are supported\&.
 .RE
 .PP
 \fB\-S\fR, \fB\-\-set\fR
@@ -118,15 +118,6 @@ users with a high UID)\&. You can display its real size with "\fBls \-s\fR"\&.
 The following configuration variables in
 /etc/login\&.defs
 change the behavior of this tool:
-.PP
-\fBLASTLOG_UID_MAX\fR (number)
-.RS 4
-Highest user ID number for which the lastlog entries should be updated\&. As higher user IDs are usually tracked by remote user identity and authentication services there is no need to create a huge sparse lastlog file for them\&.
-.sp
-No
-\fBLASTLOG_UID_MAX\fR
-option present in the configuration means that there is no user ID limit for writing lastlog entries\&.
-.RE
 .SH "FILE"
 .PP
 /var/log/lastlog
@@ -136,3 +127,7 @@ Database degli orari dei precedenti accessi utente\&.
 .SH "AVVISI/CAVEAT"
 .PP
 Se ci sono dei grossi scarti tra i valori di UID, il programma lastlog pu\(`o restare in esecuzione per un tempo prolungato senza produrre output sullo schermo (ad es\&. se nel database lastlog non ci sono registrazioni per UID tra 170 e 800, il programma sembrer\(`a bloccato mentre esamina gli UID tra 171 e 799)\&.
+.PP
+Having high UIDs can create problems when handling the
+<term> /var/log/lastlog</term>
+with external tools\&. Although the actual file is sparse and does not use too much space, certain applications are not designed to identify sparse files by default and may require a specific option to handle them\&.

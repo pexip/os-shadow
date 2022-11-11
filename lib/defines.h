@@ -4,6 +4,8 @@
 #ifndef _DEFINES_H_
 #define _DEFINES_H_
 
+#include "config.h"
+
 #if HAVE_STDBOOL_H
 # include <stdbool.h>
 #else
@@ -19,8 +21,6 @@ typedef unsigned char _Bool;
 # define true  (1)
 # define __bool_true_false_are_defined 1
 #endif
-
-#define ISDIGIT_LOCALE(c) (IN_CTYPE_DOMAIN (c) && isdigit (c))
 
 /* Take care of NLS matters.  */
 #ifdef S_SPLINT_S
@@ -59,20 +59,8 @@ extern char * textdomain (const char * domainname);
 #endif
 #endif
 
-#if STDC_HEADERS
-# include <stdlib.h>
-# include <string.h>
-#else				/* not STDC_HEADERS */
-# ifndef HAVE_STRCHR
-#  define strchr index
-#  define strrchr rindex
-# endif
-char *strchr (), *strrchr (), *strtok ();
-
-# ifndef HAVE_MEMCPY
-#  define memcpy(d, s, n) bcopy((s), (d), (n))
-# endif
-#endif				/* not STDC_HEADERS */
+#include <stdlib.h>
+#include <string.h>
 
 #if HAVE_ERRNO_H
 # include <errno.h>
@@ -80,53 +68,40 @@ char *strchr (), *strrchr (), *strtok ();
 
 #include <sys/stat.h>
 #include <sys/types.h>
-#if HAVE_SYS_WAIT_H
-# include <sys/wait.h>
-#endif
-#ifndef WEXITSTATUS
-# define WEXITSTATUS(stat_val) ((unsigned)(stat_val) >> 8)
-#endif
-#ifndef WIFEXITED
-# define WIFEXITED(stat_val) (((stat_val) & 255) == 0)
-#endif
+#include <sys/wait.h>
 
 #if HAVE_UNISTD_H
 # include <unistd.h>
 #endif
 
-#if TIME_WITH_SYS_TIME
-# include <sys/time.h>
-# include <time.h>
-#else				/* not TIME_WITH_SYS_TIME */
-# if HAVE_SYS_TIME_H
-#  include <sys/time.h>
-# else
-#  include <time.h>
-# endif
-#endif				/* not TIME_WITH_SYS_TIME */
-
-#ifdef HAVE_MEMSET
-# define memzero(ptr, size) memset((void *)(ptr), 0, (size))
-#else
-# define memzero(ptr, size) bzero((char *)(ptr), (size))
+/*
+ * crypt(3), crypt_gensalt(3), and their
+ * feature test macros may be defined in here.
+ */
+#if HAVE_CRYPT_H
+# include <crypt.h>
 #endif
+
+#include <sys/time.h>
+#include <time.h>
+
+#ifdef HAVE_MEMSET_S
+# define memzero(ptr, size) memset_s((ptr), 0, (size))
+#elif defined HAVE_EXPLICIT_BZERO	/* !HAVE_MEMSET_S */
+# define memzero(ptr, size) explicit_bzero((ptr), (size))
+#else					/* !HAVE_MEMSET_S && HAVE_EXPLICIT_BZERO */
+static inline void memzero(void *ptr, size_t size)
+{
+	volatile unsigned char * volatile p = ptr;
+	while (size--) {
+		*p++ = '\0';
+	}
+}
+#endif					/* !HAVE_MEMSET_S && !HAVE_EXPLICIT_BZERO */
+
 #define strzero(s) memzero(s, strlen(s))	/* warning: evaluates twice */
 
-#ifdef HAVE_DIRENT_H		/* DIR_SYSV */
-# include <dirent.h>
-# define DIRECT dirent
-#else
-# ifdef HAVE_SYS_NDIR_H		/* DIR_XENIX */
-#  include <sys/ndir.h>
-# endif
-# ifdef HAVE_SYS_DIR_H		/* DIR_??? */
-#  include <sys/dir.h>
-# endif
-# ifdef HAVE_NDIR_H		/* DIR_BSD */
-#  include <ndir.h>
-# endif
-# define DIRECT direct
-#endif
+#include <dirent.h>
 
 /*
  * Possible cases:
@@ -230,30 +205,6 @@ char *strchr (), *strrchr (), *strtok ();
 # define SEEK_END 2
 #endif
 
-#ifdef STAT_MACROS_BROKEN
-# define S_ISDIR(x) ((x) & S_IFMT) == S_IFDIR)
-# define S_ISREG(x) ((x) & S_IFMT) == S_IFREG)
-# ifdef S_IFLNK
-#  define S_ISLNK(x) ((x) & S_IFMT) == S_IFLNK)
-# endif
-#endif
-
-#ifndef S_ISLNK
-#define S_ISLNK(x) (0)
-#endif
-
-#if HAVE_LCHOWN
-#define LCHOWN lchown
-#else
-#define LCHOWN chown
-#endif
-
-#if HAVE_LSTAT
-#define LSTAT lstat
-#else
-#define LSTAT stat
-#endif
-
 #if HAVE_TERMIOS_H
 # include <termios.h>
 # define STTY(fd, termio) tcsetattr(fd, TCSANOW, termio)
@@ -353,16 +304,10 @@ extern char *strerror ();
 /* To be used for verified unused parameters */
 #if defined(__GNUC__) && !defined(__STRICT_ANSI__)
 # define unused __attribute__((unused))
+# define format_attr(type, index, check) __attribute__((format (type, index, check)))
 #else
 # define unused
-#endif
-
-/* ! Arguments evaluated twice ! */
-#ifndef MIN
-#define MIN(a,b) (((a) < (b)) ? (a) : (b))
-#endif
-#ifndef MAX
-#define MAX(x,y) (((x) > (y)) ? (x) : (y))
+# define format_attr(type, index, check)
 #endif
 
 /* Maximum length of usernames */
@@ -381,6 +326,9 @@ extern char *strerror ();
 #  endif
 # endif
 #endif
+
+/* Maximum length of passwd entry */
+#define PASSWD_ENTRY_MAX_LENGTH 32768
 
 #ifdef HAVE_SECURE_GETENV
 #  define shadow_getenv(name) secure_getenv(name)

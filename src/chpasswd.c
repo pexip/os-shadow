@@ -1,33 +1,10 @@
 /*
- * Copyright (c) 1990 - 1994, Julianne Frances Haugh
- * Copyright (c) 1996 - 2000, Marek Michałkiewicz
- * Copyright (c) 2000 - 2006, Tomasz Kłoczko
- * Copyright (c) 2007 - 2011, Nicolas François
- * All rights reserved.
+ * SPDX-FileCopyrightText: 1990 - 1994, Julianne Frances Haugh
+ * SPDX-FileCopyrightText: 1996 - 2000, Marek Michałkiewicz
+ * SPDX-FileCopyrightText: 2000 - 2006, Tomasz Kłoczko
+ * SPDX-FileCopyrightText: 2007 - 2011, Nicolas François
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the copyright holders or contributors may not be used to
- *    endorse or promote products derived from this software without
- *    specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
- * PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
- * HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * SPDX-License-Identifier: BSD-3-Clause
  */
 
 #include <config.h>
@@ -51,6 +28,9 @@
 #include "shadowio.h"
 /*@-exitarg@*/
 #include "exitcodes.h"
+#include "shadowlog.h"
+
+#define IS_CRYPT_METHOD(str) ((crypt_method != NULL && strcmp(crypt_method, str) == 0) ? true : false)
 
 /*
  * Global variables
@@ -58,7 +38,7 @@
 const char *Prog;
 static bool eflg   = false;
 static bool md5flg = false;
-#if defined(USE_SHA_CRYPT) || defined(USE_BCRYPT)
+#if defined(USE_SHA_CRYPT) || defined(USE_BCRYPT) || defined(USE_YESCRYPT)
 static bool sflg   = false;
 #endif
 
@@ -69,6 +49,9 @@ static long sha_rounds = 5000;
 #endif
 #ifdef USE_BCRYPT
 static long bcrypt_rounds = 13;
+#endif
+#ifdef USE_YESCRYPT
+static long yescrypt_cost = 5;
 #endif
 
 static bool is_shadow_pwd;
@@ -121,14 +104,15 @@ static /*@noreturn@*/void usage (int status)
 	                Prog);
 	(void) fprintf (usageout,
 	                _("  -c, --crypt-method METHOD     the crypt method (one of %s)\n"),
-#if !defined(USE_SHA_CRYPT) && !defined(USE_BCRYPT)
 	                "NONE DES MD5"
-#elif defined(USE_SHA_CRYPT) && defined(USE_BCRYPT)
-	                "NONE DES MD5 SHA256 SHA512 BCRYPT"
-#elif defined(USE_SHA_CRYPT)
-	                "NONE DES MD5 SHA256 SHA512"
-#else
-	                "NONE DES MD5 BCRYPT"
+#if defined(USE_SHA_CRYPT)
+	                " SHA256 SHA512"
+#endif
+#if defined(USE_BCRYPT)
+	                " BCRYPT"
+#endif
+#if defined(USE_YESCRYPT)
+	                " YESCRYPT"
 #endif
 	               );
 	(void) fputs (_("  -e, --encrypted               supplied passwords are encrypted\n"), usageout);
@@ -137,11 +121,11 @@ static /*@noreturn@*/void usage (int status)
 	                "                                the MD5 algorithm\n"),
 	              usageout);
 	(void) fputs (_("  -R, --root CHROOT_DIR         directory to chroot into\n"), usageout);
-#if defined(USE_SHA_CRYPT) || defined(USE_BCRYPT)
-	(void) fputs (_("  -s, --sha-rounds              number of rounds for the SHA or BCRYPT\n"
-	                "                                crypt algorithms\n"),
+#if defined(USE_SHA_CRYPT) || defined(USE_BCRYPT) || defined(USE_YESCRYPT)
+	(void) fputs (_("  -s, --sha-rounds              number of rounds for the SHA, BCRYPT\n"
+	                "                                or YESCRYPT crypt algorithms\n"),
 	              usageout);
-#endif				/* USE_SHA_CRYPT || USE_BCRYPT */
+#endif				/* USE_SHA_CRYPT || USE_BCRYPT || USE_YESCRYPT */
 	(void) fputs ("\n", usageout);
 
 	exit (status);
@@ -155,20 +139,23 @@ static /*@noreturn@*/void usage (int status)
 static void process_flags (int argc, char **argv)
 {
 	int c;
+#if defined(USE_SHA_CRYPT) || defined(USE_BCRYPT) || defined(USE_YESCRYPT)
+        int bad_s;
+#endif				/* USE_SHA_CRYPT || USE_BCRYPT || USE_YESCRYPT */
 	static struct option long_options[] = {
 		{"crypt-method", required_argument, NULL, 'c'},
 		{"encrypted",    no_argument,       NULL, 'e'},
 		{"help",         no_argument,       NULL, 'h'},
 		{"md5",          no_argument,       NULL, 'm'},
 		{"root",         required_argument, NULL, 'R'},
-#if defined(USE_SHA_CRYPT) || defined(USE_BCRYPT)
+#if defined(USE_SHA_CRYPT) || defined(USE_BCRYPT) || defined(USE_YESCRYPT)
 		{"sha-rounds",   required_argument, NULL, 's'},
-#endif				/* USE_SHA_CRYPT || USE_BCRYPT */
+#endif				/* USE_SHA_CRYPT || USE_BCRYPT || USE_YESCRYPT */
 		{NULL, 0, NULL, '\0'}
 	};
 
 	while ((c = getopt_long (argc, argv,
-#if defined(USE_SHA_CRYPT) || defined(USE_BCRYPT)
+#if defined(USE_SHA_CRYPT) || defined(USE_BCRYPT) || defined(USE_YESCRYPT)
 	                         "c:ehmR:s:",
 #else
 	                         "c:ehmR:",
@@ -189,40 +176,36 @@ static void process_flags (int argc, char **argv)
 			break;
 		case 'R': /* no-op, handled in process_root_flag () */
 			break;
-#if defined(USE_SHA_CRYPT) && defined(USE_BCRYPT)
+#if defined(USE_SHA_CRYPT) || defined(USE_BCRYPT) || defined(USE_YESCRYPT)
 		case 's':
 			sflg = true;
-			if (  (   ((0 == strcmp (crypt_method, "SHA256")) || (0 == strcmp (crypt_method, "SHA512")))
-			       && (0 == getlong(optarg, &sha_rounds))) 
-			   || (   (0 == strcmp (crypt_method, "BCRYPT"))
-			       && (0 == getlong(optarg, &bcrypt_rounds)))) {
+                        bad_s = 0;
+#if defined(USE_SHA_CRYPT)
+			if ((IS_CRYPT_METHOD("SHA256") || IS_CRYPT_METHOD("SHA512"))
+			    && (0 == getlong(optarg, &sha_rounds))) {
+                            bad_s = 1;
+                        }
+#endif				/* USE_SHA_CRYPT */
+#if defined(USE_BCRYPT)
+                        if (IS_CRYPT_METHOD("BCRYPT")
+			    && (0 == getlong(optarg, &bcrypt_rounds))) {
+                            bad_s = 1;
+                        }
+#endif				/* USE_BCRYPT */
+#if defined(USE_YESCRYPT)
+                        if (IS_CRYPT_METHOD("YESCRYPT")
+			    && (0 == getlong(optarg, &yescrypt_cost))) {
+                            bad_s = 1;
+                        }
+#endif				/* USE_YESCRYPT */
+                        if (bad_s != 0) {
 				fprintf (stderr,
 				         _("%s: invalid numeric argument '%s'\n"),
 				         Prog, optarg);
 				usage (E_USAGE);
 			}
 			break;
-#elif defined(USE_SHA_CRYPT)
-		case 's':
-			sflg = true;
-			if (0 == getlong(optarg, &sha_rounds)) { 
-				fprintf (stderr,
-				         _("%s: invalid numeric argument '%s'\n"),
-				         Prog, optarg);
-				usage (E_USAGE);
-			}
-			break;
-#elif defined(USE_BCRYPT)
-		case 's':
-			sflg = true;
-			if (0 == getlong(optarg, &bcrypt_rounds)) { 
-				fprintf (stderr,
-				         _("%s: invalid numeric argument '%s'\n"),
-				         Prog, optarg);
-				usage (E_USAGE);
-			}
-			break;
-#endif
+#endif				/* USE_SHA_CRYPT || USE_BCRYPT || USE_YESCRYPT */
 
 		default:
 			usage (E_USAGE);
@@ -241,7 +224,7 @@ static void process_flags (int argc, char **argv)
  */
 static void check_flags (void)
 {
-#if defined(USE_SHA_CRYPT) || defined(USE_BCRYPT)
+#if defined(USE_SHA_CRYPT) || defined(USE_BCRYPT) || defined(USE_YESCRYPT)
 	if (sflg && !cflg) {
 		fprintf (stderr,
 		         _("%s: %s flag is only allowed with the %s flag\n"),
@@ -259,16 +242,19 @@ static void check_flags (void)
 	}
 
 	if (cflg) {
-		if (   (0 != strcmp (crypt_method, "DES"))
-		    && (0 != strcmp (crypt_method, "MD5"))
-		    && (0 != strcmp (crypt_method, "NONE"))
+		if ((!IS_CRYPT_METHOD("DES"))
+		    &&(!IS_CRYPT_METHOD("MD5"))
+		    &&(!IS_CRYPT_METHOD("NONE"))
 #ifdef USE_SHA_CRYPT
-		    && (0 != strcmp (crypt_method, "SHA256"))
-		    && (0 != strcmp (crypt_method, "SHA512"))
+		    &&(!IS_CRYPT_METHOD("SHA256"))
+		    &&(!IS_CRYPT_METHOD("SHA512"))
 #endif				/* USE_SHA_CRYPT */
 #ifdef USE_BCRYPT
-		    && (0 != strcmp (crypt_method, "BCRYPT"))
+		    &&(!IS_CRYPT_METHOD("BCRYPT"))
 #endif				/* USE_BCRYPT */
+#ifdef USE_YESCRYPT
+		    &&(!IS_CRYPT_METHOD("YESCRYPT"))
+#endif				/* USE_YESCRYPT */
 		    ) {
 			fprintf (stderr,
 			         _("%s: unsupported crypt method: %s\n"),
@@ -408,12 +394,46 @@ static void close_files (void)
 	pw_locked = false;
 }
 
+static const char *get_salt(void)
+{
+	void *arg = NULL;
+
+	if (eflg || IS_CRYPT_METHOD("NONE")) {
+		return NULL;
+	}
+
+	if (md5flg) {
+		crypt_method = "MD5";
+	}
+#if defined(USE_SHA_CRYPT) || defined(USE_BCRYPT) || defined(USE_YESCRYPT)
+	if (sflg) {
+#if defined(USE_SHA_CRYPT)
+		if (IS_CRYPT_METHOD("SHA256") || IS_CRYPT_METHOD("SHA512")) {
+			arg = &sha_rounds;
+		}
+#endif				/* USE_SHA_CRYPT */
+#if defined(USE_BCRYPT)
+		if (IS_CRYPT_METHOD("BCRYPT")) {
+			arg = &bcrypt_rounds;
+		}
+#endif				/* USE_BCRYPT */
+#if defined(USE_YESCRYPT)
+		if (IS_CRYPT_METHOD("YESCRYPT")) {
+			arg = &yescrypt_cost;
+		}
+#endif				/* USE_YESCRYPT */
+	}
+#endif
+	return crypt_make_salt (crypt_method, arg);
+}
+
 int main (int argc, char **argv)
 {
 	char buf[BUFSIZ];
 	char *name;
 	char *newpwd;
 	char *cp;
+	const char *salt;
 
 #ifdef USE_PAM
 	bool use_pam = true;
@@ -423,14 +443,17 @@ int main (int argc, char **argv)
 	int line = 0;
 
 	Prog = Basename (argv[0]);
+	log_set_progname(Prog);
+	log_set_logfd(stderr);
 
 	(void) setlocale (LC_ALL, "");
 	(void) bindtextdomain (PACKAGE, LOCALEDIR);
 	(void) textdomain (PACKAGE);
 
-	process_root_flag ("-R", argc, argv);
-
 	process_flags (argc, argv);
+
+	salt = get_salt();
+	process_root_flag ("-R", argc, argv);
 
 #ifdef USE_PAM
 	if (md5flg || eflg || cflg) {
@@ -507,7 +530,7 @@ int main (int argc, char **argv)
 		newpwd = cp;
 
 #ifdef USE_PAM
-		if (use_pam){
+		if (use_pam) {
 			if (do_pam_passwd_non_interactive ("chpasswd", name, newpwd) != 0) {
 				fprintf (stderr,
 				         _("%s: (line %d, user %s) password not changed\n"),
@@ -522,34 +545,7 @@ int main (int argc, char **argv)
 		const struct passwd *pw;
 		struct passwd newpw;
 
-		if (   !eflg
-		    && (   (NULL == crypt_method)
-		        || (0 != strcmp (crypt_method, "NONE")))) {
-			void *arg = NULL;
-			const char *salt;
-			if (md5flg) {
-				crypt_method = "MD5";
-			}
-#if defined(USE_SHA_CRYPT) && defined(USE_BCRYPT)
-			if (sflg) {
-				if (   (0 == strcmp (crypt_method, "SHA256"))
-					|| (0 == strcmp (crypt_method, "SHA512"))) {
-					arg = &sha_rounds;
-				}
-				else if (0 == strcmp (crypt_method, "BCRYPT")) {
-					arg = &bcrypt_rounds;
-				}
-			}
-#elif defined(USE_SHA_CRYPT)
-			if (sflg) {
-				arg = &sha_rounds;
-			}
-#elif defined(USE_BCRYPT)
-			if (sflg) {
-				arg = &bcrypt_rounds;
-			}
-#endif
-			salt = crypt_make_salt (crypt_method, arg);
+		if (salt) {
 			cp = pw_encrypt (newpwd, salt);
 			if (NULL == cp) {
 				fprintf (stderr,
@@ -624,7 +620,7 @@ int main (int argc, char **argv)
 			newpw.pw_passwd = cp;
 		}
 
-		/* 
+		/*
 		 * The updated password file entry is then put back and will
 		 * be written to the password file later, after all the
 		 * other entries have been updated as well.

@@ -1,11 +1,12 @@
 Source: shadow
 Maintainer: Shadow package maintainers <pkg-shadow-devel@lists.alioth.debian.org>
-Uploaders: Balint Reczey <rbalint@ubuntu.com>,
+Uploaders: Balint Reczey <balint@balintreczey.hu>,
            Serge Hallyn <serge@hallyn.com>
 Section: admin
 Priority: required
-Build-Depends: debhelper-compat (= 12),
+Build-Depends: debhelper-compat (= 13),
                gettext,
+               libcrypt-dev,
                libpam0g-dev,
                quilt,
                xsltproc,
@@ -13,12 +14,12 @@ Build-Depends: debhelper-compat (= 12),
                docbook-xml,
                libxml2-utils,
                libselinux1-dev [linux-any],
-               libsemanage1-dev [linux-any],
+               libsemanage-dev [linux-any],
                itstool,
                bison,
                libaudit-dev [linux-any]
-Standards-Version: 3.9.5
-Vcs-Git: https://salsa.debian.org/debian/shadow -b master
+Standards-Version: 4.6.1
+Vcs-Git: https://salsa.debian.org/debian/shadow.git -b master
 Vcs-Browser: https://salsa.debian.org/debian/shadow
 Homepage: https://github.com/shadow-maint/shadow
 Rules-Requires-Root: binary-targets
@@ -29,8 +30,7 @@ Multi-Arch: foreign
 Depends: ${shlibs:Depends},
          ${misc:Depends},
          libpam-modules
-Replaces: manpages-tr (<< 1.0.5),
-          manpages-zh (<< 1.5.1-1)
+Recommends: sensible-utils
 Description: change and administer password and group data
  This package includes passwd, chsh, chfn, and many other programs to
  maintain password and group data.
@@ -44,28 +44,15 @@ Essential: yes
 Pre-Depends: ${shlibs:Depends},
              ${misc:Depends},
              libpam-runtime,
-             libpam-modules (>= 1.1.8-1)
-Breaks: coreutils (<< 8.21~) [hurd-any],
-        passwd (<< 1:4.1.5.1-2~) [hurd-any],
-        hurd (<< 20140206~) [hurd-any],
-        util-linux (<< 2.32-0.2~)
-Conflicts: gnunet (<< 0.7.0c-2),
-           amavisd-new (<< 2.3.3-8),
-           python-4suite (<< 0.99cvs20060405-1),
-           backupninja (<< 0.9.3-5),
-           echolot (<< 2.1.8-4)
-Replaces: manpages-de (<< 0.5-3),
-          manpages-tr (<< 1.0.5),
-          manpages-zh (<< 1.5.1-1),
-          passwd (<< 1:4.1.5.1-2~) [hurd-any],
-          coreutils (<< 8.21~) [hurd-any],
-          hurd (<< 20140206~) [hurd-any]
+             libpam-modules
+Breaks: hurd (<< 20140206~) [hurd-any]
+Conflicts: python-4suite (<< 0.99cvs20060405-1)
+Replaces: hurd (<< 20140206~) [hurd-any]
 Description: system login tools
  This package provides some required infrastructure for logins and for
  changing effective user or group IDs, including:
   * login, the program that invokes a user shell on a virtual terminal;
   * nologin, a dummy shell for disabled user accounts;
-  * su, a basic tool for executing commands as root or another user.
 
 Package: uidmap
 Architecture: any
@@ -76,3 +63,27 @@ Depends: ${shlibs:Depends},
 Description: programs to help use subuids
  These programs help unprivileged users to create uid and gid mappings in
  user namespaces.
+
+Package: libsubid4
+Section: libs
+Priority: optional
+Architecture: any
+Multi-Arch: same
+Pre-Depends: ${misc:Pre-Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: subordinate id handling library -- shared library
+ The library provides an interface for querying, granding and ungranting
+ subordinate user and group ids.
+
+Package: libsubid-dev
+Section: libdevel
+Priority: optional
+Architecture: any
+Multi-Arch: same
+Depends: ${misc:Depends}, libsubid4 (= ${binary:Version})
+Description: subordinate id handling library -- shared library
+ The library provides an interface for querying, granding and ungranting
+ subordinate user and group ids.
+ .
+ This package contains the C header files that are
+ needed for applications to use the libsubid4 library.

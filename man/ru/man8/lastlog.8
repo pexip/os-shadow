@@ -1,13 +1,13 @@
 '\" t
 .\"     Title: lastlog
 .\"    Author: Julianne Frances Haugh
-.\" Generator: DocBook XSL Stylesheets v1.79.1 <http://docbook.sf.net/>
-.\"      Date: 01/23/2020
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 11/08/2022
 .\"    Manual: Команды управления системой
-.\"    Source: shadow-utils 4.8.1
+.\"    Source: shadow-utils 4.13
 .\"  Language: Russian
 .\"
-.TH "lastlog" "8" "01/23/2020" "shadow\-utils 4\&.8\&.1" "Команды управления системой"
+.TH "lastlog" "8" "11/08/2022" "shadow\-utils 4\&.13" "Команды управления системой"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -73,7 +73,7 @@ Apply changes in the
 \fICHROOT_DIR\fR
 directory and use the configuration files from the
 \fICHROOT_DIR\fR
-directory\&.
+directory\&. Only absolute paths are supported\&.
 .RE
 .PP
 \fB\-S\fR, \fB\-\-set\fR
@@ -117,15 +117,6 @@ users with a high UID)\&. You can display its real size with "\fBls \-s\fR"\&.
 The following configuration variables in
 /etc/login\&.defs
 change the behavior of this tool:
-.PP
-\fBLASTLOG_UID_MAX\fR (number)
-.RS 4
-Highest user ID number for which the lastlog entries should be updated\&. As higher user IDs are usually tracked by remote user identity and authentication services there is no need to create a huge sparse lastlog file for them\&.
-.sp
-No
-\fBLASTLOG_UID_MAX\fR
-option present in the configuration means that there is no user ID limit for writing lastlog entries\&.
-.RE
 .SH "ФАЙЛЫ"
 .PP
 /var/log/lastlog
@@ -135,3 +126,7 @@ option present in the configuration means that there is no user ID limit for wri
 .SH "ПРЕДОСТЕРЕЖЕНИЯ"
 .PP
 Большие промежутки в значениях идентификаторов пользователей приводят к тому, что программа некоторое время ничего не выводит на экран (то есть, если в базе данных lastlog нет пользователей с идентификаторами с 170 по 800, то во время обработки UID с 171 по 799 программа кажется повисшей)\&.
+.PP
+Having high UIDs can create problems when handling the
+<term> /var/log/lastlog</term>
+with external tools\&. Although the actual file is sparse and does not use too much space, certain applications are not designed to identify sparse files by default and may require a specific option to handle them\&.

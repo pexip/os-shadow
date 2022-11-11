@@ -1,13 +1,13 @@
 '\" t
 .\"     Title: passwd
 .\"    Author: Julianne Frances Haugh
-.\" Generator: DocBook XSL Stylesheets v1.79.1 <http://docbook.sf.net/>
-.\"      Date: 23/01/2020
-.\"    Manual: Formats et conversions de fichiers
-.\"    Source: shadow-utils 4.8.1
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 08/11/2022
+.\"    Manual: File Formats and Configuration Files
+.\"    Source: shadow-utils 4.13
 .\"  Language: French
 .\"
-.TH "PASSWD" "5" "23/01/2020" "shadow\-utils 4\&.8\&.1" "Formats et conversions de fich"
+.TH "PASSWD" "5" "08/11/2022" "shadow\-utils 4\&.13" "File Formats and Configuration"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -145,8 +145,8 @@ for details on how this string is interpreted\&.
 If the password field contains some string that is not a valid result of
 \fBcrypt\fR(3), for instance ! or *, the user will not be able to use a unix password to log in (but the user may log in the system by other means)\&.
 .PP
-The comment field is used by various system utilities, such as
-\fBfinger\fR(1)\&.
+The comment field, also known as the gecos field, is used by various system utilities, such as
+\fBfinger\fR(1)\&. The use of an ampersand here will be replaced by the capitalised login name when the field is used or displayed by such system utilities\&.
 .PP
 The home directory field provides the name of the initial working directory\&. The
 \fBlogin\fR

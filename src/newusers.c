@@ -1,33 +1,10 @@
 /*
- * Copyright (c) 1990 - 1993, Julianne Frances Haugh
- * Copyright (c) 1996 - 2000, Marek Michałkiewicz
- * Copyright (c) 2000 - 2006, Tomasz Kłoczko
- * Copyright (c) 2007 - 2011, Nicolas François
- * All rights reserved.
+ * SPDX-FileCopyrightText: 1990 - 1993, Julianne Frances Haugh
+ * SPDX-FileCopyrightText: 1996 - 2000, Marek Michałkiewicz
+ * SPDX-FileCopyrightText: 2000 - 2006, Tomasz Kłoczko
+ * SPDX-FileCopyrightText: 2007 - 2011, Nicolas François
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the copyright holders or contributors may not be used to
- *    endorse or promote products derived from this software without
- *    specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
- * PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
- * HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * SPDX-License-Identifier: BSD-3-Clause
  */
 
 /*
@@ -70,6 +47,7 @@
 #include "subordinateio.h"
 #endif				/* ENABLE_SUBIDS */
 #include "chkname.h"
+#include "shadowlog.h"
 
 /*
  * Global variables
@@ -89,6 +67,9 @@ static long sha_rounds = 5000;
 #ifdef USE_BCRYPT
 static long bcrypt_rounds = 13;
 #endif				/* USE_BCRYPT */
+#ifdef USE_YESCRYPT
+static long yescrypt_cost = 5;
+#endif				/* USE_YESCRYPT */
 #endif				/* !USE_PAM */
 
 static bool is_shadow;
@@ -135,18 +116,19 @@ static void usage (int status)
 	                  "\n"
 	                  "Options:\n"),
 	                Prog);
-	(void) fputs (_("  -b, --badnames                allow bad names\n"), usageout);
+	(void) fputs (_("  -b, --badname                 allow bad names\n"), usageout);
 #ifndef USE_PAM
 	(void) fprintf (usageout,
 	                _("  -c, --crypt-method METHOD     the crypt method (one of %s)\n"),
-#if !defined(USE_SHA_CRYPT) && !defined(USE_BCRYPT)
-	                "NONE DES MD5"
-#elif defined(USE_SHA_CRYPT) && defined(USE_BCRYPT)
-	                "NONE DES MD5 SHA256 SHA512 BCRYPT"
-#elif defined(USE_SHA_CRYPT)
-	                "NONE DES MD5 SHA256 SHA512"
-#else
-	                "NONE DES MD5 BCRYPT"
+                        "NONE DES MD5"
+#if defined(USE_SHA_CRYPT)
+	                " SHA256 SHA512"
+#endif
+#if defined(USE_BCRYPT)
+	                " BCRYPT"
+#endif
+#if defined(USE_YESCRYPT)
+	                " YESCRYPT"
 #endif
 	               );
 #endif				/* !USE_PAM */
@@ -154,11 +136,11 @@ static void usage (int status)
 	(void) fputs (_("  -r, --system                  create system accounts\n"), usageout);
 	(void) fputs (_("  -R, --root CHROOT_DIR         directory to chroot into\n"), usageout);
 #ifndef USE_PAM
-#if defined(USE_SHA_CRYPT) || defined(USE_BCRYPT)
-	(void) fputs (_("  -s, --sha-rounds              number of rounds for the SHA or BCRYPT\n"
-	                "                                crypt algorithms\n"),
+#if defined(USE_SHA_CRYPT) || defined(USE_BCRYPT) || defined(USE_YESCRYPT)
+	(void) fputs (_("  -s, --sha-rounds              number of rounds for the SHA, BCRYPT\n"
+	                "                                or YESCRYPT crypt algorithms\n"),
 	              usageout);
-#endif				/* USE_SHA_CRYPT || USE_BCRYPT */
+#endif				/* USE_SHA_CRYPT || USE_BCRYPT || USE_YESCRYPT */
 #endif				/* !USE_PAM */
 	(void) fputs ("\n", usageout);
 
@@ -303,8 +285,7 @@ static int add_group (const char *name, const char *gid, gid_t *ngid, uid_t uid)
 		fprintf (stderr,
 		         _("%s: invalid group name '%s'\n"),
 		         Prog, grent.gr_name);
-		if (grent.gr_name)
-			free (grent.gr_name);
+		free (grent.gr_name);
 		return -1;
 	}
 
@@ -401,7 +382,7 @@ static int add_user (const char *name, uid_t uid, gid_t gid)
 	/* Check if this is a valid user name */
 	if (!is_valid_user_name (name)) {
 		fprintf (stderr,
-		         _("%s: invalid user name '%s'\n"),
+		         _("%s: invalid user name '%s': use --badname to ignore\n"),
 		         Prog, name);
 		return -1;
 	}
@@ -423,7 +404,7 @@ static int add_user (const char *name, uid_t uid, gid_t gid)
 }
 
 #ifndef USE_PAM
-/* 
+/*
  * update_passwd - update the password in the passwd entry
  *
  * Return 0 if successful.
@@ -433,25 +414,28 @@ static int update_passwd (struct passwd *pwd, const char *password)
 	void *crypt_arg = NULL;
 	char *cp;
 	if (NULL != crypt_method) {
-#if defined(USE_SHA_CRYPT) && defined(USE_BCRYPT)
+#if defined(USE_SHA_CRYPT)
 		if (sflg) {
 			if (   (0 == strcmp (crypt_method, "SHA256"))
 				|| (0 == strcmp (crypt_method, "SHA512"))) {
 				crypt_arg = &sha_rounds;
 			}
-			else if (0 == strcmp (crypt_method, "BCRYPT")) {
+		}
+#endif				/* USE_SHA_CRYPT */
+#if defined(USE_BCRYPT)
+		if (sflg) {
+			if (0 == strcmp (crypt_method, "BCRYPT")) {
 				crypt_arg = &bcrypt_rounds;
 			}
 		}
-#elif defined(USE_SHA_CRYPT)
+#endif				/* USE_BCRYPT */
+#if defined(USE_YESCRYPT)
 		if (sflg) {
-			crypt_arg = &sha_rounds;
+			if (0 == strcmp (crypt_method, "YESCRYPT")) {
+				crypt_arg = &yescrypt_cost;
+			}
 		}
-#elif defined(USE_BCRYPT)
-		if (sflg) {
-			crypt_arg = &bcrypt_rounds;
-		}
-#endif
+#endif				/* USE_YESCRYPT */
 	}
 
 	if ((NULL != crypt_method) && (0 == strcmp(crypt_method, "NONE"))) {
@@ -479,30 +463,35 @@ static int add_passwd (struct passwd *pwd, const char *password)
 {
 	const struct spwd *sp;
 	struct spwd spent;
+#ifndef USE_PAM
 	char *cp;
+#endif				/* !USE_PAM */
 
 #ifndef USE_PAM
 	void *crypt_arg = NULL;
 	if (NULL != crypt_method) {
-#if defined(USE_SHA_CRYPT) && defined(USE_BCRYPT)
+#if defined(USE_SHA_CRYPT)
 		if (sflg) {
 			if (   (0 == strcmp (crypt_method, "SHA256"))
 				|| (0 == strcmp (crypt_method, "SHA512"))) {
 				crypt_arg = &sha_rounds;
 			}
-			else if (0 == strcmp (crypt_method, "BCRYPT")) {
+		}
+#endif				/* USE_SHA_CRYPT */
+#if defined(USE_BCRYPT)
+		if (sflg) {
+			if (0 == strcmp (crypt_method, "BCRYPT")) {
 				crypt_arg = &bcrypt_rounds;
 			}
 		}
-#elif defined(USE_SHA_CRYPT)
+#endif				/* USE_BCRYPT */
+#if defined(USE_YESCRYPT)
 		if (sflg) {
-			crypt_arg = &sha_rounds;
+			if (0 == strcmp (crypt_method, "YESCRYPT")) {
+				crypt_arg = &yescrypt_cost;
+			}
 		}
-#elif defined(USE_BCRYPT)
-		if (sflg) {
-			crypt_arg = &bcrypt_rounds;
-		}
-#endif
+#endif				/* USE_PAM */
 	}
 
 	/*
@@ -619,8 +608,13 @@ static int add_passwd (struct passwd *pwd, const char *password)
 static void process_flags (int argc, char **argv)
 {
 	int c;
+#ifndef USE_PAM
+#if defined(USE_SHA_CRYPT) || defined(USE_BCRYPT) || defined(USE_YESCRYPT)
+        int bad_s;
+#endif				/* USE_SHA_CRYPT || USE_BCRYPT || USE_YESCRYPT */
+#endif 				/* !USE_PAM */
 	static struct option long_options[] = {
-		{"badnames",     no_argument,       NULL, 'b'},
+		{"badname",      no_argument,       NULL, 'b'},
 #ifndef USE_PAM
 		{"crypt-method", required_argument, NULL, 'c'},
 #endif				/* !USE_PAM */
@@ -628,20 +622,20 @@ static void process_flags (int argc, char **argv)
 		{"system",       no_argument,       NULL, 'r'},
 		{"root",         required_argument, NULL, 'R'},
 #ifndef USE_PAM
-#if defined(USE_SHA_CRYPT) || defined(USE_BCRYPT)
+#if defined(USE_SHA_CRYPT) || defined(USE_BCRYPT) || defined(USE_YESCRYPT)
 		{"sha-rounds",   required_argument, NULL, 's'},
-#endif				/* USE_SHA_CRYPT || USE_BCRYPT */
+#endif				/* USE_SHA_CRYPT || USE_BCRYPT || USE_YESCRYPT */
 #endif				/* !USE_PAM */
 		{NULL, 0, NULL, '\0'}
 	};
 
 	while ((c = getopt_long (argc, argv,
 #ifndef USE_PAM
-#if defined(USE_SHA_CRYPT) || defined(USE_BCRYPT)
+#if defined(USE_SHA_CRYPT) || defined(USE_BCRYPT) || defined(USE_YESCRYPT)
 	                         "c:bhrs:",
-#else				/* !USE_SHA_CRYPT && !USE_BCRYPT */
+#else				/* !USE_SHA_CRYPT && !USE_BCRYPT && !USE_YESCRYPT */
 	                         "c:bhr",
-#endif				/* USE_SHA_CRYPT || USE_BCRYPT */
+#endif				/* USE_SHA_CRYPT || USE_BCRYPT || USE_YESCRYPT */
 #else				/* USE_PAM */
 	                         "bhr",
 #endif
@@ -664,40 +658,36 @@ static void process_flags (int argc, char **argv)
 		case 'R': /* no-op, handled in process_root_flag () */
 			break;
 #ifndef USE_PAM
-#if defined(USE_SHA_CRYPT) && defined(USE_BCRYPT)
+#if defined(USE_SHA_CRYPT) || defined(USE_BCRYPT) || defined(USE_YESCRYPT)
 		case 's':
 			sflg = true;
+                        bad_s = 0;
+#if defined(USE_SHA_CRYPT)
 			if (  (   ((0 == strcmp (crypt_method, "SHA256")) || (0 == strcmp (crypt_method, "SHA512")))
-			       && (0 == getlong(optarg, &sha_rounds))) 
-			   || (   (0 == strcmp (crypt_method, "BCRYPT"))
+			       && (0 == getlong(optarg, &sha_rounds)))) {
+                            bad_s = 1;
+                        }
+#endif				/* USE_SHA_CRYPT */
+#if defined(USE_BCRYPT)
+                        if ((   (0 == strcmp (crypt_method, "BCRYPT"))
 			       && (0 == getlong(optarg, &bcrypt_rounds)))) {
+                            bad_s = 1;
+                        }
+#endif				/* USE_BCRYPT */
+#if defined(USE_YESCRYPT)
+                        if ((   (0 == strcmp (crypt_method, "YESCRYPT"))
+			       && (0 == getlong(optarg, &yescrypt_cost)))) {
+                            bad_s = 1;
+                        }
+#endif				/* USE_YESCRYPT */
+                        if (bad_s != 0) {
 				fprintf (stderr,
 				         _("%s: invalid numeric argument '%s'\n"),
 				         Prog, optarg);
 				usage (EXIT_FAILURE);
 			}
 			break;
-#elif defined(USE_SHA_CRYPT)
-		case 's':
-			sflg = true;
-			if (0 == getlong(optarg, &sha_rounds)) { 
-				fprintf (stderr,
-				         _("%s: invalid numeric argument '%s'\n"),
-				         Prog, optarg);
-				usage (EXIT_FAILURE);
-			}
-			break;
-#elif defined(USE_BCRYPT)
-		case 's':
-			sflg = true;
-			if (0 == getlong(optarg, &bcrypt_rounds)) { 
-				fprintf (stderr,
-				         _("%s: invalid numeric argument '%s'\n"),
-				         Prog, optarg);
-				usage (EXIT_FAILURE);
-			}
-			break;
-#endif
+#endif				/* USE_SHA_CRYPT || USE_BCRYPT || USE_YESCRYPT */
 #endif				/* !USE_PAM */
 		default:
 			usage (EXIT_FAILURE);
@@ -731,14 +721,14 @@ static void process_flags (int argc, char **argv)
 static void check_flags (void)
 {
 #ifndef USE_PAM
-#if defined(USE_SHA_CRYPT) || defined(USE_BCRYPT)
+#if defined(USE_SHA_CRYPT) || defined(USE_BCRYPT) || defined(USE_YESCRYPT)
 	if (sflg && !cflg) {
 		fprintf (stderr,
 		         _("%s: %s flag is only allowed with the %s flag\n"),
 		         Prog, "-s", "-c");
 		usage (EXIT_FAILURE);
 	}
-#endif
+#endif				/* USE_SHA_CRYPT || USE_BCRYPT || USE_YESCRYPT */
 
 	if (cflg) {
 		if (   (0 != strcmp (crypt_method, "DES"))
@@ -751,6 +741,9 @@ static void check_flags (void)
 #ifdef USE_BCRYPT
 		    && (0 != strcmp (crypt_method, "BCRYPT"))
 #endif				/* USE_BCRYPT */
+#ifdef USE_YESCRYPT
+		    && (0 != strcmp (crypt_method, "YESCRYPT"))
+#endif				/* USE_YESCRYPT */
 		    ) {
 			fprintf (stderr,
 			         _("%s: unsupported crypt method: %s\n"),
@@ -1020,6 +1013,24 @@ static void close_files (void)
 #endif				/* ENABLE_SUBIDS */
 }
 
+static bool want_subuids(void)
+{
+	if (get_subid_nss_handle() != NULL)
+		return false;
+	if (getdef_ulong ("SUB_UID_COUNT", 65536) == 0)
+		return false;
+	return true;
+}
+
+static bool want_subgids(void)
+{
+	if (get_subid_nss_handle() != NULL)
+		return false;
+	if (getdef_ulong ("SUB_GID_COUNT", 65536) == 0)
+		return false;
+	return true;
+}
+
 int main (int argc, char **argv)
 {
 	char buf[BUFSIZ];
@@ -1040,6 +1051,8 @@ int main (int argc, char **argv)
 #endif				/* USE_PAM */
 
 	Prog = Basename (argv[0]);
+	log_set_progname(Prog);
+	log_set_logfd(stderr);
 
 	(void) setlocale (LC_ALL, "");
 	(void) bindtextdomain (PACKAGE, LOCALEDIR);
@@ -1218,6 +1231,13 @@ int main (int argc, char **argv)
 /* FIXME: should check for directory */
 			mode_t mode = getdef_num ("HOME_MODE",
 			                          0777 & ~getdef_num ("UMASK", GETDEF_DEFAULT_UMASK));
+			if (newpw.pw_dir[0] != '/') {
+				fprintf(stderr,
+					_("%s: line %d: homedir must be an absolute path\n"),
+					Prog, line);
+				errors++;
+				continue;
+			};
 			if (mkdir (newpw.pw_dir, mode) != 0) {
 				fprintf (stderr,
 				         _("%s: line %d: mkdir %s failed: %s\n"),
@@ -1248,10 +1268,10 @@ int main (int argc, char **argv)
 		/*
 		 * Add subordinate uids if the user does not have them.
 		 */
-		if (is_sub_uid && !sub_uid_assigned(fields[0])) {
+		if (is_sub_uid && want_subuids() && !local_sub_uid_assigned(fields[0])) {
 			uid_t sub_uid_start = 0;
 			unsigned long sub_uid_count = 0;
-			if (find_new_sub_uids(fields[0], &sub_uid_start, &sub_uid_count) == 0) {
+			if (find_new_sub_uids(&sub_uid_start, &sub_uid_count) == 0) {
 				if (sub_uid_add(fields[0], sub_uid_start, sub_uid_count) == 0) {
 					fprintf (stderr,
 						_("%s: failed to prepare new %s entry\n"),
@@ -1268,10 +1288,10 @@ int main (int argc, char **argv)
 		/*
 		 * Add subordinate gids if the user does not have them.
 		 */
-		if (is_sub_gid && !sub_gid_assigned(fields[0])) {
+		if (is_sub_gid && want_subgids() && !local_sub_gid_assigned(fields[0])) {
 			gid_t sub_gid_start = 0;
 			unsigned long sub_gid_count = 0;
-			if (find_new_sub_gids(fields[0], &sub_gid_start, &sub_gid_count) == 0) {
+			if (find_new_sub_gids(&sub_gid_start, &sub_gid_count) == 0) {
 				if (sub_gid_add(fields[0], sub_gid_start, sub_gid_count) == 0) {
 					fprintf (stderr,
 						_("%s: failed to prepare new %s entry\n"),

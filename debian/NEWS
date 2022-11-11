@@ -1,3 +1,13 @@
+shadow (1:4.11.1+dfsg1-0exp1) experimental; urgency=medium
+
+  Login now prevents an empty password field to be interpreted as
+  "no authentication required" for UID 0 (root account).
+  The historical default of letting all users with empty password field
+  in without authentication can be restored in /etc/login.defs setting
+  PREVENT_NO_AUTH to "no".
+
+ -- Balint Reczey <balint@balintreczey.hu>  Sun, 07 Nov 2021 21:51:46 +0100
+
 shadow (1:4.7-1) unstable; urgency=medium
 
   * /etc/securetty is no longer shipped by this package and it is no longer

@@ -1,33 +1,10 @@
 /*
- * Copyright (c) 1989 - 1994, Julianne Frances Haugh
- * Copyright (c) 1996 - 2000, Marek Michałkiewicz
- * Copyright (c) 2000 - 2006, Tomasz Kłoczko
- * Copyright (c) 2007 - 2011, Nicolas François
- * All rights reserved.
+ * SPDX-FileCopyrightText: 1989 - 1994, Julianne Frances Haugh
+ * SPDX-FileCopyrightText: 1996 - 2000, Marek Michałkiewicz
+ * SPDX-FileCopyrightText: 2000 - 2006, Tomasz Kłoczko
+ * SPDX-FileCopyrightText: 2007 - 2011, Nicolas François
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the copyright holders or contributors may not be used to
- *    endorse or promote products derived from this software without
- *    specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
- * PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
- * HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * SPDX-License-Identifier: BSD-3-Clause
  */
 
 #include <config.h>
@@ -42,11 +19,15 @@
 #include <sys/types.h>
 #include <time.h>
 #include <assert.h>
+#ifdef HAVE_LL_HOST
+#include <net/if.h>
+#endif
 #include "defines.h"
 #include "prototypes.h"
 #include "getdef.h"
 /*@-exitarg@*/
 #include "exitcodes.h"
+#include "shadowlog.h"
 
 /*
  * Needed for MkLinux DR1/2/2.1 - J.
@@ -104,9 +85,19 @@ static void print_one (/*@null@*/const struct passwd *pw)
 	time_t ll_time;
 	off_t offset;
 	struct lastlog ll;
-
-#ifdef HAVE_STRFTIME
 	char ptime[80];
+
+#ifdef HAVE_LL_HOST
+	/*
+	 * ll_host is in minimized form, thus the maximum IPv6 address possible is
+	 * 8*4+7 = 39 characters.
+	 * RFC 4291 2.5.6 states that for LL-addresses fe80+only the interface ID is set,
+	 * thus having a maximum size of 25+1+IFNAMSIZ.
+	 * POSIX says IFNAMSIZ should be 16 characters long including the null byte, thus
+	 * 25+1+IFNAMSIZ >= 42 > 39
+	 */
+	/* Link-Local address + % + Interfacename */
+	const int maxIPv6Addrlen = 25+1+IFNAMSIZ;
 #endif
 
 	if (NULL == pw) {
@@ -150,7 +141,7 @@ static void print_one (/*@null@*/const struct passwd *pw)
 	/* Print the header only once */
 	if (!once) {
 #ifdef HAVE_LL_HOST
-		puts (_("Username         Port     From             Latest"));
+		printf (_("Username         Port     From%*sLatest\n"), maxIPv6Addrlen-3, " ");
 #else
 		puts (_("Username                Port     Latest"));
 #endif
@@ -159,21 +150,19 @@ static void print_one (/*@null@*/const struct passwd *pw)
 
 	ll_time = ll.ll_time;
 	tm = localtime (&ll_time);
-#ifdef HAVE_STRFTIME
-	strftime (ptime, sizeof (ptime), "%a %b %e %H:%M:%S %z %Y", tm);
-	cp = ptime;
-#else
-	cp = asctime (tm);
-	cp[24] = '\0';
-#endif
-
+	if (tm == NULL) {
+		cp = "(unknown)";
+	} else {
+		strftime (ptime, sizeof (ptime), "%a %b %e %H:%M:%S %z %Y", tm);
+		cp = ptime;
+	}
 	if (ll.ll_time == (time_t) 0) {
 		cp = _("**Never logged in**\0");
 	}
 
 #ifdef HAVE_LL_HOST
-	printf ("%-16s %-8.8s %-16.16s %s\n",
-	        pw->pw_name, ll.ll_line, ll.ll_host, cp);
+	printf ("%-16s %-8.8s %*s%s\n",
+	        pw->pw_name, ll.ll_line, -maxIPv6Addrlen, ll.ll_host, cp);
 #else
 	printf ("%-16s\t%-8.8s %s\n",
 	        pw->pw_name, ll.ll_line, cp);
@@ -300,6 +289,8 @@ int main (int argc, char **argv)
 	 * most error messages.
 	 */
 	Prog = Basename (argv[0]);
+	log_set_progname(Prog);
+	log_set_logfd(stderr);
 
 	(void) setlocale (LC_ALL, "");
 	(void) bindtextdomain (PACKAGE, LOCALEDIR);

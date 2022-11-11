@@ -1,27 +1,14 @@
 /*
   vipw, vigr  edit the password or group file
   with -s will edit shadow or gshadow file
-
-  Copyright (c) 1997       , Guy Maor <maor@ece.utexas.edu>
-  Copyright (c) 1999 - 2000, Marek Michałkiewicz
-  Copyright (c) 2002 - 2006, Tomasz Kłoczko
-  Copyright (c) 2007 - 2013, Nicolas François
-  All rights reserved.
-
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful, but
-  WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-  General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 51 Franklin Street, Fifth Floor,
-  Boston, MA 02110-1301, USA.  */
+ *
+ * SPDX-FileCopyrightText: 1997       , Guy Maor <maor@ece.utexas.edu>
+ * SPDX-FileCopyrightText: 1999 - 2000, Marek Michałkiewicz
+ * SPDX-FileCopyrightText: 2002 - 2006, Tomasz Kłoczko
+ * SPDX-FileCopyrightText: 2007 - 2013, Nicolas François
+ *
+ * SPDX-License-Identifier: GPL-2.0-or-later
+ */
 
 #include <config.h>
 
@@ -53,6 +40,7 @@
 #include <tcb.h>
 #include "tcbfuncs.h"
 #endif				/* WITH_TCB */
+#include "shadowlog.h"
 
 #define MSG_WARN_EDIT_OTHER_FILE _( \
 	"You have modified %s.\n"\
@@ -243,13 +231,13 @@ vipwedit (const char *file, int (*file_lock) (void), int (*file_unlock) (void))
 	/* if SE Linux is enabled then set the context of all new files
 	   to be the context of the file we are editing */
 	if (is_selinux_enabled () != 0) {
-		security_context_t passwd_context=NULL;
+		char *passwd_context_raw = NULL;
 		int ret = 0;
-		if (getfilecon (file, &passwd_context) < 0) {
+		if (getfilecon_raw (file, &passwd_context_raw) < 0) {
 			vipwexit (_("Couldn't get file context"), errno, 1);
 		}
-		ret = setfscreatecon (passwd_context);
-		freecon (passwd_context);
+		ret = setfscreatecon_raw (passwd_context_raw);
+		freecon (passwd_context_raw);
 		if (0 != ret) {
 			vipwexit (_("setfscreatecon () failed"), errno, 1);
 		}
@@ -305,7 +293,6 @@ vipwedit (const char *file, int (*file_lock) (void), int (*file_unlock) (void))
 		/* use the system() call to invoke the editor so that it accepts
 		   command line args in the EDITOR and VISUAL environment vars */
 		char *buf;
-		int status;
 
 		/* Wait for parent to make us the foreground pgrp. */
 		if (orig_pgrp != -1) {
@@ -347,6 +334,9 @@ vipwedit (const char *file, int (*file_lock) (void), int (*file_unlock) (void))
 		sigaddset(&mask, SIGTTOU);
 		sigprocmask(SIG_BLOCK, &mask, &omask);
 	}
+
+	/* set SIGCHLD to default for waitpid */
+	signal(SIGCHLD, SIG_DFL);
 
 	for (;;) {
 		pid = waitpid (pid, &status, WUNTRACED);
@@ -401,7 +391,7 @@ vipwedit (const char *file, int (*file_lock) (void), int (*file_unlock) (void))
 #ifdef WITH_SELINUX
 	/* unset the fscreatecon */
 	if (is_selinux_enabled () != 0) {
-		if (setfscreatecon (NULL) != 0) {
+		if (setfscreatecon_raw (NULL) != 0) {
 			vipwexit (_("setfscreatecon () failed"), errno, 1);
 		}
 	}
@@ -481,6 +471,8 @@ int main (int argc, char **argv)
 	bool do_vipw;
 
 	Prog = Basename (argv[0]);
+	log_set_progname(Prog);
+	log_set_logfd(stderr);
 
 	(void) setlocale (LC_ALL, "");
 	(void) bindtextdomain (PACKAGE, LOCALEDIR);

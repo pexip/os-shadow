@@ -1,13 +1,13 @@
 '\" t
 .\"     Title: chsh
 .\"    Author: Julianne Frances Haugh
-.\" Generator: DocBook XSL Stylesheets v1.79.1 <http://docbook.sf.net/>
-.\"      Date: 01/23/2020
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 11/08/2022
 .\"    Manual: Polecenia użytkownik\('ow
-.\"    Source: shadow-utils 4.8.1
+.\"    Source: shadow-utils 4.13
 .\"  Language: Polish
 .\"
-.TH "CHSH" "1" "01/23/2020" "shadow\-utils 4\&.8\&.1" "Polecenia użytkownik\('ow"
+.TH "CHSH" "1" "11/08/2022" "shadow\-utils 4\&.13" "Polecenia użytkownik\('ow"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -54,7 +54,7 @@ Apply changes in the
 \fICHROOT_DIR\fR
 directory and use the configuration files from the
 \fICHROOT_DIR\fR
-directory\&.
+directory\&. Only absolute paths are supported\&.
 .RE
 .PP
 \fB\-s\fR, \fB\-\-shell\fR\ \&\fISHELL\fR
@@ -82,22 +82,6 @@ is discouraged since accidentally changing to a restricted shell would prevent t
 The following configuration variables in
 /etc/login\&.defs
 change the behavior of this tool:
-.PP
-\fBCHSH_AUTH\fR (boolean)
-.RS 4
-If
-\fIyes\fR, the
-\fBchsh\fR
-program will require authentication before making any changes, unless run by the superuser\&.
-.RE
-.PP
-\fBLOGIN_STRING\fR (string)
-.RS 4
-The string used for prompting a password\&. The default is to use "Password: ", or a translation of that string\&. If you set this variable, the prompt will not be translated\&.
-.sp
-If the string contains
-\fI%s\fR, this will be replaced by the user\*(Aqs name\&.
-.RE
 .SH "PLIKI"
 .PP
 /etc/passwd

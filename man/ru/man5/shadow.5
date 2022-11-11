@@ -1,13 +1,13 @@
 '\" t
 .\"     Title: shadow
 .\"    Author: Julianne Frances Haugh
-.\" Generator: DocBook XSL Stylesheets v1.79.1 <http://docbook.sf.net/>
-.\"      Date: 01/23/2020
-.\"    Manual: Форматы файлов
-.\"    Source: shadow-utils 4.8.1
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 11/08/2022
+.\"    Manual: File Formats and Configuration Files
+.\"    Source: shadow-utils 4.13
 .\"  Language: Russian
 .\"
-.TH "shadow" "5" "01/23/2020" "shadow\-utils 4\&.8\&.1" "Форматы файлов"
+.TH "shadow" "5" "11/08/2022" "shadow\-utils 4\&.13" "File Formats and Configuration"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -61,7 +61,7 @@ If the password field contains some string that is not a valid result of
 .PP
 \fBдата последней смены пароля\fR
 .RS 4
-Дата последней смены пароля в днях начиная с 1 января 1970 года\&.
+The date of the last password change, expressed as the number of days since Jan 1, 1970 00:00 UTC\&.
 .sp
 The value 0 has a special meaning, which is that the user should change her password the next time she will log in the system\&.
 .sp
@@ -72,7 +72,7 @@ The value 0 has a special meaning, which is that the user should change her pass
 .RS 4
 Минимальный срок действия пароля в днях, которые пользователь должен ждать, чтобы поменять пароль\&.
 .sp
-Пустое значение поля и 0 отключают минимальный срок действия пароля\&.
+An empty field and value 0 mean that there is no minimum password age\&.
 .RE
 .PP
 \fBмаксимальный срок действия пароля\fR
@@ -97,14 +97,14 @@ The value 0 has a special meaning, which is that the user should change her pass
 .RS 4
 Количество дней после устаревания пароля (смотрите максимальный срок действия пароля) во время которых пароль всё ещё принимается (и пользователь должен обновить свой пароль при следующем входе)\&.
 .sp
-После устаревания пароля и истечения этого периода устаревания вход с текущим паролем становится невозможным\&. Пользователь должен обратиться к администратору\&.
+After expiration of the password and this expiration period is elapsed, no login is possible for the user\&. The user should contact her administrator\&.
 .sp
 Пустое значение поля означает, что период неактивности отсутствует\&.
 .RE
 .PP
 \fBдата истечения срока действия учётной записи\fR
 .RS 4
-Дата истечения срока действия учётной записи, указывается в днях начиная с 1 января 1970 года\&.
+The date of expiration of the account, expressed as the number of days since Jan 1, 1970 00:00 UTC\&.
 .sp
 Note that an account expiration differs from a password expiration\&. In case of an account expiration, the user shall not be allowed to login\&. In case of a password expiration, the user is not allowed to login using her password\&.
 .sp

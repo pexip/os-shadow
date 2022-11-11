@@ -1,0 +1,13 @@
+#!/bin/sh
+
+set -e
+
+echo "Adding an user works"
+useradd shadow-test-user
+grep '^shadow-test-user:x:' /etc/passwd
+grep '^shadow-test-user:!:' /etc/shadow
+
+echo "Removing an user works"
+userdel shadow-test-user
+! grep 'shadow-test-user' /etc/passwd
+! grep 'shadow-test-user' /etc/shadow

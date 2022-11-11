@@ -1,33 +1,10 @@
 /*
- * Copyright (c) 1991 - 1994, Julianne Frances Haugh
- * Copyright (c) 1996 - 2000, Marek Michałkiewicz
- * Copyright (c) 2001 - 2006, Tomasz Kłoczko
- * Copyright (c) 2007 - 2008, Nicolas François
- * All rights reserved.
+ * SPDX-FileCopyrightText: 1991 - 1994, Julianne Frances Haugh
+ * SPDX-FileCopyrightText: 1996 - 2000, Marek Michałkiewicz
+ * SPDX-FileCopyrightText: 2001 - 2006, Tomasz Kłoczko
+ * SPDX-FileCopyrightText: 2007 - 2008, Nicolas François
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the copyright holders or contributors may not be used to
- *    endorse or promote products derived from this software without
- *    specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
- * PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
- * HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * SPDX-License-Identifier: BSD-3-Clause
  */
 
 /*
@@ -52,11 +29,7 @@ static void usage (void);
 
 static void usage (void)
 {
-#ifdef HAVE_GETGROUPS
 	(void) fputs (_("Usage: id [-a]\n"), stderr);
-#else
-	(void) fputs (_("Usage: id\n"), stderr);
-#endif
 	exit (EXIT_FAILURE);
 }
 
@@ -73,11 +46,9 @@ static void usage (void)
  * gid_t for everything. Some systems have a small and fixed NGROUPS,
  * usually about 16 or 32. Others use bigger values.
  */
-#ifdef HAVE_GETGROUPS
 	GETGROUPS_T *groups;
 	int ngroups;
 	bool aflg = 0;
-#endif
 	struct passwd *pw;
 	struct group *gr;
 
@@ -92,8 +63,8 @@ static void usage (void)
 	 * work if the system library is recompiled.
 	 */
 	sys_ngroups = sysconf (_SC_NGROUPS_MAX);
-#ifdef HAVE_GETGROUPS
 	groups = (GETGROUPS_T *) malloc (sizeof (GETGROUPS_T) * sys_ngroups);
+
 	/*
 	 * See if the -a flag has been given to print out the concurrent
 	 * group set.
@@ -106,11 +77,6 @@ static void usage (void)
 			aflg = true;
 		}
 	}
-#else
-	if (argc > 1) {
-		usage ();
-	}
-#endif
 
 	ruid = getuid ();
 	euid = geteuid ();
@@ -161,7 +127,7 @@ static void usage (void)
 			(void) printf (" EGID=%lu", (unsigned long) egid);
 		}
 	}
-#ifdef HAVE_GETGROUPS
+
 	/*
 	 * Print out the concurrent group set if the user has requested it.
 	 * The group numbers will be printed followed by their names.
@@ -195,7 +161,6 @@ static void usage (void)
 		}
 	}
 	free (groups);
-#endif
 
 	/*
 	 * Finish off the line.

@@ -1,13 +1,13 @@
 '\" t
 .\"     Title: shadow
 .\"    Author: Julianne Frances Haugh
-.\" Generator: DocBook XSL Stylesheets v1.79.1 <http://docbook.sf.net/>
-.\"      Date: 23/01/2020
-.\"    Manual: Formati di file e conversioni
-.\"    Source: shadow-utils 4.8.1
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 08/11/2022
+.\"    Manual: File Formats and Configuration Files
+.\"    Source: shadow-utils 4.13
 .\"  Language: Italian
 .\"
-.TH "SHADOW" "5" "23/01/2020" "shadow\-utils 4\&.8\&.1" "Formati di file e conversioni"
+.TH "SHADOW" "5" "08/11/2022" "shadow\-utils 4\&.13" "File Formats and Configuration"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -61,7 +61,7 @@ If the password field contains some string that is not a valid result of
 .PP
 \fBdata dell\*(Aqultimo cambio di password\fR
 .RS 4
-Data dell\*(Aqultimo cambio di password espressa in numero di giorni a partire dal 1 gennaio 1970\&.
+The date of the last password change, expressed as the number of days since Jan 1, 1970 00:00 UTC\&.
 .sp
 The value 0 has a special meaning, which is that the user should change her password the next time she will log in the system\&.
 .sp
@@ -72,7 +72,7 @@ Un campo vuoto implica che la scadenza della password \(`e disabilitata\&.
 .RS 4
 L\*(Aqet\(`a minima password \(`e il numero di giorni che l\*(Aqutente dovr\(`a attendere prima di poter cambiare nuovamente la propria password\&.
 .sp
-Un campo vuoto o con valore 0 indica che non c\*(Aq\(`e una et\(`a minima della password\&.
+An empty field and value 0 mean that there is no minimum password age\&.
 .RE
 .PP
 \fBet\(`a massima password\fR
@@ -97,14 +97,14 @@ Un campo vuoto e il valore 0 indicano che non c\*(Aq\(`e un periodo di avviso pa
 .RS 4
 Il numero di giorni dopo la scadenza della password (vedere et\(`a massima password, sopra) durante il quale la password \(`e ancora accettata (e l\*(Aqutente dovrebbe aggiornare la propria password al primo accesso)\&.
 .sp
-Dopo la scadenza della password e di questo periodo, l\*(Aqutente non potr\(`a accedere usando questa password, ma dovr\(`a contattare l\*(Aqamministratore\&.
+After expiration of the password and this expiration period is elapsed, no login is possible for the user\&. The user should contact her administrator\&.
 .sp
 Un campo vuoto implica che non \(`e applicato il periodo di inattivit\(`a\&.
 .RE
 .PP
 \fBdata scadenza account\fR
 .RS 4
-La data di scadenza dell\*(Aqaccount, espressa in numero di giorni dal 1 gennaio 1970\&.
+The date of expiration of the account, expressed as the number of days since Jan 1, 1970 00:00 UTC\&.
 .sp
 Note that an account expiration differs from a password expiration\&. In case of an account expiration, the user shall not be allowed to login\&. In case of a password expiration, the user is not allowed to login using her password\&.
 .sp

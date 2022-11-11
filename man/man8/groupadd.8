@@ -1,13 +1,13 @@
 '\" t
 .\"     Title: groupadd
 .\"    Author: Julianne Frances Haugh
-.\" Generator: DocBook XSL Stylesheets v1.79.1 <http://docbook.sf.net/>
-.\"      Date: 01/23/2020
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 11/08/2022
 .\"    Manual: System Management Commands
-.\"    Source: shadow-utils 4.8.1
+.\"    Source: shadow-utils 4.13
 .\"  Language: English
 .\"
-.TH "GROUPADD" "8" "01/23/2020" "shadow\-utils 4\&.8\&.1" "System Management Commands"
+.TH "GROUPADD" "8" "11/08/2022" "shadow\-utils 4\&.13" "System Management Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -31,12 +31,16 @@
 groupadd \- create a new group
 .SH "SYNOPSIS"
 .HP \w'\fBgroupadd\fR\ 'u
-\fBgroupadd\fR [\fIoptions\fR] \fIgroup\fR
+\fBgroupadd\fR [\fIOPTIONS\fR] \fINEWGROUP\fR
 .SH "DESCRIPTION"
 .PP
 The
 \fBgroupadd\fR
 command creates a new group account using the values specified on the command line plus the default values from the system\&. The new group will be entered into the system files as needed\&.
+.PP
+Groupnames may contain only lower and upper case letters, digits, underscores, or dashes\&. They can end with a dollar sign\&. Dashes are not allowed at the beginning of the groupname\&. Fully numeric groupnames and groupnames \&. or \&.\&. are also disallowed\&.
+.PP
+Groupnames may only be up to 32 characters long\&.
 .SH "OPTIONS"
 .PP
 The options which apply to the
@@ -53,7 +57,9 @@ is turned off)\&.
 .PP
 \fB\-g\fR, \fB\-\-gid\fR\ \&\fIGID\fR
 .RS 4
-The numerical value of the group\*(Aqs ID\&. This value must be unique, unless the
+The numerical value of the group\*(Aqs ID\&.
+\fIGID\fR
+must be unique, unless the
 \fB\-o\fR
 option is used\&. The value must be non\-negative\&. The default is to use the smallest ID value greater than or equal to
 \fBGID_MIN\fR
@@ -90,13 +96,21 @@ doesn\*(Aqt work yet\&.
 .PP
 \fB\-o\fR, \fB\-\-non\-unique\fR
 .RS 4
-This option permits to add a group with a non\-unique GID\&.
+permits the creation of a group with an already used numerical ID\&. As a result, for this
+\fIGID\fR, the mapping towards group
+\fINEWGROUP\fR
+may not be unique\&.
 .RE
 .PP
 \fB\-p\fR, \fB\-\-password\fR\ \&\fIPASSWORD\fR
 .RS 4
-The encrypted password, as returned by
-\fBcrypt\fR(3)\&. The default is to disable the password\&.
+defines an initial password for the group account\&. PASSWORD is expected to be encrypted, as returned by
+\fBcrypt \fR(3)\&.
+.sp
+Without this option, the group account will be locked and with no password defined, i\&.e\&. a single exclamation mark in the respective field of ths system account file
+/etc/group
+or
+/etc/gshadow\&.
 .sp
 \fBNote:\fR
 This option is not recommended because the password (or encrypted password) will be visible by users listing the processes\&.
@@ -121,16 +135,27 @@ Apply changes in the
 \fICHROOT_DIR\fR
 directory and use the configuration files from the
 \fICHROOT_DIR\fR
-directory\&.
+directory\&. Only absolute paths are supported\&.
 .RE
 .PP
 \fB\-P\fR, \fB\-\-prefix\fR\ \&\fIPREFIX_DIR\fR
 .RS 4
-Apply changes in the
-\fIPREFIX_DIR\fR
-directory and use the configuration files from the
-\fIPREFIX_DIR\fR
-directory\&. This option does not chroot and is intended for preparing a cross\-compilation target\&. Some limitations: NIS and LDAP users/groups are not verified\&. PAM authentication is using the host files\&. No SELINUX support\&.
+Apply changes to configuration files under the root filesystem found under the directory
+\fIPREFIX_DIR\fR\&. This option does not chroot and is intended for preparing a cross\-compilation target\&. Some limitations: NIS and LDAP users/groups are not verified\&. PAM authentication is using the host files\&. No SELINUX support\&.
+.RE
+.PP
+\fB\-U\fR, \fB\-\-users\fR
+.RS 4
+A list of usernames to add as members of the group\&.
+.sp
+The default behavior (if the
+\fB\-g\fR,
+\fB\-N\fR, and
+\fB\-U\fR
+options are not specified) is defined by the
+\fBUSERGROUPS_ENAB\fR
+variable in
+/etc/login\&.defs\&.
 .RE
 .SH "CONFIGURATION"
 .PP
@@ -197,10 +222,6 @@ Shadow password suite configuration\&.
 .RE
 .SH "CAVEATS"
 .PP
-Groupnames must start with a lower case letter or an underscore, followed by lower case letters, digits, underscores, or dashes\&. They can end with a dollar sign\&. In regular expression terms: [a\-z_][a\-z0\-9_\-]*[$]?
-.PP
-Groupnames may only be up to 16 characters long\&.
-.PP
 You may not add a NIS or LDAP group\&. This must be performed on the corresponding server\&.
 .PP
 If the groupname already exists in an external group database such as NIS or LDAP,
@@ -229,14 +250,13 @@ invalid argument to option
 .PP
 \fI4\fR
 .RS 4
-GID not unique (when
-\fB\-o\fR
-not used)
+GID is already used (when called without
+\fB\-o\fR)
 .RE
 .PP
 \fI9\fR
 .RS 4
-group name not unique
+group name is already used
 .RE
 .PP
 \fI10\fR

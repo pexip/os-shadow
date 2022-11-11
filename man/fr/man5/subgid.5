@@ -1,13 +1,13 @@
 '\" t
 .\"     Title: subgid
 .\"    Author: Eric Biederman
-.\" Generator: DocBook XSL Stylesheets v1.79.1 <http://docbook.sf.net/>
-.\"      Date: 23/01/2020
-.\"    Manual: Formats et conversions de fichiers
-.\"    Source: shadow-utils 4.8.1
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 08/11/2022
+.\"    Manual: File Formats and Configuration Files
+.\"    Source: shadow-utils 4.13
 .\"  Language: French
 .\"
-.TH "SUBGID" "5" "23/01/2020" "shadow\-utils 4\&.8\&.1" "Formats et conversions de fich"
+.TH "SUBGID" "5" "08/11/2022" "shadow\-utils 4\&.13" "File Formats and Configuration"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -28,8 +28,28 @@
 .\" * MAIN CONTENT STARTS HERE *
 .\" -----------------------------------------------------------------
 .SH "NOM"
-subgid \- the subordinate gid file
+subgid \- the configuration for subordinate group ids
 .SH "DESCRIPTION"
+.PP
+Subgid authorizes a group id to map ranges of group ids from its namespace into child namespaces\&.
+.PP
+The delegation of the subordinate gids can be configured via the
+\fIsubid\fR
+field in
+/etc/nsswitch\&.conf
+file\&. Only one value can be set as the delegation source\&. Setting this field to
+\fIfiles\fR
+configures the delegation of gids to
+/etc/subgid\&. Setting any other value treats the delegation as a plugin following with a name of the form
+\fIlibsubid_$value\&.so\fR\&. If the value or plugin is missing, then the subordinate gid delegation falls back to
+\fIfiles\fR\&.
+.PP
+Note, that
+\fBgroupadd\fR
+will only create entries in
+/etc/subgid
+if subid delegation is managed via subid files\&.
+.SH "LOCAL SUBORDINATE DELEGATION"
 .PP
 Each line in
 /etc/subgid

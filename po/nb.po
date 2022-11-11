@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: shadow 4.0.17\n"
 "Report-Msgid-Bugs-To: pkg-shadow-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2020-01-23 14:59-0600\n"
+"POT-Creation-Date: 2022-11-08 10:37-0600\n"
 "PO-Revision-Date: 2018-03-05 12:33+0100\n"
 "Last-Translator: Åka Sikrom <a4@hush.com>\n"
 "Language-Team: Norwegian Bokmål <i18n-nb@lister.ping.uio.no>\n"
@@ -565,8 +565,9 @@ msgstr "%s: valget «%s» må ha et argument\n"
 msgid "%s: failed to drop privileges (%s)\n"
 msgstr "%s: klarte ikke å fjerne privilegier (%s)\n"
 
-#, c-format
-msgid "%s: invalid chroot path '%s'\n"
+#, fuzzy, c-format
+#| msgid "%s: invalid chroot path '%s'\n"
+msgid "%s: invalid chroot path '%s', only absolute paths are supported.\n"
 msgstr "%s: chroot-sti «%s» er ugyldig\n"
 
 #, c-format
@@ -582,12 +583,23 @@ msgid "%s: unable to chroot to directory %s: %s\n"
 msgstr "%s: klarte ikke å utføre chroot med %s: %s\n"
 
 #, c-format
+msgid "Unable to obtain random bytes.\n"
+msgstr ""
+
+#, c-format
 msgid ""
 "Invalid ENCRYPT_METHOD value: '%s'.\n"
 "Defaulting to DES.\n"
 msgstr ""
 "Ugyldig verdi for ENCRYPT_METHOD: «%s»\n"
 "Faller tilbake til DES.\n"
+
+#, c-format
+msgid ""
+"Unable to generate a salt from setting \"%s\", check your settings in "
+"ENCRYPT_METHOD and the corresponding configuration for your selected hash "
+"method.\n"
+msgstr ""
 
 #, c-format
 msgid "Unable to cd to '%s'\n"
@@ -845,6 +857,10 @@ msgstr "Hjemmetelefon"
 msgid "Other"
 msgstr "Annet"
 
+#, c-format
+msgid "%s: fields too long\n"
+msgstr "%s: feltene er for lange\n"
+
 msgid "Cannot change ID to root.\n"
 msgstr "Klarte ikke å endre ID til root.\n"
 
@@ -899,10 +915,6 @@ msgid "Changing the user information for %s\n"
 msgstr "Endrer brukerinformasjon for %s\n"
 
 #, c-format
-msgid "%s: fields too long\n"
-msgstr "%s: feltene er for lange\n"
-
-#, c-format
 msgid ""
 "Usage: %s [options]\n"
 "\n"
@@ -933,8 +945,8 @@ msgstr ""
 #| "  -s, --sha-rounds              number of SHA rounds for the SHA*\n"
 #| "                                crypt algorithms\n"
 msgid ""
-"  -s, --sha-rounds              number of rounds for the SHA or BCRYPT\n"
-"                                crypt algorithms\n"
+"  -s, --sha-rounds              number of rounds for the SHA, BCRYPT\n"
+"                                or YESCRYPT crypt algorithms\n"
 msgstr ""
 "  -s, --sha-rounds              antall SHA-runder for kryptering med SHA*\n"
 
@@ -1260,8 +1272,18 @@ msgstr "  -r, --system                  lag en systemkonto\n"
 
 #, fuzzy
 #| msgid "  -R, --root CHROOT_DIR         directory to chroot into\n"
-msgid "  -P, --prefix PREFIX_DIR       directory prefix\n"
+msgid "  -P, --prefix PREFIX_DI        directory prefix\n"
 msgstr "  -R, --root CHROOT_MAPPE       mappe som skal brukes til chroot\n"
+
+#, fuzzy
+#| msgid "  -l, --list                    list the members of the group\n"
+msgid "  -U, --users USERS             list of user members of this group\n"
+msgstr "  -l, --list                    vis gruppemedlemmer\n"
+
+#, fuzzy, c-format
+#| msgid "invalid user name '%s'\n"
+msgid "Invalid member username %s\n"
+msgstr "ugyldig brukernavn «%s»\n"
 
 # , c-format
 #, c-format
@@ -1387,6 +1409,23 @@ msgstr "%s: gruppenavnet samsvarer ikke med brukernavnet ditt\n"
 msgid "%s: only root can use the -g/--group option\n"
 msgstr "%s: bare root kan bruke valget -g/--group\n"
 
+#, fuzzy
+#| msgid ""
+#| "  -a, --append                  append the user to the supplemental "
+#| "GROUPS\n"
+#| "                                mentioned by the -G option without "
+#| "removing\n"
+#| "                                the user from other groups\n"
+msgid ""
+"  -a, --append                  append the users mentioned by -U option to "
+"the group \n"
+"                                without removing existing user members\n"
+msgstr ""
+"  -a, --append                  legg til brukeren i de ekstra gruppene "
+"listet i \n"
+"                                 valget -G option uten å fjerne ham/henne\n"
+"                                fra andre grupper\n"
+
 msgid "  -g, --gid GID                 change the group ID to GID\n"
 msgstr "  -g, --gid GID                 endre gruppe-ID til GID\n"
 
@@ -1447,6 +1486,10 @@ msgstr ""
 
 msgid "  -s, --sort                    sort entries by UID\n"
 msgstr "  -s, --sort                    sorter oppføringer etter UID\n"
+
+msgid ""
+"  -S, --silence-warnings        silence controversial/paranoid warnings\n"
+msgstr ""
 
 #, c-format
 msgid "%s: -s and -r are incompatible\n"
@@ -1529,9 +1572,6 @@ msgstr "%s: klarte ikke å slette %s\n"
 msgid "Usage: id [-a]\n"
 msgstr "Bruk: id [-a]\n"
 
-msgid "Usage: id\n"
-msgstr "Bruk: id\n"
-
 msgid " groups="
 msgstr " grupper="
 
@@ -1565,8 +1605,10 @@ msgid ""
 "  -u, --user LOGIN              print lastlog record of the specified LOGIN\n"
 msgstr "  -u, --user LOGIN              skriv ut lastlog for valgt LOGIN\n"
 
-msgid "Username         Port     From             Latest"
-msgstr "Brukernavn       Port     Fra             Sist"
+#, fuzzy, c-format
+#| msgid "Username                Port     Latest"
+msgid "Username         Port     From%*sLatest\n"
+msgstr "Brukernavn                Port     Sist"
 
 msgid "Username                Port     Latest"
 msgstr "Brukernavn                Port     Sist"
@@ -1699,10 +1741,6 @@ msgid "Last login: %s on %s"
 msgstr "Forrige login: %s på %s"
 
 #, c-format
-msgid "Last login: %.19s on %s"
-msgstr "Forrige login: %.19s på %s"
-
-#, c-format
 msgid " from %.*s"
 msgstr " fra %.*s"
 
@@ -1812,7 +1850,7 @@ msgstr ""
 
 #, fuzzy
 #| msgid "  -q, --quiet                   quiet mode\n"
-msgid "  -b, --badnames                allow bad names\n"
+msgid "  -b, --badname                 allow bad names\n"
 msgstr "  -q, --quiet                   stille modus\n"
 
 msgid "  -r, --system                  create system accounts\n"
@@ -1828,8 +1866,9 @@ msgstr "%s: gruppa «%s» er en skyggegruppe, men finnes ikke i /etc/group\n"
 msgid "%s: invalid user ID '%s'\n"
 msgstr "%s: ugyldig bruker-ID «%s»\n"
 
-#, c-format
-msgid "%s: invalid user name '%s'\n"
+#, fuzzy, c-format
+#| msgid "%s: invalid user name '%s'\n"
+msgid "%s: invalid user name '%s': use --badname to ignore\n"
 msgstr "%s: ugyldig brukernavn «%s»\n"
 
 #, c-format
@@ -1861,6 +1900,11 @@ msgstr "%s: linje %d: bruker «%s» finnes ikke i %s\n"
 #, c-format
 msgid "%s: line %d: can't update password\n"
 msgstr "%s: linje %d: klarte ikke å oppdatere passord\n"
+
+#, fuzzy, c-format
+#| msgid "%s: line %d: mkdir %s failed: %s\n"
+msgid "%s: line %d: homedir must be an absolute path\n"
+msgstr "%s: linje %d: mkdir %s mislyktes: %s\n"
 
 #, c-format
 msgid "%s: line %d: mkdir %s failed: %s\n"
@@ -1915,7 +1959,7 @@ msgstr ""
 
 msgid ""
 "  -l, --lock                    lock the password of the named account\n"
-msgstr "  -L, --lock                  lås passord for den valgt konto\n"
+msgstr "  -l, --lock                  lås passord for den valgt konto\n"
 
 msgid ""
 "  -n, --mindays MIN_DAYS        set minimum number of days before password\n"
@@ -1998,6 +2042,11 @@ msgstr "Passord for %s kan ikke endres.\n"
 msgid "The password for %s cannot be changed yet.\n"
 msgstr "Passord for %s kan ikke endres enda.\n"
 
+#, fuzzy, c-format
+#| msgid "%s: shadow passwords required for -e\n"
+msgid "%s: malformed password data obtained for user %s\n"
+msgstr "%s: skyggepassord kreves for -e\n"
+
 #, c-format
 msgid ""
 "%s: unlocking the password would result in a passwordless account.\n"
@@ -2034,10 +2083,6 @@ msgid "%s: password changed.\n"
 msgstr "%s: passordet er endret.\n"
 
 #, c-format
-msgid "%s: password expiry information changed.\n"
-msgstr "%s: informasjon om utløp av passord er endret.\n"
-
-#, c-format
 msgid ""
 "Usage: %s [options] [passwd]\n"
 "\n"
@@ -2071,9 +2116,10 @@ msgstr "ugyldig oppføring i passordfil"
 msgid "duplicate password entry"
 msgstr "duplisert oppføring i passordfil"
 
-#, c-format
-msgid "invalid user name '%s'\n"
-msgstr "ugyldig brukernavn «%s»\n"
+#, fuzzy, c-format
+#| msgid "%s: invalid user name '%s'\n"
+msgid "invalid user name '%s': use --badname to ignore\n"
+msgstr "%s: ugyldig brukernavn «%s»\n"
 
 # , c-format
 #, c-format
@@ -2159,16 +2205,16 @@ msgid "Please enter your OWN password as authentication.\n"
 msgstr "Skriv inn ditt EGET passord for å autentisere deg.\n"
 
 #, c-format
+msgid "%s: signal masking malfunction\n"
+msgstr "%s: funksjonsfeil ved signalmasking\n"
+
+#, c-format
 msgid "%s: Cannot fork user shell\n"
 msgstr "%s: Klarte ikke å spalte ut brukerskall\n"
 
 #, c-format
 msgid "%s: signal malfunction\n"
 msgstr "%s: funksjonsfeil ved signal\n"
-
-#, c-format
-msgid "%s: signal masking malfunction\n"
-msgstr "%s: funksjonsfeil ved signalmasking\n"
 
 msgid "Session terminated, terminating shell..."
 msgstr "Økt avsluttet, avslutter skall ..."
@@ -2236,6 +2282,14 @@ msgid ""
 msgstr ""
 "%s: %s\n"
 "(Ignorert)\n"
+
+#, c-format
+msgid "Password field is empty, this is forbidden for all accounts.\n"
+msgstr ""
+
+#, c-format
+msgid "Password field is empty, this is forbidden for super-user.\n"
+msgstr ""
 
 #, c-format
 msgid "You are not authorized to su %s\n"
@@ -2308,6 +2362,11 @@ msgstr "%s: oppsettet for %s i %s blir ignorert\n"
 msgid "%s: cannot create new defaults file: %s\n"
 msgstr "%s: klarte ikke å opprette ny forvalg-fil\n"
 
+#, fuzzy, c-format
+#| msgid "%s: cannot create new defaults file\n"
+msgid "%s: cannot create directory for defaults file\n"
+msgstr "%s: klarte ikke å opprette ny forvalg-fil\n"
+
 #, c-format
 msgid "%s: cannot create new defaults file\n"
 msgstr "%s: klarte ikke å opprette ny forvalg-fil\n"
@@ -2336,6 +2395,12 @@ msgstr "%s: gruppe «%s» er en NIS-gruppe.\n"
 msgid "%s: too many groups specified (max %d).\n"
 msgstr "%s: for mange grupper (maks %d).\n"
 
+# , c-format
+#, fuzzy, c-format
+#| msgid "%s: Out of memory. Cannot update %s.\n"
+msgid "%s: Out of memory. Cannot find group '%s'.\n"
+msgstr "%s: Minner er fullt. Klarte ikke å oppdatere %s.\n"
+
 #, c-format
 msgid ""
 "Usage: %s [options] LOGIN\n"
@@ -2352,7 +2417,7 @@ msgstr ""
 
 #, fuzzy
 #| msgid "  -s, --shadow                  edit shadow or gshadow database\n"
-msgid "      --badnames                do not check for bad names\n"
+msgid "      --badname                 do not check for bad names\n"
 msgstr "  -s,--shadow             rediger shadow eller gshadow-database\n"
 
 msgid ""
@@ -2389,6 +2454,11 @@ msgid ""
 msgstr ""
 "  -f, --inactive INAKTIVE        hvor lenge et passord kan brukes etter "
 "utløp\n"
+
+msgid ""
+"  -F, --add-subids-for-system   add entries to sub[ud]id even when adding a "
+"system user\n"
+msgstr ""
 
 msgid ""
 "  -g, --gid GROUP               name or ID of the primary group of the new\n"
@@ -2500,12 +2570,32 @@ msgstr "%s: Du kan ikke kombinere valgene «-C» og «-S»\n"
 msgid "%s: -Z requires SELinux enabled kernel\n"
 msgstr "%s: -Z krever kjerne som har SELinux slått på\n"
 
+#, fuzzy, c-format
+#| msgid "%s: failed to reset the faillog entry of UID %lu: %s\n"
+msgid "%s: failed to open the faillog file for UID %lu: %s\n"
+msgstr "%s: klarte ikke nullstille faillog-oppføring for UID %lu: %s\n"
+
 #, c-format
 msgid "%s: failed to reset the faillog entry of UID %lu: %s\n"
 msgstr "%s: klarte ikke nullstille faillog-oppføring for UID %lu: %s\n"
 
+#, fuzzy, c-format
+#| msgid "%s: failed to reset the faillog entry of UID %lu: %s\n"
+msgid "%s: failed to close the faillog file for UID %lu: %s\n"
+msgstr "%s: klarte ikke nullstille faillog-oppføring for UID %lu: %s\n"
+
+#, fuzzy, c-format
+#| msgid "%s: failed to reset the lastlog entry of UID %lu: %s\n"
+msgid "%s: failed to open the lastlog file for UID %lu: %s\n"
+msgstr "%s: klarte ikke nullstille lastlog-oppføring for UID %lu: %s\n"
+
 #, c-format
 msgid "%s: failed to reset the lastlog entry of UID %lu: %s\n"
+msgstr "%s: klarte ikke nullstille lastlog-oppføring for UID %lu: %s\n"
+
+#, fuzzy, c-format
+#| msgid "%s: failed to reset the lastlog entry of UID %lu: %s\n"
+msgid "%s: failed to close the lastlog file for UID %lu: %s\n"
 msgstr "%s: klarte ikke nullstille lastlog-oppføring for UID %lu: %s\n"
 
 #, fuzzy, c-format
@@ -2556,9 +2646,19 @@ msgstr "%s: linje %d: chown %s mislyktes: %s\n"
 msgid "%s: warning: chmod on `%s' failed: %m\n"
 msgstr "%s: linje %d: chown %s mislyktes: %s\n"
 
+#, fuzzy, c-format
+#| msgid "%s: line %d: chown %s failed: %s\n"
+msgid "%s: warning: chown on '%s' failed: %m\n"
+msgstr "%s: linje %d: chown %s mislyktes: %s\n"
+
 #, c-format
 msgid "%s: cannot reset SELinux file creation context\n"
 msgstr ""
+
+#, fuzzy, c-format
+#| msgid "Cannot create SELinux login mapping for %s\n"
+msgid "%s: cannot set SELinux context for mailbox file %s\n"
+msgstr "Klarte ikke å lage SELinux-brukerkobling for %s\n"
 
 msgid "Creating mailbox file"
 msgstr "Lager e-postkassefil"
@@ -2569,6 +2669,15 @@ msgstr "Fant ikke gruppa «mail». Oppretter e-postkassefil med modus 0600.\n"
 
 msgid "Setting mailbox file permissions"
 msgstr "Endrer rettigheter for e-postkassefil"
+
+#, c-format
+msgid "%s warning: %s's uid %d is greater than SYS_UID_MAX %d\n"
+msgstr ""
+
+#, c-format
+msgid ""
+"%s warning: %s's uid %d outside of the UID_MIN %d and UID_MAX %d range.\n"
+msgstr ""
 
 # , c-format
 #, c-format
@@ -2611,6 +2720,11 @@ msgstr "%s: klarte ikke å lage underordnede bruker-id-er\n"
 msgid "%s: can't create subordinate group IDs\n"
 msgstr "%s: klarte ikke å lage underordnede gruppe-id-er\n"
 
+#, c-format
+msgid "%s: warning: the user name %s to %s SELinux user mapping failed.\n"
+msgstr ""
+"%s: advarsel: klarte ikke å avbilde brukernavn %s til %s SELinux-bruker.\n"
+
 #, fuzzy, c-format
 #| msgid ""
 #| "%s: warning: the home directory already exists.\n"
@@ -2622,14 +2736,15 @@ msgstr ""
 "%s: advarsel: hjemmemappa finnes fra før.\n"
 "Kopierer ikke filer dit fra skel-mappa.\n"
 
-#, c-format
-msgid "%s: warning: the user name %s to %s SELinux user mapping failed.\n"
-msgstr ""
-"%s: advarsel: klarte ikke å avbilde brukernavn %s til %s SELinux-bruker.\n"
-
+#, fuzzy
+#| msgid ""
+#| "  -f, --force                   force removal of files,\n"
+#| "                                even if not owned by user\n"
 msgid ""
-"  -f, --force                   force removal of files,\n"
-"                                even if not owned by user\n"
+"  -f, --force                   force some actions that would fail "
+"otherwise\n"
+"                                e.g. removal of user still logged in\n"
+"                                or files, even if not owned by the user\n"
 msgstr ""
 "  -f, --force                   fjern filer «med makt»,\n"
 "                                selv om brukeren ikke eier dem\n"
@@ -2724,6 +2839,16 @@ msgstr ""
 "%s: advarsel: klarte ikke å fjerne avbildning av brukernavn %s til SELinux-"
 "bruker.\n"
 
+msgid ""
+"  -a, --append                  append the user to the supplemental GROUPS\n"
+"                                mentioned by the -G option without removing\n"
+"                                the user from other groups\n"
+msgstr ""
+"  -a, --append                  legg til brukeren i de ekstra gruppene "
+"listet i \n"
+"                                 valget -G option uten å fjerne ham/henne\n"
+"                                fra andre grupper\n"
+
 msgid "  -c, --comment COMMENT         new value of the GECOS field\n"
 msgstr "  -c, --comment KOMMENTAR       ny verdi for GECOS-feltet\n"
 
@@ -2748,16 +2873,6 @@ msgstr "  -g, --gid GRUPPE              bruk GRUPPE som ny primærgruppe\n"
 msgid "  -G, --groups GROUPS           new list of supplementary GROUPS\n"
 msgstr "  -G, --groups GRUPPER          ny liste over ekstra GRUPPEr\n"
 
-msgid ""
-"  -a, --append                  append the user to the supplemental GROUPS\n"
-"                                mentioned by the -G option without removing\n"
-"                                the user from other groups\n"
-msgstr ""
-"  -a, --append                  legg til brukeren i de ekstra gruppene "
-"listet i \n"
-"                                 valget -G option uten å fjerne ham/henne\n"
-"                                fra andre grupper\n"
-
 msgid "  -l, --login NEW_LOGIN         new value of the login name\n"
 msgstr "  -l, --login NY_LOGIN         ny verdi for login-navnet\n"
 
@@ -2781,6 +2896,24 @@ msgid ""
 "  -p, --password PASSWORD       use encrypted password for the new password\n"
 msgstr ""
 "  -p, --password PASSWORD       bruk kryptert passord for det nye passordet\n"
+
+#, fuzzy
+#| msgid ""
+#| "  -a, --append                  append the user to the supplemental "
+#| "GROUPS\n"
+#| "                                mentioned by the -G option without "
+#| "removing\n"
+#| "                                the user from other groups\n"
+msgid ""
+"  -r, --remove                  remove the user from only the supplemental "
+"GROUPS\n"
+"                                mentioned by the -G option without removing\n"
+"                                the user from other groups\n"
+msgstr ""
+"  -a, --append                  legg til brukeren i de ekstra gruppene "
+"listet i \n"
+"                                 valget -G option uten å fjerne ham/henne\n"
+"                                fra andre grupper\n"
 
 msgid "  -u, --uid UID                 new UID for the user account\n"
 msgstr "  -u, --uid UID                 ny UID for brukerkontoen\n"
@@ -2825,6 +2958,10 @@ msgid "%s: user '%s' already exists in %s\n"
 msgstr "%s: bruker «%s» finnes fra før i %s\n"
 
 #, c-format
+msgid "%s: homedir must be an absolute path\n"
+msgstr ""
+
+#, c-format
 msgid "%s: invalid subordinate uid range '%s'\n"
 msgstr "%s: underordnet uid-rekkevidde «%s» er ugyldig\n"
 
@@ -2836,6 +2973,10 @@ msgstr "%s: underordnet gid-rekkevidde «%s» er ugyldig\n"
 #, c-format
 msgid "%s: no options\n"
 msgstr "%s: ingen valg\n"
+
+#, c-format
+msgid "%s: %s and %s are mutually exclusive flags\n"
+msgstr ""
 
 #, c-format
 msgid "%s: the -L, -p, and -U flags are exclusive\n"
@@ -2880,6 +3021,17 @@ msgstr "%s: advarsel: klarte ikke å fjerne gammel hjemmemappa %s fullstendig"
 #, c-format
 msgid "%s: cannot rename directory %s to %s\n"
 msgstr "%s: klarte ikke å endre navn på mappa %s til %s\n"
+
+#, fuzzy, c-format
+#| msgid ""
+#| "%s: The previous home directory (%s) was not a directory. It is not "
+#| "removed and no home directories are created.\n"
+msgid ""
+"%s: The previous home directory (%s) does not exist or is inaccessible. Move "
+"cannot be completed.\n"
+msgstr ""
+"%s: Forrige hjemmemappe (%s) var ikke en mappe. Den er ikke fjernet og ingen "
+"hjemmemaper er opprettet.\n"
 
 #, c-format
 msgid "%s: failed to copy the lastlog entry of user %lu to user %lu: %s\n"
@@ -3013,6 +3165,28 @@ msgstr "%s: klarte ikke å gjenopprette %s: %s (endringer ligger i %s)\n"
 #, c-format
 msgid "%s: failed to find tcb directory for %s\n"
 msgstr "%s: fant ikke tcb-mappe for %s\n"
+
+#~ msgid "Usage: id\n"
+#~ msgstr "Bruk: id\n"
+
+#, c-format
+#~ msgid "Last login: %.19s on %s"
+#~ msgstr "Forrige login: %.19s på %s"
+
+#, c-format
+#~ msgid "%s: invalid user name '%s'\n"
+#~ msgstr "%s: ugyldig brukernavn «%s»\n"
+
+#, c-format
+#~ msgid "%s: password expiry information changed.\n"
+#~ msgstr "%s: informasjon om utløp av passord er endret.\n"
+
+#, c-format
+#~ msgid "invalid user name '%s'\n"
+#~ msgstr "ugyldig brukernavn «%s»\n"
+
+#~ msgid "Username         Port     From             Latest"
+#~ msgstr "Brukernavn       Port     Fra             Sist"
 
 #~| msgid "Usage: %s [input]\n"
 #~ msgid ""

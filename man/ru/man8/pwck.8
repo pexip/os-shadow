@@ -1,13 +1,13 @@
 '\" t
 .\"     Title: pwck
 .\"    Author: Julianne Frances Haugh
-.\" Generator: DocBook XSL Stylesheets v1.79.1 <http://docbook.sf.net/>
-.\"      Date: 01/23/2020
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 11/08/2022
 .\"    Manual: Команды управления системой
-.\"    Source: shadow-utils 4.8.1
+.\"    Source: shadow-utils 4.13
 .\"  Language: Russian
 .\"
-.TH "pwck" "8" "01/23/2020" "shadow\-utils 4\&.8\&.1" "Команды управления системой"
+.TH "pwck" "8" "11/08/2022" "shadow\-utils 4\&.13" "Команды управления системой"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -28,10 +28,10 @@
 .\" * MAIN CONTENT STARTS HERE *
 .\" -----------------------------------------------------------------
 .SH "НАЗВАНИЕ"
-pwck \- проверяет целостность файлов паролей
+pwck \- verify the integrity of password files
 .SH "СИНТАКСИС"
 .HP \w'\fBpwck\fR\ 'u
-\fBpwck\fR [параметры] [\fIpasswd\fR\ [\ \fIshadow\fR\ ]]
+\fBpwck\fR [параметры] [\fIPASSWORDFILE\fR\ [\ \fISHADOWFILE\fR\ ]]
 .SH "ОПИСАНИЕ"
 .PP
 The
@@ -110,8 +110,9 @@ have the proper format and contain valid data\&. The user is prompted to delete 
 корректность регистрационной оболочки
 .RE
 .PP
-shadow
-checks are enabled when a second file parameter is specified or when
+Checks for shadowed password information are enabled when the second file parameter
+\fISHADOWFILE\fR
+is specified or when
 /etc/shadow
 exists on the system\&.
 .PP
@@ -172,7 +173,7 @@ exists on the system\&.
 дата последней смены пароля не находится в будущем
 .RE
 .PP
-The checks for correct number of fields and unique user name are fatal\&. If the entry has the wrong number of fields, the user will be prompted to delete the entire line\&. If the user does not answer affirmatively, all further checks are bypassed\&. An entry with a duplicated user name is prompted for deletion, but the remaining checks will still be made\&. All other errors are warning and the user is encouraged to run the
+The checks for correct number of fields and unique user name are fatal\&. If the entry has the wrong number of fields, the user will be prompted to delete the entire line\&. If the user does not answer affirmatively, all further checks are bypassed\&. An entry with a duplicated user name is prompted for deletion, but the remaining checks will still be made\&. All other errors are warnings and the user is encouraged to run the
 \fBusermod\fR
 command to correct the error\&.
 .PP
@@ -221,7 +222,7 @@ Apply changes in the
 \fICHROOT_DIR\fR
 directory and use the configuration files from the
 \fICHROOT_DIR\fR
-directory\&.
+directory\&. Only absolute paths are supported\&.
 .RE
 .PP
 \fB\-s\fR, \fB\-\-sort\fR
@@ -248,21 +249,6 @@ parameters\&.
 The following configuration variables in
 /etc/login\&.defs
 change the behavior of this tool:
-.PP
-\fBPASS_MAX_DAYS\fR (number)
-.RS 4
-Максимальное число дней использования пароля\&. Если пароль старее этого числа, то будет запущена процедура смены пароля\&. Если значение не задано, то предполагается значение \-1 (то есть возможность ограничения не используется)\&.
-.RE
-.PP
-\fBPASS_MIN_DAYS\fR (number)
-.RS 4
-Максимальное число дней между изменениями пароля\&. Любая смена пароля ранее заданного срока выполнена не будет\&. Если значение не задано, то предполагается значение \-1 (то есть возможность ограничения не используется)\&.
-.RE
-.PP
-\fBPASS_WARN_AGE\fR (number)
-.RS 4
-Число дней за которое начнёт выдаваться предупреждение об устаревании пароля\&. Нулевое значение означает, что предупреждение выдаётся в день устаревания, при отрицательном значении предупреждение выдаваться не будет\&. Если значение не задано, выдача предупреждения отключается\&.
-.RE
 .SH "ФАЙЛЫ"
 .PP
 /etc/group

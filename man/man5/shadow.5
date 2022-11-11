@@ -1,13 +1,13 @@
 '\" t
 .\"     Title: shadow
 .\"    Author: Julianne Frances Haugh
-.\" Generator: DocBook XSL Stylesheets v1.79.1 <http://docbook.sf.net/>
-.\"      Date: 01/23/2020
-.\"    Manual: File Formats and Conversions
-.\"    Source: shadow-utils 4.8.1
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 11/08/2022
+.\"    Manual: File Formats and Configuration Files
+.\"    Source: shadow-utils 4.13
 .\"  Language: English
 .\"
-.TH "SHADOW" "5" "01/23/2020" "shadow\-utils 4\&.8\&.1" "File Formats and Conversions"
+.TH "SHADOW" "5" "11/08/2022" "shadow\-utils 4\&.13" "File Formats and Configuration"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -61,7 +61,7 @@ If the password field contains some string that is not a valid result of
 .PP
 \fBdate of last password change\fR
 .RS 4
-The date of the last password change, expressed as the number of days since Jan 1, 1970\&.
+The date of the last password change, expressed as the number of days since Jan 1, 1970 00:00 UTC\&.
 .sp
 The value 0 has a special meaning, which is that the user should change her password the next time she will log in the system\&.
 .sp
@@ -72,7 +72,7 @@ An empty field means that password aging features are disabled\&.
 .RS 4
 The minimum password age is the number of days the user will have to wait before she will be allowed to change her password again\&.
 .sp
-An empty field and value 0 mean that there are no minimum password age\&.
+An empty field and value 0 mean that there is no minimum password age\&.
 .RE
 .PP
 \fBmaximum password age\fR
@@ -97,14 +97,14 @@ An empty field and value 0 mean that there are no password warning period\&.
 .RS 4
 The number of days after a password has expired (see the maximum password age above) during which the password should still be accepted (and the user should update her password during the next login)\&.
 .sp
-After expiration of the password and this expiration period is elapsed, no login is possible using the current user\*(Aqs password\&. The user should contact her administrator\&.
+After expiration of the password and this expiration period is elapsed, no login is possible for the user\&. The user should contact her administrator\&.
 .sp
 An empty field means that there are no enforcement of an inactivity period\&.
 .RE
 .PP
 \fBaccount expiration date\fR
 .RS 4
-The date of expiration of the account, expressed as the number of days since Jan 1, 1970\&.
+The date of expiration of the account, expressed as the number of days since Jan 1, 1970 00:00 UTC\&.
 .sp
 Note that an account expiration differs from a password expiration\&. In case of an account expiration, the user shall not be allowed to login\&. In case of a password expiration, the user is not allowed to login using her password\&.
 .sp
