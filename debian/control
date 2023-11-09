@@ -23,7 +23,7 @@ Vcs-Git: https://salsa.debian.org/debian/shadow -b master
 Vcs-Browser: https://salsa.debian.org/debian/shadow
 Homepage: https://github.com/shadow-maint/shadow
 Rules-Requires-Root: binary-targets
-XS-Pexip-Upstream: http://deb.debian.org/debian/ bullseye
+XS-Pexip-Upstream: http://deb.debian.org/debian/ bookworm
 
 Package: passwd
 Architecture: any
