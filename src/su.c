@@ -1,33 +1,10 @@
 /*
- * Copyright (c) 1989 - 1994, Julianne Frances Haugh
- * Copyright (c) 1996 - 2000, Marek Michałkiewicz
- * Copyright (c) 2000 - 2006, Tomasz Kłoczko
- * Copyright (c) 2007 - 2013, Nicolas François
- * All rights reserved.
+ * SPDX-FileCopyrightText: 1989 - 1994, Julianne Frances Haugh
+ * SPDX-FileCopyrightText: 1996 - 2000, Marek Michałkiewicz
+ * SPDX-FileCopyrightText: 2000 - 2006, Tomasz Kłoczko
+ * SPDX-FileCopyrightText: 2007 - 2013, Nicolas François
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the copyright holders or contributors may not be used to
- *    endorse or promote products derived from this software without
- *    specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
- * PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
- * HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * SPDX-License-Identifier: BSD-3-Clause
  */
 
 /* Some parts substantially derived from an ancestor of:
@@ -77,6 +54,7 @@
 #endif				/* USE_PAM */
 /*@-exitarg@*/
 #include "exitcodes.h"
+#include "shadowlog.h"
 
 /*
  * Global variables
@@ -126,10 +104,10 @@ static void execve_shell (const char *shellname,
                           char *args[],
                           char *const envp[]);
 #ifdef USE_PAM
-static RETSIGTYPE kill_child (int unused(s));
+static void kill_child (int unused(s));
 static void prepare_pam_close_session (void);
 #else				/* !USE_PAM */
-static RETSIGTYPE die (int);
+static void die (int);
 static bool iswheel (const char *);
 #endif				/* !USE_PAM */
 static bool restricted_shell (const char *shellname);
@@ -152,7 +130,7 @@ static void set_environment (struct passwd *pw);
  *	with die() as the signal handler. If signal later calls die() with a
  *	signal number, the terminal modes are then reset.
  */
-static RETSIGTYPE die (int killed)
+static void die (int killed)
 {
 	static TERMIO sgtty;
 
@@ -179,7 +157,7 @@ static bool iswheel (const char *username)
 	return is_on_list (grp->gr_mem, username);
 }
 #else				/* USE_PAM */
-static RETSIGTYPE kill_child (int unused(s))
+static void kill_child (int unused(s))
 {
 	if (0 != pid_child) {
 		(void) kill (-pid_child, SIGKILL);
@@ -294,6 +272,21 @@ static void prepare_pam_close_session (void)
 	sigset_t ourset;
 	int status;
 	int ret;
+	struct sigaction action;
+
+	/* reset SIGCHLD handling to default */
+	action.sa_handler = SIG_DFL;
+	sigemptyset (&action.sa_mask);
+	action.sa_flags = 0;
+	if (0 == caught && sigaction (SIGCHLD, &action, NULL) != 0) {
+		fprintf (stderr,
+		         _("%s: signal masking malfunction\n"),
+		         Prog);
+		SYSLOG ((LOG_WARN, "Will not execute %s", shellstr));
+		closelog ();
+		exit (1);
+		/* Only the child returns. See above. */
+	}
 
 	pid_child = fork ();
 	if (pid_child == 0) {	/* child shell */
@@ -317,11 +310,7 @@ static void prepare_pam_close_session (void)
 		caught = SIGTERM;
 	}
 	if (0 == caught) {
-		struct sigaction action;
-
 		action.sa_handler = catch_signals;
-		sigemptyset (&action.sa_mask);
-		action.sa_flags = 0;
 		sigemptyset (&ourset);
 
 		if (   (sigaddset (&ourset, SIGTERM) != 0)
@@ -354,7 +343,9 @@ static void prepare_pam_close_session (void)
 			pid_t pid;
 			stop = true;
 
-			pid = waitpid (-1, &status, WUNTRACED);
+			do {
+				pid = waitpid (-1, &status, WUNTRACED);
+			} while (pid != -1 && pid != pid_child);
 
 			/* When interrupted by signal, the signal will be
 			 * forwarded to the child, and termination will be
@@ -394,22 +385,28 @@ static void prepare_pam_close_session (void)
 		snprintf (kill_msg, sizeof kill_msg, _(" ...killed.\n"));
 		snprintf (wait_msg, sizeof wait_msg, _(" ...waiting for child to terminate.\n"));
 
+		/* Any signals other than SIGCHLD and SIGALRM will no longer have any effect,
+		 * so it's time to block all of them. */
+		sigfillset (&ourset);
+		if (sigprocmask (SIG_BLOCK, &ourset, NULL) != 0) {
+			fprintf (stderr, _("%s: signal masking malfunction\n"), Prog);
+			kill_child (0);
+			/* Never reach (_exit called). */
+		}
+
+		/* Send SIGKILL to the child if it doesn't
+		 * exit within 2 seconds (after SIGTERM) */
 		(void) signal (SIGALRM, kill_child);
 		(void) signal (SIGCHLD, catch_signals);
 		(void) alarm (2);
 
-		sigemptyset (&ourset);
-		if ((sigaddset (&ourset, SIGALRM) != 0)
-		    || (sigprocmask (SIG_BLOCK, &ourset, NULL) != 0)) {
-			fprintf (stderr, _("%s: signal masking malfunction\n"), Prog);
-			kill_child (0);
-		} else {
-			while (0 == waitpid (pid_child, &status, WNOHANG)) {
-				sigsuspend (&ourset);
-			}
-			pid_child = 0;
-			(void) sigprocmask (SIG_UNBLOCK, &ourset, NULL);
+		(void) sigdelset (&ourset, SIGALRM);
+		(void) sigdelset (&ourset, SIGCHLD);
+
+		while (0 == waitpid (pid_child, &status, WNOHANG)) {
+			sigsuspend (&ourset);
 		}
+		pid_child = 0;
 
 		(void) fputs (_(" ...terminated.\n"), stderr);
 	}
@@ -497,10 +494,25 @@ static void check_perms_nopam (const struct passwd *pw)
 {
 	/*@observer@*/const struct spwd *spwd = NULL;
 	/*@observer@*/const char *password = pw->pw_passwd;
-	RETSIGTYPE (*oldsig) (int);
+	sighandler_t oldsig;
 
 	if (caller_is_root) {
 		return;
+	}
+
+	if (strcmp (pw->pw_passwd, "") == 0) {
+		char *prevent_no_auth = getdef_str("PREVENT_NO_AUTH");
+		if (prevent_no_auth == NULL) {
+			prevent_no_auth = "superuser";
+		}
+		if (strcmp(prevent_no_auth, "yes") == 0) {
+			fprintf(stderr, _("Password field is empty, this is forbidden for all accounts.\n"));
+			exit(1);
+		} else if ((pw->pw_uid == 0)
+				&& (strcmp(prevent_no_auth, "superuser") == 0)) {
+			fprintf(stderr, _("Password field is empty, this is forbidden for super-user.\n"));
+			exit(1);
+		}
 	}
 
 	/*
@@ -561,7 +573,7 @@ static void check_perms_nopam (const struct passwd *pw)
 	oldsig = signal (SIGQUIT, die);
 
 	/*
-	 * See if the system defined authentication method is being used. 
+	 * See if the system defined authentication method is being used.
 	 * The first character of an administrator defined method is an '@'
 	 * character.
 	 */
@@ -699,6 +711,8 @@ static void save_caller_context (char **argv)
 	 * most error messages.
 	 */
 	Prog = Basename (argv[0]);
+	log_set_progname(Prog);
+	log_set_logfd(stderr);
 
 	caller_uid = getuid ();
 	caller_is_root = (caller_uid == 0);
@@ -1137,12 +1151,9 @@ int main (int argc, char **argv)
 		}
 	}
 
-	/*
-	 * PAM_DATA_SILENT is not supported by some modules, and
-	 * there is no strong need to clean up the process space's
-	 * memory since we will either call exec or exit.
-	pam_end (pamh, PAM_SUCCESS | PAM_DATA_SILENT);
-	 */
+#ifdef USE_PAM
+	(void) pam_end (pamh, PAM_SUCCESS | PAM_DATA_SILENT);
+#endif
 
 	endpwent ();
 	endspent ();

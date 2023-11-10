@@ -1,13 +1,13 @@
 '\" t
 .\"     Title: id
 .\"    Author: Julianne Frances Haugh
-.\" Generator: DocBook XSL Stylesheets v1.79.1 <http://docbook.sf.net/>
-.\"      Date: 23/01/2020
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 08/11/2022
 .\"    Manual: User Commands
-.\"    Source: shadow-utils 4.8.1
+.\"    Source: shadow-utils 4.13
 .\"  Language: Danish
 .\"
-.TH "ID" "1" "23/01/2020" "shadow\-utils 4\&.8\&.1" "User Commands"
+.TH "ID" "1" "08/11/2022" "shadow\-utils 4\&.13" "User Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -41,7 +41,8 @@ command displays the current real and effective user and group ID names or value
 or
 /etc/group, the value will be displayed without the corresponding name\&. The optional
 \fB\-a\fR
-flag will display the group set on systems which support multiple concurrent group membership\&.
+flag will display the group set on systems which support supplementary groups (see
+\fBinitgroups\fR(3))\&.
 .SH "FILER"
 .PP
 /etc/group
@@ -57,4 +58,5 @@ Information om brugerkonto\&.
 .PP
 \fBgetgid\fR(2),
 \fBgetgroups\fR(2),
-\fBgetuid\fR(2)
+\fBgetuid\fR(2),
+\fBinitgroups\fR(3)

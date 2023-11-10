@@ -1,13 +1,13 @@
 '\" t
 .\"     Title: newusers
 .\"    Author: Julianne Frances Haugh
-.\" Generator: DocBook XSL Stylesheets v1.79.1 <http://docbook.sf.net/>
-.\"      Date: 23/01/2020
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 08/11/2022
 .\"    Manual: Comandi per la gestione del sistema
-.\"    Source: shadow-utils 4.8.1
+.\"    Source: shadow-utils 4.13
 .\"  Language: Italian
 .\"
-.TH "NEWUSERS" "8" "23/01/2020" "shadow\-utils 4\&.8\&.1" "Comandi per la gestione del si"
+.TH "NEWUSERS" "8" "08/11/2022" "shadow\-utils 4\&.13" "Comandi per la gestione del si"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -99,7 +99,9 @@ Questo campo viene copiato nel campo GECOS dell\*(Aqutente\&.
 .RS 4
 Questo campo \(`e utilizzato per impostare la directory home dell\*(Aqutente\&.
 .sp
-Se questo campo non contiene il nome di una directory esistente la directory viene creata, assegnandone la propriet\(`a all\*(Aqutente che si sta definendo o aggiornando e al suo gruppo primario\&.
+If this field does not specify an existing directory, the specified directory is created, with ownership set to the user being created or updated and its primary group\&. Note that
+\fInewusers does not create parent directories \fR
+of the new user\*(Aqs home directory\&. The newusers command will fail to create the home directory if the parent directories do not exist, and will send a message to stderr informing the user of the failure\&. The newusers command will not halt or return a failure to the calling shell if it fails to create the home directory, it will continue to process the batch of new users specified\&.
 .sp
 If the home directory of an existing user is changed,
 \fBnewusers\fR
@@ -159,7 +161,7 @@ Apply changes in the
 \fICHROOT_DIR\fR
 directory and use the configuration files from the
 \fICHROOT_DIR\fR
-directory\&.
+directory\&. Only absolute paths are supported\&.
 .RE
 .PP
 \fB\-s\fR, \fB\-\-sha\-rounds\fR
@@ -185,226 +187,11 @@ Ci si deve accertare che le password e il metodo di cifratura rispettino le norm
 The following configuration variables in
 /etc/login\&.defs
 change the behavior of this tool:
-.PP
-\fBENCRYPT_METHOD\fR (string)
-.RS 4
-Definisce l\*(Aqalgoritmo di cifratura predefinito per le password (se non ne viene specificato uno a riga di comando)\&.
-.sp
-It can take one of these values:
-\fIDES\fR
-(default),
-\fIMD5\fR, \fISHA256\fR, \fISHA512\fR\&.
-.sp
-Note: this parameter overrides the
-\fBMD5_CRYPT_ENAB\fR
-variable\&.
-.RE
-.PP
-\fBGID_MAX\fR (number), \fBGID_MIN\fR (number)
-.RS 4
-Range of group IDs used for the creation of regular groups by
-\fBuseradd\fR,
-\fBgroupadd\fR, or
-\fBnewusers\fR\&.
-.sp
-The default value for
-\fBGID_MIN\fR
-(resp\&.
-\fBGID_MAX\fR) is 1000 (resp\&. 60000)\&.
-.RE
-.PP
-\fBHOME_MODE\fR (number)
-.RS 4
-The mode for new home directories\&. If not specified, the
-\fBUMASK\fR
-is used to create the mode\&.
-.sp
-\fBuseradd\fR
-and
-\fBnewusers\fR
-use this to set the mode of the home directory they create\&.
-.RE
-.PP
-\fBMAX_MEMBERS_PER_GROUP\fR (number)
-.RS 4
-Maximum members per group entry\&. When the maximum is reached, a new group entry (line) is started in
-/etc/group
-(with the same name, same password, and same GID)\&.
-.sp
-Il valore predefinito \(`e 0, che non pone nessun limite al numero di membri per gruppo\&.
-.sp
-Questa opzione (dividi gruppo) permette di limitare la lunghezza delle righe nel file \(Fogroup\(Fc\&. Questo \(`e utile per essere certi che le righe per gruppi NIS non eccedano i 1024 caratteri\&.
-.sp
-Se si deve impostare questo limite, si pu\(`o usare 25\&.
-.sp
-Nota: la divisione dei gruppi potrebbe non essere supportata da ogni strumento (anche all\*(Aqinterno del pacchetto Shadow)\&. Non si dovrebbe utilizzare questa variabile a meno di esserci forzati\&.
-.RE
-.PP
-\fBMD5_CRYPT_ENAB\fR (boolean)
-.RS 4
-Indicate if passwords must be encrypted using the MD5\-based algorithm\&. If set to
-\fIyes\fR, new passwords will be encrypted using the MD5\-based algorithm compatible with the one used by recent releases of FreeBSD\&. It supports passwords of unlimited length and longer salt strings\&. Set to
-\fIno\fR
-if you need to copy encrypted passwords to other systems which don\*(Aqt understand the new algorithm\&. Default is
-\fIno\fR\&.
-.sp
-This variable is superseded by the
-\fBENCRYPT_METHOD\fR
-variable or by any command line option used to configure the encryption algorithm\&.
-.sp
-This variable is deprecated\&. You should use
-\fBENCRYPT_METHOD\fR\&.
-.RE
-.PP
-\fBPASS_MAX_DAYS\fR (number)
-.RS 4
-Il numero massimo di giorni che una password pu\(`o essere utilizzata\&. Se la password \(`e pi\(`u vecchia verr\(`a imposto il suo cambiamento\&. Se non specificato viene assunto \-1 (che disabilita questo controllo)\&.
-.RE
-.PP
-\fBPASS_MIN_DAYS\fR (number)
-.RS 4
-Il numero minimo di giorni tra due cambiamenti di password\&. Ogni tentativo di cambiare la password prima di questo periodo verr\(`a rifiutato\&. Se non specificato viene assunto \-1 (che disabilita questo controllo)\&.
-.RE
-.PP
-\fBPASS_WARN_AGE\fR (number)
-.RS 4
-Il numero di giorni per i quali un utente va avvisato che la sua password sta per scadere\&. Se zero l\*(Aqutente viene avvisato solo alla scadenza\&. Un valore negativo indica che non si deve avvisare mai\&. Se non specificato allora non c\*(Aq\(`e nessun avviso\&.
-.RE
-.PP
-\fBSHA_CRYPT_MIN_ROUNDS\fR (number), \fBSHA_CRYPT_MAX_ROUNDS\fR (number)
-.RS 4
-When
-\fBENCRYPT_METHOD\fR
-is set to
-\fISHA256\fR
-or
-\fISHA512\fR, this defines the number of SHA rounds used by the encryption algorithm by default (when the number of rounds is not specified on the command line)\&.
-.sp
-Con molti cicli \(`e pi\(`u difficile trovare una password usando la forza bruta\&. Ma va notato che \(`e richiesta maggiore potenza di calcolo per autenticare gli utenti\&.
-.sp
-Se non specificato sar\(`a la libc a scegliere il numero di cicli (5000)\&.
-.sp
-Il valore deve essere compreso tra 1\&.000 e 999\&.999\&.999\&.
-.sp
-If only one of the
-\fBSHA_CRYPT_MIN_ROUNDS\fR
-or
-\fBSHA_CRYPT_MAX_ROUNDS\fR
-values is set, then this value will be used\&.
-.sp
-If
-\fBSHA_CRYPT_MIN_ROUNDS\fR
->
-\fBSHA_CRYPT_MAX_ROUNDS\fR, the highest value will be used\&.
-.RE
-.PP
-\fBSUB_GID_MIN\fR (number), \fBSUB_GID_MAX\fR (number), \fBSUB_GID_COUNT\fR (number)
-.RS 4
-If
-/etc/subuid
-exists, the commands
-\fBuseradd\fR
-and
-\fBnewusers\fR
-(unless the user already have subordinate group IDs) allocate
-\fBSUB_GID_COUNT\fR
-unused group IDs from the range
-\fBSUB_GID_MIN\fR
-to
-\fBSUB_GID_MAX\fR
-for each new user\&.
-.sp
-The default values for
-\fBSUB_GID_MIN\fR,
-\fBSUB_GID_MAX\fR,
-\fBSUB_GID_COUNT\fR
-are respectively 100000, 600100000 and 65536\&.
-.RE
-.PP
-\fBSUB_UID_MIN\fR (number), \fBSUB_UID_MAX\fR (number), \fBSUB_UID_COUNT\fR (number)
-.RS 4
-If
-/etc/subuid
-exists, the commands
-\fBuseradd\fR
-and
-\fBnewusers\fR
-(unless the user already have subordinate user IDs) allocate
-\fBSUB_UID_COUNT\fR
-unused user IDs from the range
-\fBSUB_UID_MIN\fR
-to
-\fBSUB_UID_MAX\fR
-for each new user\&.
-.sp
-The default values for
-\fBSUB_UID_MIN\fR,
-\fBSUB_UID_MAX\fR,
-\fBSUB_UID_COUNT\fR
-are respectively 100000, 600100000 and 65536\&.
-.RE
-.PP
-\fBSYS_GID_MAX\fR (number), \fBSYS_GID_MIN\fR (number)
-.RS 4
-Range of group IDs used for the creation of system groups by
-\fBuseradd\fR,
-\fBgroupadd\fR, or
-\fBnewusers\fR\&.
-.sp
-The default value for
-\fBSYS_GID_MIN\fR
-(resp\&.
-\fBSYS_GID_MAX\fR) is 101 (resp\&.
-\fBGID_MIN\fR\-1)\&.
-.RE
-.PP
-\fBSYS_UID_MAX\fR (number), \fBSYS_UID_MIN\fR (number)
-.RS 4
-Range of user IDs used for the creation of system users by
-\fBuseradd\fR
-or
-\fBnewusers\fR\&.
-.sp
-The default value for
-\fBSYS_UID_MIN\fR
-(resp\&.
-\fBSYS_UID_MAX\fR) is 101 (resp\&.
-\fBUID_MIN\fR\-1)\&.
-.RE
-.PP
-\fBUID_MAX\fR (number), \fBUID_MIN\fR (number)
-.RS 4
-Range of user IDs used for the creation of regular users by
-\fBuseradd\fR
-or
-\fBnewusers\fR\&.
-.sp
-The default value for
-\fBUID_MIN\fR
-(resp\&.
-\fBUID_MAX\fR) is 1000 (resp\&. 60000)\&.
-.RE
-.PP
-\fBUMASK\fR (number)
-.RS 4
-La maschera di permessi alla creazione dei file \(`e inizializzata con questo valore\&. Se non specificato la maschera viene impostata a 022\&.
-.sp
-\fBuseradd\fR
-and
-\fBnewusers\fR
-use this mask to set the mode of the home directory they create if
-\fBHOME_MODE\fR
-is not set\&.
-.sp
-It is also used by
-\fBlogin\fR
-to define users\*(Aq initial umask\&. Note that this mask can be overridden by the user\*(Aqs GECOS line (if
-\fBQUOTAS_ENAB\fR
-is set) or by the specification of a limit with the
-\fIK\fR
-identifier in
-\fBlimits\fR(5)\&.
-.RE
+
+
+
+
+
 .SH "FILE"
 .PP
 /etc/passwd

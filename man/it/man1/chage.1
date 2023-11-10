@@ -1,13 +1,13 @@
 '\" t
 .\"     Title: chage
 .\"    Author: Julianne Frances Haugh
-.\" Generator: DocBook XSL Stylesheets v1.79.1 <http://docbook.sf.net/>
-.\"      Date: 23/01/2020
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 08/11/2022
 .\"    Manual: Comandi utente
-.\"    Source: shadow-utils 4.8.1
+.\"    Source: shadow-utils 4.13
 .\"  Language: Italian
 .\"
-.TH "CHAGE" "1" "23/01/2020" "shadow\-utils 4\&.8\&.1" "Comandi utente"
+.TH "CHAGE" "1" "08/11/2022" "shadow\-utils 4\&.13" "Comandi utente"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -45,12 +45,29 @@ command are:
 .PP
 \fB\-d\fR, \fB\-\-lastday\fR\ \&\fILAST_DAY\fR
 .RS 4
-Imposta la data dell\*(Aqultimo cambio della password, espressa come il numero di giorni trascorsi dal 1 gennaio 1970\&. La data pu\(`o anche essere specificata nel formato AAAA\-MM\-GG o nella notazione comunemente usata nel proprio paese\&.
+Set the number of days since January 1st, 1970 when the password was last changed\&. The date may also be expressed in the format YYYY\-MM\-DD (or the format more commonly used in your area)\&. If the
+\fILAST_DAY\fR
+is set to
+\fI0\fR
+the user is forced to change his password on the next log on\&.
 .RE
 .PP
 \fB\-E\fR, \fB\-\-expiredate\fR\ \&\fIEXPIRE_DATE\fR
 .RS 4
 Imposta la data o il numero di giorni dal 1 gennaio 1970 dal quale l\*(Aqaccount utente non sar\(`a pi\(`u accessibile\&. La data pu\(`o essere inserita nel formato AAAA\-MM\-GG (o il formato pi\(`u comunemente utilizzato nel proprio paese)\&. Un utente il cui account sia bloccato deve contattare l\*(Aqamministratore di sistema prima di poter accedere nuovamente al sistema\&.
+.sp
+For example the following can be used to set an account to expire in 180 days:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+	    chage \-E $(date \-d +180days +%Y\-%m\-%d)
+	  
+.fi
+.if n \{\
+.RE
+.\}
 .sp
 Passing the number
 \fI\-1\fR
@@ -116,7 +133,7 @@ Apply changes in the
 \fICHROOT_DIR\fR
 directory and use the configuration files from the
 \fICHROOT_DIR\fR
-directory\&.
+directory\&. Only absolute paths are supported\&.
 .RE
 .PP
 \fB\-W\fR, \fB\-\-warndays\fR\ \&\fIWARN_DAYS\fR
@@ -136,6 +153,14 @@ marks\&.
 The
 \fBchage\fR
 program requires a shadow password file to be available\&.
+.PP
+The chage program will report only the information from the shadow password file\&. This implies that configuration from other sources (e\&.g\&. LDAP or empty password hash field from the passwd file) that affect the user\*(Aqs login will not be shown in the chage output\&.
+.PP
+The
+\fBchage\fR
+program will also not report any inconsistency between the shadow and passwd files (e\&.g\&. missing x in the passwd file)\&. The
+\fBpwck\fR
+can be used to check for this kind of inconsistencies\&.
 .PP
 The
 \fBchage\fR

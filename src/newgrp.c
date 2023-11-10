@@ -1,33 +1,10 @@
 /*
- * Copyright (c) 1990 - 1994, Julianne Frances Haugh
- * Copyright (c) 1996 - 2000, Marek Michałkiewicz
- * Copyright (c) 2001 - 2006, Tomasz Kłoczko
- * Copyright (c) 2007 - 2008, Nicolas François
- * All rights reserved.
+ * SPDX-FileCopyrightText: 1990 - 1994, Julianne Frances Haugh
+ * SPDX-FileCopyrightText: 1996 - 2000, Marek Michałkiewicz
+ * SPDX-FileCopyrightText: 2001 - 2006, Tomasz Kłoczko
+ * SPDX-FileCopyrightText: 2007 - 2008, Nicolas François
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the copyright holders or contributors may not be used to
- *    endorse or promote products derived from this software without
- *    specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
- * PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
- * HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * SPDX-License-Identifier: BSD-3-Clause
  */
 
 #include <config.h>
@@ -44,6 +21,7 @@
 #include "prototypes.h"
 /*@-exitarg@*/
 #include "exitcodes.h"
+#include "shadowlog.h"
 
 /*
  * Global variables
@@ -161,7 +139,8 @@ static void check_perms (const struct group *grp,
 	 */
 	spwd = xgetspnam (pwd->pw_name);
 	if (NULL != spwd) {
-		pwd->pw_passwd = spwd->sp_pwdp;
+		pwd->pw_passwd = xstrdup (spwd->sp_pwdp);
+		spw_free (spwd);
 	}
 
 	if ((pwd->pw_passwd[0] == '\0') && (grp->gr_passwd[0] != '\0')) {
@@ -400,7 +379,7 @@ int main (int argc, char **argv)
 	int err = 0;
 	gid_t gid;
 	char *cp;
-	char *progbase;
+	const char *progbase;
 	const char *name, *prog;
 	char *group = NULL;
 	char *command = NULL;
@@ -443,9 +422,10 @@ int main (int argc, char **argv)
 	 * don't need to re-exec anything.  -- JWP
 	 */
 	Prog = Basename (argv[0]);
+	log_set_progname(Prog);
+	log_set_logfd(stderr);
 	is_newgrp = (strcmp (Prog, "newgrp") == 0);
 	OPENLOG (is_newgrp ? "newgrp" : "sg");
-	gid = getgid ();
 	argc--;
 	argv++;
 
@@ -492,7 +472,7 @@ int main (int argc, char **argv)
 		initflag = true;
 	}
 	if (!is_newgrp) {
-		/* 
+		/*
 		 * Do the command line for everything that is
 		 * not "newgrp".
 		 */
@@ -531,7 +511,7 @@ int main (int argc, char **argv)
 			group = argv[0];
 		} else {
 			/*
-			 * get the group file entry for her login group id. 
+			 * get the group file entry for her login group id.
 			 * the entry must exist, simply to be annoying.
 			 *
 			 * Perhaps in the past, but the default behavior now depends on the
@@ -593,17 +573,17 @@ int main (int argc, char **argv)
 	 * now we put her in the new group. The password file entry for her
 	 * current user id has been gotten. If there was no optional group
 	 * argument she will have her real and effective group id set to the
-	 * set to the value from her password file entry.  
+	 * set to the value from her password file entry.
 	 *
 	 * If run as newgrp, or as sg with no command, this process exec's
-	 * an interactive subshell with the effective GID of the new group. 
+	 * an interactive subshell with the effective GID of the new group.
 	 * If run as sg with a command, that command is exec'ed in this
 	 * subshell. When this process terminates, either because the user
 	 * exits, or the command completes, the parent of this process
 	 * resumes with the current GID.
 	 *
 	 * If a group is explicitly specified on the command line, the
-	 * interactive shell or command is run with that effective GID. 
+	 * interactive shell or command is run with that effective GID.
 	 * Access will be denied if no entry for that group can be found in
 	 * /etc/group. If the current user name appears in the members list
 	 * for that group, access will be granted immediately; if not, the
@@ -648,7 +628,7 @@ int main (int argc, char **argv)
 	}
 #endif                          /* HAVE_SETGROUPS */
 	/*
-	 * For splitted groups (due to limitations of NIS), check all 
+	 * For splitted groups (due to limitations of NIS), check all
 	 * groups of the same GID like the requested group for
 	 * membership of the current user.
 	 */
@@ -696,7 +676,7 @@ int main (int argc, char **argv)
 #ifdef HAVE_SETGROUPS
 	/*
 	 * I am going to try to add her new group id to her concurrent group
-	 * set. If the group id is already present i'll just skip this part. 
+	 * set. If the group id is already present i'll just skip this part.
 	 * If the group doesn't fit, i'll complain loudly and skip this
 	 * part.
 	 */
@@ -807,7 +787,7 @@ int main (int argc, char **argv)
 	 * Now I try to find the basename of the login shell. This will
 	 * become argv[0] of the spawned command.
 	 */
-	progbase = (char *) Basename ((char *) prog);
+	progbase = Basename (prog);
 
 	/*
 	 * Switch back to her home directory if i am doing login
@@ -852,7 +832,7 @@ int main (int argc, char **argv)
 
 	/*
 	 * The previous code, when run as newgrp, re-exec'ed the shell in
-	 * the current process with the original gid on error conditions. 
+	 * the current process with the original gid on error conditions.
 	 * See the comment above. This historical behavior now has the
 	 * effect of creating unlogged extraneous shell layers when the
 	 * command line has an error or there is an authentication failure.
@@ -865,7 +845,7 @@ int main (int argc, char **argv)
 	if (NULL != group) {
 		snprintf (audit_buf, sizeof(audit_buf),
 		          "changing new-group=%s", group);
-		audit_logger (AUDIT_CHGRP_ID, Prog, 
+		audit_logger (AUDIT_CHGRP_ID, Prog,
 		              audit_buf, NULL,
 		              (unsigned int) getuid (), 0);
 	} else {

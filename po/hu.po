@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 4.0.18\n"
 "Report-Msgid-Bugs-To: pkg-shadow-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2020-01-23 14:59-0600\n"
+"POT-Creation-Date: 2022-11-08 10:37-0600\n"
 "PO-Revision-Date: 2007-11-25 20:56+0100\n"
 "Last-Translator: SZERVÁC Attila <sas@321.hu>\n"
 "Language-Team: Hungarian <gnome@gnome.hu>\n"
@@ -511,7 +511,7 @@ msgid "%s: failed to drop privileges (%s)\n"
 msgstr "%s: a jogosultságok eldobása meghiúsult (%s)\n"
 
 #, fuzzy, c-format
-msgid "%s: invalid chroot path '%s'\n"
+msgid "%s: invalid chroot path '%s', only absolute paths are supported.\n"
 msgstr "%s: érvénytelen otthoni telefonszám: \"%s\"\n"
 
 #, fuzzy, c-format
@@ -527,9 +527,20 @@ msgid "%s: unable to chroot to directory %s: %s\n"
 msgstr "%s: %s könyvtár nem hozható létre\n"
 
 #, c-format
+msgid "Unable to obtain random bytes.\n"
+msgstr ""
+
+#, c-format
 msgid ""
 "Invalid ENCRYPT_METHOD value: '%s'.\n"
 "Defaulting to DES.\n"
+msgstr ""
+
+#, c-format
+msgid ""
+"Unable to generate a salt from setting \"%s\", check your settings in "
+"ENCRYPT_METHOD and the corresponding configuration for your selected hash "
+"method.\n"
 msgstr ""
 
 #, c-format
@@ -765,6 +776,10 @@ msgstr "Otthoni telefon"
 msgid "Other"
 msgstr "Egyéb"
 
+#, c-format
+msgid "%s: fields too long\n"
+msgstr "%s: túl hosszú mezők\n"
+
 msgid "Cannot change ID to root.\n"
 msgstr "Az ID nem cserélhető root-ra.\n"
 
@@ -816,10 +831,6 @@ msgstr "%s: `%s' a NIS mester ehhez a klienshez.\n"
 msgid "Changing the user information for %s\n"
 msgstr "%s felhasználói információinak cseréje\n"
 
-#, c-format
-msgid "%s: fields too long\n"
-msgstr "%s: túl hosszú mezők\n"
-
 #, fuzzy, c-format
 msgid ""
 "Usage: %s [options]\n"
@@ -840,8 +851,8 @@ msgid ""
 msgstr ""
 
 msgid ""
-"  -s, --sha-rounds              number of rounds for the SHA or BCRYPT\n"
-"                                crypt algorithms\n"
+"  -s, --sha-rounds              number of rounds for the SHA, BCRYPT\n"
+"                                or YESCRYPT crypt algorithms\n"
 msgstr ""
 
 #, fuzzy, c-format
@@ -1116,8 +1127,16 @@ msgstr ""
 msgid "  -r, --system                  create a system account\n"
 msgstr ""
 
-msgid "  -P, --prefix PREFIX_DIR       directory prefix\n"
+msgid "  -P, --prefix PREFIX_DI        directory prefix\n"
 msgstr ""
+
+msgid "  -U, --users USERS             list of user members of this group\n"
+msgstr ""
+
+#, fuzzy, c-format
+#| msgid "invalid user name '%s'\n"
+msgid "Invalid member username %s\n"
+msgstr "érvénytelen '%s' felhasználó név\n"
 
 #, fuzzy, c-format
 msgid "%s: '%s' is not a valid group name\n"
@@ -1223,6 +1242,12 @@ msgstr ""
 msgid "%s: only root can use the -g/--group option\n"
 msgstr ""
 
+msgid ""
+"  -a, --append                  append the users mentioned by -U option to "
+"the group \n"
+"                                without removing existing user members\n"
+msgstr ""
+
 msgid "  -g, --gid GID                 change the group ID to GID\n"
 msgstr ""
 
@@ -1270,6 +1295,10 @@ msgid ""
 msgstr ""
 
 msgid "  -s, --sort                    sort entries by UID\n"
+msgstr ""
+
+msgid ""
+"  -S, --silence-warnings        silence controversial/paranoid warnings\n"
 msgstr ""
 
 #, fuzzy, c-format
@@ -1348,9 +1377,6 @@ msgstr "%s: %s fájl nem frissíthető\n"
 msgid "Usage: id [-a]\n"
 msgstr "Használat: id [-a]\n"
 
-msgid "Usage: id\n"
-msgstr "Használat: id\n"
-
 msgid " groups="
 msgstr " csoportok="
 
@@ -1377,8 +1403,10 @@ msgid ""
 "  -u, --user LOGIN              print lastlog record of the specified LOGIN\n"
 msgstr ""
 
-msgid "Username         Port     From             Latest"
-msgstr "Felhasználónév   Port     Innen            Legutóbb"
+#, fuzzy, c-format
+#| msgid "Username                Port     Latest"
+msgid "Username         Port     From%*sLatest\n"
+msgstr "Felhasználónév          Port     Legutóbb"
 
 msgid "Username                Port     Latest"
 msgstr "Felhasználónév          Port     Legutóbb"
@@ -1513,10 +1541,6 @@ msgid "Last login: %s on %s"
 msgstr "Utolsó bejelentkezés: %s ide: %s"
 
 #, c-format
-msgid "Last login: %.19s on %s"
-msgstr "Utolsó bejelentkezés: %.19s ide: %s"
-
-#, c-format
 msgid " from %.*s"
 msgstr " innen: %.*s"
 
@@ -1615,7 +1639,7 @@ msgid ""
 "st_uid:%lu, gid:%lu pw_gid:%lu st_gid:%lu\n"
 msgstr ""
 
-msgid "  -b, --badnames                allow bad names\n"
+msgid "  -b, --badname                 allow bad names\n"
 msgstr ""
 
 msgid "  -r, --system                  create system accounts\n"
@@ -1629,8 +1653,9 @@ msgstr "%s: %s csoport nem létezik\n"
 msgid "%s: invalid user ID '%s'\n"
 msgstr "%s: érvénytelen '%s' felhasználónév\n"
 
-#, c-format
-msgid "%s: invalid user name '%s'\n"
+#, fuzzy, c-format
+#| msgid "%s: invalid user name '%s'\n"
+msgid "%s: invalid user name '%s': use --badname to ignore\n"
 msgstr "%s: érvénytelen '%s' felhasználónév\n"
 
 #, c-format
@@ -1656,6 +1681,10 @@ msgstr "%s: %s felhasználó nem létezik\n"
 #, c-format
 msgid "%s: line %d: can't update password\n"
 msgstr "%s: %d. sor: jelszó frissítése sikertelen\n"
+
+#, fuzzy, c-format
+msgid "%s: line %d: homedir must be an absolute path\n"
+msgstr "%s: %d. sor: mkdir sikertelen\n"
 
 #, fuzzy, c-format
 msgid "%s: line %d: mkdir %s failed: %s\n"
@@ -1778,6 +1807,11 @@ msgstr "%s jelszava nem változtatható\n"
 msgid "The password for %s cannot be changed yet.\n"
 msgstr "%s jelszava nem változtatható\n"
 
+#, fuzzy, c-format
+#| msgid "%s: shadow passwords required for -e\n"
+msgid "%s: malformed password data obtained for user %s\n"
+msgstr "%s: a -e árnyék jelszavakat vár\n"
+
 #, c-format
 msgid ""
 "%s: unlocking the password would result in a passwordless account.\n"
@@ -1810,10 +1844,6 @@ msgid "%s: password changed.\n"
 msgstr "Jelszó módosítva."
 
 #, fuzzy, c-format
-msgid "%s: password expiry information changed.\n"
-msgstr "Jelszó elévülési figyelmeztetés"
-
-#, fuzzy, c-format
 msgid ""
 "Usage: %s [options] [passwd]\n"
 "\n"
@@ -1840,9 +1870,10 @@ msgstr "Érvénytelen jelszófájl bejegyzés"
 msgid "duplicate password entry"
 msgstr "dupla jelszó bejegyzés"
 
-#, c-format
-msgid "invalid user name '%s'\n"
-msgstr "érvénytelen '%s' felhasználó név\n"
+#, fuzzy, c-format
+#| msgid "%s: invalid user name '%s'\n"
+msgid "invalid user name '%s': use --badname to ignore\n"
+msgstr "%s: érvénytelen '%s' felhasználónév\n"
 
 #, fuzzy, c-format
 msgid "invalid user ID '%lu'\n"
@@ -1920,16 +1951,16 @@ msgstr "Jelszó hitelesítés átlépve.\n"
 msgid "Please enter your OWN password as authentication.\n"
 msgstr "Add meg SAJÁT jelszavad a hitelesítéshez.\n"
 
+#, c-format
+msgid "%s: signal masking malfunction\n"
+msgstr ""
+
 #, fuzzy, c-format
 msgid "%s: Cannot fork user shell\n"
 msgstr "%s: %s fájl nem zárolható\n"
 
 #, c-format
 msgid "%s: signal malfunction\n"
-msgstr ""
-
-#, c-format
-msgid "%s: signal masking malfunction\n"
 msgstr ""
 
 msgid "Session terminated, terminating shell..."
@@ -2001,6 +2032,14 @@ msgstr ""
 "(Átlépve)\n"
 
 #, c-format
+msgid "Password field is empty, this is forbidden for all accounts.\n"
+msgstr ""
+
+#, c-format
+msgid "Password field is empty, this is forbidden for super-user.\n"
+msgstr ""
+
+#, c-format
 msgid "You are not authorized to su %s\n"
 msgstr "Nem vagy jogosult ehhez: su %s\n"
 
@@ -2069,6 +2108,11 @@ msgstr ""
 msgid "%s: cannot create new defaults file: %s\n"
 msgstr "%s: nem tudom létrehozni az új defaults fájlt\n"
 
+#, fuzzy, c-format
+#| msgid "%s: cannot create new defaults file\n"
+msgid "%s: cannot create directory for defaults file\n"
+msgstr "%s: nem tudom létrehozni az új defaults fájlt\n"
+
 #, c-format
 msgid "%s: cannot create new defaults file\n"
 msgstr "%s: nem tudom létrehozni az új defaults fájlt\n"
@@ -2098,6 +2142,10 @@ msgid "%s: too many groups specified (max %d).\n"
 msgstr "%s: túl sok csoport van megadva (max %d).\n"
 
 #, fuzzy, c-format
+msgid "%s: Out of memory. Cannot find group '%s'.\n"
+msgstr "%s: elfogyott a memória az update_group során\n"
+
+#, fuzzy, c-format
 msgid ""
 "Usage: %s [options] LOGIN\n"
 "       %s -D\n"
@@ -2106,7 +2154,7 @@ msgid ""
 "Options:\n"
 msgstr "Használat: %s [bemenet]\n"
 
-msgid "      --badnames                do not check for bad names\n"
+msgid "      --badname                 do not check for bad names\n"
 msgstr ""
 
 msgid ""
@@ -2136,6 +2184,11 @@ msgstr ""
 msgid ""
 "  -f, --inactive INACTIVE       password inactivity period of the new "
 "account\n"
+msgstr ""
+
+msgid ""
+"  -F, --add-subids-for-system   add entries to sub[ud]id even when adding a "
+"system user\n"
 msgstr ""
 
 msgid ""
@@ -2234,13 +2287,29 @@ msgstr "%s: nem tudom újraírni a jelszófájlt\n"
 msgid "%s: -Z requires SELinux enabled kernel\n"
 msgstr ""
 
+#, fuzzy, c-format
+msgid "%s: failed to open the faillog file for UID %lu: %s\n"
+msgstr "%s: %s könyvtár nem hozható létre\n"
+
 #, c-format
 msgid "%s: failed to reset the faillog entry of UID %lu: %s\n"
 msgstr ""
 
+#, fuzzy, c-format
+msgid "%s: failed to close the faillog file for UID %lu: %s\n"
+msgstr "%s: %s könyvtár nem hozható létre\n"
+
+#, fuzzy, c-format
+msgid "%s: failed to open the lastlog file for UID %lu: %s\n"
+msgstr "%s: a jelszófájl frissítése sikertelen\n"
+
 #, c-format
 msgid "%s: failed to reset the lastlog entry of UID %lu: %s\n"
 msgstr ""
+
+#, fuzzy, c-format
+msgid "%s: failed to close the lastlog file for UID %lu: %s\n"
+msgstr "%s: %s könyvtár nem hozható létre\n"
 
 #, fuzzy, c-format
 msgid "%s: failed to reset the tallylog entry of user \"%s\"\n"
@@ -2284,9 +2353,17 @@ msgstr "%s: %d. sor: chown sikertelen\n"
 msgid "%s: warning: chmod on `%s' failed: %m\n"
 msgstr "%s: %d. sor: chown sikertelen\n"
 
+#, fuzzy, c-format
+msgid "%s: warning: chown on '%s' failed: %m\n"
+msgstr "%s: %d. sor: chown sikertelen\n"
+
 #, c-format
 msgid "%s: cannot reset SELinux file creation context\n"
 msgstr ""
+
+#, fuzzy, c-format
+msgid "%s: cannot set SELinux context for mailbox file %s\n"
+msgstr "%s elévülési információinak módosítása\n"
 
 msgid "Creating mailbox file"
 msgstr "Postafiókfájl létrehozása"
@@ -2299,6 +2376,15 @@ msgstr ""
 
 msgid "Setting mailbox file permissions"
 msgstr "A postafiókfájl jogosultságainak beállítása"
+
+#, c-format
+msgid "%s warning: %s's uid %d is greater than SYS_UID_MAX %d\n"
+msgstr ""
+
+#, c-format
+msgid ""
+"%s warning: %s's uid %d outside of the UID_MIN %d and UID_MAX %d range.\n"
+msgstr ""
 
 #, fuzzy, c-format
 msgid "%s: user '%s' already exists\n"
@@ -2335,6 +2421,10 @@ msgstr "%s: %s létrehozása sikertelen\n"
 msgid "%s: can't create subordinate group IDs\n"
 msgstr "%s: %s létrehozása sikertelen\n"
 
+#, c-format
+msgid "%s: warning: the user name %s to %s SELinux user mapping failed.\n"
+msgstr ""
+
 #, fuzzy, c-format
 #| msgid ""
 #| "%s: warning: the home directory already exists.\n"
@@ -2346,13 +2436,11 @@ msgstr ""
 "%s: figyelem: a saját könyvtár már létezik.\n"
 "Nem másolok semmit bele a vázkönyvtárból.\n"
 
-#, c-format
-msgid "%s: warning: the user name %s to %s SELinux user mapping failed.\n"
-msgstr ""
-
 msgid ""
-"  -f, --force                   force removal of files,\n"
-"                                even if not owned by user\n"
+"  -f, --force                   force some actions that would fail "
+"otherwise\n"
+"                                e.g. removal of user still logged in\n"
+"                                or files, even if not owned by the user\n"
 msgstr ""
 
 msgid "  -r, --remove                  remove home directory and mail spool\n"
@@ -2435,6 +2523,12 @@ msgstr "%s: hiba %s könyvtár törlésekor\n"
 msgid "%s: warning: the user name %s to SELinux user mapping removal failed.\n"
 msgstr ""
 
+msgid ""
+"  -a, --append                  append the user to the supplemental GROUPS\n"
+"                                mentioned by the -G option without removing\n"
+"                                the user from other groups\n"
+msgstr ""
+
 msgid "  -c, --comment COMMENT         new value of the GECOS field\n"
 msgstr ""
 
@@ -2457,12 +2551,6 @@ msgstr ""
 msgid "  -G, --groups GROUPS           new list of supplementary GROUPS\n"
 msgstr ""
 
-msgid ""
-"  -a, --append                  append the user to the supplemental GROUPS\n"
-"                                mentioned by the -G option without removing\n"
-"                                the user from other groups\n"
-msgstr ""
-
 msgid "  -l, --login NEW_LOGIN         new value of the login name\n"
 msgstr ""
 
@@ -2480,6 +2568,13 @@ msgstr ""
 
 msgid ""
 "  -p, --password PASSWORD       use encrypted password for the new password\n"
+msgstr ""
+
+msgid ""
+"  -r, --remove                  remove the user from only the supplemental "
+"GROUPS\n"
+"                                mentioned by the -G option without removing\n"
+"                                the user from other groups\n"
 msgstr ""
 
 msgid "  -u, --uid UID                 new UID for the user account\n"
@@ -2515,6 +2610,10 @@ msgstr ""
 msgid "%s: user '%s' already exists in %s\n"
 msgstr "%s: %s felhasználó létezik\n"
 
+#, c-format
+msgid "%s: homedir must be an absolute path\n"
+msgstr ""
+
 #, fuzzy, c-format
 msgid "%s: invalid subordinate uid range '%s'\n"
 msgstr "%s: érvénytelen dátum: \"%s\"\n"
@@ -2526,6 +2625,10 @@ msgstr "%s: érvénytelen dátum: \"%s\"\n"
 #, fuzzy, c-format
 msgid "%s: no options\n"
 msgstr "%s: %s fájl nem nyitható meg\n"
+
+#, c-format
+msgid "%s: %s and %s are mutually exclusive flags\n"
+msgstr ""
 
 #, c-format
 msgid "%s: the -L, -p, and -U flags are exclusive\n"
@@ -2568,6 +2671,12 @@ msgstr "%s: figyelem: nem sikerült a régi %s saját könyvtár teljes törlés
 #, c-format
 msgid "%s: cannot rename directory %s to %s\n"
 msgstr "%s: nem tudom átnevezni %s könyvtárat erre: %s\n"
+
+#, c-format
+msgid ""
+"%s: The previous home directory (%s) does not exist or is inaccessible. Move "
+"cannot be completed.\n"
+msgstr ""
 
 #, c-format
 msgid "%s: failed to copy the lastlog entry of user %lu to user %lu: %s\n"
@@ -2696,6 +2805,28 @@ msgstr "%s: nem tudom visszaállítani %s-t: %s (módosításaid itt vannak: %s)
 #, fuzzy, c-format
 msgid "%s: failed to find tcb directory for %s\n"
 msgstr "%s: érvénytelen alapkönyvtár: \"%s\"\n"
+
+#~ msgid "Usage: id\n"
+#~ msgstr "Használat: id\n"
+
+#, c-format
+#~ msgid "Last login: %.19s on %s"
+#~ msgstr "Utolsó bejelentkezés: %.19s ide: %s"
+
+#, c-format
+#~ msgid "%s: invalid user name '%s'\n"
+#~ msgstr "%s: érvénytelen '%s' felhasználónév\n"
+
+#, fuzzy, c-format
+#~ msgid "%s: password expiry information changed.\n"
+#~ msgstr "Jelszó elévülési figyelmeztetés"
+
+#, c-format
+#~ msgid "invalid user name '%s'\n"
+#~ msgstr "érvénytelen '%s' felhasználó név\n"
+
+#~ msgid "Username         Port     From             Latest"
+#~ msgstr "Felhasználónév   Port     Innen            Legutóbb"
 
 #, fuzzy
 #~| msgid "Usage: %s [input]\n"

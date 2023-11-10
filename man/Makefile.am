@@ -1,7 +1,7 @@
 
 # subdirectories for translated manual pages
 if USE_NLS
-SUBDIRS = po cs da de es fi fr hu id it ja ko pl pt_BR ru sv tr zh_CN zh_TW
+SUBDIRS = po cs da de es fi fr hu id it ja ko pl pt_BR ru sv tr uk zh_CN zh_TW
 else
 SUBDIRS =
 endif
@@ -62,6 +62,7 @@ man_MANS += $(man_nopam)
 endif
 
 man_subids = \
+	man1/getsubids.1 \
 	man1/newgidmap.1 \
 	man1/newuidmap.1 \
 	man5/subgid.5 \
@@ -80,6 +81,7 @@ man_XMANS = \
 	expiry.1.xml \
 	faillog.5.xml \
 	faillog.8.xml \
+	getsubids.1.xml \
 	gpasswd.1.xml \
 	groupadd.8.xml \
 	groupdel.8.xml \
@@ -136,6 +138,8 @@ login_defs_v = \
 	FAKE_SHELL.xml \
 	FTMP_FILE.xml \
 	GID_MAX.xml \
+	HMAC_CRYPTO_ALGO.xml \
+	HOME_MODE.xml \
 	HUSHLOGIN_FILE.xml \
 	ISSUE_FILE.xml \
 	KILLCHAR.xml \
@@ -152,6 +156,7 @@ login_defs_v = \
 	MD5_CRYPT_ENAB.xml \
 	MOTD_FILE.xml \
 	NOLOGINS_FILE.xml \
+	NONEXISTENT.xml \
 	OBSCURE_CHECKS_ENAB.xml \
 	PASS_ALWAYS_WARN.xml \
 	PASS_CHANGE_TRIES.xml \

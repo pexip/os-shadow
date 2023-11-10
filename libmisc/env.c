@@ -1,33 +1,10 @@
 /*
- * Copyright (c) 1989 - 1992, Julianne Frances Haugh
- * Copyright (c) 1996 - 1999, Marek Michałkiewicz
- * Copyright (c) 2003 - 2005, Tomasz Kłoczko
- * Copyright (c) 2008 - 2009, Nicolas François
- * All rights reserved.
+ * SPDX-FileCopyrightText: 1989 - 1992, Julianne Frances Haugh
+ * SPDX-FileCopyrightText: 1996 - 1999, Marek Michałkiewicz
+ * SPDX-FileCopyrightText: 2003 - 2005, Tomasz Kłoczko
+ * SPDX-FileCopyrightText: 2008 - 2009, Nicolas François
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the copyright holders or contributors may not be used to
- *    endorse or promote products derived from this software without
- *    specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
- * PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
- * HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * SPDX-License-Identifier: BSD-3-Clause
  */
 
 #include <config.h>
@@ -40,6 +17,7 @@
 #include <string.h>
 #include "prototypes.h"
 #include "defines.h"
+#include "shadowlog.h"
 /*
  * NEWENVP_STEP must be a power of two.  This is the number
  * of (char *) pointers to allocate at a time, to avoid using
@@ -50,7 +28,7 @@ size_t newenvc = 0;
 /*@null@*/char **newenvp = NULL;
 extern char **environ;
 
-static const char *forbid[] = {
+static const char *const forbid[] = {
 	"_RLD_=",
 	"BASH_ENV=",		/* GNU creeping featurism strikes again... */
 	"ENV=",
@@ -69,7 +47,7 @@ static const char *forbid[] = {
 
 /* these are allowed, but with no slashes inside
    (to work around security problems in GNU gettext) */
-static const char *noslash[] = {
+static const char *const noslash[] = {
 	"LANG=",
 	"LANGUAGE=",
 	"LC_",			/* anything with the LC_ prefix */
@@ -171,7 +149,7 @@ void addenv (const char *string, /*@null@*/const char *value)
 			}
 			newenvp = __newenvp;
 		} else {
-			(void) fputs (_("Environment overflow\n"), stderr);
+			(void) fputs (_("Environment overflow\n"), log_get_logfd());
 			newenvc--;
 			free (newenvp[newenvc]);
 		}
@@ -207,7 +185,7 @@ void set_env (int argc, char *const *argv)
 			noname++;
 			addenv (variable, *argv);
 		} else {
-			const char **p;
+			const char *const *p;
 
 			for (p = forbid; NULL != *p; p++) {
 				if (strncmp (*argv, *p, strlen (*p)) == 0) {
@@ -240,7 +218,7 @@ void set_env (int argc, char *const *argv)
 void sanitize_env (void)
 {
 	char **envp = environ;
-	const char **bad;
+	const char *const *bad;
 	char **cur;
 	char **move;
 

@@ -1,33 +1,10 @@
 /*
- * Copyright (c) 1989 - 1993, Julianne Frances Haugh
- * Copyright (c) 1996 - 2000, Marek Michałkiewicz
- * Copyright (c) 2002 - 2006, Tomasz Kłoczko
- * Copyright (c) 2007 - 2011, Nicolas François
- * All rights reserved.
+ * SPDX-FileCopyrightText: 1989 - 1993, Julianne Frances Haugh
+ * SPDX-FileCopyrightText: 1996 - 2000, Marek Michałkiewicz
+ * SPDX-FileCopyrightText: 2002 - 2006, Tomasz Kłoczko
+ * SPDX-FileCopyrightText: 2007 - 2011, Nicolas François
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the copyright holders or contributors may not be used to
- *    endorse or promote products derived from this software without
- *    specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
- * PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
- * HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * SPDX-License-Identifier: BSD-3-Clause
  */
 
 #include <config.h>
@@ -46,6 +23,7 @@
 #include "prototypes.h"
 /*@-exitarg@*/
 #include "exitcodes.h"
+#include "shadowlog.h"
 
 /* local function prototypes */
 static /*@noreturn@*/void usage (int status);
@@ -110,11 +88,8 @@ static void print_one (/*@null@*/const struct passwd *pw, bool force)
 	off_t offset;
 	struct faillog fl;
 	time_t now;
-
-#ifdef HAVE_STRFTIME
 	char *cp;
 	char ptime[80];
-#endif
 
 	if (NULL == pw) {
 		return;
@@ -163,13 +138,15 @@ static void print_one (/*@null@*/const struct passwd *pw, bool force)
 	}
 
 	tm = localtime (&fl.fail_time);
-#ifdef HAVE_STRFTIME
+	if (!tm) {
+		fprintf (stderr, "Cannot read time from faillog.\n");
+		return;
+	}
 	strftime (ptime, sizeof (ptime), "%D %H:%M:%S %z", tm);
 	cp = ptime;
-#endif
+
 	printf ("%-9s   %5d    %5d   ",
 	        pw->pw_name, fl.fail_cnt, fl.fail_max);
-	/* FIXME: cp is not defined ifndef HAVE_STRFTIME */
 	printf ("%s  %s", cp, fl.fail_line);
 	if (0 != fl.fail_locktime) {
 		if (   ((fl.fail_time + fl.fail_locktime) > now)
@@ -560,15 +537,17 @@ static void set_locktime (long locktime)
 
 int main (int argc, char **argv)
 {
-	long fail_locktime;
+	long fail_locktime = 0;
 	short fail_max = 0; // initialize to silence compiler warning
-	long days;
+	long days = 0;
 
 	/*
 	 * Get the program name. The program name is used as a prefix to
 	 * most error messages.
 	 */
 	Prog = Basename (argv[0]);
+	log_set_progname(Prog);
+	log_set_logfd(stderr);
 
 	(void) setlocale (LC_ALL, "");
 	(void) bindtextdomain (PACKAGE, LOCALEDIR);

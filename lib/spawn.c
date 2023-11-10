@@ -1,30 +1,7 @@
 /*
- * Copyright (c) 2011       , Jonathan Nieder
- * All rights reserved.
+ * SPDX-FileCopyrightText: 2011       , Jonathan Nieder
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the copyright holders or contributors may not be used to
- *    endorse or promote products derived from this software without
- *    specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
- * PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
- * HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * SPDX-License-Identifier: BSD-3-Clause
  */
 
 #include <config.h>
@@ -38,6 +15,8 @@
 #include "exitcodes.h"
 #include "prototypes.h"
 
+#include "shadowlog_internal.h"
+
 int run_command (const char *cmd, const char *argv[],
                  /*@null@*/const char *envp[], /*@out@*/int *status)
 {
@@ -48,7 +27,7 @@ int run_command (const char *cmd, const char *argv[],
 	}
 
 	(void) fflush (stdout);
-	(void) fflush (stderr);
+	(void) fflush (shadow_logfd);
 
 	pid = fork ();
 	if (0 == pid) {
@@ -57,12 +36,12 @@ int run_command (const char *cmd, const char *argv[],
 		if (ENOENT == errno) {
 			exit (E_CMD_NOTFOUND);
 		}
-		fprintf (stderr, "%s: cannot execute %s: %s\n",
-		         Prog, cmd, strerror (errno));
+		fprintf (shadow_logfd, "%s: cannot execute %s: %s\n",
+		         shadow_progname, cmd, strerror (errno));
 		exit (E_CMD_NOEXEC);
 	} else if ((pid_t)-1 == pid) {
-		fprintf (stderr, "%s: cannot execute %s: %s\n",
-		         Prog, cmd, strerror (errno));
+		fprintf (shadow_logfd, "%s: cannot execute %s: %s\n",
+		         shadow_progname, cmd, strerror (errno));
 		return -1;
 	}
 
@@ -74,8 +53,8 @@ int run_command (const char *cmd, const char *argv[],
 	         || ((pid_t)-1 != wpid && wpid != pid));
 
 	if ((pid_t)-1 == wpid) {
-		fprintf (stderr, "%s: waitpid (status: %d): %s\n",
-		         Prog, *status, strerror (errno));
+		fprintf (shadow_logfd, "%s: waitpid (status: %d): %s\n",
+		         shadow_progname, *status, strerror (errno));
 		return -1;
 	}
 

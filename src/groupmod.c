@@ -1,33 +1,10 @@
 /*
- * Copyright (c) 1991 - 1994, Julianne Frances Haugh
- * Copyright (c) 1996 - 2000, Marek Michałkiewicz
- * Copyright (c) 2000 - 2006, Tomasz Kłoczko
- * Copyright (c) 2007 - 2011, Nicolas François
- * All rights reserved.
+ * SPDX-FileCopyrightText: 1991 - 1994, Julianne Frances Haugh
+ * SPDX-FileCopyrightText: 1996 - 2000, Marek Michałkiewicz
+ * SPDX-FileCopyrightText: 2000 - 2006, Tomasz Kłoczko
+ * SPDX-FileCopyrightText: 2007 - 2011, Nicolas François
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the copyright holders or contributors may not be used to
- *    endorse or promote products derived from this software without
- *    specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
- * PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
- * HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * SPDX-License-Identifier: BSD-3-Clause
  */
 
 #include <config.h>
@@ -56,6 +33,7 @@
 #ifdef	SHADOWGRP
 #include "sgroupio.h"
 #endif
+#include "shadowlog.h"
 /*
  * exit status values
  */
@@ -87,6 +65,7 @@ static gid_t group_id;
 static gid_t group_newid;
 
 static const char* prefix = "";
+static char *user_list;
 
 static struct cleanup_info_mod info_passwd;
 static struct cleanup_info_mod info_group;
@@ -95,6 +74,7 @@ static struct cleanup_info_mod info_gshadow;
 #endif
 
 static bool
+    aflg = false,               /* append -U members rather than replace them */
     oflg = false,		/* permit non-unique group ID to be specified with -g */
     gflg = false,		/* new ID value for the group */
     nflg = false,		/* a new name has been specified for the group */
@@ -117,6 +97,7 @@ static void open_files (void);
 static void close_files (void);
 static void update_primary_groups (gid_t ogid, gid_t ngid);
 
+
 /*
  * usage - display usage message and exit
  */
@@ -129,6 +110,8 @@ static void usage (int status)
 	                  "\n"
 	                  "Options:\n"),
 	                Prog);
+	(void) fputs (_("  -a, --append                  append the users mentioned by -U option to the group \n"
+	                "                                without removing existing user members\n"), usageout);
 	(void) fputs (_("  -g, --gid GID                 change the group ID to GID\n"), usageout);
 	(void) fputs (_("  -h, --help                    display this help message and exit\n"), usageout);
 	(void) fputs (_("  -n, --new-name NEW_GROUP      change the name to NEW_GROUP\n"), usageout);
@@ -137,6 +120,7 @@ static void usage (int status)
 	                "                                PASSWORD\n"), usageout);
 	(void) fputs (_("  -R, --root CHROOT_DIR         directory to chroot into\n"), usageout);
 	(void) fputs (_("  -P, --prefix PREFIX_DIR       prefix directory where are located the /etc/* files\n"), usageout);
+	(void) fputs (_("  -U, --users USERS             list of user members of this group\n"), usageout);
 	(void) fputs ("\n", usageout);
 	exit (status);
 }
@@ -253,6 +237,32 @@ static void grp_update (void)
 
 	if (gflg) {
 		update_primary_groups (ogrp->gr_gid, group_newid);
+	}
+
+	if (user_list) {
+		char *token;
+
+		if (!aflg) {
+			// requested to replace the existing groups
+			if (NULL != grp.gr_mem[0])
+				gr_free_members(&grp);
+			grp.gr_mem = (char **)xmalloc(sizeof(char *));
+			grp.gr_mem[0] = (char *)0;
+		} else {
+			// append to existing groups
+			if (NULL != grp.gr_mem[0])
+				grp.gr_mem = dup_list (grp.gr_mem);
+		}
+
+		token = strtok(user_list, ",");
+		while (token) {
+			if (prefix_getpwnam (token) == NULL) {
+				fprintf (stderr, _("Invalid member username %s\n"), token);
+				exit (E_GRP_UPDATE);
+			}
+			grp.gr_mem = add_list(grp.gr_mem, token);
+			token = strtok(NULL, ",");
+		}
 	}
 
 	/*
@@ -379,6 +389,7 @@ static void process_flags (int argc, char **argv)
 {
 	int c;
 	static struct option long_options[] = {
+		{"append",     no_argument,       NULL, 'a'},
 		{"gid",        required_argument, NULL, 'g'},
 		{"help",       no_argument,       NULL, 'h'},
 		{"new-name",   required_argument, NULL, 'n'},
@@ -386,11 +397,15 @@ static void process_flags (int argc, char **argv)
 		{"password",   required_argument, NULL, 'p'},
 		{"root",       required_argument, NULL, 'R'},
 		{"prefix",     required_argument, NULL, 'P'},
+		{"users",      required_argument, NULL, 'U'},
 		{NULL, 0, NULL, '\0'}
 	};
-	while ((c = getopt_long (argc, argv, "g:hn:op:R:P:",
+	while ((c = getopt_long (argc, argv, "ag:hn:op:R:P:U:",
 		                 long_options, NULL)) != -1) {
 		switch (c) {
+		case 'a':
+			aflg = true;
+			break;
 		case 'g':
 			gflg = true;
 			if (   (get_gid (optarg, &group_newid) == 0)
@@ -418,6 +433,9 @@ static void process_flags (int argc, char **argv)
 		case 'R': /* no-op, handled in process_root_flag () */
 			break;
 		case 'P': /* no-op, handled in process_prefix_flag () */
+			break;
+		case 'U':
+			user_list = optarg;
 			break;
 		default:
 			usage (E_USAGE);
@@ -752,6 +770,8 @@ int main (int argc, char **argv)
 	 * Get my name so that I can use it to report errors.
 	 */
 	Prog = Basename (argv[0]);
+	log_set_progname(Prog);
+	log_set_logfd(stderr);
 
 	(void) setlocale (LC_ALL, "");
 	(void) bindtextdomain (PACKAGE, LOCALEDIR);

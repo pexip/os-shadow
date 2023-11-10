@@ -1,13 +1,13 @@
 '\" t
 .\"     Title: groupmod
 .\"    Author: Julianne Frances Haugh
-.\" Generator: DocBook XSL Stylesheets v1.79.1 <http://docbook.sf.net/>
-.\"      Date: 01/23/2020
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 11/08/2022
 .\"    Manual: System Management Commands
-.\"    Source: shadow-utils 4.8.1
+.\"    Source: shadow-utils 4.13
 .\"  Language: English
 .\"
-.TH "GROUPMOD" "8" "01/23/2020" "shadow\-utils 4\&.8\&.1" "System Management Commands"
+.TH "GROUPMOD" "8" "11/08/2022" "shadow\-utils 4\&.13" "System Management Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -44,6 +44,11 @@ by modifying the appropriate entry in the group database\&.
 The options which apply to the
 \fBgroupmod\fR
 command are:
+.PP
+\fB\-a\fR, \fB\-\-append\fR\ \&\fIGID\fR
+.RS 4
+If group members are specified with \-U, append them to the existing member list, rather than replacing it\&.
+.RE
 .PP
 \fB\-g\fR, \fB\-\-gid\fR\ \&\fIGID\fR
 .RS 4
@@ -112,7 +117,7 @@ Apply changes in the
 \fICHROOT_DIR\fR
 directory and use the configuration files from the
 \fICHROOT_DIR\fR
-directory\&.
+directory\&. Only absolute paths are supported\&.
 .RE
 .PP
 \fB\-P\fR, \fB\-\-prefix\fR\ \&\fIPREFIX_DIR\fR
@@ -122,6 +127,20 @@ Apply changes in the
 directory and use the configuration files from the
 \fIPREFIX_DIR\fR
 directory\&. This option does not chroot and is intended for preparing a cross\-compilation target\&. Some limitations: NIS and LDAP users/groups are not verified\&. PAM authentication is using the host files\&. No SELINUX support\&.
+.RE
+.PP
+\fB\-U\fR, \fB\-\-users\fR
+.RS 4
+A list of usernames to add as members of the group\&.
+.sp
+The default behavior (if the
+\fB\-g\fR,
+\fB\-N\fR, and
+\fB\-U\fR
+options are not specified) is defined by the
+\fBUSERGROUPS_ENAB\fR
+variable in
+/etc/login\&.defs\&.
 .RE
 .SH "CONFIGURATION"
 .PP
@@ -187,7 +206,7 @@ E_BAD_ARG: invalid argument to option
 .PP
 \fI4\fR
 .RS 4
-E_GID_IN_USE: specified group doesn\*(Aqt exist
+E_GID_IN_USE: group id already in use
 .RE
 .PP
 \fI6\fR

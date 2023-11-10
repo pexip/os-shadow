@@ -1,13 +1,13 @@
 '\" t
 .\"     Title: chfn
 .\"    Author: Julianne Frances Haugh
-.\" Generator: DocBook XSL Stylesheets v1.79.1 <http://docbook.sf.net/>
-.\"      Date: 2020-01-23
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 2022-11-08
 .\"    Manual: 用户命令
-.\"    Source: shadow-utils 4.8.1
+.\"    Source: shadow-utils 4.13
 .\"  Language: Chinese Simplified
 .\"
-.TH "CHFN" "1" "2020-01-23" "shadow\-utils 4\&.8\&.1" "用户命令"
+.TH "CHFN" "1" "2022-11-08" "shadow\-utils 4\&.13" "用户命令"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -80,12 +80,12 @@ Apply changes in the
 \fICHROOT_DIR\fR
 directory and use the configuration files from the
 \fICHROOT_DIR\fR
-directory\&.
+directory\&. Only absolute paths are supported\&.
 .RE
 .PP
 \fB\-u\fR, \fB\-\-help\fR
 .RS 4
-现实帮助信息并退出。
+显示帮助信息并退出。
 .RE
 .PP
 \fB\-w\fR, \fB\-\-work\-phone\fR\ \&\fIWORK_PHONE\fR
@@ -105,46 +105,6 @@ prompts for the current user account\&.
 The following configuration variables in
 /etc/login\&.defs
 change the behavior of this tool:
-.PP
-\fBCHFN_AUTH\fR (boolean)
-.RS 4
-If
-\fIyes\fR, the
-\fBchfn\fR
-program will require authentication before making any changes, unless run by the superuser\&.
-.RE
-.PP
-\fBCHFN_RESTRICT\fR (string)
-.RS 4
-This parameter specifies which values in the
-\fIgecos\fR
-field of the
-/etc/passwd
-file may be changed by regular users using the
-\fBchfn\fR
-program\&. It can be any combination of letters
-\fIf\fR,
-\fIr\fR,
-\fIw\fR,
-\fIh\fR, for Full name, Room number, Work phone, and Home phone, respectively\&. For backward compatibility,
-\fIyes\fR
-is equivalent to
-\fIrwh\fR
-and
-\fIno\fR
-is equivalent to
-\fIfrwh\fR\&. If not specified, only the superuser can make any changes\&. The most restrictive setting is better achieved by not installing
-\fBchfn\fR
-SUID\&.
-.RE
-.PP
-\fBLOGIN_STRING\fR (string)
-.RS 4
-此字符串用于提示输入密码。默认是 "Password: "，或者翻译了的结果(汉语中翻译为了\(lq密码：\(rq)。如果设置了此变量，提示不会被翻译。
-.sp
-If the string contains
-\fI%s\fR, this will be replaced by the user\*(Aqs name\&.
-.RE
 .SH "文件"
 .PP
 /etc/login\&.defs

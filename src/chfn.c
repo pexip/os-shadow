@@ -1,33 +1,10 @@
 /*
- * Copyright (c) 1989 - 1994, Julianne Frances Haugh
- * Copyright (c) 1996 - 2000, Marek Michałkiewicz
- * Copyright (c) 2001 - 2006, Tomasz Kłoczko
- * Copyright (c) 2007 - 2011, Nicolas François
- * All rights reserved.
+ * SPDX-FileCopyrightText: 1989 - 1994, Julianne Frances Haugh
+ * SPDX-FileCopyrightText: 1996 - 2000, Marek Michałkiewicz
+ * SPDX-FileCopyrightText: 2001 - 2006, Tomasz Kłoczko
+ * SPDX-FileCopyrightText: 2007 - 2011, Nicolas François
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the copyright holders or contributors may not be used to
- *    endorse or promote products derived from this software without
- *    specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
- * PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
- * HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * SPDX-License-Identifier: BSD-3-Clause
  */
 
 #include <config.h>
@@ -52,6 +29,7 @@
 #include "pwio.h"
 /*@-exitarg@*/
 #include "exitcodes.h"
+#include "shadowlog.h"
 
 /*
  * Global variables.
@@ -61,7 +39,7 @@ static char fullnm[BUFSIZ];
 static char roomno[BUFSIZ];
 static char workph[BUFSIZ];
 static char homeph[BUFSIZ];
-static char slop[BUFSIZ];
+static char slop[BUFSIZ + 1 + 80];
 static bool amroot;
 /* Flags */
 static bool fflg = false;		/* -f - set full name                */
@@ -276,7 +254,7 @@ static void process_flags (int argc, char **argv)
 		{NULL, 0, NULL, '\0'}
 	};
 
-	/* 
+	/*
 	 * The remaining arguments will be processed one by one and executed
 	 * by this command. The name is the last argument if it does not
 	 * begin with a "-", otherwise the name is determined from the
@@ -311,6 +289,11 @@ static void process_flags (int argc, char **argv)
 				exit (E_NOPERM);
 			}
 			oflg = true;
+			if (strlen (optarg) > (unsigned int) 80) {
+				fprintf (stderr,
+				         _("%s: fields too long\n"), Prog);
+				exit (E_NOPERM);
+			}
 			STRFCPY (slop, optarg);
 			break;
 		case 'r':
@@ -386,7 +369,7 @@ static void check_perms (const struct passwd *pw)
 	/*
 	 * Non-privileged users are optionally authenticated (must enter the
 	 * password of the user whose information is being changed) before
-	 * any changes can be made. Idea from util-linux chfn/chsh. 
+	 * any changes can be made. Idea from util-linux chfn/chsh.
 	 * --marekm
 	 */
 	if (!amroot && getdef_bool ("CHFN_AUTH")) {
@@ -634,6 +617,8 @@ int main (int argc, char **argv)
 	 * prefix to most error messages.
 	 */
 	Prog = Basename (argv[0]);
+	log_set_progname(Prog);
+	log_set_logfd(stderr);
 
 	sanitize_env ();
 	(void) setlocale (LC_ALL, "");

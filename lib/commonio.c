@@ -1,33 +1,10 @@
 /*
- * Copyright (c) 1990 - 1994, Julianne Frances Haugh
- * Copyright (c) 1996 - 2001, Marek Michałkiewicz
- * Copyright (c) 2001 - 2006, Tomasz Kłoczko
- * Copyright (c) 2007 - 2011, Nicolas François
- * All rights reserved.
+ * SPDX-FileCopyrightText: 1990 - 1994, Julianne Frances Haugh
+ * SPDX-FileCopyrightText: 1996 - 2001, Marek Michałkiewicz
+ * SPDX-FileCopyrightText: 2001 - 2006, Tomasz Kłoczko
+ * SPDX-FileCopyrightText: 2007 - 2011, Nicolas François
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the copyright holders or contributors may not be used to
- *    endorse or promote products derived from this software without
- *    specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
- * PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
- * HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * SPDX-License-Identifier: BSD-3-Clause
  */
 
 #include <config.h>
@@ -51,10 +28,11 @@
 #endif				/* WITH_TCB */
 #include "prototypes.h"
 #include "commonio.h"
+#include "shadowlog_internal.h"
 
 /* local function prototypes */
 static int lrename (const char *, const char *);
-static int check_link_count (const char *file);
+static int check_link_count (const char *file, bool log);
 static int do_lock_file (const char *file, const char *lock, bool log);
 static /*@null@*/ /*@dependent@*/FILE *fopen_set_perms (
 	const char *name,
@@ -87,7 +65,6 @@ int lrename (const char *old, const char *new)
 	int res;
 	char *r = NULL;
 
-#if defined(S_ISLNK)
 #ifndef __GLIBC__
 	char resolved_path[PATH_MAX];
 #endif				/* !__GLIBC__ */
@@ -104,28 +81,35 @@ int lrename (const char *old, const char *new)
 			new = r;
 		}
 	}
-#endif				/* S_ISLNK */
 
 	res = rename (old, new);
 
 #ifdef __GLIBC__
-	if (NULL != r) {
-		free (r);
-	}
+	free (r);
 #endif				/* __GLIBC__ */
 
 	return res;
 }
 
-static int check_link_count (const char *file)
+static int check_link_count (const char *file, bool log)
 {
 	struct stat sb;
 
 	if (stat (file, &sb) != 0) {
+		if (log) {
+			(void) fprintf (shadow_logfd,
+			                "%s: %s file stat error: %s\n",
+			                shadow_progname, file, strerror (errno));
+		}
 		return 0;
 	}
 
 	if (sb.st_nlink != 2) {
+		if (log) {
+			(void) fprintf (shadow_logfd,
+			                "%s: %s: lock file already used (nlink: %u)\n",
+			                shadow_progname, file, sb.st_nlink);
+		}
 		return 0;
 	}
 
@@ -144,9 +128,9 @@ static int do_lock_file (const char *file, const char *lock, bool log)
 	fd = open (file, O_CREAT | O_TRUNC | O_WRONLY, 0600);
 	if (-1 == fd) {
 		if (log) {
-			(void) fprintf (stderr,
+			(void) fprintf (shadow_logfd,
 			                "%s: %s: %s\n",
-			                Prog, file, strerror (errno));
+			                shadow_progname, file, strerror (errno));
 		}
 		return 0;
 	}
@@ -156,9 +140,19 @@ static int do_lock_file (const char *file, const char *lock, bool log)
 	len = (ssize_t) strlen (buf) + 1;
 	if (write (fd, buf, (size_t) len) != len) {
 		if (log) {
-			(void) fprintf (stderr,
-			                "%s: %s: %s\n",
-			                Prog, file, strerror (errno));
+			(void) fprintf (shadow_logfd,
+			                "%s: %s file write error: %s\n",
+			                shadow_progname, file, strerror (errno));
+		}
+		(void) close (fd);
+		unlink (file);
+		return 0;
+	}
+	if (fdatasync (fd) == -1) {
+		if (log) {
+			(void) fprintf (shadow_logfd,
+			                "%s: %s file sync error: %s\n",
+			                shadow_progname, file, strerror (errno));
 		}
 		(void) close (fd);
 		unlink (file);
@@ -167,12 +161,7 @@ static int do_lock_file (const char *file, const char *lock, bool log)
 	close (fd);
 
 	if (link (file, lock) == 0) {
-		retval = check_link_count (file);
-		if ((0==retval) && log) {
-			(void) fprintf (stderr,
-			                "%s: %s: lock file already used\n",
-			                Prog, file);
-		}
+		retval = check_link_count (file, log);
 		unlink (file);
 		return retval;
 	}
@@ -180,9 +169,9 @@ static int do_lock_file (const char *file, const char *lock, bool log)
 	fd = open (lock, O_RDWR);
 	if (-1 == fd) {
 		if (log) {
-			(void) fprintf (stderr,
+			(void) fprintf (shadow_logfd,
 			                "%s: %s: %s\n",
-			                Prog, lock, strerror (errno));
+			                shadow_progname, lock, strerror (errno));
 		}
 		unlink (file);
 		errno = EINVAL;
@@ -192,9 +181,9 @@ static int do_lock_file (const char *file, const char *lock, bool log)
 	close (fd);
 	if (len <= 0) {
 		if (log) {
-			(void) fprintf (stderr,
+			(void) fprintf (shadow_logfd,
 			                "%s: existing lock file %s without a PID\n",
-			                Prog, lock);
+			                shadow_progname, lock);
 		}
 		unlink (file);
 		errno = EINVAL;
@@ -203,9 +192,9 @@ static int do_lock_file (const char *file, const char *lock, bool log)
 	buf[len] = '\0';
 	if (get_pid (buf, &pid) == 0) {
 		if (log) {
-			(void) fprintf (stderr,
+			(void) fprintf (shadow_logfd,
 			                "%s: existing lock file %s with an invalid PID '%s'\n",
-			                Prog, lock, buf);
+			                shadow_progname, lock, buf);
 		}
 		unlink (file);
 		errno = EINVAL;
@@ -213,9 +202,9 @@ static int do_lock_file (const char *file, const char *lock, bool log)
 	}
 	if (kill (pid, 0) == 0) {
 		if (log) {
-			(void) fprintf (stderr,
+			(void) fprintf (shadow_logfd,
 			                "%s: lock %s already used by PID %lu\n",
-			                Prog, lock, (unsigned long) pid);
+			                shadow_progname, lock, (unsigned long) pid);
 		}
 		unlink (file);
 		errno = EEXIST;
@@ -223,9 +212,9 @@ static int do_lock_file (const char *file, const char *lock, bool log)
 	}
 	if (unlink (lock) != 0) {
 		if (log) {
-			(void) fprintf (stderr,
+			(void) fprintf (shadow_logfd,
 			                "%s: cannot get lock %s: %s\n",
-			                Prog, lock, strerror (errno));
+			                shadow_progname, lock, strerror (errno));
 		}
 		unlink (file);
 		return 0;
@@ -233,17 +222,12 @@ static int do_lock_file (const char *file, const char *lock, bool log)
 
 	retval = 0;
 	if (link (file, lock) == 0) {
-		retval = check_link_count (file);
-		if ((0==retval) && log) {
-			(void) fprintf (stderr,
-			                "%s: %s: lock file already used\n",
-			                Prog, file);
-		}
+		retval = check_link_count (file, log);
 	} else {
 		if (log) {
-			(void) fprintf (stderr,
+			(void) fprintf (shadow_logfd,
 			                "%s: cannot get lock %s: %s\n",
-			                Prog, lock, strerror (errno));
+			                shadow_progname, lock, strerror (errno));
 		}
 	}
 
@@ -326,8 +310,12 @@ static int create_backup (const char *backup, FILE * fp)
 		/* FIXME: unlink the backup file? */
 		return -1;
 	}
-	if (   (fsync (fileno (bkfp)) != 0)
-	    || (fclose (bkfp) != 0)) {
+	if (fsync (fileno (bkfp)) != 0) {
+		(void) fclose (bkfp);
+		/* FIXME: unlink the backup file? */
+		return -1;
+	}
+	if (fclose (bkfp) != 0) {
 		/* FIXME: unlink the backup file? */
 		return -1;
 	}
@@ -347,9 +335,7 @@ static void free_linked_list (struct commonio_db *db)
 		p = db->head;
 		db->head = p->next;
 
-		if (NULL != p->line) {
-			free (p->line);
-		}
+		free (p->line);
 
 		if (NULL != p->eptr) {
 			db->ops->free (p->eptr);
@@ -389,11 +375,11 @@ int commonio_lock_nowait (struct commonio_db *db, bool log)
 	file_len = strlen(db->filename) + 11;/* %lu max size */
 	lock_file_len = strlen(db->filename) + 6; /* sizeof ".lock" */
 	file = (char*)malloc(file_len);
-	if(file == NULL) {
+	if (file == NULL) {
 		goto cleanup_ENOMEM;
 	}
 	lock = (char*)malloc(lock_file_len);
-	if(lock == NULL) {
+	if (lock == NULL) {
 		goto cleanup_ENOMEM;
 	}
 	snprintf (file, file_len, "%s.%lu",
@@ -405,10 +391,8 @@ int commonio_lock_nowait (struct commonio_db *db, bool log)
 		err = 1;
 	}
 cleanup_ENOMEM:
-	if(file)
-		free(file);
-	if(lock)
-		free(lock);
+	free(file);
+	free(lock);
 	return err;
 }
 
@@ -432,9 +416,9 @@ int commonio_lock (struct commonio_db *db)
 		if (0 == lock_count) {
 			if (lckpwdf () == -1) {
 				if (geteuid () != 0) {
-					(void) fprintf (stderr,
+					(void) fprintf (shadow_logfd,
 					                "%s: Permission denied.\n",
-					                Prog);
+					                shadow_progname);
 				}
 				return 0;	/* failure */
 			}
@@ -468,8 +452,8 @@ int commonio_lock (struct commonio_db *db)
 		}
 		/* no unnecessary retries on "permission denied" errors */
 		if (geteuid () != 0) {
-			(void) fprintf (stderr, "%s: Permission denied.\n",
-			                Prog);
+			(void) fprintf (shadow_logfd, "%s: Permission denied.\n",
+			                shadow_progname);
 			return 0;
 		}
 	}
@@ -964,7 +948,7 @@ int commonio_close (struct commonio_db *db)
 		snprintf (buf, sizeof buf, "%s-", db->filename);
 
 #ifdef WITH_SELINUX
-		if (set_selinux_file_context (buf) != 0) {
+		if (set_selinux_file_context (db->filename, S_IFREG) != 0) {
 			errors++;
 		}
 #endif
@@ -997,7 +981,7 @@ int commonio_close (struct commonio_db *db)
 	snprintf (buf, sizeof buf, "%s+", db->filename);
 
 #ifdef WITH_SELINUX
-	if (set_selinux_file_context (buf) != 0) {
+	if (set_selinux_file_context (db->filename, S_IFREG) != 0) {
 		errors++;
 	}
 #endif
@@ -1099,7 +1083,7 @@ int commonio_update (struct commonio_db *db, const void *eptr)
 	p = find_entry_by_name (db, db->ops->getname (eptr));
 	if (NULL != p) {
 		if (next_entry_by_name (db, p->next, db->ops->getname (eptr)) != NULL) {
-			fprintf (stderr, _("Multiple entries named '%s' in %s. Please fix this with pwck or grpck.\n"), db->ops->getname (eptr), db->filename);
+			fprintf (shadow_logfd, _("Multiple entries named '%s' in %s. Please fix this with pwck or grpck.\n"), db->ops->getname (eptr), db->filename);
 			db->ops->free (nentry);
 			return 0;
 		}
@@ -1204,15 +1188,13 @@ int commonio_remove (struct commonio_db *db, const char *name)
 		return 0;
 	}
 	if (next_entry_by_name (db, p->next, name) != NULL) {
-		fprintf (stderr, _("Multiple entries named '%s' in %s. Please fix this with pwck or grpck.\n"), name, db->filename);
+		fprintf (shadow_logfd, _("Multiple entries named '%s' in %s. Please fix this with pwck or grpck.\n"), name, db->filename);
 		return 0;
 	}
 
 	commonio_del_entry (db, p);
 
-	if (NULL != p->line) {
-		free (p->line);
-	}
+	free (p->line);
 
 	if (NULL != p->eptr) {
 		db->ops->free (p->eptr);

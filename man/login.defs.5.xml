@@ -1,33 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-   Copyright (c) 1991 - 1993, Julianne Frances Haugh
-   Copyright (c) 1991 - 1993, Chip Rosenthal
-   Copyright (c) 2007 - 2009, Nicolas François
-   All rights reserved.
-  
-   Redistribution and use in source and binary forms, with or without
-   modification, are permitted provided that the following conditions
-   are met:
-   1. Redistributions of source code must retain the above copyright
-      notice, this list of conditions and the following disclaimer.
-   2. Redistributions in binary form must reproduce the above copyright
-      notice, this list of conditions and the following disclaimer in the
-      documentation and/or other materials provided with the distribution.
-   3. The name of the copyright holders or contributors may not be used to
-      endorse or promote products derived from this software without
-      specific prior written permission.
-  
-   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-   ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-   LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
-   PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
-   HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-   SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-   LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-   DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-   THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+   SPDX-FileCopyrightText: 1991 - 1993, Julianne Frances Haugh
+   SPDX-FileCopyrightText: 1991 - 1993, Chip Rosenthal
+   SPDX-FileCopyrightText: 2007 - 2009, Nicolas François
+   SPDX-License-Identifier: BSD-3-Clause
 -->
 <!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook V4.5//EN" 
   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
@@ -50,6 +26,7 @@
 <!ENTITY FAKE_SHELL            SYSTEM "login.defs.d/FAKE_SHELL.xml">
 <!ENTITY FTMP_FILE             SYSTEM "login.defs.d/FTMP_FILE.xml">
 <!ENTITY GID_MAX               SYSTEM "login.defs.d/GID_MAX.xml">
+<!ENTITY HMAC_CRYPTO_ALGO      SYSTEM "login.defs.d/HMAC_CRYPTO_ALGO.xml">
 <!ENTITY HOME_MODE             SYSTEM "login.defs.d/HOME_MODE.xml">
 <!ENTITY HUSHLOGIN_FILE        SYSTEM "login.defs.d/HUSHLOGIN_FILE.xml">
 <!ENTITY ISSUE_FILE            SYSTEM "login.defs.d/ISSUE_FILE.xml">
@@ -67,6 +44,7 @@
 <!ENTITY MD5_CRYPT_ENAB        SYSTEM "login.defs.d/MD5_CRYPT_ENAB.xml">
 <!ENTITY MOTD_FILE             SYSTEM "login.defs.d/MOTD_FILE.xml">
 <!ENTITY NOLOGINS_FILE         SYSTEM "login.defs.d/NOLOGINS_FILE.xml">
+<!ENTITY NONEXISTENT           SYSTEM "login.defs.d/NONEXISTENT.xml">
 <!ENTITY OBSCURE_CHECKS_ENAB   SYSTEM "login.defs.d/OBSCURE_CHECKS_ENAB.xml">
 <!ENTITY PASS_ALWAYS_WARN      SYSTEM "login.defs.d/PASS_ALWAYS_WARN.xml">
 <!ENTITY PASS_CHANGE_TRIES     SYSTEM "login.defs.d/PASS_CHANGE_TRIES.xml">
@@ -123,7 +101,7 @@
   <refmeta>
     <refentrytitle>login.defs</refentrytitle>
     <manvolnum>5</manvolnum>
-    <refmiscinfo class="sectdesc">File Formats and Conversions</refmiscinfo>
+    <refmiscinfo class="sectdesc">File Formats and Configuration Files</refmiscinfo>
     <refmiscinfo class="source">shadow-utils</refmiscinfo>
     <refmiscinfo class="version">&SHADOW_UTILS_VERSION;</refmiscinfo>
   </refmeta>
@@ -186,6 +164,7 @@
       &FAKE_SHELL;
       &FTMP_FILE;
       &GID_MAX; <!-- documents also GID_MIN -->
+      &HMAC_CRYPTO_ALGO;
       &HOME_MODE;
       &HUSHLOGIN_FILE;
       &ISSUE_FILE;
@@ -203,6 +182,7 @@
       &MD5_CRYPT_ENAB;
       &MOTD_FILE;
       &NOLOGINS_FILE;
+      &NONEXISTENT;
       &OBSCURE_CHECKS_ENAB;
       &PASS_ALWAYS_WARN;
       &PASS_CHANGE_TRIES;

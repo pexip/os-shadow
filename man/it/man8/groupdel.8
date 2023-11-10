@@ -1,13 +1,13 @@
 '\" t
 .\"     Title: groupdel
 .\"    Author: Julianne Frances Haugh
-.\" Generator: DocBook XSL Stylesheets v1.79.1 <http://docbook.sf.net/>
-.\"      Date: 23/01/2020
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 08/11/2022
 .\"    Manual: Comandi per la gestione del sistema
-.\"    Source: shadow-utils 4.8.1
+.\"    Source: shadow-utils 4.13
 .\"  Language: Italian
 .\"
-.TH "GROUPDEL" "8" "23/01/2020" "shadow\-utils 4\&.8\&.1" "Comandi per la gestione del si"
+.TH "GROUPDEL" "8" "08/11/2022" "shadow\-utils 4\&.13" "Comandi per la gestione del si"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -44,6 +44,11 @@ The options which apply to the
 \fBgroupdel\fR
 command are:
 .PP
+\fB\-f\fR, \fB\-\-force\fR
+.RS 4
+This option forces the removal of the group, even if there\*(Aqs some user having the group as the primary one\&.
+.RE
+.PP
 \fB\-h\fR, \fB\-\-help\fR
 .RS 4
 Mostra un messaggio di aiuto ed esce\&.
@@ -55,7 +60,7 @@ Apply changes in the
 \fICHROOT_DIR\fR
 directory and use the configuration files from the
 \fICHROOT_DIR\fR
-directory\&.
+directory\&. Only absolute paths are supported\&.
 .RE
 .PP
 \fB\-P\fR, \fB\-\-prefix\fR\ \&\fIPREFIX_DIR\fR
@@ -76,21 +81,6 @@ Occorre controllare manualmente tutti i file system per assicurarsi che non rima
 The following configuration variables in
 /etc/login\&.defs
 change the behavior of this tool:
-.PP
-\fBMAX_MEMBERS_PER_GROUP\fR (number)
-.RS 4
-Maximum members per group entry\&. When the maximum is reached, a new group entry (line) is started in
-/etc/group
-(with the same name, same password, and same GID)\&.
-.sp
-Il valore predefinito \(`e 0, che non pone nessun limite al numero di membri per gruppo\&.
-.sp
-Questa opzione (dividi gruppo) permette di limitare la lunghezza delle righe nel file \(Fogroup\(Fc\&. Questo \(`e utile per essere certi che le righe per gruppi NIS non eccedano i 1024 caratteri\&.
-.sp
-Se si deve impostare questo limite, si pu\(`o usare 25\&.
-.sp
-Nota: la divisione dei gruppi potrebbe non essere supportata da ogni strumento (anche all\*(Aqinterno del pacchetto Shadow)\&. Non si dovrebbe utilizzare questa variabile a meno di esserci forzati\&.
-.RE
 .SH "FILE"
 .PP
 /etc/group

@@ -1,13 +1,13 @@
 '\" t
 .\"     Title: groupdel
 .\"    Author: Julianne Frances Haugh
-.\" Generator: DocBook XSL Stylesheets v1.79.1 <http://docbook.sf.net/>
-.\"      Date: 2020-01-23
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 2022-11-08
 .\"    Manual: 系统管理命令
-.\"    Source: shadow-utils 4.8.1
+.\"    Source: shadow-utils 4.13
 .\"  Language: Chinese Simplified
 .\"
-.TH "GROUPDEL" "8" "2020-01-23" "shadow\-utils 4\&.8\&.1" "系统管理命令"
+.TH "GROUPDEL" "8" "2022-11-08" "shadow\-utils 4\&.13" "系统管理命令"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -44,9 +44,14 @@ The options which apply to the
 \fBgroupdel\fR
 command are:
 .PP
+\fB\-f\fR, \fB\-\-force\fR
+.RS 4
+This option forces the removal of the group, even if there\*(Aqs some user having the group as the primary one\&.
+.RE
+.PP
 \fB\-h\fR, \fB\-\-help\fR
 .RS 4
-现实帮助信息并退出。
+显示帮助信息并退出。
 .RE
 .PP
 \fB\-R\fR, \fB\-\-root\fR\ \&\fICHROOT_DIR\fR
@@ -55,7 +60,7 @@ Apply changes in the
 \fICHROOT_DIR\fR
 directory and use the configuration files from the
 \fICHROOT_DIR\fR
-directory\&.
+directory\&. Only absolute paths are supported\&.
 .RE
 .PP
 \fB\-P\fR, \fB\-\-prefix\fR\ \&\fIPREFIX_DIR\fR
@@ -76,21 +81,6 @@ directory\&. This option does not chroot and is intended for preparing a cross\-
 The following configuration variables in
 /etc/login\&.defs
 change the behavior of this tool:
-.PP
-\fBMAX_MEMBERS_PER_GROUP\fR (number)
-.RS 4
-Maximum members per group entry\&. When the maximum is reached, a new group entry (line) is started in
-/etc/group
-(with the same name, same password, and same GID)\&.
-.sp
-默认值是 0，意味着组中的成员数没有限制。
-.sp
-此功能(分割组)允许限制组文件中的行长度。这对于确保 NIS 组的行比长于 1024 字符。
-.sp
-如果要强制这个限制，可以使用 25。
-.sp
-注意：分割组可能不受所有工具的支持(甚至在 Shadow 工具集中)。您不应该使用这个变量，除非真的需要。
-.RE
 .SH "文件"
 .PP
 /etc/group

@@ -1,0 +1,163 @@
+'\" t
+.\"     Title: pwconv
+.\"    Author: Marek Micha\(/lkiewicz
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 08/11/2022
+.\"    Manual: Команди керування системою
+.\"    Source: shadow-utils 4.13
+.\"  Language: Ukrainian
+.\"
+.TH "pwconv" "8" "08/11/2022" "shadow\-utils 4\&.13" "Команди керування системою"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "НАЗВА"
+pwconv, pwunconv, grpconv, grpunconv \- перетворення на приховані паролі і групи, і навпаки
+.SH "КОРОТКИЙ ОГЛЯД"
+.HP \w'\fBpwconv\fR\ 'u
+\fBpwconv\fR [\fIпараметри\fR]
+.HP \w'\fBpwunconv\fR\ 'u
+\fBpwunconv\fR [\fIпараметри\fR]
+.HP \w'\fBgrpconv\fR\ 'u
+\fBgrpconv\fR [\fIпараметри\fR]
+.HP \w'\fBgrpunconv\fR\ 'u
+\fBgrpunconv\fR [\fIпараметри\fR]
+.SH "ОПИС"
+.PP
+Команда
+\fBpwconv\fR
+створює
+\fIshadow\fR
+на основі
+\fIpasswd\fR
+і, необов\*(Aqязково, наявного
+\fIshadow\fR\&.
+.PP
+Команда
+\fBpwunconv\fR
+створює
+\fIpasswd\fR
+на основі
+\fIpasswd\fR
+і
+\fIshadow\fR, а потім вилучає
+\fIshadow\fR\&.
+.PP
+Команда
+\fBgrpconv\fR
+створює
+\fIgshadow\fR
+на основі
+\fIгрупа\fR
+і, необов\*(Aqязково, наявного
+\fIgshadow\fR\&.
+.PP
+Команда
+\fBgrpunconv\fR
+створює
+\fIгрупа\fR
+на основі
+\fIгрупа\fR
+і
+\fIgshadow\fR, а потім вилучає
+\fIgshadow\fR\&.
+.PP
+Ці чотири програми працюють зі звичайними паролями та паролями shadow та файлами груп:
+/etc/passwd,
+/etc/group,
+/etc/shadow
+і
+/etc/gshadow\&.
+.PP
+Кожна програма виконує належні блокування перед перетворенням\&. Команди
+\fBpwconv\fR
+і
+\fBgrpconv\fR
+є еквівалентними\&. Спочатку, буде вилучено записи у файлі shadow, яких немає в основному файлі\&. Потім буде оновлено записи shadow, у яких не вказано \(Fox\(Fc, як пароль, в основному файлі\&. Буде додано усі пропущені записи shadow\&. Нарешті, паролі в основному файлі буде замінено на \(Fox\(Fc\&. Цими програмами можна скористатися для початкового перетворення, а також для оновлення файла shadow, якщо до основного файла було внесено зміни вручну\&.
+.PP
+\fBpwconv\fR
+використає значення
+\fIPASS_MIN_DAYS\fR,
+\fIPASS_MAX_DAYS\fR
+і
+\fIPASS_WARN_AGE\fR
+з
+/etc/login\&.defs
+при додаванні нових записів до
+/etc/shadow\&.
+.PP
+Так само, є подібними команди
+\fBpwunconv\fR
+і
+\fBgrpunconv\fR\&. Паролі в основному файлі буде оновлено з файла shadow\&. Записи, які існують у основному файлі, але яких немає у файлі shadow, буде залишено\&. Нарешті, файл shadow буде вилучено\&. Робота
+\fBpwunconv\fR
+призведе до втрати деяких даних щодо застарівання паролів\&. Програма виконає перетворення лише тих даних, які можна перетворити\&.
+.SH "ПАРАМЕТРИ"
+.PP
+Параметри, які застосовують до команди
+\fBpwconv\fR,
+\fBpwunconv\fR,
+\fBgrpconv\fR
+та
+\fBgrpunconv\fR, є такими:
+.PP
+\fB\-h\fR, \fB\-\-help\fR
+.RS 4
+Показати довідкове повідомлення і завершити роботу\&.
+.RE
+.PP
+\fB\-R\fR, \fB\-\-root\fR \fIКАТАЛОГ_CHROOT\fR
+.RS 4
+Apply changes in the
+\fICHROOT_DIR\fR
+directory and use the configuration files from the
+\fICHROOT_DIR\fR
+directory\&. Only absolute paths are supported\&.
+.RE
+.SH "ВАДИ"
+.PP
+Помилки у файлах паролів або груп (зокрема некоректні або дубльовані записи) можуть спричинити зависання або помилки у роботі цих програм\&. Будь ласка, запустіть
+\fBpwck\fR
+і
+\fBgrpck\fR
+для виправлення таких помилок до перетворення паролів або груп shadow\&.
+.SH "НАЛАШТУВАННЯ"
+.PP
+Вказана нижче змінна налаштувань у
+/etc/login\&.defs
+змінює поведінку
+\fBgrpconv\fR
+і
+\fBgrpunconv\fR:
+.PP
+Вказані нижче змінні налаштувань у
+/etc/login\&.defs
+змінюють поведінку
+\fBpwconv\fR:
+.SH "ФАЙЛИ"
+.PP
+/etc/login\&.defs
+.RS 4
+Налаштування комплексу для роботи з прихованими паролями\&.
+.RE
+.SH "ДИВ\&. ТАКОЖ"
+.PP
+\fBgrpck\fR(8),
+\fBlogin.defs\fR(5),
+\fBpwck\fR(8)\&.

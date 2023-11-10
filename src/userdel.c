@@ -1,49 +1,24 @@
 /*
- * Copyright (c) 1991 - 1994, Julianne Frances Haugh
- * Copyright (c) 1996 - 2000, Marek Michałkiewicz
- * Copyright (c) 2000 - 2006, Tomasz Kłoczko
- * Copyright (c) 2007 - 2012, Nicolas François
- * All rights reserved.
+ * SPDX-FileCopyrightText: 1991 - 1994, Julianne Frances Haugh
+ * SPDX-FileCopyrightText: 1996 - 2000, Marek Michałkiewicz
+ * SPDX-FileCopyrightText: 2000 - 2006, Tomasz Kłoczko
+ * SPDX-FileCopyrightText: 2007 - 2012, Nicolas François
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the copyright holders or contributors may not be used to
- *    endorse or promote products derived from this software without
- *    specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
- * PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
- * HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * SPDX-License-Identifier: BSD-3-Clause
  */
 
 #include <config.h>
-
-#ident "$Id$"
-
 #include <assert.h>
+#include <dirent.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <getopt.h>
 #include <grp.h>
 #include <pwd.h>
 #include <stdio.h>
-#include <stdio.h>
 #include <sys/stat.h>
-#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
 #ifdef ACCT_TOOLS_SETUID
 #ifdef USE_PAM
 #include "pam_defs.h"
@@ -61,15 +36,20 @@
 #ifdef	SHADOWGRP
 #include "sgroupio.h"
 #endif				/* SHADOWGRP */
+#ifdef WITH_SELINUX
+#include <selinux/selinux.h>
+#endif				/* WITH_SELINUX */
 #ifdef WITH_TCB
 #include <tcb.h>
 #include "tcbfuncs.h"
 #endif				/* WITH_TCB */
+#include "run_part.h"
 /*@-exitarg@*/
 #include "exitcodes.h"
 #ifdef ENABLE_SUBIDS
 #include "subordinateio.h"
 #endif				/* ENABLE_SUBIDS */
+#include "shadowlog.h"
 
 /*
  * exit status values
@@ -150,8 +130,9 @@ static void usage (int status)
 	                  "\n"
 	                  "Options:\n"),
 	                Prog);
-	(void) fputs (_("  -f, --force                   force removal of files,\n"
-	                "                                even if not owned by user\n"),
+	(void) fputs (_("  -f, --force                   force some actions that would fail otherwise\n"
+	                "                                e.g. removal of user still logged in\n"
+	                "                                or files, even if not owned by the user\n"),
 	              usageout);
 	(void) fputs (_("  -h, --help                    display this help message and exit\n"), usageout);
 	(void) fputs (_("  -r, --remove                  remove home directory and mail spool\n"), usageout);
@@ -1012,6 +993,8 @@ int main (int argc, char **argv)
 	 * Get my name so that I can use it to report errors.
 	 */
 	Prog = Basename (argv[0]);
+	log_set_progname(Prog);
+	log_set_logfd(stderr);
 	(void) setlocale (LC_ALL, "");
 	(void) bindtextdomain (PACKAGE, LOCALEDIR);
 	(void) textdomain (PACKAGE);
@@ -1041,7 +1024,7 @@ int main (int argc, char **argv)
 			{NULL, 0, NULL, '\0'}
 		};
 		while ((c = getopt_long (argc, argv,
-#ifdef WITH_SELINUX             
+#ifdef WITH_SELINUX
 		                         "fhrR:P:Z",
 #else				/* !WITH_SELINUX */
 		                         "fhrR:P:",
@@ -1062,7 +1045,7 @@ int main (int argc, char **argv)
 				break;
 			case 'P': /* no-op, handled in process_prefix_flag () */
 				break;
-#ifdef WITH_SELINUX             
+#ifdef WITH_SELINUX
 			case 'Z':
 				if (prefix[0]) {
 					fprintf (stderr,
@@ -1143,6 +1126,10 @@ int main (int argc, char **argv)
 	{
 		const struct passwd *pwd;
 
+		if (run_parts ("/etc/shadow-maint/userdel-pre.d", user_name,
+				"userdel")) {
+			exit(1);
+		}
 		pw_open(O_RDONLY);
 		pwd = pw_locate (user_name); /* we care only about local users */
 		if (NULL == pwd) {
@@ -1159,9 +1146,9 @@ int main (int argc, char **argv)
 		}
 		user_id = pwd->pw_uid;
 		user_gid = pwd->pw_gid;
-		
-		if(prefix[0]) {
-		
+
+		if (prefix[0]) {
+
 			size_t len = strlen(prefix) + strlen(pwd->pw_dir) + 2;
 			int wlen;
 			user_home = xmalloc(len);
@@ -1338,9 +1325,13 @@ int main (int argc, char **argv)
 	 * Cancel any crontabs or at jobs. Have to do this before we remove
 	 * the entry from /etc/passwd.
 	 */
-	if(prefix[0] == '\0')
+	if (prefix[0] == '\0')
 		user_cancel (user_name);
 	close_files ();
+
+	if (run_parts ("/etc/shadow-maint/userdel-post.d", user_name, "userdel")) {
+		exit(1);
+	}
 
 #ifdef WITH_TCB
 	errors += remove_tcbdir (user_name, user_id);

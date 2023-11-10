@@ -1,33 +1,10 @@
 /*
- * Copyright (c) 1989 - 1994, Julianne Frances Haugh
- * Copyright (c) 1996 - 2000, Marek Michałkiewicz
- * Copyright (c) 2000 - 2006, Tomasz Kłoczko
- * Copyright (c) 2007 - 2011, Nicolas François
- * All rights reserved.
+ * SPDX-FileCopyrightText: 1989 - 1994, Julianne Frances Haugh
+ * SPDX-FileCopyrightText: 1996 - 2000, Marek Michałkiewicz
+ * SPDX-FileCopyrightText: 2000 - 2006, Tomasz Kłoczko
+ * SPDX-FileCopyrightText: 2007 - 2011, Nicolas François
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the copyright holders or contributors may not be used to
- *    endorse or promote products derived from this software without
- *    specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
- * PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
- * HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * SPDX-License-Identifier: BSD-3-Clause
  */
 
 #include <config.h>
@@ -52,6 +29,7 @@
 #include "defines.h"
 #include "pwio.h"
 #include "shadowio.h"
+#include "shadowlog.h"
 #ifdef WITH_TCB
 #include "tcbfuncs.h"
 #endif
@@ -89,7 +67,6 @@ static long expdate;
 
 /* local function prototypes */
 static /*@noreturn@*/void usage (int status);
-static void date_to_str (char *buf, size_t maxsize, time_t date);
 static int new_fields (void);
 static void print_date (time_t date);
 static void list_fields (void);
@@ -160,19 +137,6 @@ static /*@noreturn@*/void usage (int status)
 	exit (status);
 }
 
-static void date_to_str (char *buf, size_t maxsize, time_t date)
-{
-	struct tm *tp;
-
-	tp = gmtime (&date);
-#ifdef HAVE_STRFTIME
-	(void) strftime (buf, maxsize, "%Y-%m-%d", tp);
-#else
-	(void) snprintf (buf, maxsize, "%04d-%02d-%02d",
-	                 tp->tm_year + 1900, tp->tm_mon + 1, tp->tm_mday);
-#endif				/* HAVE_STRFTIME */
-}
-
 /*
  * new_fields - change the user's password aging information interactively.
  *
@@ -203,10 +167,10 @@ static int new_fields (void)
 		return 0;
 	}
 
-	if (-1 == lstchgdate) {
+	if (-1 == lstchgdate || lstchgdate > LONG_MAX / SCALE) {
 		strcpy (buf, "-1");
 	} else {
-		date_to_str (buf, sizeof buf, (time_t) lstchgdate * SCALE);
+		date_to_str (sizeof(buf), buf, lstchgdate * SCALE);
 	}
 
 	change_field (buf, sizeof buf, _("Last Password Change (YYYY-MM-DD)"));
@@ -234,10 +198,10 @@ static int new_fields (void)
 		return 0;
 	}
 
-	if (-1 == expdate) {
+	if (-1 == expdate || LONG_MAX / SCALE < expdate) {
 		strcpy (buf, "-1");
 	} else {
-		date_to_str (buf, sizeof buf, (time_t) expdate * SCALE);
+		date_to_str (sizeof(buf), buf, expdate * SCALE);
 	}
 
 	change_field (buf, sizeof buf,
@@ -257,39 +221,16 @@ static int new_fields (void)
 
 static void print_date (time_t date)
 {
-#ifdef HAVE_STRFTIME
 	struct tm *tp;
 	char buf[80];
-	char format[80];
-
-	if( iflg ) {
-		(void) snprintf (format, 80, "%%Y-%%m-%%d");
-	}
-	else {
-		(void) snprintf (format, 80, "%%b %%d, %%Y");
-	}
 
 	tp = gmtime (&date);
 	if (NULL == tp) {
 		(void) printf ("time_t: %lu\n", (unsigned long)date);
 	} else {
-		(void) strftime (buf, sizeof buf, format, tp);
+		(void) strftime (buf, sizeof buf, iflg ? "%Y-%m-%d" : "%b %d, %Y", tp);
 		(void) puts (buf);
 	}
-#else
-	struct tm *tp;
-	char *cp = NULL;
-
-	tp = gmtime (&date);
-	if (NULL != tp) {
-		cp = asctime (tp);
-	}
-	if (NULL != cp) {
-		(void) printf ("%6.6s, %4.4s\n", cp + 4, cp + 20);
-	} else {
-		(void) printf ("time_t: %lu\n", date);
-	}
-#endif
 }
 
 /*
@@ -309,7 +250,7 @@ static void list_fields (void)
 	 * was last modified. The date is the number of days since 1/1/1970.
 	 */
 	(void) fputs (_("Last password change\t\t\t\t\t: "), stdout);
-	if (lstchgdate < 0) {
+	if (lstchgdate < 0 || lstchgdate > LONG_MAX / SCALE) {
 		(void) puts (_("never"));
 	} else if (lstchgdate == 0) {
 		(void) puts (_("password must be changed"));
@@ -327,7 +268,8 @@ static void list_fields (void)
 		(void) puts (_("password must be changed"));
 	} else if (   (lstchgdate < 0)
 	           || (maxdays >= (10000 * (DAY / SCALE)))
-	           || (maxdays < 0)) {
+	           || (maxdays < 0)
+	           || ((LONG_MAX - changed) / SCALE < maxdays)) {
 		(void) puts (_("never"));
 	} else {
 		expires = changed + maxdays * SCALE;
@@ -346,7 +288,9 @@ static void list_fields (void)
 	} else if (   (lstchgdate < 0)
 	           || (inactdays < 0)
 	           || (maxdays >= (10000 * (DAY / SCALE)))
-	           || (maxdays < 0)) {
+	           || (maxdays < 0)
+	           || (maxdays > LONG_MAX - inactdays)
+	           || ((LONG_MAX - changed) / SCALE < maxdays + inactdays)) {
 		(void) puts (_("never"));
 	} else {
 		expires = changed + (maxdays + inactdays) * SCALE;
@@ -358,7 +302,7 @@ static void list_fields (void)
 	 * password expiring or not.
 	 */
 	(void) fputs (_("Account expires\t\t\t\t\t\t: "), stdout);
-	if (expdate < 0) {
+	if (expdate < 0 || LONG_MAX / SCALE < expdate) {
 		(void) puts (_("never"));
 	} else {
 		expires = expdate * SCALE;
@@ -811,6 +755,8 @@ int main (int argc, char **argv)
 	 * Get the program name so that error messages can use it.
 	 */
 	Prog = Basename (argv[0]);
+	log_set_progname(Prog);
+	log_set_logfd(stderr);
 
 	sanitize_env ();
 	(void) setlocale (LC_ALL, "");

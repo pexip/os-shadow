@@ -1,15 +1,16 @@
 
 AUTOMAKE_OPTIONS = 1.0 foreign
 
-DEFS = 
+DEFS =
 
 noinst_LTLIBRARIES = libshadow.la
 
-libshadow_la_LDFLAGS = -version-info 0:0:0
 libshadow_la_CPPFLAGS = $(ECONF_CPPFLAGS)
 if HAVE_VENDORDIR
 libshadow_la_CPPFLAGS += -DVENDORDIR=\"$(VENDORDIR)\"
 endif
+
+libshadow_la_CPPFLAGS += -I$(top_srcdir)
 
 libshadow_la_SOURCES = \
 	commonio.c \
@@ -32,8 +33,12 @@ libshadow_la_SOURCES = \
 	groupio.h \
 	gshadow.c \
 	lockpw.c \
+	nss.c \
 	nscd.c \
 	nscd.h \
+	shadowlog.c \
+	shadowlog.h \
+	shadowlog_internal.h \
 	sssd.c \
 	sssd.h \
 	pam_defs.h \
@@ -45,6 +50,8 @@ libshadow_la_SOURCES = \
 	pwio.c \
 	pwio.h \
 	pwmem.c \
+	run_part.h \
+	run_part.c \
 	subordinateio.h \
 	subordinateio.c \
 	selinux.c \

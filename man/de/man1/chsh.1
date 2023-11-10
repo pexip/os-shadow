@@ -1,13 +1,13 @@
 '\" t
 .\"     Title: chsh
 .\"    Author: Julianne Frances Haugh
-.\" Generator: DocBook XSL Stylesheets v1.79.1 <http://docbook.sf.net/>
-.\"      Date: 23.01.2020
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 08.11.2022
 .\"    Manual: Dienstprogramme f\(:ur Benutzer
-.\"    Source: shadow-utils 4.8.1
+.\"    Source: shadow-utils 4.13
 .\"  Language: German
 .\"
-.TH "CHSH" "1" "23.01.2020" "shadow\-utils 4\&.8\&.1" "Dienstprogramme f\(:ur Benutzer"
+.TH "CHSH" "1" "08.11.2022" "shadow\-utils 4\&.13" "Dienstprogramme f\(:ur Benutzer"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -54,12 +54,12 @@ Apply changes in the
 \fICHROOT_DIR\fR
 directory and use the configuration files from the
 \fICHROOT_DIR\fR
-directory\&.
+directory\&. Only absolute paths are supported\&.
 .RE
 .PP
 \fB\-s\fR, \fB\-\-shell\fR\ \&\fISHELL\fR
 .RS 4
-Der Name der neuen Anmelde\-Shell des Benutzers\&. Falls dieses Feld leer gelassen wird, verwendet das System die Standard\-Anmelde\-Shell\&.
+The name of the user\*(Aqs new login shell\&. Setting this field to blank causes the system to select the default login shell\&.
 .RE
 .PP
 If the
@@ -82,22 +82,6 @@ is discouraged since accidentally changing to a restricted shell would prevent t
 The following configuration variables in
 /etc/login\&.defs
 change the behavior of this tool:
-.PP
-\fBCHSH_AUTH\fR (boolean)
-.RS 4
-If
-\fIyes\fR, the
-\fBchsh\fR
-program will require authentication before making any changes, unless run by the superuser\&.
-.RE
-.PP
-\fBLOGIN_STRING\fR (string)
-.RS 4
-Diese Zeichenkette wird bei der Eingabeaufforderung des Passworts (Prompt) verwendet\&. Standardm\(:a\(ssig wird \(FcPassword: \(Fo oder eine \(:Ubersetzung davon benutzt\&. Wenn Sie diese Variable definieren, wird die Eingabeaufforderung nicht \(:ubersetzt\&.
-.sp
-If the string contains
-\fI%s\fR, this will be replaced by the user\*(Aqs name\&.
-.RE
 .SH "DATEIEN"
 .PP
 /etc/passwd

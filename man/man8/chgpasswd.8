@@ -1,13 +1,13 @@
 '\" t
 .\"     Title: chgpasswd
 .\"    Author: Thomas Kłoczko <kloczek@pld.org.pl>
-.\" Generator: DocBook XSL Stylesheets v1.79.1 <http://docbook.sf.net/>
-.\"      Date: 01/23/2020
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 11/08/2022
 .\"    Manual: System Management Commands
-.\"    Source: shadow-utils 4.8.1
+.\"    Source: shadow-utils 4.13
 .\"  Language: English
 .\"
-.TH "CHGPASSWD" "8" "01/23/2020" "shadow\-utils 4\&.8\&.1" "System Management Commands"
+.TH "CHGPASSWD" "8" "11/08/2022" "shadow\-utils 4\&.13" "System Management Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -87,7 +87,7 @@ Apply changes in the
 \fICHROOT_DIR\fR
 directory and use the configuration files from the
 \fICHROOT_DIR\fR
-directory\&.
+directory\&. Only absolute paths are supported\&.
 .RE
 .PP
 \fB\-s\fR, \fB\-\-sha\-rounds\fR
@@ -121,7 +121,9 @@ This defines the system default encryption algorithm for encrypting passwords (i
 It can take one of these values:
 \fIDES\fR
 (default),
-\fIMD5\fR, \fISHA256\fR, \fISHA512\fR\&.
+\fIMD5\fR, \fISHA256\fR, \fISHA512\fR\&. MD5 and DES should not be used for new hashes, see
+crypt(5)
+for recommendations\&.
 .sp
 Note: this parameter overrides the
 \fBMD5_CRYPT_ENAB\fR
@@ -170,7 +172,7 @@ or
 .sp
 With a lot of rounds, it is more difficult to brute forcing the password\&. But note also that more CPU resources will be needed to authenticate users\&.
 .sp
-If not specified, the libc will choose the default number of rounds (5000)\&.
+If not specified, the libc will choose the default number of rounds (5000), which is orders of magnitude too low for modern hardware\&.
 .sp
 The values must be inside the 1000\-999,999,999 range\&.
 .sp
