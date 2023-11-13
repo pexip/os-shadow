@@ -1,13 +1,13 @@
 '\" t
 .\"     Title: groups
 .\"    Author: Julianne Frances Haugh
-.\" Generator: DocBook XSL Stylesheets v1.79.1 <http://docbook.sf.net/>
-.\"      Date: 01/23/2020
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 11/08/2022
 .\"    Manual: Polecenia użytkownik\('ow
-.\"    Source: shadow-utils 4.8.1
+.\"    Source: shadow-utils 4.13
 .\"  Language: Polish
 .\"
-.TH "GROUPS" "1" "01/23/2020" "shadow\-utils 4\&.8\&.1" "Polecenia użytkownik\('ow"
+.TH "GROUPS" "1" "11/08/2022" "shadow\-utils 4\&.13" "Polecenia użytkownik\('ow"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -39,11 +39,11 @@ The
 command displays the current group names or ID values\&. If the value does not have a corresponding entry in
 /etc/group, the value will be displayed as the numerical group value\&. The optional
 \fIuser\fR
-parameter will display the groups for the named
-\fIuser\fR\&.
+parameter will display the groups for the named user\&.
 .SH "UWAGI"
 .PP
-Systems which do not support concurrent group sets will have the information from
+Systems which do not support supplementary groups (see
+\fBinitgroups\fR(3)) will have the information from
 /etc/group
 reported\&. The user must use
 \fBnewgrp\fR
@@ -61,4 +61,5 @@ Informacje o grupach użytkownik\('ow\&.
 \fBnewgrp\fR(1),
 \fBgetgid\fR(2),
 \fBgetgroups\fR(2),
-\fBgetuid\fR(2)\&.
+\fBgetuid\fR(2),
+\fBinitgroups\fR(3)\&.

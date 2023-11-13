@@ -1,33 +1,10 @@
 /*
- * Copyright (c) 1989 - 1994, Julianne Frances Haugh
- * Copyright (c) 1996 - 1999, Marek Michałkiewicz
- * Copyright (c) 2003 - 2006, Tomasz Kłoczko
- * Copyright (c) 2007 - 2010, Nicolas François
- * All rights reserved.
+ * SPDX-FileCopyrightText: 1989 - 1994, Julianne Frances Haugh
+ * SPDX-FileCopyrightText: 1996 - 1999, Marek Michałkiewicz
+ * SPDX-FileCopyrightText: 2003 - 2006, Tomasz Kłoczko
+ * SPDX-FileCopyrightText: 2007 - 2010, Nicolas François
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the copyright holders or contributors may not be used to
- *    endorse or promote products derived from this software without
- *    specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
- * PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
- * HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * SPDX-License-Identifier: BSD-3-Clause
  */
 
 /*
@@ -50,6 +27,7 @@
 #include "defines.h"
 #include <pwd.h>
 #include "getdef.h"
+#include "shadowlog.h"
 #ifdef HAVE_SYS_RESOURCE_H
 #include <sys/resource.h>
 #define LIMITS
@@ -202,7 +180,7 @@ static int check_logins (const char *name, const char *maxlogins)
 	return 0;
 }
 
-/* Function setup_user_limits - checks/set limits for the curent login
+/* Function setup_user_limits - checks/set limits for the current login
  * Original idea from Joel Katz's lshell. Ported to shadow-login
  * by Cristian Gafton - gafton@sorosis.ro
  *
@@ -404,7 +382,7 @@ static bool user_in_group (const char *uname, const char *gname)
 {
 	struct group *groupdata;
 
-	if (uname == NULL || gname == NULL){ 
+	if (uname == NULL || gname == NULL) {
 		return false;
 	}
 
@@ -548,7 +526,7 @@ void setup_limits (const struct passwd *info)
 #ifdef LIMITS
 		if (info->pw_uid != 0) {
 			if ((setup_user_limits (info->pw_name) & LOGIN_ERROR_LOGIN) != 0) {
-				(void) fputs (_("Too many logins.\n"), stderr);
+				(void) fputs (_("Too many logins.\n"), log_get_logfd());
 				(void) sleep (2); /* XXX: Should be FAIL_DELAY */
 				exit (EXIT_FAILURE);
 			}

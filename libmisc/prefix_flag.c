@@ -1,31 +1,8 @@
 /*
- * Copyright (c) 2011       , Julian Pidancet
- * Copyright (c) 2011       , Nicolas François
- * All rights reserved.
+ * SPDX-FileCopyrightText: 2011       , Julian Pidancet
+ * SPDX-FileCopyrightText: 2011       , Nicolas François
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the copyright holders or contributors may not be used to
- *    endorse or promote products derived from this software without
- *    specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
- * PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
- * HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * SPDX-License-Identifier: BSD-3-Clause
  */
 
 #include <config.h>
@@ -48,6 +25,7 @@
 #include "subordinateio.h"
 #endif				/* ENABLE_SUBIDS */
 #include "getdef.h"
+#include "shadowlog.h"
 
 static char *passwd_db_file = NULL;
 static char *spw_db_file = NULL;
@@ -74,25 +52,31 @@ extern const char* process_prefix_flag (const char* short_opt, int argc, char **
 	 * Parse the command line options.
 	 */
 	int i;
-	const char *prefix = NULL;
+	const char *prefix = NULL, *val;
 
 	for (i = 0; i < argc; i++) {
+		val = NULL;
 		if (   (strcmp (argv[i], "--prefix") == 0)
+		    || ((strncmp (argv[i], "--prefix=", 9) == 0)
+			&& (val = argv[i] + 9))
 		    || (strcmp (argv[i], short_opt) == 0)) {
 			if (NULL != prefix) {
-				fprintf (stderr,
+				fprintf (log_get_logfd(),
 				         _("%s: multiple --prefix options\n"),
-				         Prog);
+				         log_get_progname());
 				exit (E_BAD_ARG);
 			}
 
-			if (i + 1 == argc) {
-				fprintf (stderr,
+			if (val) {
+				prefix = val;
+			} else if (i + 1 == argc) {
+				fprintf (log_get_logfd(),
 				         _("%s: option '%s' requires an argument\n"),
-				         Prog, argv[i]);
+				         log_get_progname(), argv[i]);
 				exit (E_BAD_ARG);
+			} else {
+				prefix = argv[++ i];
 			}
-			prefix = argv[i + 1];
 		}
 	}
 
@@ -103,6 +87,12 @@ extern const char* process_prefix_flag (const char* short_opt, int argc, char **
 			return ""; /* if prefix is "/" then we ignore the flag option */
 		/* should we prevent symbolic link from being used as a prefix? */
 
+		if ( prefix[0] != '/') {
+			fprintf (log_get_logfd(),
+				 _("%s: prefix must be an absolute path\n"),
+				 log_get_progname());
+			exit (E_BAD_ARG);
+		}
 		size_t len;
 		len = strlen(prefix) + strlen(PASSWD_FILE) + 2;
 		passwd_db_file = xmalloc(len);
@@ -164,10 +154,10 @@ extern struct group *prefix_getgrnam(const char *name)
 		struct group * grp = NULL;
 
 		fg = fopen(group_db_file, "rt");
-		if(!fg)
+		if (!fg)
 			return NULL;
-		while((grp = fgetgrent(fg)) != NULL) {
-			if(!strcmp(name, grp->gr_name))
+		while ((grp = fgetgrent(fg)) != NULL) {
+			if (!strcmp(name, grp->gr_name))
 				break;
 		}
 		fclose(fg);
@@ -184,10 +174,10 @@ extern struct group *prefix_getgrgid(gid_t gid)
 		struct group * grp = NULL;
 
 		fg = fopen(group_db_file, "rt");
-		if(!fg)
+		if (!fg)
 			return NULL;
-		while((grp = fgetgrent(fg)) != NULL) {
-			if(gid == grp->gr_gid)
+		while ((grp = fgetgrent(fg)) != NULL) {
+			if (gid == grp->gr_gid)
 				break;
 		}
 		fclose(fg);
@@ -204,10 +194,10 @@ extern struct passwd *prefix_getpwuid(uid_t uid)
 		struct passwd *pwd = NULL;
 
 		fg = fopen(passwd_db_file, "rt");
-		if(!fg)
+		if (!fg)
 			return NULL;
-		while((pwd = fgetpwent(fg)) != NULL) {
-			if(uid == pwd->pw_uid)
+		while ((pwd = fgetpwent(fg)) != NULL) {
+			if (uid == pwd->pw_uid)
 				break;
 		}
 		fclose(fg);
@@ -224,10 +214,10 @@ extern struct passwd *prefix_getpwnam(const char* name)
 		struct passwd *pwd = NULL;
 
 		fg = fopen(passwd_db_file, "rt");
-		if(!fg)
+		if (!fg)
 			return NULL;
-		while((pwd = fgetpwent(fg)) != NULL) {
-			if(!strcmp(name, pwd->pw_name))
+		while ((pwd = fgetpwent(fg)) != NULL) {
+			if (!strcmp(name, pwd->pw_name))
 				break;
 		}
 		fclose(fg);
@@ -244,10 +234,10 @@ extern struct spwd *prefix_getspnam(const char* name)
 		struct spwd *sp = NULL;
 
 		fg = fopen(spw_db_file, "rt");
-		if(!fg)
+		if (!fg)
 			return NULL;
-		while((sp = fgetspent(fg)) != NULL) {
-			if(!strcmp(name, sp->sp_namp))
+		while ((sp = fgetspent(fg)) != NULL) {
+			if (!strcmp(name, sp->sp_namp))
 				break;
 		}
 		fclose(fg);
@@ -258,9 +248,9 @@ extern struct spwd *prefix_getspnam(const char* name)
 	}
 }
 
-extern void prefix_setpwent()
+extern void prefix_setpwent(void)
 {
-	if(!passwd_db_file) {
+	if (!passwd_db_file) {
 		setpwent();
 		return;
 	}
@@ -268,19 +258,22 @@ extern void prefix_setpwent()
 		fclose (fp_pwent);
 
 	fp_pwent = fopen(passwd_db_file, "rt");
-	if(!fp_pwent)
+	if (!fp_pwent)
 		return;
 }
-extern struct passwd* prefix_getpwent()
+extern struct passwd* prefix_getpwent(void)
 {
-	if(!passwd_db_file) {
+	if (!passwd_db_file) {
 		return getpwent();
+	}
+	if (!fp_pwent) {
+		return NULL;
 	}
 	return fgetpwent(fp_pwent);
 }
-extern void prefix_endpwent()
+extern void prefix_endpwent(void)
 {
-	if(!passwd_db_file) {
+	if (!passwd_db_file) {
 		endpwent();
 		return;
 	}
@@ -289,9 +282,9 @@ extern void prefix_endpwent()
 	fp_pwent = NULL;
 }
 
-extern void prefix_setgrent()
+extern void prefix_setgrent(void)
 {
-	if(!group_db_file) {
+	if (!group_db_file) {
 		setgrent();
 		return;
 	}
@@ -299,19 +292,19 @@ extern void prefix_setgrent()
 		fclose (fp_grent);
 
 	fp_grent = fopen(group_db_file, "rt");
-	if(!fp_grent)
+	if (!fp_grent)
 		return;
 }
-extern struct group* prefix_getgrent()
+extern struct group* prefix_getgrent(void)
 {
-	if(!group_db_file) {
+	if (!group_db_file) {
 		return getgrent();
 	}
 	return fgetgrent(fp_grent);
 }
-extern void prefix_endgrent()
+extern void prefix_endgrent(void)
 {
-	if(!group_db_file) {
+	if (!group_db_file) {
 		endgrent();
 		return;
 	}

@@ -1,13 +1,13 @@
 '\" t
 .\"     Title: pwconv
 .\"    Author: Marek Michałkiewicz
-.\" Generator: DocBook XSL Stylesheets v1.79.1 <http://docbook.sf.net/>
-.\"      Date: 01/23/2020
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 11/08/2022
 .\"    Manual: System Management Commands
-.\"    Source: shadow-utils 4.8.1
+.\"    Source: shadow-utils 4.13
 .\"  Language: English
 .\"
-.TH "PWCONV" "8" "01/23/2020" "shadow\-utils 4\&.8\&.1" "System Management Commands"
+.TH "PWCONV" "8" "11/08/2022" "shadow\-utils 4\&.13" "System Management Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -128,7 +128,7 @@ Apply changes in the
 \fICHROOT_DIR\fR
 directory and use the configuration files from the
 \fICHROOT_DIR\fR
-directory\&.
+directory\&. Only absolute paths are supported\&.
 .RE
 .SH "BUGS"
 .PP
@@ -173,7 +173,7 @@ The maximum number of days a password may be used\&. If the password is older th
 .PP
 \fBPASS_MIN_DAYS\fR (number)
 .RS 4
-The minimum number of days allowed between password changes\&. Any password changes attempted sooner than this will be rejected\&. If not specified, \-1 will be assumed (which disables the restriction)\&.
+The minimum number of days allowed between password changes\&. Any password changes attempted sooner than this will be rejected\&. If not specified, 0 will be assumed (which disables the restriction)\&.
 .RE
 .PP
 \fBPASS_WARN_AGE\fR (number)

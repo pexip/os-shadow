@@ -1,13 +1,13 @@
 '\" t
 .\"     Title: shadow
 .\"    Author: Julianne Frances Haugh
-.\" Generator: DocBook XSL Stylesheets v1.79.1 <http://docbook.sf.net/>
-.\"      Date: 2020-01-23
-.\"    Manual: 文件格式和转化
-.\"    Source: shadow-utils 4.8.1
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 2022-11-08
+.\"    Manual: File Formats and Configuration Files
+.\"    Source: shadow-utils 4.13
 .\"  Language: Chinese Simplified
 .\"
-.TH "SHADOW" "5" "2020-01-23" "shadow\-utils 4\&.8\&.1" "文件格式和转化"
+.TH "SHADOW" "5" "2022-11-08" "shadow\-utils 4\&.13" "File Formats and Configuration"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -61,7 +61,7 @@ If the password field contains some string that is not a valid result of
 .PP
 \fB最后一次更改密码的日期\fR
 .RS 4
-最近一次更改密码的时间，表示从1970年1月1日开始的天数。
+The date of the last password change, expressed as the number of days since Jan 1, 1970 00:00 UTC\&.
 .sp
 The value 0 has a special meaning, which is that the user should change her password the next time she will log in the system\&.
 .sp
@@ -72,7 +72,7 @@ The value 0 has a special meaning, which is that the user should change her pass
 .RS 4
 最小密码年龄是指，用户一次更改密码之后，要等多长时间才再次被允许更改密码。
 .sp
-空字段或 0 表示没有最小密码年龄。
+An empty field and value 0 mean that there is no minimum password age\&.
 .RE
 .PP
 \fB最大密码年龄\fR
@@ -97,14 +97,14 @@ The value 0 has a special meaning, which is that the user should change her pass
 .RS 4
 密码过期(查看上边的密码最大年龄)后，仍然接受此密码的天数(在此期间，用户应该在下次登录时修改密码)。
 .sp
-密码到期并且过了这个宽限期之后，使用用户的当前的密码将会不能登录。用户需要联系系统管理员。
+After expiration of the password and this expiration period is elapsed, no login is possible for the user\&. The user should contact her administrator\&.
 .sp
 空字段表示没有强制密码过期。
 .RE
 .PP
 \fB账户过期日期\fR
 .RS 4
-账户过期的日期，表示从1970年1月1日开始的天数。
+The date of expiration of the account, expressed as the number of days since Jan 1, 1970 00:00 UTC\&.
 .sp
 Note that an account expiration differs from a password expiration\&. In case of an account expiration, the user shall not be allowed to login\&. In case of a password expiration, the user is not allowed to login using her password\&.
 .sp

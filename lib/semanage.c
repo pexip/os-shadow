@@ -1,31 +1,8 @@
 /*
- * Copyright (c) 2010       , Jakub Hrozek <jhrozek@redhat.com>
- * Copyright (c) 2011       , Peter Vrabec <pvrabec@redhat.com>
- * All rights reserved.
+ * SPDX-FileCopyrightText: 2010       , Jakub Hrozek <jhrozek@redhat.com>
+ * SPDX-FileCopyrightText: 2011       , Peter Vrabec <pvrabec@redhat.com>
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the copyright holders or contributors may not be used to
- *    endorse or promote products derived from this software without
- *    specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
- * PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
- * HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * SPDX-License-Identifier: BSD-3-Clause
  */
 
 #include <config.h>
@@ -43,12 +20,14 @@
 #include <semanage/semanage.h>
 #include "prototypes.h"
 
+#include "shadowlog_internal.h"
 
 #ifndef DEFAULT_SERANGE
 #define DEFAULT_SERANGE "s0"
 #endif
 
 
+format_attr(printf, 3, 4)
 static void semanage_error_callback (unused void *varg,
                                      semanage_handle_t *handle,
                                      const char *fmt, ...)
@@ -69,7 +48,7 @@ static void semanage_error_callback (unused void *varg,
 	switch (semanage_msg_get_level (handle)) {
 	case SEMANAGE_MSG_ERR:
 	case SEMANAGE_MSG_WARN:
-		fprintf (stderr, _("[libsemanage]: %s\n"), message);
+		fprintf (shadow_logfd, _("[libsemanage]: %s\n"), message);
 		break;
 	case SEMANAGE_MSG_INFO:
 		/* nop */
@@ -87,7 +66,7 @@ static semanage_handle_t *semanage_init (void)
 
 	handle = semanage_handle_create ();
 	if (NULL == handle) {
-		fprintf (stderr,
+		fprintf (shadow_logfd,
 		         _("Cannot create SELinux management handle\n"));
 		return NULL;
 	}
@@ -96,26 +75,26 @@ static semanage_handle_t *semanage_init (void)
 
 	ret = semanage_is_managed (handle);
 	if (ret != 1) {
-		fprintf (stderr, _("SELinux policy not managed\n"));
+		fprintf (shadow_logfd, _("SELinux policy not managed\n"));
 		goto fail;
 	}
 
 	ret = semanage_access_check (handle);
 	if (ret < SEMANAGE_CAN_READ) {
-		fprintf (stderr, _("Cannot read SELinux policy store\n"));
+		fprintf (shadow_logfd, _("Cannot read SELinux policy store\n"));
 		goto fail;
 	}
 
 	ret = semanage_connect (handle);
 	if (ret != 0) {
-		fprintf (stderr,
+		fprintf (shadow_logfd,
 		         _("Cannot establish SELinux management connection\n"));
 		goto fail;
 	}
 
 	ret = semanage_begin_transaction (handle);
 	if (ret != 0) {
-		fprintf (stderr, _("Cannot begin SELinux transaction\n"));
+		fprintf (shadow_logfd, _("Cannot begin SELinux transaction\n"));
 		goto fail;
 	}
 
@@ -137,23 +116,25 @@ static int semanage_user_mod (semanage_handle_t *handle,
 
 	semanage_seuser_query (handle, key, &seuser);
 	if (NULL == seuser) {
-		fprintf (stderr,
+		fprintf (shadow_logfd,
 		         _("Could not query seuser for %s\n"), login_name);
 		ret = 1;
 		goto done;
 	}
 
-	ret = semanage_seuser_set_mlsrange (handle, seuser, DEFAULT_SERANGE);
-	if (ret != 0) {
-		fprintf (stderr,
-		         _("Could not set serange for %s\n"), login_name);
-		ret = 1;
-		goto done;
+	if (semanage_mls_enabled(handle)) {
+		ret = semanage_seuser_set_mlsrange (handle, seuser, DEFAULT_SERANGE);
+		if (ret != 0) {
+			fprintf (shadow_logfd,
+			         _("Could not set serange for %s\n"), login_name);
+			ret = 1;
+			goto done;
+		}
 	}
 
 	ret = semanage_seuser_set_sename (handle, seuser, seuser_name);
 	if (ret != 0) {
-		fprintf (stderr,
+		fprintf (shadow_logfd,
 		         _("Could not set sename for %s\n"),
 		         login_name);
 		ret = 1;
@@ -162,7 +143,7 @@ static int semanage_user_mod (semanage_handle_t *handle,
 
 	ret = semanage_seuser_modify_local (handle, key, seuser);
 	if (ret != 0) {
-		fprintf (stderr,
+		fprintf (shadow_logfd,
 		         _("Could not modify login mapping for %s\n"),
 		         login_name);
 		ret = 1;
@@ -186,7 +167,7 @@ static int semanage_user_add (semanage_handle_t *handle,
 
 	ret = semanage_seuser_create (handle, &seuser);
 	if (ret != 0) {
-		fprintf (stderr,
+		fprintf (shadow_logfd,
 		         _("Cannot create SELinux login mapping for %s\n"),
 		         login_name);
 		ret = 1;
@@ -195,23 +176,24 @@ static int semanage_user_add (semanage_handle_t *handle,
 
 	ret = semanage_seuser_set_name (handle, seuser, login_name);
 	if (ret != 0) {
-		fprintf (stderr, _("Could not set name for %s\n"), login_name);
+		fprintf (shadow_logfd, _("Could not set name for %s\n"), login_name);
 		ret = 1;
 		goto done;
 	}
 
-	ret = semanage_seuser_set_mlsrange (handle, seuser, DEFAULT_SERANGE);
-	if (ret != 0) {
-		fprintf (stderr,
-		         _("Could not set serange for %s\n"),
-		         login_name);
-		ret = 1;
-		goto done;
+	if (semanage_mls_enabled(handle)) {
+		ret = semanage_seuser_set_mlsrange (handle, seuser, DEFAULT_SERANGE);
+		if (ret != 0) {
+			fprintf (shadow_logfd,
+			         _("Could not set serange for %s\n"), login_name);
+			ret = 1;
+			goto done;
+		}
 	}
 
 	ret = semanage_seuser_set_sename (handle, seuser, seuser_name);
 	if (ret != 0) {
-		fprintf (stderr,
+		fprintf (shadow_logfd,
 		         _("Could not set SELinux user for %s\n"),
 		         login_name);
 		ret = 1;
@@ -220,7 +202,7 @@ static int semanage_user_add (semanage_handle_t *handle,
 
 	ret = semanage_seuser_modify_local (handle, key, seuser);
 	if (ret != 0) {
-		fprintf (stderr,
+		fprintf (shadow_logfd,
 		         _("Could not add login mapping for %s\n"),
 		         login_name);
 		ret = 1;
@@ -248,21 +230,21 @@ int set_seuser (const char *login_name, const char *seuser_name)
 
 	handle = semanage_init ();
 	if (NULL == handle) {
-		fprintf (stderr, _("Cannot init SELinux management\n"));
+		fprintf (shadow_logfd, _("Cannot init SELinux management\n"));
 		ret = 1;
 		goto done;
 	}
 
 	ret = semanage_seuser_key_create (handle, login_name, &key);
 	if (ret != 0) {
-		fprintf (stderr, _("Cannot create SELinux user key\n"));
+		fprintf (shadow_logfd, _("Cannot create SELinux user key\n"));
 		ret = 1;
 		goto done;
 	}
 
 	ret = semanage_seuser_exists (handle, key, &seuser_exists);
 	if (ret < 0) {
-		fprintf (stderr, _("Cannot verify the SELinux user\n"));
+		fprintf (shadow_logfd, _("Cannot verify the SELinux user\n"));
 		ret = 1;
 		goto done;
 	}
@@ -270,7 +252,7 @@ int set_seuser (const char *login_name, const char *seuser_name)
 	if (0 != seuser_exists) {
 		ret = semanage_user_mod (handle, key, login_name, seuser_name);
 		if (ret != 0) {
-			fprintf (stderr,
+			fprintf (shadow_logfd,
 			         _("Cannot modify SELinux user mapping\n"));
 			ret = 1;
 			goto done;
@@ -278,7 +260,7 @@ int set_seuser (const char *login_name, const char *seuser_name)
 	} else {
 		ret = semanage_user_add (handle, key, login_name, seuser_name);
 		if (ret != 0) {
-			fprintf (stderr,
+			fprintf (shadow_logfd,
 			         _("Cannot add SELinux user mapping\n"));
 			ret = 1;
 			goto done;
@@ -287,12 +269,13 @@ int set_seuser (const char *login_name, const char *seuser_name)
 
 	ret = semanage_commit (handle);
 	if (ret < 0) {
-		fprintf (stderr, _("Cannot commit SELinux transaction\n"));
+		fprintf (shadow_logfd, _("Cannot commit SELinux transaction\n"));
 		ret = 1;
 		goto done;
 	}
 
 	ret = 0;
+	reset_selinux_handle();
 
 done:
 	semanage_seuser_key_free (key);
@@ -310,28 +293,28 @@ int del_seuser (const char *login_name)
 
 	handle = semanage_init ();
 	if (NULL == handle) {
-		fprintf (stderr, _("Cannot init SELinux management\n"));
+		fprintf (shadow_logfd, _("Cannot init SELinux management\n"));
 		ret = 1;
 		goto done;
 	}
 
 	ret = semanage_seuser_key_create (handle, login_name, &key);
 	if (ret != 0) {
-		fprintf (stderr, _("Cannot create SELinux user key\n"));
+		fprintf (shadow_logfd, _("Cannot create SELinux user key\n"));
 		ret = 1;
 		goto done;
 	}
 
 	ret = semanage_seuser_exists (handle, key, &exists);
 	if (ret < 0) {
-		fprintf (stderr, _("Cannot verify the SELinux user\n"));
+		fprintf (shadow_logfd, _("Cannot verify the SELinux user\n"));
 		ret = 1;
 		goto done;
 	}
 
 	if (0 == exists) {
-		fprintf (stderr,
-		         _("Login mapping for %s is not defined, OK if default mapping was used\n"), 
+		fprintf (shadow_logfd,
+		         _("Login mapping for %s is not defined, OK if default mapping was used\n"),
 		         login_name);
 		ret = 0;  /* probably default mapping */
 		goto done;
@@ -339,14 +322,14 @@ int del_seuser (const char *login_name)
 
 	ret = semanage_seuser_exists_local (handle, key, &exists);
 	if (ret < 0) {
-		fprintf (stderr, _("Cannot verify the SELinux user\n"));
+		fprintf (shadow_logfd, _("Cannot verify the SELinux user\n"));
 		ret = 1;
 		goto done;
 	}
 
 	if (0 == exists) {
-		fprintf (stderr,
-		         _("Login mapping for %s is defined in policy, cannot be deleted\n"), 
+		fprintf (shadow_logfd,
+		         _("Login mapping for %s is defined in policy, cannot be deleted\n"),
 		         login_name);
 		ret = 0; /* Login mapping defined in policy can't be deleted */
 		goto done;
@@ -354,7 +337,7 @@ int del_seuser (const char *login_name)
 
 	ret = semanage_seuser_del_local (handle, key);
 	if (ret != 0) {
-		fprintf (stderr,
+		fprintf (shadow_logfd,
 		         _("Could not delete login mapping for %s"),
 		         login_name);
 		ret = 1;
@@ -363,7 +346,7 @@ int del_seuser (const char *login_name)
 
 	ret = semanage_commit (handle);
 	if (ret < 0) {
-		fprintf (stderr, _("Cannot commit SELinux transaction\n"));
+		fprintf (shadow_logfd, _("Cannot commit SELinux transaction\n"));
 		ret = 1;
 		goto done;
 	}

@@ -9,15 +9,15 @@ Note: If removed, FAIL_DELAY must be re-added to /etc/login.defs
 
 --- a/src/login.c
 +++ b/src/login.c
-@@ -536,7 +536,6 @@
- #if defined(HAVE_STRFTIME) && !defined(USE_PAM)
+@@ -512,7 +512,6 @@
+ #if !defined(USE_PAM)
  	char ptime[80];
  #endif
 -	unsigned int delay;
  	unsigned int retries;
  	bool subroot = false;
  #ifndef USE_PAM
-@@ -561,6 +560,7 @@
+@@ -537,6 +536,7 @@
  	pid_t child;
  	char *pam_user = NULL;
  #else
@@ -25,7 +25,7 @@ Note: If removed, FAIL_DELAY must be re-added to /etc/login.defs
  	struct spwd *spwd = NULL;
  #endif
  	/*
-@@ -723,7 +723,6 @@
+@@ -701,7 +701,6 @@
  	}
  
  	environ = newenvp;	/* make new environment active */
@@ -33,7 +33,7 @@ Note: If removed, FAIL_DELAY must be re-added to /etc/login.defs
  	retries = getdef_unum ("LOGIN_RETRIES", RETRIES);
  
  #ifdef USE_PAM
-@@ -739,8 +738,7 @@
+@@ -717,8 +716,7 @@
  
  	/*
  	 * hostname & tty are either set to NULL or their correct values,
@@ -43,7 +43,7 @@ Note: If removed, FAIL_DELAY must be re-added to /etc/login.defs
  	 *
  	 * PAM_RHOST and PAM_TTY are used for authentication, only use
  	 * information coming from login or from the caller (e.g. no utmp)
-@@ -749,10 +747,6 @@
+@@ -727,10 +725,6 @@
  	PAM_FAIL_CHECK;
  	retcode = pam_set_item (pamh, PAM_TTY, tty);
  	PAM_FAIL_CHECK;
@@ -54,7 +54,7 @@ Note: If removed, FAIL_DELAY must be re-added to /etc/login.defs
  	/* if fflg, then the user has already been authenticated */
  	if (!fflg) {
  		unsigned int failcount = 0;
-@@ -793,12 +787,6 @@
+@@ -771,12 +765,6 @@
  			bool failed = false;
  
  			failcount++;
@@ -67,7 +67,7 @@ Note: If removed, FAIL_DELAY must be re-added to /etc/login.defs
  
  			retcode = pam_authenticate (pamh, 0);
  
-@@ -1121,14 +1109,17 @@
+@@ -1110,14 +1098,17 @@
  		free (username);
  		username = NULL;
  
@@ -87,7 +87,7 @@ Note: If removed, FAIL_DELAY must be re-added to /etc/login.defs
  
 --- a/lib/getdef.c
 +++ b/lib/getdef.c
-@@ -88,7 +88,6 @@
+@@ -77,7 +77,6 @@
  	{"ENV_PATH", NULL},
  	{"ENV_SUPATH", NULL},
  	{"ERASECHAR", NULL},

@@ -1,66 +1,65 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_PREREQ([2.64])
-AC_INIT([shadow], [4.8.1], [pkg-shadow-devel@lists.alioth.debian.org], [],
+AC_PREREQ([2.69])
+m4_define([libsubid_abi_major], 4)
+m4_define([libsubid_abi_minor], 0)
+m4_define([libsubid_abi_micro], 0)
+m4_define([libsubid_abi], [libsubid_abi_major.libsubid_abi_minor.libsubid_abi_micro])
+AC_INIT([shadow], [4.13], [pkg-shadow-devel@lists.alioth.debian.org], [],
 	[https://github.com/shadow-maint/shadow])
 AM_INIT_AUTOMAKE([1.11 foreign dist-xz])
+AC_CONFIG_MACRO_DIRS([m4])
 AM_SILENT_RULES([yes])
 AC_CONFIG_HEADERS([config.h])
+
+AC_SUBST([LIBSUBID_ABI_MAJOR], [libsubid_abi_major])
+AC_SUBST([LIBSUBID_ABI_MINOR], [libsubid_abi_minor])
+AC_SUBST([LIBSUBID_ABI_MICRO], [libsubid_abi_micro])
+AC_SUBST([LIBSUBID_ABI], [libsubid_abi])
 
 dnl Some hacks...
 test "$prefix" = "NONE" && prefix="/usr"
 test "$prefix" = "/usr" && exec_prefix=""
 
-AC_GNU_SOURCE
+AC_USE_SYSTEM_EXTENSIONS
 
-AM_DISABLE_SHARED
-AM_ENABLE_STATIC
+AC_ENABLE_STATIC
+AC_ENABLE_SHARED
 
 AM_MAINTAINER_MODE
 
 dnl Checks for programs.
 AC_PROG_CC
-AC_ISC_POSIX
 AC_PROG_LN_S
 AC_PROG_YACC
-AM_PROG_LIBTOOL
+LT_INIT
 
 dnl Checks for libraries.
 
 dnl Checks for header files.
-AC_HEADER_DIRENT
-AC_HEADER_STDC
-AC_HEADER_SYS_WAIT
 AC_HEADER_STDBOOL
 
-AC_CHECK_HEADERS(errno.h fcntl.h limits.h unistd.h sys/time.h utmp.h \
+AC_CHECK_HEADERS(crypt.h errno.h fcntl.h limits.h unistd.h sys/time.h utmp.h \
 	utmpx.h termios.h termio.h sgtty.h sys/ioctl.h syslog.h paths.h \
-	utime.h ulimit.h sys/capability.h sys/resource.h gshadow.h lastlog.h \
-	locale.h rpc/key_prot.h netdb.h acl/libacl.h attr/libattr.h \
-	attr/error_context.h)
+	utime.h ulimit.h sys/capability.h sys/random.h sys/resource.h \
+	gshadow.h lastlog.h locale.h rpc/key_prot.h netdb.h acl/libacl.h \
+	attr/libattr.h attr/error_context.h)
 
 dnl shadow now uses the libc's shadow implementation
 AC_CHECK_HEADER([shadow.h],,[AC_MSG_ERROR([You need a libc with shadow.h])])
 
-AC_CHECK_FUNCS(l64a fchmod fchown fsync futimes getgroups gethostname getspnam \
-	gettimeofday getusershell getutent initgroups lchown lckpwdf lstat \
-	lutimes memcpy memset setgroups sigaction strchr updwtmp updwtmpx innetgr \
-	getpwnam_r getpwuid_r getgrnam_r getgrgid_r getspnam_r getaddrinfo \
-	ruserok)
+AC_CHECK_FUNCS(arc4random_buf l64a fchmod fchown fsync futimes \
+	getentropy getrandom getspnam getusershell \
+	getutent initgroups lckpwdf lutimes \
+	setgroups updwtmp updwtmpx innetgr getpwnam_r \
+	getpwuid_r getgrnam_r getgrgid_r getspnam_r \
+	memset_s explicit_bzero)
 AC_SYS_LARGEFILE
 
 dnl Checks for typedefs, structures, and compiler characteristics.
-AC_C_CONST
-AC_TYPE_UID_T
-AC_TYPE_OFF_T
-AC_TYPE_PID_T
-AC_TYPE_MODE_T
-AC_HEADER_STAT
-AC_CHECK_MEMBERS([struct stat.st_rdev])
 AC_CHECK_MEMBERS([struct stat.st_atim])
 AC_CHECK_MEMBERS([struct stat.st_atimensec])
 AC_CHECK_MEMBERS([struct stat.st_mtim])
 AC_CHECK_MEMBERS([struct stat.st_mtimensec])
-AC_HEADER_TIME
 AC_STRUCT_TM
 
 AC_CHECK_MEMBERS([struct utmp.ut_type,
@@ -102,9 +101,7 @@ fi
 
 dnl Checks for library functions.
 AC_TYPE_GETGROUPS
-AC_TYPE_SIGNAL
 AC_FUNC_UTIME_NULL
-AC_FUNC_STRFTIME
 AC_REPLACE_FUNCS(mkdir putgrent putpwent putspent rename rmdir)
 AC_REPLACE_FUNCS(sgetgrent sgetpwent sgetspent)
 AC_REPLACE_FUNCS(snprintf strcasecmp strdup strerror strstr)
@@ -201,7 +198,7 @@ if test "$ac_cv_func_ruserok" = "yes"; then
 fi
 
 AC_ARG_ENABLE(shadowgrp,
-	[AC_HELP_STRING([--enable-shadowgrp], [enable shadow group support @<:@default=yes@:>@])],
+	[AS_HELP_STRING([--enable-shadowgrp], [enable shadow group support @<:@default=yes@:>@])],
 	[case "${enableval}" in
 	 yes) enable_shadowgrp="yes" ;;
 	  no) enable_shadowgrp="no" ;;
@@ -211,15 +208,15 @@ AC_ARG_ENABLE(shadowgrp,
 )
 
 AC_ARG_ENABLE(man,
-	[AC_HELP_STRING([--enable-man],
+	[AS_HELP_STRING([--enable-man],
 		[regenerate roff man pages from Docbook @<:@default=no@:>@])],
 	[enable_man="${enableval}"],
 	[enable_man="no"]
 )
 
 AC_ARG_ENABLE(account-tools-setuid,
-	[AC_HELP_STRING([--enable-account-tools-setuid],
-		[Install the user and group management tools setuid and authenticate the callers. This requires --with-pam.])],
+	[AS_HELP_STRING([--enable-account-tools-setuid],
+		[Install the user and group management tools setuid and authenticate the callers. This requires --with-libpam.])],
 	[case "${enableval}" in
 	 yes) enable_acct_tools_setuid="yes" ;;
 	  no) enable_acct_tools_setuid="no" ;;
@@ -230,7 +227,7 @@ AC_ARG_ENABLE(account-tools-setuid,
 )
 
 AC_ARG_ENABLE(utmpx,
-	[AC_HELP_STRING([--enable-utmpx],
+	[AS_HELP_STRING([--enable-utmpx],
 	                [enable loggin in utmpx / wtmpx @<:@default=no@:>@])],
 	[case "${enableval}" in
 	 yes) enable_utmpx="yes" ;;
@@ -241,62 +238,65 @@ AC_ARG_ENABLE(utmpx,
 )
 
 AC_ARG_ENABLE(subordinate-ids,
-	[AC_HELP_STRING([--enable-subordinate-ids],
+	[AS_HELP_STRING([--enable-subordinate-ids],
 		[support subordinate ids @<:@default=yes@:>@])],
 	[enable_subids="${enableval}"],
 	[enable_subids="maybe"]
 )
 
 AC_ARG_WITH(audit,
-	[AC_HELP_STRING([--with-audit], [use auditing support @<:@default=yes if found@:>@])],
+	[AS_HELP_STRING([--with-audit], [use auditing support @<:@default=yes if found@:>@])],
 	[with_audit=$withval], [with_audit=maybe])
 AC_ARG_WITH(libpam,
-	[AC_HELP_STRING([--with-libpam], [use libpam for PAM support @<:@default=yes if found@:>@])],
+	[AS_HELP_STRING([--with-libpam], [use libpam for PAM support @<:@default=yes if found@:>@])],
 	[with_libpam=$withval], [with_libpam=maybe])
 AC_ARG_WITH(btrfs,
-	[AC_HELP_STRING([--with-btrfs], [add BtrFS support @<:@default=yes if found@:>@])],
+	[AS_HELP_STRING([--with-btrfs], [add BtrFS support @<:@default=yes if found@:>@])],
 	[with_btrfs=$withval], [with_btrfs=maybe])
 AC_ARG_WITH(selinux,
-	[AC_HELP_STRING([--with-selinux], [use SELinux support @<:@default=yes if found@:>@])],
+	[AS_HELP_STRING([--with-selinux], [use SELinux support @<:@default=yes if found@:>@])],
 	[with_selinux=$withval], [with_selinux=maybe])
 AC_ARG_WITH(acl,
-	[AC_HELP_STRING([--with-acl], [use ACL support @<:@default=yes if found@:>@])],
+	[AS_HELP_STRING([--with-acl], [use ACL support @<:@default=yes if found@:>@])],
 	[with_acl=$withval], [with_acl=maybe])
 AC_ARG_WITH(attr,
-	[AC_HELP_STRING([--with-attr], [use Extended Attribute support @<:@default=yes if found@:>@])],
+	[AS_HELP_STRING([--with-attr], [use Extended Attribute support @<:@default=yes if found@:>@])],
 	[with_attr=$withval], [with_attr=maybe])
 AC_ARG_WITH(skey,
-	[AC_HELP_STRING([--with-skey], [use S/Key support @<:@default=no@:>@])],
+	[AS_HELP_STRING([--with-skey], [use S/Key support @<:@default=no@:>@])],
 	[with_skey=$withval], [with_skey=no])
 AC_ARG_WITH(tcb,
-	[AC_HELP_STRING([--with-tcb], [use tcb support (incomplete) @<:@default=yes if found@:>@])],
+	[AS_HELP_STRING([--with-tcb], [use tcb support (incomplete) @<:@default=yes if found@:>@])],
 	[with_tcb=$withval], [with_tcb=maybe])
 AC_ARG_WITH(libcrack,
-	[AC_HELP_STRING([--with-libcrack], [use libcrack @<:@default=no@:>@])],
+	[AS_HELP_STRING([--with-libcrack], [use libcrack @<:@default=no@:>@])],
 	[with_libcrack=$withval], [with_libcrack=no])
 AC_ARG_WITH(sha-crypt,
-	[AC_HELP_STRING([--with-sha-crypt], [allow the SHA256 and SHA512 password encryption algorithms @<:@default=yes@:>@])],
+	[AS_HELP_STRING([--with-sha-crypt], [allow the SHA256 and SHA512 password encryption algorithms @<:@default=yes@:>@])],
 	[with_sha_crypt=$withval], [with_sha_crypt=yes])
 AC_ARG_WITH(bcrypt,
-	[AC_HELP_STRING([--with-bcrypt], [allow the bcrypt password encryption algorithm @<:@default=no@:>@])],
+	[AS_HELP_STRING([--with-bcrypt], [allow the bcrypt password encryption algorithm @<:@default=no@:>@])],
 	[with_bcrypt=$withval], [with_bcrypt=no])
+AC_ARG_WITH(yescrypt,
+	[AS_HELP_STRING([--with-yescrypt], [allow the yescrypt password encryption algorithm @<:@default=no@:>@])],
+	[with_yescrypt=$withval], [with_yescrypt=no])
 AC_ARG_WITH(nscd,
-	[AC_HELP_STRING([--with-nscd], [enable support for nscd @<:@default=yes@:>@])],
+	[AS_HELP_STRING([--with-nscd], [enable support for nscd @<:@default=yes@:>@])],
 	[with_nscd=$withval], [with_nscd=yes])
 AC_ARG_WITH(sssd,
-	[AC_HELP_STRING([--with-sssd], [enable support for flushing sssd caches @<:@default=yes@:>@])],
+	[AS_HELP_STRING([--with-sssd], [enable support for flushing sssd caches @<:@default=yes@:>@])],
 	[with_sssd=$withval], [with_sssd=yes])
 AC_ARG_WITH(group-name-max-length,
-	[AC_HELP_STRING([--with-group-name-max-length], [set max group name length @<:@default=16@:>@])],
+	[AS_HELP_STRING([--with-group-name-max-length], [set max group name length @<:@default=32@:>@])],
 	[with_group_name_max_length=$withval], [with_group_name_max_length=yes])
 AC_ARG_WITH(su,
-	[AC_HELP_STRING([--with-su], [build and install su program and man page @<:@default=yes@:>@])],
+	[AS_HELP_STRING([--with-su], [build and install su program and man page @<:@default=yes@:>@])],
 	[with_su=$withval], [with_su=yes])
 
 if test "$with_group_name_max_length" = "no" ; then
 	with_group_name_max_length=0
 elif test "$with_group_name_max_length" = "yes" ; then
-	with_group_name_max_length=16
+	with_group_name_max_length=32
 fi
 AC_DEFINE_UNQUOTED(GROUP_NAME_MAX_LENGTH, $with_group_name_max_length, [max group name length])
 AC_SUBST(GROUP_NAME_MAX_LENGTH)
@@ -312,6 +312,11 @@ if test "$with_bcrypt" = "yes"; then
 	AC_DEFINE(USE_BCRYPT, 1, [Define to allow the bcrypt password encryption algorithm])
 fi
 
+AM_CONDITIONAL(USE_YESCRYPT, test "x$with_yescrypt" = "xyes")
+if test "$with_yescrypt" = "yes"; then
+	AC_DEFINE(USE_YESCRYPT, 1, [Define to allow the yescrypt password encryption algorithm])
+fi
+
 if test "$with_nscd" = "yes"; then
 	AC_CHECK_FUNC(posix_spawn,
 	              [AC_DEFINE(USE_NSCD, 1, [Define to support flushing of nscd caches])],
@@ -324,7 +329,7 @@ if test "$with_sssd" = "yes"; then
 	              [AC_MSG_ERROR([posix_spawn is needed for sssd support])])
 fi
 
-AS_IF([test "$with_su" != "no"], AC_DEFINE(WITH_SU, 1, [Build with su])])
+AS_IF([test "$with_su" != "no"], AC_DEFINE(WITH_SU, 1, [Build with su]))
 AM_CONDITIONAL([WITH_SU], [test "x$with_su" != "xno"])
 
 dnl Check for some functions in libc first, only if not found check for
@@ -390,6 +395,10 @@ AM_CONDITIONAL(ENABLE_SUBIDS, test "x$enable_subids" != "xno")
 
 AC_SUBST(LIBCRYPT)
 AC_CHECK_LIB(crypt, crypt, [LIBCRYPT=-lcrypt],
+	[AC_MSG_ERROR([crypt() not found])])
+
+AC_SUBST(LIYESCRYPT)
+AC_CHECK_LIB(crypt, crypt, [LIYESCRYPT=-lcrypt],
 	[AC_MSG_ERROR([crypt() not found])])
 
 AC_SUBST(LIBACL)
@@ -647,7 +656,7 @@ AM_CONDITIONAL(ACCT_TOOLS_SETUID, test "x$enable_acct_tools_setuid" = "xyes")
 
 
 AC_ARG_WITH(fcaps,
-	[AC_HELP_STRING([--with-fcaps], [use file capabilities instead of suid binaries for newuidmap/newgidmap @<:@default=no@:>@])],
+	[AS_HELP_STRING([--with-fcaps], [use file capabilities instead of suid binaries for newuidmap/newgidmap @<:@default=no@:>@])],
 	[with_fcaps=$withval], [with_fcaps=no])
 AM_CONDITIONAL(FCAPS, test "x$with_fcaps" = "xyes")
 
@@ -665,12 +674,12 @@ if test "$with_skey" = "yes"; then
 	AC_CHECK_LIB(skey, skeychallenge, [LIBSKEY=-lskey],
 		[AC_MSG_ERROR([liskey missing. You can download S/Key source code from http://rsync1.it.gentoo.org/gentoo/distfiles/skey-1.1.5.tar.bz2])])
 	AC_DEFINE(SKEY, 1, [Define to support S/Key logins.])
-	AC_TRY_COMPILE([
+	AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
 		#include <stdio.h>
 		#include <skey.h>
-	],[
+	]], [[
 		skeychallenge((void*)0, (void*)0, (void*)0, 0);
-	],[AC_DEFINE(SKEY_BSD_STYLE, 1, [Define to support newer BSD S/Key API])])
+	]])],[AC_DEFINE(SKEY_BSD_STYLE, 1, [Define to support newer BSD S/Key API])],[])
 fi
 
 if test "$enable_utmpx" = "yes"; then
@@ -684,7 +693,7 @@ fi
 
 AC_DEFINE_UNQUOTED(SHELL, ["$SHELL"], [The default shell.])
 
-AM_GNU_GETTEXT_VERSION(0.16)
+AM_GNU_GETTEXT_VERSION([0.19])
 AM_GNU_GETTEXT([external], [need-ngettext])
 AM_CONDITIONAL(USE_NLS, test "x$USE_NLS" = "xyes")
 
@@ -711,10 +720,13 @@ AC_CONFIG_FILES([
 	man/ru/Makefile
 	man/sv/Makefile
 	man/tr/Makefile
+	man/uk/Makefile
 	man/zh_CN/Makefile
 	man/zh_TW/Makefile
 	libmisc/Makefile
 	lib/Makefile
+	libsubid/Makefile
+	libsubid/subid.h
 	src/Makefile
 	contrib/Makefile
 	etc/Makefile
@@ -741,6 +753,7 @@ echo "	shadow group support:		$enable_shadowgrp"
 echo "	S/Key support:			$with_skey"
 echo "	SHA passwords encryption:	$with_sha_crypt"
 echo "	bcrypt passwords encryption:	$with_bcrypt"
+echo "	yescrypt passwords encryption:	$with_yescrypt"
 echo "	nscd support:			$with_nscd"
 echo "	sssd support:			$with_sssd"
 echo "	subordinate IDs support:	$enable_subids"

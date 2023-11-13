@@ -1,39 +1,14 @@
 /*
- * Copyright (c) 1992 - 1994, Julianne Frances Haugh
- * Copyright (c) 1996 - 2000, Marek Michałkiewicz
- * Copyright (c) 2001       , Michał Moskal
- * Copyright (c) 2001 - 2006, Tomasz Kłoczko
- * Copyright (c) 2007 - 2011, Nicolas François
- * All rights reserved.
+ * SPDX-FileCopyrightText: 1992 - 1994, Julianne Frances Haugh
+ * SPDX-FileCopyrightText: 1996 - 2000, Marek Michałkiewicz
+ * SPDX-FileCopyrightText: 2001       , Michał Moskal
+ * SPDX-FileCopyrightText: 2001 - 2006, Tomasz Kłoczko
+ * SPDX-FileCopyrightText: 2007 - 2011, Nicolas François
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the copyright holders or contributors may not be used to
- *    endorse or promote products derived from this software without
- *    specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
- * PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
- * HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * SPDX-License-Identifier: BSD-3-Clause
  */
 
 #include <config.h>
-
-#ident "$Id$"
 
 #include <fcntl.h>
 #include <grp.h>
@@ -47,6 +22,7 @@
 #include "nscd.h"
 #include "sssd.h"
 #include "prototypes.h"
+#include "shadowlog.h"
 
 #ifdef SHADOWGRP
 #include "sgroupio.h"
@@ -82,6 +58,7 @@ static bool gr_locked = false;
 /* Options */
 static bool read_only = false;
 static bool sort_mode = false;
+static bool silence_warnings = false;
 
 /* local function prototypes */
 static void fail_exit (int status);
@@ -158,6 +135,7 @@ static /*@noreturn@*/void usage (int status)
 	                "                                but do not change files\n"), usageout);
 	(void) fputs (_("  -R, --root CHROOT_DIR         directory to chroot into\n"), usageout);
 	(void) fputs (_("  -s, --sort                    sort entries by UID\n"), usageout);
+	(void) fputs (_("  -S, --silence-warnings        silence controversial/paranoid warnings\n"), usageout);
 	(void) fputs ("\n", usageout);
 	exit (status);
 }
@@ -193,18 +171,19 @@ static void process_flags (int argc, char **argv)
 {
 	int c;
 	static struct option long_options[] = {
-		{"help",      no_argument,       NULL, 'h'},
-		{"quiet",     no_argument,       NULL, 'q'},
-		{"read-only", no_argument,       NULL, 'r'},
-		{"root",      required_argument, NULL, 'R'},
-		{"sort",      no_argument,       NULL, 's'},
+		{"help",             no_argument,       NULL, 'h'},
+		{"quiet",            no_argument,       NULL, 'q'},
+		{"read-only",        no_argument,       NULL, 'r'},
+		{"root",             required_argument, NULL, 'R'},
+		{"silence-warnings", no_argument,       NULL, 'S'},
+		{"sort",             no_argument,       NULL, 's'},
 		{NULL, 0, NULL, '\0'}
 	};
 
 	/*
 	 * Parse the command line arguments
 	 */
-	while ((c = getopt_long (argc, argv, "hqrR:s",
+	while ((c = getopt_long (argc, argv, "hqrR:sS",
 	                         long_options, NULL)) != -1) {
 		switch (c) {
 		case 'h':
@@ -220,6 +199,9 @@ static void process_flags (int argc, char **argv)
 			break;
 		case 's':
 			sort_mode = true;
+			break;
+		case 'S':
+			silence_warnings = true;
 			break;
 		default:
 			usage (E_USAGE);
@@ -456,7 +438,7 @@ static void compare_members_lists (const char *groupname,
 				break;
 			}
 		}
-		if (*other_pmem == NULL) {
+		if (!silence_warnings && *other_pmem == NULL) {
 			printf
 			    ("'%s' is a member of the '%s' group in %s but not in %s\n",
 			     *pmem, groupname, file, other_file);
@@ -473,7 +455,7 @@ static void check_grp_file (int *errors, bool *changed)
 	struct commonio_entry *gre, *tgre;
 	struct group *grp;
 #ifdef SHADOWGRP
-	struct sgrp *sgr;
+	const struct sgrp *sgr;
 #endif
 
 	/*
@@ -614,7 +596,7 @@ static void check_grp_file (int *errors, bool *changed)
 		 */
 
 		if (is_shadow) {
-			sgr = (struct sgrp *) sgr_locate (grp->gr_name);
+			sgr = sgr_locate (grp->gr_name);
 			if (sgr == NULL) {
 				printf (_("no matching group file entry in %s\n"),
 				        sgr_file);
@@ -681,7 +663,7 @@ static void check_grp_file (int *errors, bool *changed)
  */
 static void check_sgr_file (int *errors, bool *changed)
 {
-	struct group *grp;
+	const struct group *grp;
 	struct commonio_entry *sge, *tsge;
 	struct sgrp *sgr;
 
@@ -713,7 +695,7 @@ static void check_sgr_file (int *errors, bool *changed)
 			}
 
 			/*
-			 * All shadow group file deletions wind up here. 
+			 * All shadow group file deletions wind up here.
 			 * This code removes the current entry from the
 			 * linked list. When done, it skips back to the top
 			 * of the loop to try out the next list element.
@@ -776,7 +758,7 @@ static void check_sgr_file (int *errors, bool *changed)
 		/*
 		 * Make sure this entry exists in the /etc/group file.
 		 */
-		grp = (struct group *) gr_locate (sgr->sg_name);
+		grp = gr_locate (sgr->sg_name);
 		if (grp == NULL) {
 			printf (_("no matching group file entry in %s\n"),
 			        grp_file);
@@ -836,6 +818,8 @@ int main (int argc, char **argv)
 	 * Get my name so that I can use it to report errors.
 	 */
 	Prog = Basename (argv[0]);
+	log_set_progname(Prog);
+	log_set_logfd(stderr);
 
 	(void) setlocale (LC_ALL, "");
 	(void) bindtextdomain (PACKAGE, LOCALEDIR);

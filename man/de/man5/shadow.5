@@ -1,13 +1,13 @@
 '\" t
 .\"     Title: shadow
 .\"    Author: Julianne Frances Haugh
-.\" Generator: DocBook XSL Stylesheets v1.79.1 <http://docbook.sf.net/>
-.\"      Date: 23.01.2020
-.\"    Manual: Dateiformate und konvertierung
-.\"    Source: shadow-utils 4.8.1
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 08.11.2022
+.\"    Manual: File Formats and Configuration Files
+.\"    Source: shadow-utils 4.13
 .\"  Language: German
 .\"
-.TH "SHADOW" "5" "23.01.2020" "shadow\-utils 4\&.8\&.1" "Dateiformate und konvertierung"
+.TH "SHADOW" "5" "08.11.2022" "shadow\-utils 4\&.13" "File Formats and Configuration"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -61,7 +61,7 @@ If the password field contains some string that is not a valid result of
 .PP
 \fBDatum, an dem das Passwort das letzte Mal ge\(:andert wurde\fR
 .RS 4
-Das Datum, als das Passwort das letzte Mal ge\(:andert wurde, wird als Anzahl der Tage seit dem 1\&. Januar 1970 ausgedr\(:uckt\&.
+The date of the last password change, expressed as the number of days since Jan 1, 1970 00:00 UTC\&.
 .sp
 The value 0 has a special meaning, which is that the user should change her password the next time she will log in the system\&.
 .sp
@@ -72,7 +72,7 @@ Ein leeres Feld bedeutet, dass das Altern des Passworts abgeschaltet ist\&.
 .RS 4
 Das Mindestalter des Passworts ist die Anzahl von Tagen, die ein Benutzer warten muss, bevor er sein Passwort wieder \(:andern darf\&.
 .sp
-Eine leeres Feld oder der Wert 0 bedeuten, dass es kein Mindestalter eines Passworts gibt\&.
+An empty field and value 0 mean that there is no minimum password age\&.
 .RE
 .PP
 \fBH\(:ochstalter des Passworts\fR
@@ -97,14 +97,14 @@ Ein leeres Feld oder der Wert 0 bedeutet, dass es keine Vorwarnung gibt\&.
 .RS 4
 Die Anzahl von Tagen, f\(:ur die ein Benutzer sein Passwort, nachdem es abgelaufen ist (vergleiche oben das H\(:ochstalter des Passworts), noch verwenden kann (und w\(:ahrend des n\(:achsten Logins \(:andern muss)\&.
 .sp
-Nachdem das Passwort abgelaufen ist und auch die Dauer der Unt\(:atigkeit verstrichen ist, kann sich der Benutzer mit seinem Passwort nicht mehr anmelden\&. Er muss sich dann an den Administrator wenden\&.
+After expiration of the password and this expiration period is elapsed, no login is possible for the user\&. The user should contact her administrator\&.
 .sp
 Ein leeres Feld bedeutet, dass es keine H\(:ochstdauer zwischen Ablauf des Passworts und erneuter Anmeldung des Benutzers gibt\&.
 .RE
 .PP
 \fBDatum des Verfalls des Kontos\fR
 .RS 4
-Das Datum, an dem das Konto verf\(:allt, wird als Anzahl der Tage seit dem 1\&. Januar 1970 ausgedr\(:uckt\&.
+The date of expiration of the account, expressed as the number of days since Jan 1, 1970 00:00 UTC\&.
 .sp
 Note that an account expiration differs from a password expiration\&. In case of an account expiration, the user shall not be allowed to login\&. In case of a password expiration, the user is not allowed to login using her password\&.
 .sp

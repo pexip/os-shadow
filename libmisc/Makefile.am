@@ -1,11 +1,11 @@
 
 EXTRA_DIST = .indent.pro xgetXXbyYY.c
 
-AM_CPPFLAGS = -I$(top_srcdir)/lib $(ECONF_CPPFLAGS)
+AM_CPPFLAGS = -I$(top_srcdir)/lib -I$(top_srcdir) $(ECONF_CPPFLAGS)
 
-noinst_LIBRARIES = libmisc.a
+noinst_LTLIBRARIES = libmisc.la
 
-libmisc_a_SOURCES = \
+libmisc_la_SOURCES = \
 	addgrps.c \
 	age.c \
 	audit_help.c \
@@ -19,6 +19,7 @@ libmisc_a_SOURCES = \
 	cleanup_user.c \
 	console.c \
 	copydir.c \
+	date_to_str.c \
 	entry.c \
 	env.c \
 	failure.c \
@@ -74,6 +75,6 @@ libmisc_a_SOURCES = \
 	yesno.c
 
 if WITH_BTRFS
-libmisc_a_SOURCES += btrfs.c
+libmisc_la_SOURCES += btrfs.c
 endif
 

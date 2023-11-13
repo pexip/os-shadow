@@ -1,33 +1,10 @@
 /*
- * Copyright (c) 1990 - 1994, Julianne Frances Haugh
- * Copyright (c) 1996 - 2000, Marek Michałkiewicz
- * Copyright (c) 2001 - 2006, Tomasz Kłoczko
- * Copyright (c) 2007 - 2011, Nicolas François
- * All rights reserved.
+ * SPDX-FileCopyrightText: 1990 - 1994, Julianne Frances Haugh
+ * SPDX-FileCopyrightText: 1996 - 2000, Marek Michałkiewicz
+ * SPDX-FileCopyrightText: 2001 - 2006, Tomasz Kłoczko
+ * SPDX-FileCopyrightText: 2007 - 2011, Nicolas François
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the copyright holders or contributors may not be used to
- *    endorse or promote products derived from this software without
- *    specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
- * PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
- * HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * SPDX-License-Identifier: BSD-3-Clause
  */
 
 #include <config.h>
@@ -53,6 +30,7 @@
 /*@-exitarg@*/
 #include "exitcodes.h"
 
+#include "shadowlog.h"
 /*
  * Global variables
  */
@@ -96,7 +74,7 @@ static uid_t bywho;
 
 /* local function prototypes */
 static void usage (int status);
-static RETSIGTYPE catch_signals (int killed);
+static void catch_signals (int killed);
 static bool is_valid_user_list (const char *users);
 static void process_flags (int argc, char **argv);
 static void check_flags (int argc, int opt_index);
@@ -159,7 +137,7 @@ static void usage (int status)
  *	calls catch_signals() with a signal number, the terminal modes are
  *	then reset.
  */
-static RETSIGTYPE catch_signals (int killed)
+static void catch_signals (int killed)
 {
 	static TERMIO sgtty;
 
@@ -988,6 +966,8 @@ int main (int argc, char **argv)
 	 */
 	bywho = getuid ();
 	Prog = Basename (argv[0]);
+	log_set_progname(Prog);
+	log_set_logfd(stderr);
 
 	OPENLOG ("gpasswd");
 	setbuf (stdout, NULL);
@@ -1204,6 +1184,13 @@ int main (int argc, char **argv)
 	nscd_flush_cache ("group");
 	sssd_flush_cache (SSSD_DB_GROUP);
 
+#ifdef SHADOWGRP
+	if (is_shadowgrp) {
+		free(sgent.sg_adm);
+		free(sgent.sg_mem);
+	}
+#endif
+	free(grent.gr_mem);
 	exit (E_SUCCESS);
 }
 

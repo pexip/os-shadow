@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: shadow 4.0.17\n"
 "Report-Msgid-Bugs-To: pkg-shadow-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2020-01-23 14:59-0600\n"
+"POT-Creation-Date: 2022-11-08 10:37-0600\n"
 "PO-Revision-Date: 2006-06-16 14:30+0545\n"
 "Last-Translator: Shiva Pokharel <pokharelshiva@hotmail.com>\n"
 "Language-Team: Nepali <info@mpp.org.np>\n"
@@ -517,7 +517,7 @@ msgid "%s: failed to drop privileges (%s)\n"
 msgstr "%s: विशेषधिकारहरू छोड्न असफल भयो (%s)\n"
 
 #, fuzzy, c-format
-msgid "%s: invalid chroot path '%s'\n"
+msgid "%s: invalid chroot path '%s', only absolute paths are supported.\n"
 msgstr "%s: अवैध गृह फोन: '%s'\n"
 
 #, fuzzy, c-format
@@ -533,9 +533,20 @@ msgid "%s: unable to chroot to directory %s: %s\n"
 msgstr "%s: डाइरेकट्री सिर्जना गर्न सकिएन %s\n"
 
 #, c-format
+msgid "Unable to obtain random bytes.\n"
+msgstr ""
+
+#, c-format
 msgid ""
 "Invalid ENCRYPT_METHOD value: '%s'.\n"
 "Defaulting to DES.\n"
+msgstr ""
+
+#, c-format
+msgid ""
+"Unable to generate a salt from setting \"%s\", check your settings in "
+"ENCRYPT_METHOD and the corresponding configuration for your selected hash "
+"method.\n"
 msgstr ""
 
 #, c-format
@@ -771,6 +782,10 @@ msgstr "गृह फोन"
 msgid "Other"
 msgstr "अन्य"
 
+#, c-format
+msgid "%s: fields too long\n"
+msgstr "%s: अति लामो फाँट\n"
+
 msgid "Cannot change ID to root.\n"
 msgstr "ID लाई मूलमा परिवर्तन गर्न सकिदैन ।\n"
 
@@ -822,10 +837,6 @@ msgstr "%s: '%s' यो ग्राहकको लागि NIS मास्�
 msgid "Changing the user information for %s\n"
 msgstr " %s को लागि प्रयोगकर्ता सूचना परिवर्तन गरिदैछ\n"
 
-#, c-format
-msgid "%s: fields too long\n"
-msgstr "%s: अति लामो फाँट\n"
-
 #, fuzzy, c-format
 msgid ""
 "Usage: %s [options]\n"
@@ -846,8 +857,8 @@ msgid ""
 msgstr ""
 
 msgid ""
-"  -s, --sha-rounds              number of rounds for the SHA or BCRYPT\n"
-"                                crypt algorithms\n"
+"  -s, --sha-rounds              number of rounds for the SHA, BCRYPT\n"
+"                                or YESCRYPT crypt algorithms\n"
 msgstr ""
 
 #, fuzzy, c-format
@@ -1122,8 +1133,16 @@ msgstr ""
 msgid "  -r, --system                  create a system account\n"
 msgstr ""
 
-msgid "  -P, --prefix PREFIX_DIR       directory prefix\n"
+msgid "  -P, --prefix PREFIX_DI        directory prefix\n"
 msgstr ""
+
+msgid "  -U, --users USERS             list of user members of this group\n"
+msgstr ""
+
+#, fuzzy, c-format
+#| msgid "invalid user name '%s'\n"
+msgid "Invalid member username %s\n"
+msgstr "अवैध प्रयोगकर्ता नाम '%s'\n"
 
 #, fuzzy, c-format
 msgid "%s: '%s' is not a valid group name\n"
@@ -1229,6 +1248,12 @@ msgstr ""
 msgid "%s: only root can use the -g/--group option\n"
 msgstr ""
 
+msgid ""
+"  -a, --append                  append the users mentioned by -U option to "
+"the group \n"
+"                                without removing existing user members\n"
+msgstr ""
+
 msgid "  -g, --gid GID                 change the group ID to GID\n"
 msgstr ""
 
@@ -1276,6 +1301,10 @@ msgid ""
 msgstr ""
 
 msgid "  -s, --sort                    sort entries by UID\n"
+msgstr ""
+
+msgid ""
+"  -S, --silence-warnings        silence controversial/paranoid warnings\n"
 msgstr ""
 
 #, fuzzy, c-format
@@ -1354,9 +1383,6 @@ msgstr "%s: फाइल %s अद्यावधिक गर्न सकि�
 msgid "Usage: id [-a]\n"
 msgstr "उपयोग: id [-a]\n"
 
-msgid "Usage: id\n"
-msgstr "उपयोग: id\n"
-
 msgid " groups="
 msgstr " समूहहरू="
 
@@ -1383,8 +1409,10 @@ msgid ""
 "  -u, --user LOGIN              print lastlog record of the specified LOGIN\n"
 msgstr ""
 
-msgid "Username         Port     From             Latest"
-msgstr "सबै भन्दा पछिल्लो        बाट                पोर्ट        प्रयोगकर्ता नाम"
+#, fuzzy, c-format
+#| msgid "Username                Port     Latest"
+msgid "Username         Port     From%*sLatest\n"
+msgstr "सबैभन्दा पछिल्लो              पोर्ट            प्रयोगकर्ता नाम"
 
 msgid "Username                Port     Latest"
 msgstr "सबैभन्दा पछिल्लो              पोर्ट            प्रयोगकर्ता नाम"
@@ -1519,10 +1547,6 @@ msgid "Last login: %s on %s"
 msgstr "अन्तिम लगइन: %s मा %s"
 
 #, c-format
-msgid "Last login: %.19s on %s"
-msgstr "अन्तिम लगइन: %s मा %.19s"
-
-#, c-format
 msgid " from %.*s"
 msgstr " %.*s बाट"
 
@@ -1621,7 +1645,7 @@ msgid ""
 "st_uid:%lu, gid:%lu pw_gid:%lu st_gid:%lu\n"
 msgstr ""
 
-msgid "  -b, --badnames                allow bad names\n"
+msgid "  -b, --badname                 allow bad names\n"
 msgstr ""
 
 msgid "  -r, --system                  create system accounts\n"
@@ -1635,8 +1659,9 @@ msgstr "%s: समूह %s अवस्थित छैन\n"
 msgid "%s: invalid user ID '%s'\n"
 msgstr "%s: अवैध प्रयोगकर्ता नाम '%s'\n"
 
-#, c-format
-msgid "%s: invalid user name '%s'\n"
+#, fuzzy, c-format
+#| msgid "%s: invalid user name '%s'\n"
+msgid "%s: invalid user name '%s': use --badname to ignore\n"
 msgstr "%s: अवैध प्रयोगकर्ता नाम '%s'\n"
 
 #, c-format
@@ -1662,6 +1687,10 @@ msgstr "%s: प्रयोगकर्ता %s अवस्थित छैन
 #, c-format
 msgid "%s: line %d: can't update password\n"
 msgstr "%s: रेखा %d: पासवर्ड अद्यावधिक गर्न सकिएन\n"
+
+#, fuzzy, c-format
+msgid "%s: line %d: homedir must be an absolute path\n"
+msgstr "%s: रेखा %d: mkdir असफल भयो\n"
 
 #, fuzzy, c-format
 msgid "%s: line %d: mkdir %s failed: %s\n"
@@ -1784,6 +1813,11 @@ msgstr "%s को लागि पासवर्ड परिवर्तन �
 msgid "The password for %s cannot be changed yet.\n"
 msgstr "%s को लागि पासवर्ड परिवर्तन गर्न सकिदैन ।\n"
 
+#, fuzzy, c-format
+#| msgid "%s: shadow passwords required for -e\n"
+msgid "%s: malformed password data obtained for user %s\n"
+msgstr "%s: स्याडो पासवर्डहरुको लागि -e को आवश्यक पर्दछ\n"
+
 #, c-format
 msgid ""
 "%s: unlocking the password would result in a passwordless account.\n"
@@ -1817,10 +1851,6 @@ msgid "%s: password changed.\n"
 msgstr "पासवर्ड परिवर्तन भयो ।"
 
 #, fuzzy, c-format
-msgid "%s: password expiry information changed.\n"
-msgstr "पासवर्ड समाप्ति चेतावनी"
-
-#, fuzzy, c-format
 msgid ""
 "Usage: %s [options] [passwd]\n"
 "\n"
@@ -1847,9 +1877,10 @@ msgstr "अवैध पासवर्ड फाइल प्रविष्ट
 msgid "duplicate password entry"
 msgstr "नक्कली पासवर्ड प्रविष्टि"
 
-#, c-format
-msgid "invalid user name '%s'\n"
-msgstr "अवैध प्रयोगकर्ता नाम '%s'\n"
+#, fuzzy, c-format
+#| msgid "%s: invalid user name '%s'\n"
+msgid "invalid user name '%s': use --badname to ignore\n"
+msgstr "%s: अवैध प्रयोगकर्ता नाम '%s'\n"
 
 #, fuzzy, c-format
 msgid "invalid user ID '%lu'\n"
@@ -1927,16 +1958,16 @@ msgstr "पासवर्ड प्रमाणीकरण बाइपास 
 msgid "Please enter your OWN password as authentication.\n"
 msgstr " कृपया प्रमाणीकरणको रुपमा तपाईँको आफ्नो पासवर्ड प्रविष्ट गर्नुहोस् ।\n"
 
+#, c-format
+msgid "%s: signal masking malfunction\n"
+msgstr ""
+
 #, fuzzy, c-format
 msgid "%s: Cannot fork user shell\n"
 msgstr "%s: फाइल %s ताल्चा मार्न सकिदैन\n"
 
 #, c-format
 msgid "%s: signal malfunction\n"
-msgstr ""
-
-#, c-format
-msgid "%s: signal masking malfunction\n"
 msgstr ""
 
 msgid "Session terminated, terminating shell..."
@@ -1991,6 +2022,14 @@ msgid ""
 msgstr ""
 "%s: %s\n"
 "(उपेक्षा गरियो)\n"
+
+#, c-format
+msgid "Password field is empty, this is forbidden for all accounts.\n"
+msgstr ""
+
+#, c-format
+msgid "Password field is empty, this is forbidden for super-user.\n"
+msgstr ""
 
 #, c-format
 msgid "You are not authorized to su %s\n"
@@ -2061,6 +2100,11 @@ msgstr ""
 msgid "%s: cannot create new defaults file: %s\n"
 msgstr "%s: नयाँ पूर्वनिर्धारित फाइल सिर्जना गर्न सकिएन\n"
 
+#, fuzzy, c-format
+#| msgid "%s: cannot create new defaults file\n"
+msgid "%s: cannot create directory for defaults file\n"
+msgstr "%s: नयाँ पूर्वनिर्धारित फाइल सिर्जना गर्न सकिएन\n"
+
 #, c-format
 msgid "%s: cannot create new defaults file\n"
 msgstr "%s: नयाँ पूर्वनिर्धारित फाइल सिर्जना गर्न सकिएन\n"
@@ -2090,6 +2134,10 @@ msgid "%s: too many groups specified (max %d).\n"
 msgstr "%s: अति धेरै समूहरू निर्दिष्ट गरिएको छ (max %d) ।\n"
 
 #, fuzzy, c-format
+msgid "%s: Out of memory. Cannot find group '%s'.\n"
+msgstr "%s: update_group मा स्मृति भन्दा बाहिर\n"
+
+#, fuzzy, c-format
 msgid ""
 "Usage: %s [options] LOGIN\n"
 "       %s -D\n"
@@ -2098,7 +2146,7 @@ msgid ""
 "Options:\n"
 msgstr "उपयोग: %s [आगत]\n"
 
-msgid "      --badnames                do not check for bad names\n"
+msgid "      --badname                 do not check for bad names\n"
 msgstr ""
 
 msgid ""
@@ -2128,6 +2176,11 @@ msgstr ""
 msgid ""
 "  -f, --inactive INACTIVE       password inactivity period of the new "
 "account\n"
+msgstr ""
+
+msgid ""
+"  -F, --add-subids-for-system   add entries to sub[ud]id even when adding a "
+"system user\n"
 msgstr ""
 
 msgid ""
@@ -2226,13 +2279,29 @@ msgstr "%s: पासवर्ड फाइल पुन:लेखन गर्�
 msgid "%s: -Z requires SELinux enabled kernel\n"
 msgstr ""
 
+#, fuzzy, c-format
+msgid "%s: failed to open the faillog file for UID %lu: %s\n"
+msgstr "%s: डाइरेकट्री सिर्जना गर्न सकिएन %s\n"
+
 #, c-format
 msgid "%s: failed to reset the faillog entry of UID %lu: %s\n"
 msgstr ""
 
+#, fuzzy, c-format
+msgid "%s: failed to close the faillog file for UID %lu: %s\n"
+msgstr "%s: डाइरेकट्री सिर्जना गर्न सकिएन %s\n"
+
+#, fuzzy, c-format
+msgid "%s: failed to open the lastlog file for UID %lu: %s\n"
+msgstr "%s: पासवर्ड फाइल अद्यावधिक गर्न सकिएन\n"
+
 #, c-format
 msgid "%s: failed to reset the lastlog entry of UID %lu: %s\n"
 msgstr ""
+
+#, fuzzy, c-format
+msgid "%s: failed to close the lastlog file for UID %lu: %s\n"
+msgstr "%s: डाइरेकट्री सिर्जना गर्न सकिएन %s\n"
 
 #, fuzzy, c-format
 msgid "%s: failed to reset the tallylog entry of user \"%s\"\n"
@@ -2276,9 +2345,17 @@ msgstr "%s: रेखा %d: chown असफल भयो\n"
 msgid "%s: warning: chmod on `%s' failed: %m\n"
 msgstr "%s: रेखा %d: chown असफल भयो\n"
 
+#, fuzzy, c-format
+msgid "%s: warning: chown on '%s' failed: %m\n"
+msgstr "%s: रेखा %d: chown असफल भयो\n"
+
 #, c-format
 msgid "%s: cannot reset SELinux file creation context\n"
 msgstr ""
+
+#, fuzzy, c-format
+msgid "%s: cannot set SELinux context for mailbox file %s\n"
+msgstr "%s का लागि अवधि सूचना परिवर्तन गरिदैछ\n"
 
 msgid "Creating mailbox file"
 msgstr "मेल बाकस फाइल सिर्जना गर्दै"
@@ -2289,6 +2366,15 @@ msgstr "समूह मेल फेला परेन । ०६०० मो
 
 msgid "Setting mailbox file permissions"
 msgstr "मेल बाकस फाइल अनुमतिहरू मिलाउदै"
+
+#, c-format
+msgid "%s warning: %s's uid %d is greater than SYS_UID_MAX %d\n"
+msgstr ""
+
+#, c-format
+msgid ""
+"%s warning: %s's uid %d outside of the UID_MIN %d and UID_MAX %d range.\n"
+msgstr ""
 
 #, fuzzy, c-format
 msgid "%s: user '%s' already exists\n"
@@ -2325,6 +2411,10 @@ msgstr "%s: यो %s सिर्जना गर्न सकिदैन\n"
 msgid "%s: can't create subordinate group IDs\n"
 msgstr "%s: यो %s सिर्जना गर्न सकिदैन\n"
 
+#, c-format
+msgid "%s: warning: the user name %s to %s SELinux user mapping failed.\n"
+msgstr ""
+
 #, fuzzy, c-format
 #| msgid ""
 #| "%s: warning: the home directory already exists.\n"
@@ -2336,13 +2426,11 @@ msgstr ""
 "%s: चेतावनी: गृह डाइरेक्ट्री पहिल्यै अवस्थित छ ।\n"
 "यसमा स्केल डाइरेक्ट्रीबाट कुनै फाइल प्रतिलिपी भएको छैन ।\n"
 
-#, c-format
-msgid "%s: warning: the user name %s to %s SELinux user mapping failed.\n"
-msgstr ""
-
 msgid ""
-"  -f, --force                   force removal of files,\n"
-"                                even if not owned by user\n"
+"  -f, --force                   force some actions that would fail "
+"otherwise\n"
+"                                e.g. removal of user still logged in\n"
+"                                or files, even if not owned by the user\n"
 msgstr ""
 
 msgid "  -r, --remove                  remove home directory and mail spool\n"
@@ -2423,6 +2511,12 @@ msgstr "%s: डाइरेक्ट्री हटाउँदा त्रु
 msgid "%s: warning: the user name %s to SELinux user mapping removal failed.\n"
 msgstr ""
 
+msgid ""
+"  -a, --append                  append the user to the supplemental GROUPS\n"
+"                                mentioned by the -G option without removing\n"
+"                                the user from other groups\n"
+msgstr ""
+
 msgid "  -c, --comment COMMENT         new value of the GECOS field\n"
 msgstr ""
 
@@ -2445,12 +2539,6 @@ msgstr ""
 msgid "  -G, --groups GROUPS           new list of supplementary GROUPS\n"
 msgstr ""
 
-msgid ""
-"  -a, --append                  append the user to the supplemental GROUPS\n"
-"                                mentioned by the -G option without removing\n"
-"                                the user from other groups\n"
-msgstr ""
-
 msgid "  -l, --login NEW_LOGIN         new value of the login name\n"
 msgstr ""
 
@@ -2468,6 +2556,13 @@ msgstr ""
 
 msgid ""
 "  -p, --password PASSWORD       use encrypted password for the new password\n"
+msgstr ""
+
+msgid ""
+"  -r, --remove                  remove the user from only the supplemental "
+"GROUPS\n"
+"                                mentioned by the -G option without removing\n"
+"                                the user from other groups\n"
 msgstr ""
 
 msgid "  -u, --uid UID                 new UID for the user account\n"
@@ -2503,6 +2598,10 @@ msgstr ""
 msgid "%s: user '%s' already exists in %s\n"
 msgstr "%s: प्रयोगकर्ता %s अवस्थित छ\n"
 
+#, c-format
+msgid "%s: homedir must be an absolute path\n"
+msgstr ""
+
 #, fuzzy, c-format
 msgid "%s: invalid subordinate uid range '%s'\n"
 msgstr "%s: अवैध मिति '%s'\n"
@@ -2514,6 +2613,10 @@ msgstr "%s: अवैध मिति '%s'\n"
 #, fuzzy, c-format
 msgid "%s: no options\n"
 msgstr "%s: फाइल %s खोल्न सकिएन\n"
+
+#, c-format
+msgid "%s: %s and %s are mutually exclusive flags\n"
+msgstr ""
 
 #, c-format
 msgid "%s: the -L, -p, and -U flags are exclusive\n"
@@ -2556,6 +2659,12 @@ msgstr "%s: चेतावनी: पुरानो गृह डाइरे�
 #, c-format
 msgid "%s: cannot rename directory %s to %s\n"
 msgstr "%s: डाइरेक्ट्री %s लाई %s मा पुन:नामकरण गर्न सकिदैन\n"
+
+#, c-format
+msgid ""
+"%s: The previous home directory (%s) does not exist or is inaccessible. Move "
+"cannot be completed.\n"
+msgstr ""
 
 #, c-format
 msgid "%s: failed to copy the lastlog entry of user %lu to user %lu: %s\n"
@@ -2684,6 +2793,28 @@ msgstr "%s: पुन:भण्डारण गर्न सकिदैन %s: 
 #, fuzzy, c-format
 msgid "%s: failed to find tcb directory for %s\n"
 msgstr "%s: अवैध डाइरेक्ट्री '%s'\n"
+
+#~ msgid "Usage: id\n"
+#~ msgstr "उपयोग: id\n"
+
+#, c-format
+#~ msgid "Last login: %.19s on %s"
+#~ msgstr "अन्तिम लगइन: %s मा %.19s"
+
+#, c-format
+#~ msgid "%s: invalid user name '%s'\n"
+#~ msgstr "%s: अवैध प्रयोगकर्ता नाम '%s'\n"
+
+#, fuzzy, c-format
+#~ msgid "%s: password expiry information changed.\n"
+#~ msgstr "पासवर्ड समाप्ति चेतावनी"
+
+#, c-format
+#~ msgid "invalid user name '%s'\n"
+#~ msgstr "अवैध प्रयोगकर्ता नाम '%s'\n"
+
+#~ msgid "Username         Port     From             Latest"
+#~ msgstr "सबै भन्दा पछिल्लो        बाट                पोर्ट        प्रयोगकर्ता नाम"
 
 #, fuzzy
 #~| msgid "Usage: %s [input]\n"

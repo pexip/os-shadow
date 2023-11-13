@@ -1,33 +1,10 @@
 /*
- * Copyright (c) 1991 - 1993, Julianne Frances Haugh
- * Copyright (c) 1996 - 2000, Marek Michałkiewicz
- * Copyright (c) 2000 - 2006, Tomasz Kłoczko
- * Copyright (c) 2007 - 2011, Nicolas François
- * All rights reserved.
+ * SPDX-FileCopyrightText: 1991 - 1993, Julianne Frances Haugh
+ * SPDX-FileCopyrightText: 1996 - 2000, Marek Michałkiewicz
+ * SPDX-FileCopyrightText: 2000 - 2006, Tomasz Kłoczko
+ * SPDX-FileCopyrightText: 2007 - 2011, Nicolas François
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the copyright holders or contributors may not be used to
- *    endorse or promote products derived from this software without
- *    specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
- * PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
- * HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * SPDX-License-Identifier: BSD-3-Clause
  */
 
 #include <config.h>
@@ -56,6 +33,7 @@
 #ifdef	SHADOWGRP
 #include "sgroupio.h"
 #endif
+#include "shadowlog.h"
 
 /*
  * exit status values
@@ -79,6 +57,7 @@ static /*@null@*/char *group_passwd;
 static /*@null@*/char *empty_list = NULL;
 
 static const char *prefix = "";
+static char *user_list;
 
 static bool oflg = false;	/* permit non-unique group ID to be specified with -g */
 static bool gflg = false;	/* ID value for the new group */
@@ -126,7 +105,8 @@ static /*@noreturn@*/void usage (int status)
 	(void) fputs (_("  -p, --password PASSWORD       use this encrypted password for the new group\n"), usageout);
 	(void) fputs (_("  -r, --system                  create a system account\n"), usageout);
 	(void) fputs (_("  -R, --root CHROOT_DIR         directory to chroot into\n"), usageout);
-	(void) fputs (_("  -P, --prefix PREFIX_DIR       directory prefix\n"), usageout);
+	(void) fputs (_("  -P, --prefix PREFIX_DI        directory prefix\n"), usageout);
+	(void) fputs (_("  -U, --users USERS             list of user members of this group\n"), usageout);
 	(void) fputs ("\n", usageout);
 	exit (status);
 }
@@ -206,6 +186,19 @@ static void grp_update (void)
 		grp.gr_passwd = SHADOW_PASSWD_STRING;	/* XXX warning: const */
 	}
 #endif				/* SHADOWGRP */
+
+	if (user_list) {
+		char *token;
+		token = strtok(user_list, ",");
+		while (token) {
+			if (prefix_getpwnam (token) == NULL) {
+				fprintf (stderr, _("Invalid member username %s\n"), token);
+				exit (E_GRP_UPDATE);
+			}
+			grp.gr_mem = add_list(grp.gr_mem, token);
+			token = strtok(NULL, ",");
+		}
+	}
 
 	/*
 	 * Write out the new group file entry.
@@ -391,10 +384,11 @@ static void process_flags (int argc, char **argv)
 		{"system",     no_argument,       NULL, 'r'},
 		{"root",       required_argument, NULL, 'R'},
 		{"prefix",     required_argument, NULL, 'P'},
+		{"users",      required_argument, NULL, 'U'},
 		{NULL, 0, NULL, '\0'}
 	};
 
-	while ((c = getopt_long (argc, argv, "fg:hK:op:rR:P:",
+	while ((c = getopt_long (argc, argv, "fg:hK:op:rR:P:U:",
 		                 long_options, NULL)) != -1) {
 		switch (c) {
 		case 'f':
@@ -452,6 +446,9 @@ static void process_flags (int argc, char **argv)
 		case 'R': /* no-op, handled in process_root_flag () */
 			break;
 		case 'P': /* no-op, handled in process_prefix_flag () */
+			break;
+		case 'U':
+			user_list = optarg;
 			break;
 		default:
 			usage (E_USAGE);
@@ -579,6 +576,8 @@ int main (int argc, char **argv)
 	 * Get my name so that I can use it to report errors.
 	 */
 	Prog = Basename (argv[0]);
+	log_set_progname(Prog);
+	log_set_logfd(stderr);
 
 	(void) setlocale (LC_ALL, "");
 	(void) bindtextdomain (PACKAGE, LOCALEDIR);

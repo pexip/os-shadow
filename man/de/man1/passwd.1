@@ -1,13 +1,13 @@
 '\" t
 .\"     Title: passwd
 .\"    Author: Julianne Frances Haugh
-.\" Generator: DocBook XSL Stylesheets v1.79.1 <http://docbook.sf.net/>
-.\"      Date: 23.01.2020
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 08.11.2022
 .\"    Manual: Dienstprogramme f\(:ur Benutzer
-.\"    Source: shadow-utils 4.8.1
+.\"    Source: shadow-utils 4.13
 .\"  Language: German
 .\"
-.TH "PASSWD" "1" "23.01.2020" "shadow\-utils 4\&.8\&.1" "Dienstprogramme f\(:ur Benutzer"
+.TH "PASSWD" "1" "08.11.2022" "shadow\-utils 4\&.13" "Dienstprogramme f\(:ur Benutzer"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -172,7 +172,7 @@ Apply changes in the
 \fICHROOT_DIR\fR
 directory and use the configuration files from the
 \fICHROOT_DIR\fR
-directory\&.
+directory\&. Only absolute paths are supported\&.
 .RE
 .PP
 \fB\-S\fR, \fB\-\-status\fR
@@ -215,88 +215,6 @@ Benutzer k\(:onnen unter Umst\(:anden ihr Passwort nicht \(:andern, wenn auf dem
 The following configuration variables in
 /etc/login\&.defs
 change the behavior of this tool:
-.PP
-\fBENCRYPT_METHOD\fR (string)
-.RS 4
-Damit wird der standardm\(:a\(ssige Verschl\(:usselungsalgorithmus, mit dem Passw\(:orter verschl\(:usselt werden, bestimmt (soweit nicht in der Befehlszeile ein Algorithmus angegeben wird)\&.
-.sp
-It can take one of these values:
-\fIDES\fR
-(default),
-\fIMD5\fR, \fISHA256\fR, \fISHA512\fR\&.
-.sp
-Note: this parameter overrides the
-\fBMD5_CRYPT_ENAB\fR
-variable\&.
-.RE
-.PP
-\fBMD5_CRYPT_ENAB\fR (boolean)
-.RS 4
-Indicate if passwords must be encrypted using the MD5\-based algorithm\&. If set to
-\fIyes\fR, new passwords will be encrypted using the MD5\-based algorithm compatible with the one used by recent releases of FreeBSD\&. It supports passwords of unlimited length and longer salt strings\&. Set to
-\fIno\fR
-if you need to copy encrypted passwords to other systems which don\*(Aqt understand the new algorithm\&. Default is
-\fIno\fR\&.
-.sp
-This variable is superseded by the
-\fBENCRYPT_METHOD\fR
-variable or by any command line option used to configure the encryption algorithm\&.
-.sp
-This variable is deprecated\&. You should use
-\fBENCRYPT_METHOD\fR\&.
-.RE
-.PP
-\fBOBSCURE_CHECKS_ENAB\fR (boolean)
-.RS 4
-Aktiviert zus\(:atzliche Tests bei der Ver\(:anderung eines Passworts\&.
-.RE
-.PP
-\fBPASS_ALWAYS_WARN\fR (boolean)
-.RS 4
-weist auf schwache Passw\(:orter hin (aber l\(:asst sie zu), falls Sie root sind
-.RE
-.PP
-\fBPASS_CHANGE_TRIES\fR (number)
-.RS 4
-maximale Anzahl von Versuchen, ein Passwort zu \(:andern, wenn dies wegen zu geringer St\(:arke des gew\(:ahlten Passworts abgelehnt wurde
-.RE
-.PP
-\fBPASS_MAX_LEN\fR (number), \fBPASS_MIN_LEN\fR (number)
-.RS 4
-Number of significant characters in the password for crypt()\&.
-\fBPASS_MAX_LEN\fR
-is 8 by default\&. Don\*(Aqt change unless your crypt() is better\&. This is ignored if
-\fBMD5_CRYPT_ENAB\fR
-set to
-\fIyes\fR\&.
-.RE
-.PP
-\fBSHA_CRYPT_MIN_ROUNDS\fR (number), \fBSHA_CRYPT_MAX_ROUNDS\fR (number)
-.RS 4
-When
-\fBENCRYPT_METHOD\fR
-is set to
-\fISHA256\fR
-or
-\fISHA512\fR, this defines the number of SHA rounds used by the encryption algorithm by default (when the number of rounds is not specified on the command line)\&.
-.sp
-Je mehr Runden Sie definieren, umso schwieriger ist es, das Passwort mit sturem Durchprobieren (brute force) zu knacken; umso mehr Rechenleistung wird jedoch auch f\(:ur die Anmeldung eines Benutzers ben\(:otigt\&.
-.sp
-Falls Sie nichts angeben, wird libc die Standardanzahl der Runden festlegen (5000)\&.
-.sp
-Die Werte m\(:ussen zwischen 1000\-999\&.999\&.999 liegen\&.
-.sp
-If only one of the
-\fBSHA_CRYPT_MIN_ROUNDS\fR
-or
-\fBSHA_CRYPT_MAX_ROUNDS\fR
-values is set, then this value will be used\&.
-.sp
-If
-\fBSHA_CRYPT_MIN_ROUNDS\fR
->
-\fBSHA_CRYPT_MAX_ROUNDS\fR, the highest value will be used\&.
-.RE
 .SH "DATEIEN"
 .PP
 /etc/passwd

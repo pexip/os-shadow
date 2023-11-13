@@ -1,33 +1,10 @@
 /*
- * Copyright (c) 1991 - 1994, Julianne Frances Haugh
- * Copyright (c) 1996 - 2000, Marek Michałkiewicz
- * Copyright (c) 2000 - 2006, Tomasz Kłoczko
- * Copyright (c) 2007 - 2011, Nicolas François
- * All rights reserved.
+ * SPDX-FileCopyrightText: 1991 - 1994, Julianne Frances Haugh
+ * SPDX-FileCopyrightText: 1996 - 2000, Marek Michałkiewicz
+ * SPDX-FileCopyrightText: 2000 - 2006, Tomasz Kłoczko
+ * SPDX-FileCopyrightText: 2007 - 2011, Nicolas François
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the copyright holders or contributors may not be used to
- *    endorse or promote products derived from this software without
- *    specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
- * PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
- * HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * SPDX-License-Identifier: BSD-3-Clause
  */
 
 #include <config.h>
@@ -68,9 +45,13 @@
 #ifdef ENABLE_SUBIDS
 #include "subordinateio.h"
 #endif				/* ENABLE_SUBIDS */
+#ifdef WITH_SELINUX
+#include <selinux/selinux.h>
+#endif				/* WITH_SELINUX */
 #ifdef WITH_TCB
 #include "tcbfuncs.h"
 #endif
+#include "shadowlog.h"
 
 /*
  * exit status values
@@ -86,7 +67,7 @@
 /* #define E_BAD_PWFILE	5	   passwd file contains errors */
 #define E_NOTFOUND	6	/* specified user/group doesn't exist */
 #define E_USER_BUSY	8	/* user to modify is logged in */
-#define E_NAME_IN_USE	9	/* username already in use */
+#define E_NAME_IN_USE	9	/* username or group name already in use */
 #define E_GRP_UPDATE	10	/* can't update group file */
 /* #define E_NOSPACE	11	   insufficient space to move home dir */
 #define E_HOMEDIR	12	/* unable to complete home dir move */
@@ -143,6 +124,7 @@ static bool
     mflg = false,		/* create user's home directory if it doesn't exist */
     oflg = false,		/* permit non-unique user ID to be specified with -u */
     pflg = false,		/* new encrypted password */
+    rflg = false,		/* remove a user from a single group */
     sflg = false,		/* new shell program */
 #ifdef WITH_SELINUX
     Zflg = false,		/* new selinux user */
@@ -180,8 +162,6 @@ static bool sub_gid_locked = false;
 
 
 /* local function prototypes */
-static void date_to_str (/*@unique@*//*@out@*/char *buf, size_t maxsize,
-                         long int date);
 static int get_groups (char *);
 static /*@noreturn@*/void usage (int status);
 static void new_pwent (struct passwd *);
@@ -207,28 +187,6 @@ static void move_mailbox (void);
 #endif
 
 extern int allow_bad_names;
-
-static void date_to_str (/*@unique@*//*@out@*/char *buf, size_t maxsize,
-                         long int date)
-{
-	struct tm *tp;
-
-	if (date < 0) {
-		strncpy (buf, "never", maxsize);
-	} else {
-		time_t t = (time_t) date;
-		tp = gmtime (&t);
-#ifdef HAVE_STRFTIME
-		strftime (buf, maxsize, "%Y-%m-%d", tp);
-#else
-		(void) snprintf (buf, maxsize, "%04d-%02d-%02d",
-		                 tp->tm_year + 1900,
-		                 tp->tm_mon + 1,
-		                 tp->tm_mday);
-#endif				/* HAVE_STRFTIME */
-	}
-	buf[maxsize - 1] = '\0';
-}
 
 /*
  * get_groups - convert a list of group names to an array of group IDs
@@ -366,7 +324,6 @@ static struct ulong_range getulong_range(const char *str)
 	result.last = (unsigned long int)last;
 out:
 	return result;
-	
 }
 
 struct ulong_range_list_entry {
@@ -410,7 +367,10 @@ static /*@noreturn@*/void usage (int status)
 	                  "\n"
 	                  "Options:\n"),
 	                Prog);
-	(void) fputs (_("  -b, --badnames                allow bad names\n"), usageout);
+	(void) fputs (_("  -a, --append                  append the user to the supplemental GROUPS\n"
+	                "                                mentioned by the -G option without removing\n"
+	                "                                the user from other groups\n"), usageout);
+	(void) fputs (_("  -b, --badname                 allow bad names\n"), usageout);
 	(void) fputs (_("  -c, --comment COMMENT         new value of the GECOS field\n"), usageout);
 	(void) fputs (_("  -d, --home HOME_DIR           new home directory for the user account\n"), usageout);
 	(void) fputs (_("  -e, --expiredate EXPIRE_DATE  set account expiration date to EXPIRE_DATE\n"), usageout);
@@ -418,9 +378,6 @@ static /*@noreturn@*/void usage (int status)
 	                "                                to INACTIVE\n"), usageout);
 	(void) fputs (_("  -g, --gid GROUP               force use GROUP as new primary group\n"), usageout);
 	(void) fputs (_("  -G, --groups GROUPS           new list of supplementary GROUPS\n"), usageout);
-	(void) fputs (_("  -a, --append                  append the user to the supplemental GROUPS\n"
-	                "                                mentioned by the -G option without removing\n"
-	                "                                the user from other groups\n"), usageout);
 	(void) fputs (_("  -h, --help                    display this help message and exit\n"), usageout);
 	(void) fputs (_("  -l, --login NEW_LOGIN         new value of the login name\n"), usageout);
 	(void) fputs (_("  -L, --lock                    lock the user account\n"), usageout);
@@ -428,8 +385,11 @@ static /*@noreturn@*/void usage (int status)
 	                "                                new location (use only with -d)\n"), usageout);
 	(void) fputs (_("  -o, --non-unique              allow using duplicate (non-unique) UID\n"), usageout);
 	(void) fputs (_("  -p, --password PASSWORD       use encrypted password for the new password\n"), usageout);
-	(void) fputs (_("  -R, --root CHROOT_DIR         directory to chroot into\n"), usageout);
 	(void) fputs (_("  -P, --prefix PREFIX_DIR       prefix directory where are located the /etc/* files\n"), usageout);
+	(void) fputs (_("  -r, --remove                  remove the user from only the supplemental GROUPS\n"
+	                "                                mentioned by the -G option without removing\n"
+	                "                                the user from other groups\n"), usageout);
+	(void) fputs (_("  -R, --root CHROOT_DIR         directory to chroot into\n"), usageout);
 	(void) fputs (_("  -s, --shell SHELL             new login shell for the user account\n"), usageout);
 	(void) fputs (_("  -u, --uid UID                 new UID for the user account\n"), usageout);
 	(void) fputs (_("  -U, --unlock                  unlock the user account\n"), usageout);
@@ -577,6 +537,12 @@ static void new_pwent (struct passwd *pwent)
 		SYSLOG ((LOG_INFO,
 		         "change user '%s' home from '%s' to '%s'",
 		         pwent->pw_name, pwent->pw_dir, user_newhome));
+
+		if (strlen(user_newhome) > 1
+			&& '/' == user_newhome[strlen(user_newhome)-1]) {
+			user_newhome[strlen(user_newhome)-1]='\0';
+		}
+
 		pwent->pw_dir = user_newhome;
 	}
 	if (sflg) {
@@ -624,10 +590,8 @@ static void new_spent (struct spwd *spent)
 	if (eflg) {
 		/* log dates rather than numbers of days. */
 		char new_exp[16], old_exp[16];
-		date_to_str (new_exp, sizeof(new_exp),
-		             user_newexpire * DAY);
-		date_to_str (old_exp, sizeof(old_exp),
-		             user_expire * DAY);
+		date_to_str (sizeof(new_exp), new_exp, user_newexpire * DAY);
+		date_to_str (sizeof(old_exp), old_exp, user_expire * DAY);
 #ifdef WITH_AUDIT
 		audit_logger (AUDIT_USER_CHAUTHTOK, Prog,
 		              "changing expiration date",
@@ -748,6 +712,14 @@ static void update_group (void)
 			continue;
 		}
 
+		/*
+		* If rflg+Gflg  is passed in AKA -rG invert is_member flag, which removes
+		* mentioned groups while leaving the others.
+		*/
+		if (Gflg && rflg) {
+			is_member = !is_member;
+		}
+
 		ngrp = __gr_dup (grp);
 		if (NULL == ngrp) {
 			fprintf (stderr,
@@ -793,7 +765,7 @@ static void update_group (void)
 				         "delete '%s' from group '%s'",
 				         user_name, ngrp->gr_name));
 			}
-		} else {
+		} else if (is_member) {
 			/* User was not a member but is now a member this
 			 * group.
 			 */
@@ -819,6 +791,8 @@ static void update_group (void)
 			SYSLOG ((LOG_WARN, "failed to prepare the new %s entry '%s'", gr_dbname (), ngrp->gr_name));
 			fail_exit (E_GRP_UPDATE);
 		}
+
+		gr_free(ngrp);
 	}
 }
 
@@ -859,6 +833,14 @@ static void update_gshadow (void)
 
 		if (!was_member && !was_admin && !is_member) {
 			continue;
+		}
+
+		/*
+		* If rflg+Gflg  is passed in AKA -rG invert is_member, to remove targeted
+		* groups while leaving the user apart of groups not mentioned
+		*/
+		if (Gflg && rflg) {
+			is_member = !is_member;
 		}
 
 		nsgrp = __sgr_dup (sgrp);
@@ -943,7 +925,7 @@ static void update_gshadow (void)
 
 		changed = false;
 
-		/* 
+		/*
 		 * Update the group entry to reflect the changes.
 		 */
 		if (sgr_update (nsgrp) == 0) {
@@ -954,6 +936,8 @@ static void update_gshadow (void)
 			         sgr_dbname (), nsgrp->sg_name));
 			fail_exit (E_GRP_UPDATE);
 		}
+
+		free (nsgrp);
 	}
 }
 #endif				/* SHADOWGRP */
@@ -984,7 +968,7 @@ static void grp_update (void)
 static void process_flags (int argc, char **argv)
 {
 	const struct group *grp;
-
+	struct stat st;
 	bool anyflag = false;
 
 	{
@@ -1007,6 +991,7 @@ static void process_flags (int argc, char **argv)
 			{"move-home",    no_argument,       NULL, 'm'},
 			{"non-unique",   no_argument,       NULL, 'o'},
 			{"password",     required_argument, NULL, 'p'},
+			{"remove",       no_argument,       NULL, 'r'},
 			{"root",         required_argument, NULL, 'R'},
 			{"prefix",       required_argument, NULL, 'P'},
 			{"shell",        required_argument, NULL, 's'},
@@ -1024,7 +1009,7 @@ static void process_flags (int argc, char **argv)
 			{NULL, 0, NULL, '\0'}
 		};
 		while ((c = getopt_long (argc, argv,
-		                         "abc:d:e:f:g:G:hl:Lmop:R:s:u:UP:"
+		                         "abc:d:e:f:g:G:hl:Lmop:rR:s:u:UP:"
 #ifdef ENABLE_SUBIDS
 		                         "v:w:V:W:"
 #endif				/* ENABLE_SUBIDS */
@@ -1058,20 +1043,22 @@ static void process_flags (int argc, char **argv)
 				}
 				dflg = true;
 				user_newhome = optarg;
+				if (user_newhome[0] != '/') {
+					fprintf (stderr,
+					         _("%s: homedir must be an absolute path\n"),
+					         Prog);
+					exit (E_BAD_ARG);
+				}
 				break;
 			case 'e':
-				if ('\0' != *optarg) {
-					user_newexpire = strtoday (optarg);
-					if (user_newexpire < -1) {
-						fprintf (stderr,
-						         _("%s: invalid date '%s'\n"),
-						         Prog, optarg);
-						exit (E_BAD_ARG);
-					}
-					user_newexpire *= DAY / SCALE;
-				} else {
-					user_newexpire = -1;
+				user_newexpire = strtoday (optarg);
+				if (user_newexpire < -1) {
+					fprintf (stderr,
+						 _("%s: invalid date '%s'\n"),
+						 Prog, optarg);
+					exit (E_BAD_ARG);
 				}
+				user_newexpire *= DAY / SCALE;
 				eflg = true;
 				break;
 			case 'f':
@@ -1094,6 +1081,7 @@ static void process_flags (int argc, char **argv)
 				}
 				user_newgid = grp->gr_gid;
 				gflg = true;
+				gr_free (grp);
 				break;
 			case 'G':
 				if (get_groups (optarg) != 0) {
@@ -1107,7 +1095,7 @@ static void process_flags (int argc, char **argv)
 			case 'l':
 				if (!is_valid_user_name (optarg)) {
 					fprintf (stderr,
-					         _("%s: invalid user name '%s'\n"),
+					         _("%s: invalid user name '%s': use --badname to ignore\n"),
 					         Prog, optarg);
 					exit (E_BAD_ARG);
 				}
@@ -1127,16 +1115,32 @@ static void process_flags (int argc, char **argv)
 				user_pass = optarg;
 				pflg = true;
 				break;
+			case 'r':
+				rflg = true;
+				break;
 			case 'R': /* no-op, handled in process_root_flag () */
 				break;
 			case 'P': /* no-op, handled in process_prefix_flag () */
 				break;
 			case 's':
-				if (!VALID (optarg)) {
+				if (   ( !VALID (optarg) )
+				    || (   ('\0' != optarg[0])
+				        && ('/'  != optarg[0])
+				        && ('*'  != optarg[0]) )) {
 					fprintf (stderr,
-					         _("%s: invalid field '%s'\n"),
+					         _("%s: invalid shell '%s'\n"),
 					         Prog, optarg);
 					exit (E_BAD_ARG);
+				}
+				if (    '\0' != optarg[0]
+				     && '*'  != optarg[0]
+				     && strcmp(optarg, "/sbin/nologin") != 0
+				     && (   stat(optarg, &st) != 0
+				         || S_ISDIR(st.st_mode)
+				         || access(optarg, X_OK) != 0)) {
+					fprintf (stderr,
+					         _("%s: Warning: missing or non-executable shell '%s'\n"),
+					         Prog, optarg);
 				}
 				user_newshell = optarg;
 				sflg = true;
@@ -1253,7 +1257,7 @@ static void process_flags (int argc, char **argv)
 	if (!gflg) {
 		user_newgid = user_gid;
 	}
-	if(prefix[0]) {
+	if (prefix[0]) {
 		size_t len = strlen(prefix) + strlen(user_home) + 2;
 		int wlen;
 		prefix_user_home = xmalloc(len);
@@ -1312,6 +1316,20 @@ static void process_flags (int argc, char **argv)
 		fprintf (stderr,
 		         _("%s: %s flag is only allowed with the %s flag\n"),
 		         Prog, "-a", "-G");
+		usage (E_USAGE);
+	}
+
+	if (rflg && (!Gflg)) {
+		fprintf (stderr,
+		         _("%s: %s flag is only allowed with the %s flag\n"),
+		         Prog, "-r", "-G");
+		usage (E_USAGE);
+	}
+
+	if (rflg && aflg) {
+		fprintf (stderr,
+		         _("%s: %s and %s are mutually exclusive flags\n"),
+		         Prog, "-r", "-a");
 		usage (E_USAGE);
 	}
 
@@ -1864,6 +1882,11 @@ static void move_home (void)
 			         Prog, prefix_user_home, prefix_user_newhome);
 			fail_exit (E_HOMEDIR);
 		}
+	} else {
+		fprintf (stderr,
+		         _("%s: The previous home directory (%s) does not "
+		           "exist or is inaccessible. Move cannot be completed.\n"),
+		         Prog, prefix_user_home);
 	}
 }
 
@@ -1906,8 +1929,7 @@ static void update_lastlog (void)
 		/* Copy the old entry to its new location */
 		if (   (lseek (fd, off_newuid, SEEK_SET) != off_newuid)
 		    || (write (fd, &ll, sizeof ll) != (ssize_t) sizeof ll)
-		    || (fsync (fd) != 0)
-		    || (close (fd) != 0)) {
+		    || (fsync (fd) != 0)) {
 			fprintf (stderr,
 			         _("%s: failed to copy the lastlog entry of user %lu to user %lu: %s\n"),
 			         Prog, (unsigned long) user_id, (unsigned long) user_newid, strerror (errno));
@@ -1923,16 +1945,15 @@ static void update_lastlog (void)
 			memzero (&ll, sizeof (ll));
 			if (   (lseek (fd, off_newuid, SEEK_SET) != off_newuid)
 			    || (write (fd, &ll, sizeof ll) != (ssize_t) sizeof ll)
-			    || (fsync (fd) != 0)
-			    || (close (fd) != 0)) {
+			    || (fsync (fd) != 0)) {
 				fprintf (stderr,
 				         _("%s: failed to copy the lastlog entry of user %lu to user %lu: %s\n"),
 				         Prog, (unsigned long) user_id, (unsigned long) user_newid, strerror (errno));
 			}
-		} else {
-			(void) close (fd);
 		}
 	}
+
+	(void) close (fd);
 }
 
 /*
@@ -1967,8 +1988,7 @@ static void update_faillog (void)
 		/* Copy the old entry to its new location */
 		if (   (lseek (fd, off_newuid, SEEK_SET) != off_newuid)
 		    || (write (fd, &fl, sizeof fl) != (ssize_t) sizeof fl)
-		    || (fsync (fd) != 0)
-		    || (close (fd) != 0)) {
+		    || (fsync (fd) != 0)) {
 			fprintf (stderr,
 			         _("%s: failed to copy the faillog entry of user %lu to user %lu: %s\n"),
 			         Prog, (unsigned long) user_id, (unsigned long) user_newid, strerror (errno));
@@ -1983,16 +2003,15 @@ static void update_faillog (void)
 			/* Reset the new uid's faillog entry */
 			memzero (&fl, sizeof (fl));
 			if (   (lseek (fd, off_newuid, SEEK_SET) != off_newuid)
-			    || (write (fd, &fl, sizeof fl) != (ssize_t) sizeof fl)
-			    || (close (fd) != 0)) {
+			    || (write (fd, &fl, sizeof fl) != (ssize_t) sizeof fl)) {
 				fprintf (stderr,
 				         _("%s: failed to copy the faillog entry of user %lu to user %lu: %s\n"),
 				         Prog, (unsigned long) user_id, (unsigned long) user_newid, strerror (errno));
 			}
-		} else {
-			(void) close (fd);
 		}
 	}
+
+	(void) close (fd);
 }
 
 #ifndef NO_MOVE_MAILBOX
@@ -2118,6 +2137,8 @@ int main (int argc, char **argv)
 	 * Get my name so that I can use it to report errors.
 	 */
 	Prog = Basename (argv[0]);
+	log_set_progname(Prog);
+	log_set_logfd(stderr);
 
 	(void) setlocale (LC_ALL, "");
 	(void) bindtextdomain (PACKAGE, LOCALEDIR);
@@ -2222,7 +2243,7 @@ int main (int argc, char **argv)
 			if (sub_uid_remove(user_name, ptr->range.first, count) == 0) {
 				fprintf (stderr,
 					_("%s: failed to remove uid range %lu-%lu from '%s'\n"),
-					Prog, ptr->range.first, ptr->range.last, 
+					Prog, ptr->range.first, ptr->range.last,
 					sub_uid_dbname ());
 				fail_exit (E_SUB_UID_UPDATE);
 			}
@@ -2235,7 +2256,7 @@ int main (int argc, char **argv)
 			if (sub_uid_add(user_name, ptr->range.first, count) == 0) {
 				fprintf (stderr,
 					_("%s: failed to add uid range %lu-%lu to '%s'\n"),
-					Prog, ptr->range.first, ptr->range.last, 
+					Prog, ptr->range.first, ptr->range.last,
 					sub_uid_dbname ());
 				fail_exit (E_SUB_UID_UPDATE);
 			}
@@ -2248,7 +2269,7 @@ int main (int argc, char **argv)
 			if (sub_gid_remove(user_name, ptr->range.first, count) == 0) {
 				fprintf (stderr,
 					_("%s: failed to remove gid range %lu-%lu from '%s'\n"),
-					Prog, ptr->range.first, ptr->range.last, 
+					Prog, ptr->range.first, ptr->range.last,
 					sub_gid_dbname ());
 				fail_exit (E_SUB_GID_UPDATE);
 			}
@@ -2261,7 +2282,7 @@ int main (int argc, char **argv)
 			if (sub_gid_add(user_name, ptr->range.first, count) == 0) {
 				fprintf (stderr,
 					_("%s: failed to add gid range %lu-%lu to '%s'\n"),
-					Prog, ptr->range.first, ptr->range.last, 
+					Prog, ptr->range.first, ptr->range.last,
 					sub_gid_dbname ());
 				fail_exit (E_SUB_GID_UPDATE);
 			}

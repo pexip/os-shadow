@@ -1,13 +1,13 @@
 '\" t
 .\"     Title: groupmems
 .\"    Author: George Kraft, IV
-.\" Generator: DocBook XSL Stylesheets v1.79.1 <http://docbook.sf.net/>
-.\"      Date: 23.01.2020
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 08.11.2022
 .\"    Manual: Befehle zur Systemverwaltung
-.\"    Source: shadow-utils 4.8.1
+.\"    Source: shadow-utils 4.13
 .\"  Language: German
 .\"
-.TH "GROUPMEMS" "8" "23.01.2020" "shadow\-utils 4\&.8\&.1" "Befehle zur Systemverwaltung"
+.TH "GROUPMEMS" "8" "08.11.2022" "shadow\-utils 4\&.13" "Befehle zur Systemverwaltung"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -107,7 +107,7 @@ Apply changes in the
 \fICHROOT_DIR\fR
 directory and use the configuration files from the
 \fICHROOT_DIR\fR
-directory\&.
+directory\&. Only absolute paths are supported\&.
 .RE
 .SH "EINRICHTUNG"
 .PP
@@ -142,21 +142,6 @@ utility to manage their own group membership list\&.
 The following configuration variables in
 /etc/login\&.defs
 change the behavior of this tool:
-.PP
-\fBMAX_MEMBERS_PER_GROUP\fR (number)
-.RS 4
-Maximum members per group entry\&. When the maximum is reached, a new group entry (line) is started in
-/etc/group
-(with the same name, same password, and same GID)\&.
-.sp
-Der Standardwert ist 0, was zur Folge hat, dass die Anzahl der Mitglieder einer Gruppe nicht begrenzt ist\&.
-.sp
-Diese F\(:ahigkeit (der aufgeteilten Gruppe) erm\(:oglicht es, die Zeilenl\(:ange in der Gruppendatei zu begrenzen\&. Damit kann sichergestellt werden, dass die Zeilen f\(:ur NIS\-Gruppen nicht l\(:anger als 1024 Zeichen sind\&.
-.sp
-Falls Sie eine solche Begrenzung ben\(:otigen, k\(:onnen Sie 25 verwenden\&.
-.sp
-Hinweis: Aufgeteilte Gruppen werden m\(:oglicherweise nicht von allen Werkzeugen unterst\(:utzt, selbst nicht aus der Shadow\-Werkzeugsammlung\&. Sie sollten diese Variable nur setzen, falls Sie zwingend darauf angewiesen sind\&.
-.RE
 .SH "DATEIEN"
 .PP
 /etc/group

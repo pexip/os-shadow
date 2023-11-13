@@ -1,13 +1,13 @@
 '\" t
 .\"     Title: groups
 .\"    Author: Julianne Frances Haugh
-.\" Generator: DocBook XSL Stylesheets v1.79.1 <http://docbook.sf.net/>
-.\"      Date: 2020-01-23
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 2022-11-08
 .\"    Manual: 用户命令
-.\"    Source: shadow-utils 4.8.1
+.\"    Source: shadow-utils 4.13
 .\"  Language: Chinese Simplified
 .\"
-.TH "GROUPS" "1" "2020-01-23" "shadow\-utils 4\&.8\&.1" "用户命令"
+.TH "GROUPS" "1" "2022-11-08" "shadow\-utils 4\&.13" "用户命令"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -28,7 +28,7 @@
 .\" * MAIN CONTENT STARTS HERE *
 .\" -----------------------------------------------------------------
 .SH "名称"
-groups \- 现实当前组名
+groups \- 显示当前组名
 .SH "大纲"
 .HP \w'\fBgroups\fR\ 'u
 \fBgroups\fR [\fI用户\fR]
@@ -39,11 +39,11 @@ The
 command displays the current group names or ID values\&. If the value does not have a corresponding entry in
 /etc/group, the value will be displayed as the numerical group value\&. The optional
 \fIuser\fR
-parameter will display the groups for the named
-\fIuser\fR\&.
+parameter will display the groups for the named user\&.
 .SH "注意"
 .PP
-Systems which do not support concurrent group sets will have the information from
+Systems which do not support supplementary groups (see
+\fBinitgroups\fR(3)) will have the information from
 /etc/group
 reported\&. The user must use
 \fBnewgrp\fR
@@ -61,4 +61,5 @@ to change his current real and effective group ID\&.
 \fBnewgrp\fR(1),
 \fBgetgid\fR(2),
 \fBgetgroups\fR(2),
-\fBgetuid\fR(2)\&.
+\fBgetuid\fR(2),
+\fBinitgroups\fR(3)\&.

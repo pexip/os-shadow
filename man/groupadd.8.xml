@@ -1,32 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-   Copyright (c) 1991       , Julianne Frances Haugh
-   Copyright (c) 2007 - 2011, Nicolas François
-   All rights reserved.
-  
-   Redistribution and use in source and binary forms, with or without
-   modification, are permitted provided that the following conditions
-   are met:
-   1. Redistributions of source code must retain the above copyright
-      notice, this list of conditions and the following disclaimer.
-   2. Redistributions in binary form must reproduce the above copyright
-      notice, this list of conditions and the following disclaimer in the
-      documentation and/or other materials provided with the distribution.
-   3. The name of the copyright holders or contributors may not be used to
-      endorse or promote products derived from this software without
-      specific prior written permission.
-  
-   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-   ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-   LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
-   PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
-   HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-   SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-   LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-   DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-   THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+   SPDX-FileCopyrightText: 1991       , Julianne Frances Haugh
+   SPDX-FileCopyrightText: 2007 - 2011, Nicolas François
+   SPDX-License-Identifier: BSD-3-Clause
 -->
 <!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook V4.5//EN"
   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
@@ -72,10 +48,10 @@
     <cmdsynopsis>
       <command>groupadd</command>
       <arg choice='opt'>
-	<replaceable>options</replaceable>
+	<replaceable>OPTIONS</replaceable>
       </arg>
       <arg choice='plain'>
-	<replaceable>group</replaceable>
+	<replaceable>NEWGROUP</replaceable>
       </arg>
     </cmdsynopsis>
   </refsynopsisdiv>
@@ -87,6 +63,17 @@
       values from the system. The new group will be entered into the system
       files as needed.
     </para>
+     <para>
+       Groupnames may contain only lower and upper case letters, digits,
+       underscores, or dashes. They can end with a dollar sign.
+
+       Dashes are not allowed at the beginning of the groupname.
+       Fully numeric groupnames and groupnames . or .. are
+       also disallowed.
+     </para>
+     <para>
+       Groupnames may only be up to &GROUP_NAME_MAX_LENGTH; characters long.
+     </para>
   </refsect1>
 
   <refsect1 id='options'>
@@ -115,8 +102,8 @@
 	  <option>-g</option>, <option>--gid</option>&nbsp;<replaceable>GID</replaceable>
 	</term>
 	<listitem>
-	  <para>The numerical value of the group's ID. This value must be
-	    unique, unless the <option>-o</option> option is used. The value
+	  <para>The numerical value of the group's ID. <replaceable>GID</replaceable> 
+	    must be unique, unless the <option>-o</option> option is used. The value
 	    must be non-negative. The default is to use the smallest ID
 	    value greater than or equal to <option>GID_MIN</option> and
 	    greater than every other group.
@@ -159,7 +146,10 @@
 	</term>
 	<listitem>
 	  <para>
-	    This option permits to add a group with a non-unique GID.
+	    permits the creation of a group with an already used
+	    numerical ID. As a result, for this
+	    <replaceable>GID</replaceable>, the mapping towards group
+	    <replaceable>NEWGROUP</replaceable> may not be unique.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -169,10 +159,16 @@
 	</term>
 	<listitem>
 	  <para>
-	    The encrypted password, as returned by <citerefentry>
-	    <refentrytitle>crypt</refentrytitle><manvolnum>3</manvolnum>
-	    </citerefentry>. The default is to disable the password.
+	    defines an initial password for the group account. PASSWORD is expected to
+            be encrypted, as returned by <citerefentry><refentrytitle>crypt
+            </refentrytitle><manvolnum>3</manvolnum></citerefentry>. 
 	  </para>
+	  <para>
+            Without this option, the group account will be locked and
+            with no password defined, i.e. a single exclamation mark
+            in the respective field of ths system account file 
+            <filename>/etc/group</filename> or <filename>/etc/gshadow</filename>.
+          </para>
 	  <para>
 	    <emphasis role="bold">Note:</emphasis> This option is not
 	    recommended because the password (or encrypted password) will
@@ -209,6 +205,7 @@
 	    Apply changes in the <replaceable>CHROOT_DIR</replaceable>
 	    directory and use the configuration files from the
 	    <replaceable>CHROOT_DIR</replaceable> directory.
+	    Only absolute paths are supported.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -218,14 +215,28 @@
 	</term>
 	<listitem>
 	  <para>
-	    Apply changes in the <replaceable>PREFIX_DIR</replaceable>
-	    directory and use the configuration files from the
-	    <replaceable>PREFIX_DIR</replaceable> directory.
-		This option does not chroot and is intended for preparing 
-		a cross-compilation target.
-		Some limitations: NIS and LDAP users/groups are not verified.
-		PAM authentication is using the host files.
-		No SELINUX support.
+	    Apply changes to configuration files under the root filesystem
+	    found under the directory <replaceable>PREFIX_DIR</replaceable>.
+	    This option does not chroot and is intended for preparing a cross-compilation
+	    target.  Some limitations: NIS and LDAP users/groups are
+	    not verified.  PAM authentication is using the host files.
+	    No SELINUX support.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <option>-U</option>, <option>--users</option>
+	</term>
+	<listitem>
+	  <para>
+	    A list of usernames to add as members of the group.
+	  </para>
+	  <para>
+	    The default behavior (if the <option>-g</option>,
+	    <option>-N</option>, and <option>-U</option> options are not
+	    specified) is defined by the <option>USERGROUPS_ENAB</option>
+	    variable in <filename>/etc/login.defs</filename>.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -273,15 +284,6 @@
    <refsect1 id='caveats'>
      <title>CAVEATS</title>
      <para>
-       Groupnames must start with a lower case letter or an underscore,
-       followed by lower case letters, digits, underscores, or dashes.
-       They can end with a dollar sign.
-       In regular expression terms: [a-z_][a-z0-9_-]*[$]?
-     </para>
-     <para>
-       Groupnames may only be up to &GROUP_NAME_MAX_LENGTH; characters long.
-     </para>
-     <para>
        You may not add a NIS or LDAP group. This must be performed on the
        corresponding server.
      </para>
@@ -318,13 +320,13 @@
 	<varlistentry>
 	  <term><replaceable>4</replaceable></term>
 	  <listitem>
-	    <para>GID not unique (when <option>-o</option> not used)</para>
+	    <para>GID is already used (when called without <option>-o</option>)</para>
 	  </listitem>
 	</varlistentry>
 	<varlistentry>
 	  <term><replaceable>9</replaceable></term>
 	  <listitem>
-	    <para>group name not unique</para>
+	    <para>group name is already used</para>
 	  </listitem>
 	</varlistentry>
 	<varlistentry>

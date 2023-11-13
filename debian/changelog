@@ -1,3 +1,150 @@
+shadow (1:4.13+dfsg1-1) unstable; urgency=medium
+
+  [ Balint Reczey ]
+  * debian/watch: Make watch file work with new GitHub UI
+  * debian/control: Mark libsubid-dev as Multi-Arch: same
+  * New upstream version 4.13
+    - fix typo in useradd(8) (Closes: #1021380)
+  * Refresh patches
+
+  [ Debian Janitor ]
+  * Remove constraints unnecessary since buster (oldstable)
+    * login: Drop versioned constraint on util-linux in Breaks.
+    Changes-By: deb-scrub-obsolete
+
+ -- Balint Reczey <balint@balintreczey.hu>  Fri, 11 Nov 2022 09:28:15 +0100
+
+shadow (1:4.12.3+dfsg1-3) unstable; urgency=medium
+
+  [ Debian Janitor ]
+  * Set upstream metadata fields: Bug-Database, Bug-Submit, Repository-Browse.
+
+  [ Balint Reczey ]
+  * Fix tree copying regressions introduced in 4.12.2. (Closes: #1023132)
+
+ -- Balint Reczey <balint@balintreczey.hu>  Sat, 05 Nov 2022 14:47:01 +0100
+
+shadow (1:4.12.3+dfsg1-2) unstable; urgency=medium
+
+  * Cherry-pick upstream patch to fix regression in expiration date handling
+    (Closes: #1021697)
+
+ -- Balint Reczey <balint@balintreczey.hu>  Sat, 22 Oct 2022 20:23:10 +0200
+
+shadow (1:4.12.3+dfsg1-1) unstable; urgency=medium
+
+  [ Balint Reczey ]
+  * New upstream release (Closes: #1004242, #1006848)
+  * Refresh patches
+  * debian/patches: Reorder patches in series to make it look sane
+  * Fix Lintian elevated-privileges tag rename
+
+  [ Johannes Schauer Marin Rodrigues ]
+  * debian/shadowconfig: Support DPKG_ROOT without using chroot()
+    (Closes:  #1007758)
+  * useradd: cherry-pick patch from upstream to avoid creating several GB worth
+    of sparse lastlog and faillog files for users with high uid values
+    (Closes: #1019245)
+
+  [ Debian Janitor ]
+  * Update renamed lintian tag names in lintian overrides.
+  * Update standards version to 4.6.1, no changes needed.
+
+ -- Balint Reczey <balint@balintreczey.hu>  Tue, 04 Oct 2022 22:09:04 +0200
+
+shadow (1:4.11.1+dfsg1-2) unstable; urgency=medium
+
+  [ Balint Reczey ]
+  * debian/README.source: Recommend submitting translations upstream
+  * debian/tests/control: Mark smoke test as superficial
+  * useradd: Restore defaults used up to 4.8.1 version.
+    Also fix /etc/default/useradd to state that mail spool directories are
+    not created.
+  * login.defs:
+    - List default value of HOME_MODE
+    - Warn about weak cryptographic choices, like upstream
+    - include HMAC_CRYPTO_ALGO key
+    - Fix typo
+
+  [ Jenkins ]
+  * Trim trailing whitespace.
+    Changes-By: lintian-brush
+    Fixes: lintian: trailing-whitespace
+  * Use canonical URL in Vcs-Git.
+    Changes-By: lintian-brush
+    Fixes: lintian: vcs-field-not-canonical
+  * Fix day-of-week for changelog entry 1:4.1.4.2+svn3283-3.
+    Changes-By: lintian-brush
+    Fixes: lintian: debian-changelog-has-wrong-day-of-week
+
+ -- Balint Reczey <balint@balintreczey.hu>  Thu, 03 Mar 2022 20:41:41 +0100
+
+shadow (1:4.11.1+dfsg1-1) unstable; urgency=medium
+
+  * debian/NEWS: Fix version and release of latest entry
+
+ -- Balint Reczey <balint@balintreczey.hu>  Mon, 31 Jan 2022 10:33:28 +0100
+
+shadow (1:4.11.1+dfsg1-0exp1) experimental; urgency=medium
+
+  * login: Don't list su command as shipped (Closes: #960637)
+  * Install nologin /usr/sbin without patching makefiles
+  * debian/copyright: Fully rewrite the file based on upstream license update
+    and exclude contrib/atudel from upstream tarball
+  * debian/watch: Repack upstream tarball with +dfsg1 suffix
+  * debian/upstream/signing-key.asc: Update upstream signing key
+  * New upstream version 4.11.1+dfsg1
+  * Refresh patches
+  * Set NONEXISTENT to /nonexistent in shipped login.defs (Closes: #960318)
+  * Enable newly added yescrypt support
+  * Include YESCRYPT options in shipped login.defs (Closes: #991914)
+  * debian/rules: Stop using --disable-shared to build shared libraries
+  * Ship the libsubid4 and libsubid-dev packages and ship getsubids in uidmap
+  * debian/rules: Drop obsolete variable setting
+  * debian/login.lintian-overrides: Drop unused override
+  * debian/control: Make the Vcs-Browser URL canonical
+  * debian/login.defs: List new GRANT_AUX_GROUP_SUBIDS option in shipped login.defs
+  * debian/NEWS: Mention new login behaviour regarding empty password field.
+    Also set PREVENT_NO_AUTH in shipped login.defs accordingly.
+  * debian/tests: Cherry-pick part of autopkgtest from Ubuntu.
+    Thanks to Michael Vogt for the more extensive suite in Ubuntu
+  * debian/login.defs: Set default subuid and subgid ranges
+
+ -- Balint Reczey <balint@balintreczey.hu>  Sat, 22 Jan 2022 21:03:44 +0100
+
+shadow (1:4.8.1-2) unstable; urgency=medium
+
+  * debian/control: Switch to libsemanage-dev from libsemanage1-dev
+    (Closes: #998633)
+  * ACK NMU, thanks for all the changes
+  * Make passwd recommend sensible-utils because vipw uses sensible-editor
+  * Add files to debian/not-installed or install them when they were missed
+    This change ships a few more man page translations
+  * debian/control: Bump debhelper-compat version to 13
+  * List man pages to install in debian/*.manpages instead of in
+    debian/*.install
+  * Clean up debian/control using 'cme fix dpkg-control'
+  * Rename deprecated debian/passwd.tmpfile to debian/passwd.tmpfiles
+  * debian/control: Revert to my personal email address in the Maintainer field
+
+ -- Balint Reczey <balint@balintreczey.hu>  Wed, 10 Nov 2021 10:39:04 +0100
+
+shadow (1:4.8.1-1.1) unstable; urgency=medium
+
+  [ Johannes Schauer Marin Rodrigues ]
+  * Non-maintainer upload.
+
+  [ Niels Thykier ]
+  * Remove obsolete login.preinst
+  * Remove obsolete code from passwd maintscripts
+
+  [ Helmut Grohne ]
+  * logoutd is gone since at least buster (closes: #989712)
+  * Delete duplicate subuid/subgid creation.
+  * login.postinstd support for DPKG_ROOT (closes: #992578)
+
+ -- Johannes Schauer Marin Rodrigues <josch@debian.org>  Sat, 23 Oct 2021 21:04:57 +0200
+
 shadow (1:4.8.1-1pexip3) pexip-bullseye; urgency=medium
 
   * Bullseye rebuild for ARM64 inclusion
@@ -567,7 +714,7 @@ shadow (1:4.1.4.2+svn3283-3) unstable; urgency=high
   * debian/patches/300_CVE-2011-0721: Fix insufficient input sanitation
     leading to possible user or group creation in NIS environments.
 
- -- Nicolas FRANCOIS (Nekral) <nicolas.francois@centraliens.net>  Mon, 13 Feb 2011 23:20:05 +0100
+ -- Nicolas FRANCOIS (Nekral) <nicolas.francois@centraliens.net>  Sun, 13 Feb 2011 23:20:05 +0100
 
 shadow (1:4.1.4.2+svn3283-2) unstable; urgency=low
 
@@ -3975,4 +4122,3 @@ shadow (960810-1) base; urgency=LOW
   * New upstream version
 
  -- Unknown <unknown@debian.org>  Mon, 01 Jan 1996 00:00:00 +0000
-

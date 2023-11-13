@@ -1,13 +1,13 @@
 '\" t
 .\"     Title: chpasswd
 .\"    Author: Julianne Frances Haugh
-.\" Generator: DocBook XSL Stylesheets v1.79.1 <http://docbook.sf.net/>
-.\"      Date: 23/01/2020
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 08/11/2022
 .\"    Manual: Commandes de gestion du syst\(`eme
-.\"    Source: shadow-utils 4.8.1
+.\"    Source: shadow-utils 4.13
 .\"  Language: French
 .\"
-.TH "CHPASSWD" "8" "23/01/2020" "shadow\-utils 4\&.8\&.1" "Commandes de gestion du syst\(`em"
+.TH "CHPASSWD" "8" "08/11/2022" "shadow\-utils 4\&.13" "Commandes de gestion du syst\(`em"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -103,7 +103,7 @@ Apply changes in the
 \fICHROOT_DIR\fR
 directory and use the configuration files from the
 \fICHROOT_DIR\fR
-directory\&.
+directory\&. Only absolute paths are supported\&.
 .RE
 .PP
 \fB\-s\fR, \fB\-\-sha\-rounds\fR\ \&\fIROUNDS\fR
@@ -131,63 +131,7 @@ Pensez \(`a configurer les permissions ou umask afin d\*(Aqemp\(^echer la lectur
 The following configuration variables in
 /etc/login\&.defs
 change the behavior of this tool:
-.PP
-\fBENCRYPT_METHOD\fR (string)
-.RS 4
-D\('efinir les algorithmes de chiffrement par d\('efaut du syst\(`eme pour coder les mots de passes (si aucun algorithme n\*(Aqa \('et\('e indiqu\('e sur la ligne de commandes)\&.
-.sp
-It can take one of these values:
-\fIDES\fR
-(default),
-\fIMD5\fR, \fISHA256\fR, \fISHA512\fR\&.
-.sp
-Note: this parameter overrides the
-\fBMD5_CRYPT_ENAB\fR
-variable\&.
-.RE
-.PP
-\fBMD5_CRYPT_ENAB\fR (boolean)
-.RS 4
-Indicate if passwords must be encrypted using the MD5\-based algorithm\&. If set to
-\fIyes\fR, new passwords will be encrypted using the MD5\-based algorithm compatible with the one used by recent releases of FreeBSD\&. It supports passwords of unlimited length and longer salt strings\&. Set to
-\fIno\fR
-if you need to copy encrypted passwords to other systems which don\*(Aqt understand the new algorithm\&. Default is
-\fIno\fR\&.
-.sp
-This variable is superseded by the
-\fBENCRYPT_METHOD\fR
-variable or by any command line option used to configure the encryption algorithm\&.
-.sp
-This variable is deprecated\&. You should use
-\fBENCRYPT_METHOD\fR\&.
-.RE
-.PP
-\fBSHA_CRYPT_MIN_ROUNDS\fR (number), \fBSHA_CRYPT_MAX_ROUNDS\fR (number)
-.RS 4
-When
-\fBENCRYPT_METHOD\fR
-is set to
-\fISHA256\fR
-or
-\fISHA512\fR, this defines the number of SHA rounds used by the encryption algorithm by default (when the number of rounds is not specified on the command line)\&.
-.sp
-Avec beaucoup de rounds, il est plus difficile de trouver le mot de passe avec une attaque par force brute\&. Veuillez remarquer que plus de ressources processeur seront n\('ecessaires pour authentifier les utilisateurs\&.
-.sp
-Si non pr\('ecis\('ee, la libc utilisera le nombre de rounds par d\('efaut (5000)\&.
-.sp
-Les valeurs doivent \(^etre comprises dans l\*(Aqintervalle 1\ \&000\ \&\-\ \&999\ \&999\ \&999\&.
-.sp
-If only one of the
-\fBSHA_CRYPT_MIN_ROUNDS\fR
-or
-\fBSHA_CRYPT_MAX_ROUNDS\fR
-values is set, then this value will be used\&.
-.sp
-If
-\fBSHA_CRYPT_MIN_ROUNDS\fR
->
-\fBSHA_CRYPT_MAX_ROUNDS\fR, the highest value will be used\&.
-.RE
+
 .SH "FICHIERS"
 .PP
 /etc/passwd

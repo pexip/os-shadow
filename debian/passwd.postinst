@@ -4,20 +4,6 @@ set -e
 
 case "$1" in
 configure)
-    # Fix permissions on various log files from old versions of the debian
-    # installer, some unrelated to passwd but we decided to put the fix
-    # here since there was no better place. This can safely be removed
-    # after etch is released.
-    if dpkg --compare-versions "$2" lt "1:4.0.14-9"; then
-	    for log in /var/log/base-config* \
-		    $(find /var/log/debian-installer/ /var/log/installer/ -type f 2>/dev/null ); do
-		if [ -e "$log" ]; then
-			chmod 600 "$log"
-		fi
-            done
-    fi
-
-    rm -f /etc/pam.d/passwd.pre-upgrade 2>/dev/null
 	if ! getent group shadow | grep -q '^shadow:[^:]*:42'
 	then
 		groupadd -g 42 shadow || (

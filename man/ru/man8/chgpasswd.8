@@ -1,13 +1,13 @@
 '\" t
 .\"     Title: chgpasswd
 .\"    Author: Thomas K\(/loczko <kloczek@pld.org.pl>
-.\" Generator: DocBook XSL Stylesheets v1.79.1 <http://docbook.sf.net/>
-.\"      Date: 01/23/2020
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 11/08/2022
 .\"    Manual: Команды управления системой
-.\"    Source: shadow-utils 4.8.1
+.\"    Source: shadow-utils 4.13
 .\"  Language: Russian
 .\"
-.TH "chgpasswd" "8" "01/23/2020" "shadow\-utils 4\&.8\&.1" "Команды управления системой"
+.TH "chgpasswd" "8" "11/08/2022" "shadow\-utils 4\&.13" "Команды управления системой"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -87,7 +87,7 @@ Apply changes in the
 \fICHROOT_DIR\fR
 directory and use the configuration files from the
 \fICHROOT_DIR\fR
-directory\&.
+directory\&. Only absolute paths are supported\&.
 .RE
 .PP
 \fB\-s\fR, \fB\-\-sha\-rounds\fR
@@ -113,78 +113,6 @@ By default, the number of rounds is defined by the SHA_CRYPT_MIN_ROUNDS and SHA_
 The following configuration variables in
 /etc/login\&.defs
 change the behavior of this tool:
-.PP
-\fBENCRYPT_METHOD\fR (string)
-.RS 4
-Задаёт системный алгоритм шифрования по умолчанию для шифрования паролей (используется, если алгоритм не указан в командной строке)\&.
-.sp
-It can take one of these values:
-\fIDES\fR
-(default),
-\fIMD5\fR, \fISHA256\fR, \fISHA512\fR\&.
-.sp
-Note: this parameter overrides the
-\fBMD5_CRYPT_ENAB\fR
-variable\&.
-.RE
-.PP
-\fBMAX_MEMBERS_PER_GROUP\fR (number)
-.RS 4
-Maximum members per group entry\&. When the maximum is reached, a new group entry (line) is started in
-/etc/group
-(with the same name, same password, and same GID)\&.
-.sp
-Значение по умолчанию равно 0, означающее, что ограничения на количество членов в группе нет\&.
-.sp
-Данная возможность (разделение группы) позволяет ограничить длину строк в файле групп\&. Это полезно для ограничения длины строк групп NIS в 1024 символа\&.
-.sp
-Если вам нужно такое ограничение, укажите значение 25\&.
-.sp
-Замечание: разделение групп поддерживается не всеми инструментами (даже в наборе инструментов Shadow)\&. Вы не должны использовать эту переменную, если вам действительно это ненужно\&.
-.RE
-.PP
-\fBMD5_CRYPT_ENAB\fR (boolean)
-.RS 4
-Indicate if passwords must be encrypted using the MD5\-based algorithm\&. If set to
-\fIyes\fR, new passwords will be encrypted using the MD5\-based algorithm compatible with the one used by recent releases of FreeBSD\&. It supports passwords of unlimited length and longer salt strings\&. Set to
-\fIno\fR
-if you need to copy encrypted passwords to other systems which don\*(Aqt understand the new algorithm\&. Default is
-\fIno\fR\&.
-.sp
-This variable is superseded by the
-\fBENCRYPT_METHOD\fR
-variable or by any command line option used to configure the encryption algorithm\&.
-.sp
-This variable is deprecated\&. You should use
-\fBENCRYPT_METHOD\fR\&.
-.RE
-.PP
-\fBSHA_CRYPT_MIN_ROUNDS\fR (number), \fBSHA_CRYPT_MAX_ROUNDS\fR (number)
-.RS 4
-When
-\fBENCRYPT_METHOD\fR
-is set to
-\fISHA256\fR
-or
-\fISHA512\fR, this defines the number of SHA rounds used by the encryption algorithm by default (when the number of rounds is not specified on the command line)\&.
-.sp
-Увеличение количества раундов повышает сложность подбора пароля простым перебором\&. Но заметим, что при этом для аутентификации пользователей требуется большее количество процессорных ресурсов\&.
-.sp
-Если не задана, то libc выбирает значение количества раундов по умолчанию (5000)\&.
-.sp
-Значения должны лежать в диапазоне 1000\-999999999\&.
-.sp
-If only one of the
-\fBSHA_CRYPT_MIN_ROUNDS\fR
-or
-\fBSHA_CRYPT_MAX_ROUNDS\fR
-values is set, then this value will be used\&.
-.sp
-If
-\fBSHA_CRYPT_MIN_ROUNDS\fR
->
-\fBSHA_CRYPT_MAX_ROUNDS\fR, the highest value will be used\&.
-.RE
 .SH "ФАЙЛЫ"
 .PP
 /etc/group

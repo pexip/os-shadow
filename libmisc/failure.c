@@ -1,33 +1,10 @@
 /*
- * Copyright (c) 1989 - 1994, Julianne Frances Haugh
- * Copyright (c) 1996 - 1998, Marek Michałkiewicz
- * Copyright (c) 2002 - 2005, Tomasz Kłoczko
- * Copyright (c) 2008 - 2010, Nicolas François
- * All rights reserved.
+ * SPDX-FileCopyrightText: 1989 - 1994, Julianne Frances Haugh
+ * SPDX-FileCopyrightText: 1996 - 1998, Marek Michałkiewicz
+ * SPDX-FileCopyrightText: 2002 - 2005, Tomasz Kłoczko
+ * SPDX-FileCopyrightText: 2008 - 2010, Nicolas François
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the copyright holders or contributors may not be used to
- *    endorse or promote products derived from this software without
- *    specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
- * PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
- * HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * SPDX-License-Identifier: BSD-3-Clause
  */
 
 #include <config.h>
@@ -98,7 +75,7 @@ void failure (uid_t uid, const char *tty, struct faillog *fl)
 		fl->fail_cnt++;
 	}
 
-	strncpy (fl->fail_line, tty, sizeof fl->fail_line);
+	strncpy (fl->fail_line, tty, sizeof (fl->fail_line) - 1);
 	(void) time (&fl->fail_time);
 
 	/*
@@ -232,13 +209,8 @@ int failcheck (uid_t uid, struct faillog *fl, bool failed)
 void failprint (const struct faillog *fail)
 {
 	struct tm *tp;
-
-#if HAVE_STRFTIME
 	char lasttimeb[256];
 	char *lasttime = lasttimeb;
-#else
-	char *lasttime;
-#endif
 	time_t NOW;
 
 	if (0 == fail->fail_cnt) {
@@ -248,31 +220,11 @@ void failprint (const struct faillog *fail)
 	tp = localtime (&(fail->fail_time));
 	(void) time (&NOW);
 
-#if HAVE_STRFTIME
 	/*
 	 * Print all information we have.
 	 */
 	(void) strftime (lasttimeb, sizeof lasttimeb, "%c", tp);
-#else
 
-	/*
-	 * Do the same thing, but don't use strftime since it
-	 * probably doesn't exist on this system
-	 */
-	lasttime = asctime (tp);
-	lasttime[24] = '\0';
-
-	if ((NOW - fail->fail_time) < YEAR) {
-		lasttime[19] = '\0';
-	}
-	if ((NOW - fail->fail_time) < DAY) {
-		lasttime = lasttime + 11;
-	}
-
-	if (' ' == *lasttime) {
-		lasttime++;
-	}
-#endif
 	/*@-formatconst@*/
 	(void) printf (ngettext ("%d failure since last login.\n"
 	                         "Last was %s on %s.\n",

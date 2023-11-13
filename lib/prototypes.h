@@ -1,33 +1,10 @@
 /*
- * Copyright (c) 1990 - 1994, Julianne Frances Haugh
- * Copyright (c) 1996 - 2000, Marek Michałkiewicz
- * Copyright (c) 2003 - 2006, Tomasz Kłoczko
- * Copyright (c) 2007 - 2010, Nicolas François
- * All rights reserved.
+ * SPDX-FileCopyrightText: 1990 - 1994, Julianne Frances Haugh
+ * SPDX-FileCopyrightText: 1996 - 2000, Marek Michałkiewicz
+ * SPDX-FileCopyrightText: 2003 - 2006, Tomasz Kłoczko
+ * SPDX-FileCopyrightText: 2007 - 2010, Nicolas François
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the copyright holders or contributors may not be used to
- *    endorse or promote products derived from this software without
- *    specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
- * PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
- * HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * SPDX-License-Identifier: BSD-3-Clause
  */
 
 /*
@@ -58,8 +35,6 @@
 
 #include "defines.h"
 #include "commonio.h"
-
-extern /*@observer@*/ const char *Prog;
 
 /* addgrps.c */
 #if defined (HAVE_SETGROUPS) && ! defined (USE_PAM)
@@ -133,6 +108,9 @@ extern int copy_tree (const char *src_root, const char *dst_root,
                       uid_t old_uid, uid_t new_uid,
                       gid_t old_gid, gid_t new_gid);
 
+/* date_to_str.c */
+extern void date_to_str (size_t size, char buf[size], long date);
+
 /* encrypt.c */
 extern /*@exposed@*//*@null@*/char *pw_encrypt (const char *, const char *);
 
@@ -161,12 +139,10 @@ extern int find_new_uid (bool sys_user,
 
 #ifdef ENABLE_SUBIDS
 /* find_new_sub_gids.c */
-extern int find_new_sub_gids (const char *owner,
-			      gid_t *range_start, unsigned long *range_count);
+extern int find_new_sub_gids (gid_t *range_start, unsigned long *range_count);
 
 /* find_new_sub_uids.c */
-extern int find_new_sub_uids (const char *owner,
-			      uid_t *range_start, unsigned long *range_count);
+extern int find_new_sub_uids (uid_t *range_start, unsigned long *range_count);
 #endif				/* ENABLE_SUBIDS */
 
 
@@ -183,12 +159,12 @@ extern int getlong (const char *numstr, /*@out@*/long int *result);
 extern int get_pid (const char *pidstr, pid_t *pid);
 
 /* getrange */
-extern int getrange (char *range,
+extern int getrange (const char *range,
                      unsigned long *min, bool *has_min,
                      unsigned long *max, bool *has_max);
 
 /* gettime.c */
-extern time_t gettime ();
+extern time_t gettime (void);
 
 /* get_uid.c */
 extern int get_uid (const char *uidstr, uid_t *uid);
@@ -208,7 +184,9 @@ extern void __gr_set_changed (void);
 
 /* groupmem.c */
 extern /*@null@*/ /*@only@*/struct group *__gr_dup (const struct group *grent);
+extern void gr_free_members (struct group *grent);
 extern void gr_free (/*@out@*/ /*@only@*/struct group *grent);
+extern bool gr_append_member (struct group *grp, char *member);
 
 /* hushed.c */
 extern bool hushed (const char *username);
@@ -262,6 +240,62 @@ extern void motd (void);
 /* myname.c */
 extern /*@null@*//*@only@*/struct passwd *get_my_pwent (void);
 
+/* nss.c */
+#include <libsubid/subid.h>
+extern void nss_init(const char *nsswitch_path);
+extern bool nss_is_initialized(void);
+
+struct subid_nss_ops {
+	/*
+	 * nss_has_range: does a user own a given subid range
+	 *
+	 * @owner: username
+	 * @start: first subid in queried range
+	 * @count: number of subids in queried range
+	 * @idtype: subuid or subgid
+	 * @result: true if @owner has been allocated the subid range.
+	 *
+	 * returns success if the module was able to determine an answer (true or false),
+	 * else an error status.
+	 */
+	enum subid_status (*has_range)(const char *owner, unsigned long start, unsigned long count, enum subid_type idtype, bool *result);
+
+	/*
+	 * nss_list_owner_ranges: list the subid ranges delegated to a user.
+	 *
+	 * @owner - string representing username being queried
+	 * @id_type - subuid or subgid
+	 * @ranges - pointer to an array of struct subid_range, or NULL.  The
+	 *           returned array must be freed by the caller.
+	 * @count - pointer to an integer into which the number of returned ranges
+	 *          is written.
+
+	 * returns success if the module was able to determine an answer,
+	 * else an error status.
+	 */
+	enum subid_status (*list_owner_ranges)(const char *owner, enum subid_type id_type, struct subid_range **ranges, int *count);
+
+	/*
+	 * nss_find_subid_owners: find uids who own a given subuid or subgid.
+	 *
+	 * @id - the delegated id (subuid or subgid) being queried
+	 * @id_type - subuid or subgid
+	 * @uids - pointer to an array of uids which will be allocated by
+	 *         nss_find_subid_owners()
+	 * @count - number of uids found
+	 *
+	 * returns success if the module was able to determine an answer,
+	 * else an error status.
+	 */
+	enum subid_status (*find_subid_owners)(unsigned long id, enum subid_type id_type, uid_t **uids, int *count);
+
+	/* The dlsym handle to close */
+	void *handle;
+};
+
+extern struct subid_nss_ops *get_subid_nss_handle(void);
+
+
 /* pam_pass_non_interactive.c */
 #ifdef USE_PAM
 extern int do_pam_passwd_non_interactive (const char *pam_service,
@@ -290,12 +324,12 @@ extern struct passwd *prefix_getpwuid(uid_t uid);
 extern struct passwd *prefix_getpwnam(const char* name);
 extern struct spwd *prefix_getspnam(const char* name);
 extern struct group *prefix_getgr_nam_gid(const char *grname);
-extern void prefix_setpwent();
-extern struct passwd* prefix_getpwent();
-extern void prefix_endpwent();
-extern void prefix_setgrent();
-extern struct group* prefix_getgrent();
-extern void prefix_endgrent();
+extern void prefix_setpwent(void);
+extern struct passwd* prefix_getpwent(void);
+extern void prefix_endpwent(void);
+extern void prefix_setgrent(void);
+extern struct group* prefix_getgrent(void);
+extern void prefix_endgrent(void);
 
 /* pwd2spwd.c */
 #ifndef USE_PAM
@@ -334,7 +368,8 @@ extern /*@observer@*/const char *crypt_make_salt (/*@null@*//*@observer@*/const 
 
 /* selinux.c */
 #ifdef WITH_SELINUX
-extern int set_selinux_file_context (const char *dst_name);
+extern int set_selinux_file_context (const char *dst_name, mode_t mode);
+extern void reset_selinux_handle (void);
 extern int reset_selinux_file_context (void);
 extern int check_selinux_permit (const char *perm_name);
 #endif
@@ -445,7 +480,7 @@ extern int setutmpx (struct utmpx *utx);
 extern bool valid (const char *, const struct passwd *);
 
 /* xmalloc.c */
-extern /*@maynotreturn@*/ /*@only@*//*@out@*//*@notnull@*/char *xmalloc (size_t size)
+extern /*@maynotreturn@*/ /*@only@*//*@out@*//*@notnull@*/void *xmalloc (size_t size)
   /*@ensures MaxSet(result) == (size - 1); @*/;
 extern /*@maynotreturn@*/ /*@only@*//*@notnull@*/char *xstrdup (const char *);
 

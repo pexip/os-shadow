@@ -1,13 +1,13 @@
 '\" t
 .\"     Title: su
 .\"    Author: Julianne Frances Haugh
-.\" Generator: DocBook XSL Stylesheets v1.79.1 <http://docbook.sf.net/>
-.\"      Date: 01/23/2020
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 11/08/2022
 .\"    Manual: User Commands
-.\"    Source: shadow-utils 4.8.1
+.\"    Source: shadow-utils 4.13
 .\"  Language: English
 .\"
-.TH "SU" "1" "01/23/2020" "shadow\-utils 4\&.8\&.1" "User Commands"
+.TH "SU" "1" "11/08/2022" "shadow\-utils 4\&.13" "User Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -312,7 +312,9 @@ You should disable it if the shell startup files already check for mail ("mailx 
 .PP
 \fBMAIL_DIR\fR (string)
 .RS 4
-The mail spool directory\&. This is needed to manipulate the mailbox when its corresponding user account is modified or deleted\&. If not specified, a compile\-time default is used\&.
+The mail spool directory\&. This is needed to manipulate the mailbox when its corresponding user account is modified or deleted\&. If not specified, a compile\-time default is used\&. The parameter CREATE_MAIL_SPOOL in
+/etc/default/useradd
+determines whether the mail spool should be created\&.
 .RE
 .PP
 \fBMAIL_FILE\fR (string)

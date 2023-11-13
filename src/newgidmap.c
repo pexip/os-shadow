@@ -1,30 +1,7 @@
 /*
- * Copyright (c) 2013 Eric Biederman
- * All rights reserved.
+ * SPDX-FileCopyrightText: 2013 Eric Biederman
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the copyright holders or contributors may not be used to
- *    endorse or promote products derived from this software without
- *    specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
- * PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
- * HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * SPDX-License-Identifier: BSD-3-Clause
  */
 
 #include <config.h>
@@ -39,7 +16,9 @@
 #include "defines.h"
 #include "prototypes.h"
 #include "subordinateio.h"
+#include "getdef.h"
 #include "idmapping.h"
+#include "shadowlog.h"
 
 /*
  * Global variables
@@ -60,7 +39,7 @@ static bool verify_range(struct passwd *pw, struct map_range *range, bool *allow
 	}
 
 	/* Allow a process to map its own gid. */
-	if ((range->count == 1) && (pw->pw_gid == range->lower)) {
+	if ((range->count == 1) && (getgid() == range->lower)) {
 		/* noop -- if setgroups is enabled already we won't disable it. */
 		return true;
 	}
@@ -94,10 +73,11 @@ static void usage(void)
 	exit(EXIT_FAILURE);
 }
 
-void write_setgroups(int proc_dir_fd, bool allow_setgroups)
+static void write_setgroups(int proc_dir_fd, bool allow_setgroups)
 {
 	int setgroups_fd;
-	char *policy, policy_buffer[4096];
+	const char *policy;
+	char policy_buffer[4096];
 
 	/*
 	 * Default is "deny", and any "allow" will out-rank a "deny". We don't
@@ -175,6 +155,8 @@ int main(int argc, char **argv)
 	bool allow_setgroups = false;
 
 	Prog = Basename (argv[0]);
+	log_set_progname(Prog);
+	log_set_logfd(stderr);
 
 	/*
 	 * The valid syntax are
@@ -228,9 +210,9 @@ int main(int argc, char **argv)
 	 * mappings we have been asked to set.
 	 */
 	if ((getuid() != pw->pw_uid) ||
-	    (getgid() != pw->pw_gid) ||
+	    (!getdef_bool("GRANT_AUX_GROUP_SUBIDS") && (getgid() != pw->pw_gid)) ||
 	    (pw->pw_uid != st.st_uid) ||
-	    (pw->pw_gid != st.st_gid)) {
+	    (getgid() != st.st_gid)) {
 		fprintf(stderr, _( "%s: Target %u is owned by a different user: uid:%lu pw_uid:%lu st_uid:%lu, gid:%lu pw_gid:%lu st_gid:%lu\n" ),
 			Prog, target,
 			(unsigned long int)getuid(), (unsigned long int)pw->pw_uid, (unsigned long int)st.st_uid,

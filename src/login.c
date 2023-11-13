@@ -1,33 +1,10 @@
 /*
- * Copyright (c) 1989 - 1994, Julianne Frances Haugh
- * Copyright (c) 1996 - 2001, Marek Michałkiewicz
- * Copyright (c) 2001 - 2006, Tomasz Kłoczko
- * Copyright (c) 2007 - 2012, Nicolas François
- * All rights reserved.
+ * SPDX-FileCopyrightText: 1989 - 1994, Julianne Frances Haugh
+ * SPDX-FileCopyrightText: 1996 - 2001, Marek Michałkiewicz
+ * SPDX-FileCopyrightText: 2001 - 2006, Tomasz Kłoczko
+ * SPDX-FileCopyrightText: 2007 - 2012, Nicolas François
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the copyright holders or contributors may not be used to
- *    endorse or promote products derived from this software without
- *    specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
- * PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
- * HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * SPDX-License-Identifier: BSD-3-Clause
  */
 
 #include <config.h>
@@ -53,6 +30,7 @@
 #include "pwauth.h"
 /*@-exitarg@*/
 #include "exitcodes.h"
+#include "shadowlog.h"
 
 #ifdef USE_PAM
 #include "pam_defs.h"
@@ -146,7 +124,7 @@ static void get_pam_user (char **ptr_pam_user);
 #endif
 
 static void init_env (void);
-static RETSIGTYPE alarm_handler (int);
+static void alarm_handler (int);
 
 /*
  * usage - print login command usage and exit
@@ -216,7 +194,7 @@ static void setup_tty (void)
 
 		/*
 		 * ttymon invocation prefers this, but these settings
-		 * won't come into effect after the first username login 
+		 * won't come into effect after the first username login
 		 */
 		(void) STTY (0, &termio);
 	}
@@ -400,7 +378,7 @@ static void init_env (void)
 		}
 	}
 #endif				/* !USE_PAM */
-	/* 
+	/*
 	 * Add the clock frequency so that profiling commands work
 	 * correctly.
 	 */
@@ -419,7 +397,7 @@ static void init_env (void)
 }
 
 
-static RETSIGTYPE alarm_handler (unused int sig)
+static void alarm_handler (unused int sig)
 {
 	write (STDERR_FILENO, tmsg, strlen (tmsg));
 	_exit (0);
@@ -441,9 +419,7 @@ static void get_pam_user (char **ptr_pam_user)
 	retcode = pam_get_item (pamh, PAM_USER, (const void **)&ptr_user);
 	PAM_FAIL_CHECK;
 
-	if (NULL != *ptr_pam_user) {
-		free (*ptr_pam_user);
-	}
+	free (*ptr_pam_user);
 	if (NULL != ptr_user) {
 		*ptr_pam_user = xstrdup ((const char *)ptr_user);
 	} else {
@@ -519,7 +495,7 @@ static void update_utmp (const char *user,
  *	of reasons, such as X servers or network logins.
  *
  *	the flags which login supports are
- *	
+ *
  *	-p - preserve the environment
  *	-r - perform autologin protocol for rlogin
  *	-f - do not perform authentication, user is preauthenticated
@@ -533,7 +509,7 @@ int main (int argc, char **argv)
 #ifdef RLOGIN
 	char term[128] = "";
 #endif				/* RLOGIN */
-#if defined(HAVE_STRFTIME) && !defined(USE_PAM)
+#if !defined(USE_PAM)
 	char ptime[80];
 #endif
 	unsigned int delay;
@@ -577,6 +553,8 @@ int main (int argc, char **argv)
 
 	amroot = (getuid () == 0);
 	Prog = Basename (argv[0]);
+	log_set_progname(Prog);
+	log_set_logfd(stderr);
 
 	if (geteuid() != 0) {
 		fprintf (stderr, _("%s: Cannot possibly work without effective root\n"), Prog);
@@ -648,7 +626,7 @@ int main (int argc, char **argv)
 	(void) umask (getdef_num ("UMASK", GETDEF_DEFAULT_UMASK));
 
 	{
-		/* 
+		/*
 		 * Use the ULIMIT in the login.defs file, and if
 		 * there isn't one, use the default value. The
 		 * user may have one for themselves, but otherwise,
@@ -892,9 +870,7 @@ int main (int argc, char **argv)
 	 * PAM APIs.
 	 */
 	get_pam_user (&pam_user);
-	if (NULL != username) {
-		free (username);
-	}
+	free (username);
 	username = xstrdup (pam_user);
 	failent_user = get_failent_user (username);
 
@@ -977,6 +953,19 @@ int main (int argc, char **argv)
 			if (   ('!' == user_passwd[0])
 			    || ('*' == user_passwd[0])) {
 				failed = true;
+			}
+
+			if (strcmp (user_passwd, "") == 0) {
+				char *prevent_no_auth = getdef_str("PREVENT_NO_AUTH");
+				if (prevent_no_auth == NULL) {
+					prevent_no_auth = "superuser";
+				}
+				if (strcmp(prevent_no_auth, "yes") == 0) {
+					failed = true;
+				} else if ((pwd->pw_uid == 0)
+					&& (strcmp(prevent_no_auth, "superuser") == 0)) {
+					failed = true;
+				}
 			}
 		}
 
@@ -1273,6 +1262,7 @@ int main (int argc, char **argv)
 			env++;
 		}
 	}
+	(void) pam_end (pamh, PAM_SUCCESS | PAM_DATA_SILENT);
 #endif
 
 	(void) setlocale (LC_ALL, "");
@@ -1304,16 +1294,11 @@ int main (int argc, char **argv)
 		    && (ll.ll_time != 0)) {
 			time_t ll_time = ll.ll_time;
 
-#ifdef HAVE_STRFTIME
 			(void) strftime (ptime, sizeof (ptime),
 			                 "%a %b %e %H:%M:%S %z %Y",
 			                 localtime (&ll_time));
 			printf (_("Last login: %s on %s"),
 			        ptime, ll.ll_line);
-#else
-			printf (_("Last login: %.19s on %s"),
-			        ctime (&ll_time), ll.ll_line);
-#endif
 #ifdef HAVE_LL_HOST		/* __linux__ || SUN4 */
 			if ('\0' != ll.ll_host[0]) {
 				printf (_(" from %.*s"),

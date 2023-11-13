@@ -9,7 +9,7 @@ Note: It could be removed if pam_tally could report the number of failures
 
 --- a/src/login.c
 +++ b/src/login.c
-@@ -136,9 +136,9 @@
+@@ -114,9 +114,9 @@
  #endif
  			);
  
@@ -20,7 +20,7 @@ Note: It could be removed if pam_tally could report the number of failures
  static void bad_time_notify (void);
  static void check_nologin (bool login_to_root);
  #else
-@@ -809,6 +809,9 @@
+@@ -787,6 +787,9 @@
  				SYSLOG ((LOG_NOTICE,
  				         "TOO MANY LOGIN TRIES (%u)%s FOR '%s'",
  				         failcount, fromhost, failent_user));
@@ -30,7 +30,7 @@ Note: It could be removed if pam_tally could report the number of failures
  				fprintf (stderr,
  				         _("Maximum number of tries exceeded (%u)\n"),
  				         failcount);
-@@ -826,6 +829,14 @@
+@@ -804,6 +807,14 @@
  				         pam_strerror (pamh, retcode)));
  				failed = true;
  			}
@@ -45,7 +45,7 @@ Note: It could be removed if pam_tally could report the number of failures
  
  			if (!failed) {
  				break;
-@@ -849,6 +860,10 @@
+@@ -827,6 +838,10 @@
  			(void) puts ("");
  			(void) puts (_("Login incorrect"));
  
@@ -56,7 +56,7 @@ Note: It could be removed if pam_tally could report the number of failures
  			if (getdef_str("FTMP_FILE") != NULL) {
  #ifdef USE_UTMPX
  				struct utmpx *failent =
-@@ -1305,6 +1320,7 @@
+@@ -1295,6 +1310,7 @@
  		 */
  #ifndef USE_PAM
  		motd ();	/* print the message of the day */
@@ -64,7 +64,7 @@ Note: It could be removed if pam_tally could report the number of failures
  		if (   getdef_bool ("FAILLOG_ENAB")
  		    && (0 != faillog.fail_cnt)) {
  			failprint (&faillog);
-@@ -1317,6 +1333,7 @@
+@@ -1307,6 +1323,7 @@
  				         username, (int) faillog.fail_cnt));
  			}
  		}
@@ -74,7 +74,7 @@ Note: It could be removed if pam_tally could report the number of failures
  		    && (ll.ll_time != 0)) {
 --- a/lib/getdef.c
 +++ b/lib/getdef.c
-@@ -89,6 +89,7 @@
+@@ -78,6 +78,7 @@
  	{"ENV_SUPATH", NULL},
  	{"ERASECHAR", NULL},
  	{"FAIL_DELAY", NULL},

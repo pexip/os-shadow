@@ -33,5 +33,5 @@ SHELL=/bin/sh
 #
 # Defines whether the mail spool should be created while
 # creating the account
-# CREATE_MAIL_SPOOL=yes
+# CREATE_MAIL_SPOOL=no
 

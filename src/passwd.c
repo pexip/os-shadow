@@ -1,33 +1,10 @@
 /*
- * Copyright (c) 1989 - 1994, Julianne Frances Haugh
- * Copyright (c) 1996 - 2000, Marek Michałkiewicz
- * Copyright (c) 2001 - 2006, Tomasz Kłoczko
- * Copyright (c) 2007 - 2011, Nicolas François
- * All rights reserved.
+ * SPDX-FileCopyrightText: 1989 - 1994, Julianne Frances Haugh
+ * SPDX-FileCopyrightText: 1996 - 2000, Marek Michałkiewicz
+ * SPDX-FileCopyrightText: 2001 - 2006, Tomasz Kłoczko
+ * SPDX-FileCopyrightText: 2007 - 2011, Nicolas François
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the copyright holders or contributors may not be used to
- *    endorse or promote products derived from this software without
- *    specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
- * PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
- * HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * SPDX-License-Identifier: BSD-3-Clause
  */
 
 #include <config.h>
@@ -50,6 +27,7 @@
 #include "pwauth.h"
 #include "pwio.h"
 #include "shadowio.h"
+#include "shadowlog.h"
 
 /*
  * exit status values
@@ -134,7 +112,6 @@ static int new_password (const struct passwd *);
 
 static void check_password (const struct passwd *, const struct spwd *);
 #endif				/* !USE_PAM */
-static /*@observer@*/const char *date_to_str (time_t);
 static /*@observer@*/const char *pw_status (const char *);
 static void print_status (const struct passwd *);
 static /*@noreturn@*/void fail_exit (int);
@@ -282,7 +259,10 @@ static int new_password (const struct passwd *pw)
 #endif /* USE_SHA_CRYPT */
 #ifdef USE_BCRYPT
 		    || (strcmp (method, "BCRYPT") == 0)
-#endif /* USE_SHA_CRYPT */
+#endif /* USE_BCRYPT*/
+#ifdef USE_YESCRYPT
+		    || (strcmp (method, "YESCRYPT") == 0)
+#endif /* USE_YESCRYPT*/
 
 		    ) {
 			pass_max_len = -1;
@@ -309,6 +289,7 @@ static int new_password (const struct passwd *pw)
 		cp = getpass (_("New password: "));
 		if (NULL == cp) {
 			memzero (orig, sizeof orig);
+			memzero (pass, sizeof pass);
 			return -1;
 		}
 		if (warned && (strcmp (pass, cp) != 0)) {
@@ -324,7 +305,7 @@ static int new_password (const struct passwd *pw)
 
 		/*
 		 * If enabled, warn about weak passwords even if you are
-		 * root (enter this password again to use it anyway). 
+		 * root (enter this password again to use it anyway).
 		 * --marekm
 		 */
 		if (amroot && !warned && getdef_bool ("PASS_ALWAYS_WARN")
@@ -336,6 +317,7 @@ static int new_password (const struct passwd *pw)
 		cp = getpass (_("Re-enter new password: "));
 		if (NULL == cp) {
 			memzero (orig, sizeof orig);
+			memzero (pass, sizeof pass);
 			return -1;
 		}
 		if (strcmp (cp, pass) != 0) {
@@ -443,21 +425,6 @@ static void check_password (const struct passwd *pw, const struct spwd *sp)
 }
 #endif				/* !USE_PAM */
 
-static /*@observer@*/const char *date_to_str (time_t t)
-{
-	static char buf[80];
-	struct tm *tm;
-
-	tm = gmtime (&t);
-#ifdef HAVE_STRFTIME
-	(void) strftime (buf, sizeof buf, "%m/%d/%Y", tm);
-#else				/* !HAVE_STRFTIME */
-	(void) snprintf (buf, sizeof buf, "%02d/%02d/%04d",
-	                 tm->tm_mon + 1, tm->tm_mday, tm->tm_year + 1900);
-#endif				/* !HAVE_STRFTIME */
-	return buf;
-}
-
 static /*@observer@*/const char *pw_status (const char *pass)
 {
 	if (*pass == '*' || *pass == '!') {
@@ -474,21 +441,26 @@ static /*@observer@*/const char *pw_status (const char *pass)
  */
 static void print_status (const struct passwd *pw)
 {
+	char         date[80];
 	struct spwd *sp;
 
 	sp = getspnam (pw->pw_name); /* local, no need for xgetspnam */
 	if (NULL != sp) {
+		date_to_str (sizeof(date), date, sp->sp_lstchg * SCALE),
 		(void) printf ("%s %s %s %lld %lld %lld %lld\n",
 		               pw->pw_name,
 		               pw_status (sp->sp_pwdp),
-		               date_to_str (sp->sp_lstchg * SCALE),
+		               date,
 		               ((long long)sp->sp_min * SCALE) / DAY,
 		               ((long long)sp->sp_max * SCALE) / DAY,
 		               ((long long)sp->sp_warn * SCALE) / DAY,
 		               ((long long)sp->sp_inact * SCALE) / DAY);
-	} else {
+	} else if (NULL != pw->pw_passwd) {
 		(void) printf ("%s %s\n",
 		               pw->pw_name, pw_status (pw->pw_passwd));
+	} else {
+		(void) fprintf(stderr, _("%s: malformed password data obtained for user %s\n"),
+		               Prog, pw->pw_name);
 	}
 }
 
@@ -549,6 +521,11 @@ static char *update_crypt_pw (char *cp)
 
 		strcpy (newpw, "!");
 		strcat (newpw, cp);
+#ifndef USE_PAM
+		if (do_update_pwd) {
+			free (cp);
+		}
+#endif /* USE_PAM */
 		cp = newpw;
 	}
 	return cp;
@@ -749,6 +726,8 @@ int main (int argc, char **argv)
 	 * most error messages.
 	 */
 	Prog = Basename (argv[0]);
+	log_set_progname(Prog);
+	log_set_logfd(stderr);
 
 	(void) setlocale (LC_ALL, "");
 	(void) bindtextdomain (PACKAGE, LOCALEDIR);
@@ -1032,7 +1011,7 @@ int main (int argc, char **argv)
 		STRFCPY (crypt_passwd, cp);
 
 		/*
-		 * See if the user is permitted to change the password. 
+		 * See if the user is permitted to change the password.
 		 * Otherwise, go ahead and set a new password.
 		 */
 		check_password (pw, sp);
@@ -1096,7 +1075,7 @@ int main (int argc, char **argv)
 			(void) printf (_("%s: password changed.\n"), Prog);
 #endif				/* USE_PAM */
 		} else {
-			(void) printf (_("%s: password expiry information changed.\n"), Prog);
+			(void) printf (_("%s: password changed.\n"), Prog);
 		}
 	}
 

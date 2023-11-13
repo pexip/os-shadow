@@ -1,4 +1,8 @@
+If you update the translation of upsteam files (thank you for that!) please
+submit a pull request upstream instead of filing a bug in the Debian BTS
+to get it reviewed and accepted faster.
+
 A testsuite is also available. Instruction on how to run this testsuite
 are available in tests/README
 
- -- Balint Reczey <rbalint@ubuntu.com>, Sat, 12 Aug 2017 18:46:44 -0400
+ -- Balint Reczey <balint@balintreczey.hu>, Mon, 31 Jan 2022 14:07:11 +0100

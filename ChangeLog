@@ -1,3 +1,184 @@
+2022-11-08  Serge Hallyn <serge@hallyn.com>
+
+	* useradd.8: fix default group ID (Tim Biermann)
+	* Revert drop of subid_init() (Serge Hallyn)
+	* Georgian translation (NorwayFun)
+	* useradd: Avoid taking unneeded space: do not reset non-existent data
+	  in lastlog (David Kalnischkies)
+	* relax username restrictions (Alexander Kanavin)
+	* selinux: check MLS enabled before setting serange (genBTC)
+	* copy_tree: use fchmodat instead of chmod (Samanta Navarro)
+	* copy_tree: don't block on FIFOs (Samanta Navarro)
+	* add shell linter (Jan Macku)
+	* copy_tree: carefully treat permissions (Samanta Navarro)
+	* lib/commonio: make lock failures more detailed (Luca BRUNO)
+	* lib: use strzero and memzero where applicable (Christian Göttsche)
+	* Update Dutch translation (Frans Spiesschaert)
+	* Don't test for NULL before calling free (Alex Colomar)
+	* Use libc MAX() and MIN() (Alejandro Colomar)
+	* chage: Fix regression in print_date (Xiami)
+	* usermod: report error if homedir does not exist (Iker Pedrosa)
+	* libmisc: minimum id check for system accounts (Iker Pedrosa)
+	* fix usermod -rG x y wrongly adding a group (xyz)
+	* man: add missing space in useradd.8.xml (Iker Pedrosa)
+	* lastlog: check for localtime() return value (Iker Pedrosa)
+	* Raise limit for passwd and shadow entry length (Iker Pedrosa)
+	* Remove adduser-old.c (Alejandro Colomar)
+	* useradd: Fix buffer overflow when using a prefix (David Michael)
+	* Don't warn when failed to open /etc/nsswitch.conf (Serge Hallyn)
+
+2022-08-15  Serge Hallyn <serge@hallyn.com>
+
+	* Address CVE-2013-4235 (TOCTTOU when copying directories)
+	  (Christian Göttsche)
+
+2022-08-15  Serge Hallyn <serge@hallyn.com>
+
+	* Fix uk manpages
+
+2022-08-08  Serge Hallyn <serge@hallyn.com>
+
+	* Add absolute path hint to --root (Celeste Liu)
+	* Various cleanups (Christian Göttsche)
+	* Fix Ubuntu release used in CI tests (Jeremy Whiting)
+	* add -F options to useradd (and tests) (Masatake YAMATO)
+	* useradd manpage updates (Masatake YAMATO and Alexander Zhang))
+	* Check for ownerid (not just username) in subid ranges (Iker Pedrosa)
+
+2022-07-04  Serge Hallyn <serge@hallyn.com>
+
+	* Declare file local functions static (Christian Göttsche)
+	* Use strict prototypes (Christian Göttsche)
+	* Do not drop const qualifier for Basename (Christian Göttsche)
+	* Constify various pointers (Christian Göttsche)
+	* Don't return uninitialized memory (Christian Göttsche)
+	* Don't let compiler optimize away memory cleaning (Christian Göttsche)
+	* Remove many obsolete compatibility checks  and defines (Alejandro Colomar)
+	* Modify ID range check in useradd (Iker Pedrosa)
+	* Use "extern "C"" to make libsubid easier to use from C++ (Alois Wohlschlager)
+	* French translation updates (bubu)
+	* Fix s/with-pam/with-libpam/ (serge)
+	* Spanish translation updates (Fernando)
+	* French translation fixes (Balint Reczey)
+	* Default max group name length to 32 (Jami Kettunen)
+	* Fix PAM service files without-selinux (Ali Riza KESKIN)
+	* Improve manpages (Markus Hiereth)
+	  - groupadd, useradd, usermod
+	  - groups and id
+	  - pwck
+	* Add fedora to CI builds (Iker Pedrosa)
+	* Fix condition under which pw_dir check happens (Ed Neville)
+	* logoutd: switch to strncat (Steve Grubb)
+	* AUTHORS: improve markdown output (Iker Pedrosa)
+	* Handle ERANGE errors correctly (Niko)
+	* Check for fopen NULL return (juyin)
+	* Split get_salt() into its own fn juyin)
+	* Get salt before chroot to ensure /dev/urandom. (juyin)
+	* Chpasswd code cleanup (juyin)
+	* Work around git safe.directory enforcement (serge)
+	* Alphabetize order in usermod help (Matheus Marques)
+	* Erase password copy on error branches (Christian Göttsche)
+	* Suggest using --badname if needed (Iker Pedrosa)
+	* Update translation files (Iker Pedrosa)
+	* Correct badnames option to badname (Iker Pedrosa)
+	* configure: replace obsolete autoconf macros (Christian Göttsche)
+	* tests: replace egrep with grep -E (Sam James)
+	* Update Ukrainian translations (Yuri Chornoivan)
+	* Cleanups (Iker Pedrosa)
+	  - Remove redeclared variable
+	  - Remove commented out code and FIXMEs
+	  - Add header guards
+	  - Initialize local variables
+	* CI updates (Iker Pedrosa)
+	  - Create github workflow to install dependencies
+	  - Enable CodeQL
+	  - Update actions version
+	* libmisc: use /dev/urandom as fallback if other methods fail (Xi Ruoyao)
+
+
+2022-01-02  Serge Hallyn <serge@hallyn.com>
+
+	* build: include lib/shadowlog_internal.h in dist tarballs (Sam James)
+
+2022-01-02  Serge Hallyn <serge@hallyn.com>
+
+	* Handle possible TOCTTOU issues in usermod/userdel (edneville)
+	  * (CVE-2013-4235)
+	  * Use O_NOFOLLOW when copying file
+	  * Kill all user tasks in userdel
+	* Fix useradd -D segfault (Xi Ruoyao)
+	* Clean up obsolete libc feature-check ifdefs (Alejandro Colomar)
+	* Fix -fno-common build breaks due to duplicate Prog declarations
+	  (Adam Sampson)
+	* Have single date_to_str definition (Alejandro Colomar)
+	* Fix libsubid SONAME version (Sam James)
+
+2021-12-19  Serge Hallyn <serge@hallyn.com>
+
+	Note: From this release forward, su from this package should be
+	considered deprecated.  Please replace any users of it with su from
+	util-linux.  Please open an issue if there is a problem with that.
+	We intend to remove it in an upcoming release.
+
+	* libsubid fixes (Xi Ruoyao, Serge Hallyn, Iker Pedrosa, Mike Gilbert,
+	  GalaxyMaster, and Luís Ferreira)
+	* Rename the test program list_subid_ranges to getsubids, write
+	  a manpage, so distros can ship it. (Iker Pedrosa)
+	* Add libeconf dep for new*idmap (Iker Pedrosa)
+	* Allow all group types with usermod -G (Iker Pedrosa)
+	* Avoid useradd generating empty subid range (Iker Pedrosa)
+	* Handle NULL pw_passwd (Jaroslav Jindrak)
+	* Fix default value SHA_get_salt_rounds (Mike Gilbert)
+	* Use https where possible in README (Paul Menzel)
+	* Update content and format of README (Iker Pedrosa)
+	* Translation updates (Balint Reczey, Frans Spiesschaert)
+	* Switch from xml2po to itstool in 'make dist' (Serge Hallyn)
+	* Fix double frees (Michael Vetter)
+	* Add LOG_INIT configurable to useradd (Andy Zaugg)
+	* Add CREATE_MAIL_SPOOL documentation (Andy Zaugg)
+	* Create a security.md
+	* Fix su never being SIGKILLd when trapping TERM (Ruihan li)
+	* Fix wrong SELinux labels in several possible cases (Iker Pedrosa)
+	* Fix missing chmod in chadowtb_move (GalaxyMaster)
+	* Handle malformed hushlogins entries (Tobias Stoeckmann)
+	* Fix groupdel segv when passwd does not exist (François Rigault)
+	* Fix covscan-found newgrp segfault (Iker Pedrosa)
+	* Remove trailing slash on hoedir (Ed Neville)
+	* Fix passwd -l message - it does not change expirey (Ed Neville)
+	* Fix SIGCHLD handling bugs in su and vipw (Tobias Stoeckmann)
+	* Remove special case for "" in usermod (Alejandro Colomar)
+	* Implement usermod -rG to remove a specific group
+	  (Andy Zaugg)
+	* call pam_end() after fork in child path for su and login
+	  (Björn Fischer)
+	* useradd: In absence of /etc/passwd, assume 0 == root
+	  (Ludwig Nussel)
+	* lib: check NULL before freeing data (Iker Pedrosa)
+	* Fix pwck segfault (Iker Pedrosa)
+
+2021-07-22  Serge Hallyn <serge@hallyn.com>
+
+	* Updated translations (Björn Esser, Juergen Hoetzel)
+	* Major salt updates (Björn Esser)
+	* Various coverity and cleanup fixes (Iker Pedrosa)
+	* Consistently use 0 to disable PASS_MIN_DAYS  in man (tzccinct)
+	* Implement NSS support for subids and a libsubid (Serge Hallyn)
+	* setfcap: retain setfcap when mapping uid 0 (Christian Brauner)
+	* login.defs: include HMAC_CRYPTO_ALGO key (Iker Pedrosa)
+	* selinux fixes (Christian Göttsche)
+	* Fix path prefix path handling (Lucas Servén Marín)
+	* Manpage updates (tzccinct, Sevan Janiyan, Iker Pedrosa, Geert Ijewski,
+		谭九鼎, Jamin W. Collins, towerpark, andydna, Frans Spiesschaert)
+	* Treat an empty passwd field as invalid (Haelwenn Monnier)
+	* newxidmap: allow running under alternative gid (Martijn de Gouw)
+	* usermod: check that  shell is executable (Geert Ijewski)
+	* Add yescript support (Rodolphe Bréard)
+	* useradd memleak fixes (whzhe)
+	* useradd: use built-in settings by default (Ludwig Nussel)
+	* getdefs: add foreign (non-shadow-utils) items (Karel Zak)
+	* buffer overflow fixes (Tobias Stoeckmann)
+	* Adding run-parts style for pre and post useradd/del (ed@s5h.net)
+
 2020-01-23  Serge Hallyn <serge@hallyn.com>
 
 	* selinux: inclue stdio (Michael Vetter)
@@ -262,7 +443,7 @@
 2013-08-15  Nicolas François  <nicolas.francois@centraliens.net>
 
 	* src/usermod.c: Check early if /etc/subuid (/etc/subgid) exists
-	when option -v/-V (-w/-W) are provided. 
+	when option -v/-V (-w/-W) are provided.
 
 2013-08-15  Nicolas François  <nicolas.francois@centraliens.net>
 
@@ -639,8 +820,8 @@
 
 	* configure.in: Prepare for next point release 4.2.
 	* if using the static char* for pw_dir, strdup it so
-	  pw_free() can be used. (Closes: Debian#691459, alioth#313957) 
-	* Kill the child process group, rather than just the 
+	  pw_free() can be used. (Closes: Debian#691459, alioth#313957)
+	* Kill the child process group, rather than just the
 	  immediate child; this is needed now that su no
 	  longer starts a controlling terminal when not running an
 	  interactive shell (closes: Debian#713979)
@@ -867,7 +1048,7 @@
 
 	* po/pt.po: Updated to 557t.
 
-2012-01-19  Holger Wansing  <linux@wansing-online.de> 
+2012-01-19  Holger Wansing  <linux@wansing-online.de>
 
 	* po/de.po: Updated to 557t.
 
@@ -1454,8 +1635,8 @@
 	* NEWS, src/chpasswd.c: Create a shadow entry if the password is
 	set to 'x' in passwd and there are no entry in shadow for the
 	user.
-	* NEWS, src/chgpasswd.c: Create a gshadow entry if the password is 
-	set to 'x' in group and there are no entry in gshadow for the 
+	* NEWS, src/chgpasswd.c: Create a gshadow entry if the password is
+	set to 'x' in group and there are no entry in gshadow for the
 	group.
 
 2011-07-28  Nicolas François  <nicolas.francois@centraliens.net>
@@ -1527,7 +1708,7 @@
 2011-07-22  Nicolas François  <nicolas.francois@centraliens.net>
 
 	* libmisc/find_new_gid.c, libmisc/find_new_uid.c: Fail in case of
-	invalid configuration. 
+	invalid configuration.
 	* libmisc/find_new_gid.c, libmisc/find_new_uid.c: Updated
 	comments.
 	* libmisc/find_new_gid.c, libmisc/find_new_uid.c: Be more strict
@@ -1764,7 +1945,7 @@
 	  man/login.defs.d/DEFAULT_HOME.xml,
 	  man/login.defs.d/LOGIN_RETRIES.xml,
 	  man/login.defs.d/MD5_CRYPT_ENAB.xml,
-	  man/login.defs.d/PORTTIME_CHECKS_ENAB.xml, 
+	  man/login.defs.d/PORTTIME_CHECKS_ENAB.xml,
 	  man/login.defs.d/SHA_CRYPT_MIN_ROUNDS.xml:
 	  Fix typos
 	* man/po/de.po: German translation of manpages completed
@@ -1811,7 +1992,7 @@
 
 2011-03-30  YunQiang Su  <wzssyqa@gmail.com>
 
-	* man/po/zh_CN.po: convert Simplified Chinese translation 
+	* man/po/zh_CN.po: convert Simplified Chinese translation
 	  of manpages to gettext
 	* po/zh_CN.po: Simplified Chinese translation completed
 
@@ -1950,7 +2131,7 @@
 	boolean. safe_system last argument is a boolean.
 	* libmisc/system.c: Check return value of dup2.
 	* libmisc/system.c: Do not check *printf/*puts return value.
-	* libmisc/system.c: Do not check execve return value. 
+	* libmisc/system.c: Do not check execve return value.
 	* libmisc/salt.c: Do not check *printf/*puts return value.
 	* libmisc/loginprompt.c: Do not check gethostname return value.
 	* libmisc/find_new_gid.c, libmisc/find_new_uid.c: Do not check
@@ -2103,7 +2284,7 @@
 2010-04-04  Nicolas François  <nicolas.francois@centraliens.net>
 
 	* src/useradd.c: spool is a constant string.
-	* src/useradd.c: Set the new copy_tree's paramater 'copy_root' to false 
+	* src/useradd.c: Set the new copy_tree's paramater 'copy_root' to false
 
 2010-04-04  Nicolas François  <nicolas.francois@centraliens.net>
 
@@ -4952,7 +5133,7 @@
 	<sgrubb@redhat.com>
 	* src/groupadd.c: Log to audit with type AUDIT_ADD_GROUP instead
 	of AUDIT_USER_CHAUTHTOK.
-	* src/groupdel.c: Log to audit with type AUDIT_DEL_GROUP instead 
+	* src/groupdel.c: Log to audit with type AUDIT_DEL_GROUP instead
 	of AUDIT_USER_CHAUTHTOK.
 	* src/useradd.c: Log to audit with type AUDIT_ADD_USER /
 	AUDIT_ADD_GROUP / AUDIT_USYS_CONFIG instead of
@@ -5208,7 +5389,7 @@
 	* NEWS, src/gpasswd.c: Use getopt_long instead of getopt. Added
 	support for long options --add (-a), --delete (-d),
 	--remove-password (-r), --restrict (-R), --administrators (-A),
-	and --members (-M) 
+	and --members (-M)
 	* man/gpasswd.1.xml: Document the new long options.
 	* src/gpasswd.c: The sgrp structure is only used if SHADOWGRP is
 	defined.
@@ -7397,7 +7578,7 @@
 	to mimic useradd's behavior choices of UID and GID.
 	* src/newusers.c: Reuse the generic find_new_uid() and
 	find_new_gid() functions. This permits to respect the
-	UID_MIN/UID_MAX and GID_MIN/GID_MAX variables, should 
+	UID_MIN/UID_MAX and GID_MIN/GID_MAX variables, should
 	* src/newusers.c: Check if the user or group exist using the
 	external databases (with the libc getpwnam/getgrnam functions).
 	Refuse to update an user which exist in an external database but
@@ -9194,7 +9375,7 @@
 	Debian's patch 202_it_man_uses_gettext. Thanks to Giuseppe
 	Sacco who contributed the Italian translation.
 	* man/de/de.po: (nearly) complete German translation of man pages
-	Imported from Debian's patch 203_de-man-update. Thanks to 
+	Imported from Debian's patch 203_de-man-update. Thanks to
 	Simon Brandmair
 	* src/usermod.c: Clarify the online help of usermod for "-a"
 	Imported from Debian's patch 402-clarify_usermod_usage

@@ -1,33 +1,10 @@
 /*
- * Copyright (c) 1989 - 1994, Julianne Frances Haugh
- * Copyright (c) 1996 - 2000, Marek Michałkiewicz
- * Copyright (c) 2002 - 2006, Tomasz Kłoczko
- * Copyright (c) 2007 - 2010, Nicolas François
- * All rights reserved.
+ * SPDX-FileCopyrightText: 1989 - 1994, Julianne Frances Haugh
+ * SPDX-FileCopyrightText: 1996 - 2000, Marek Michałkiewicz
+ * SPDX-FileCopyrightText: 2002 - 2006, Tomasz Kłoczko
+ * SPDX-FileCopyrightText: 2007 - 2010, Nicolas François
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the copyright holders or contributors may not be used to
- *    endorse or promote products derived from this software without
- *    specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
- * PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
- * HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * SPDX-License-Identifier: BSD-3-Clause
  */
 
 #include <config.h>
@@ -45,6 +22,7 @@
 #include "pwauth.h"
 /*@-exitarg@*/
 #include "exitcodes.h"
+#include "shadowlog.h"
 
 /*
  * Global variables
@@ -66,9 +44,9 @@ extern char **environ;
 #endif
 
 /* local function prototypes */
-static RETSIGTYPE catch_signals (int);
+static void catch_signals (int);
 
-static RETSIGTYPE catch_signals (unused int sig)
+static void catch_signals (unused int sig)
 {
 	_exit (1);
 }
@@ -106,6 +84,8 @@ static RETSIGTYPE catch_signals (unused int sig)
 #endif
 
 	Prog = Basename (argv[0]);
+	log_set_progname(Prog);
+	log_set_logfd(stderr);
 	(void) setlocale (LC_ALL, "");
 	(void) bindtextdomain (PACKAGE, LOCALEDIR);
 	(void) textdomain (PACKAGE);
@@ -209,7 +189,7 @@ static RETSIGTYPE catch_signals (unused int sig)
 		/*
 		 * XXX - can't enter single user mode if root password is
 		 * empty.  I think this doesn't happen very often :-). But
-		 * it will work with standard getpass() (no NULL on EOF). 
+		 * it will work with standard getpass() (no NULL on EOF).
 		 * --marekm
 		 */
 		if ((NULL == cp) || ('\0' == *cp)) {
@@ -236,7 +216,7 @@ static RETSIGTYPE catch_signals (unused int sig)
 		sleep (2);
 		(void) puts (_("Login incorrect"));
 	}
-	strzero (pass);
+	memzero (pass, sizeof pass);
 	(void) alarm (0);
 	(void) signal (SIGALRM, SIG_DFL);
 	environ = newenvp;	/* make new environment active */

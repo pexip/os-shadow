@@ -17,20 +17,28 @@ Details:
 
 --- a/libmisc/chkname.c
 +++ b/libmisc/chkname.c
-@@ -54,6 +54,7 @@
- 		return true;
+@@ -32,44 +32,26 @@
  	}
  
-+#if 0
  	/*
- 	 * User/group names must match [a-z_][a-z0-9_-]*[$]
- 	 */
-@@ -73,6 +74,26 @@
- 			return false;
- 		}
- 	}
-+#endif
-+	/*
+-         * User/group names must match gnu e-regex:
+-         *    [a-zA-Z0-9_.][a-zA-Z0-9_.-]{0,30}[a-zA-Z0-9_.$-]?
+-         *
+-         * as a non-POSIX, extension, allow "$" as the last char for
+-         * sake of Samba 3.x "add machine script"
+-         *
+-         * Also do not allow fully numeric names or just "." or "..".
+-         */
+-	int numeric;
+-
+-	if ('\0' == *name ||
+-	    ('.' == *name && (('.' == name[1] && '\0' == name[2]) ||
+-			      '\0' == name[1])) ||
+-	    !((*name >= 'a' && *name <= 'z') ||
+-	      (*name >= 'A' && *name <= 'Z') ||
+-	      (*name >= '0' && *name <= '9') ||
+-	      *name == '_' ||
+-	      *name == '.')) {
 +	 * POSIX indicate that usernames are composed of characters from the
 +	 * portable filename character set [A-Za-z0-9._-], and that the hyphen
 +	 * should not be used as the first character of a portable user name.
@@ -41,28 +49,38 @@ Details:
 +	    || ('-'  == *name)
 +	    || ('~'  == *name)
 +	    || ('+'  == *name)) {
-+		return false;
-+	}
+ 		return false;
+ 	}
+-
+-	numeric = isdigit(*name);
+-
+-	while ('\0' != *++name) {
+-		if (!((*name >= 'a' && *name <= 'z') ||
+-		      (*name >= 'A' && *name <= 'Z') ||
+-		      (*name >= '0' && *name <= '9') ||
+-		      *name == '_' ||
+-		      *name == '.' ||
+-		      *name == '-' ||
+-		      (*name == '$' && name[1] == '\0')
+-		     )) {
 +	do {
 +		if ((':' == *name) || (',' == *name) || isspace(*name)) {
-+			return false;
-+		}
+ 			return false;
+ 		}
+-		numeric &= isdigit(*name);
+-	}
 +		name++;
 +	} while ('\0' != *name);
  
- 	return true;
+-	return !numeric;
++	return true;
  }
+ 
+ bool is_valid_user_name (const char *name)
 --- a/man/useradd.8.xml
 +++ b/man/useradd.8.xml
-@@ -662,12 +662,20 @@
-     </para>
- 
-     <para>
--      Usernames must start with a lower case letter or an underscore,
-+      It is usually recommended to only use usernames that begin with a lower case letter or an underscore,
-       followed by lower case letters, digits, underscores, or dashes.
-       They can end with a dollar sign.
-       In regular expression terms: [a-z_][a-z0-9_-]*[$]?
+@@ -708,6 +708,14 @@
+       the <command>ls</command> output.
      </para>
      <para>
 +      On Debian, the only constraints are that usernames must neither start
@@ -78,15 +96,8 @@ Details:
    </refsect1>
 --- a/man/groupadd.8.xml
 +++ b/man/groupadd.8.xml
-@@ -273,12 +273,18 @@
-    <refsect1 id='caveats'>
-      <title>CAVEATS</title>
-      <para>
--       Groupnames must start with a lower case letter or an underscore,
-+       It is usually recommended to only use groupnames that begin with a lower case letter or an underscore,
-        followed by lower case letters, digits, underscores, or dashes.
-        They can end with a dollar sign.
-        In regular expression terms: [a-z_][a-z0-9_-]*[$]?
+@@ -72,6 +72,12 @@
+        also disallowed.
       </para>
       <para>
 +       On Debian, the only constraints are that groupnames must neither start
@@ -97,4 +108,4 @@ Details:
 +     <para>
         Groupnames may only be up to &GROUP_NAME_MAX_LENGTH; characters long.
       </para>
-      <para>
+   </refsect1>

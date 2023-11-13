@@ -248,7 +248,7 @@
 +
 --- a/src/Makefile.am
 +++ b/src/Makefile.am
-@@ -33,6 +33,7 @@
+@@ -34,6 +34,7 @@
  bin_PROGRAMS  += su
  endif
  usbin_PROGRAMS = \
@@ -256,17 +256,17 @@
  	chgpasswd \
  	chpasswd \
  	groupadd \
-@@ -101,6 +102,7 @@
+@@ -102,6 +103,7 @@
  chgpasswd_LDADD = $(LDADD) $(LIBPAM_SUID) $(LIBAUDIT) $(LIBSELINUX) $(LIBCRYPT) $(LIBECONF)
  chsh_LDADD     = $(LDADD) $(LIBPAM) $(LIBAUDIT) $(LIBSELINUX) $(LIBCRYPT_NOPAM) $(LIBSKEY) $(LIBMD) $(LIBECONF)
  chpasswd_LDADD = $(LDADD) $(LIBPAM) $(LIBAUDIT) $(LIBSELINUX) $(LIBCRYPT) $(LIBECONF)
 +cppw_LDADD     = $(LDADD) $(LIBSELINUX) $(LIBAUDIT)
  expiry_LDADD = $(LDADD) $(LIBECONF)
  gpasswd_LDADD  = $(LDADD) $(LIBAUDIT) $(LIBSELINUX) $(LIBCRYPT) $(LIBECONF)
- groupadd_LDADD = $(LDADD) $(LIBPAM_SUID) $(LIBAUDIT) $(LIBSELINUX) $(LIBECONF)
+ groupadd_LDADD = $(LDADD) $(LIBPAM_SUID) $(LIBAUDIT) $(LIBSELINUX) $(LIBECONF) -ldl
 --- a/po/POTFILES.in
 +++ b/po/POTFILES.in
-@@ -90,6 +90,7 @@
+@@ -91,6 +91,7 @@
  src/chgpasswd.c
  src/chpasswd.c
  src/chsh.c

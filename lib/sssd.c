@@ -11,7 +11,9 @@
 #include "prototypes.h"
 #include "sssd.h"
 
-#define MSG_SSSD_FLUSH_CACHE_FAILED "%s: Failed to flush the sssd cache.\n"
+#include "shadowlog_internal.h"
+
+#define MSG_SSSD_FLUSH_CACHE_FAILED "%s: Failed to flush the sssd cache."
 
 int sssd_flush_cache (int dbflags)
 {
@@ -46,24 +48,22 @@ int sssd_flush_cache (int dbflags)
 	free(sss_cache_args);
 	if (rv != 0) {
 		/* run_command writes its own more detailed message. */
-		(void) fprintf (stderr, _(MSG_SSSD_FLUSH_CACHE_FAILED), Prog);
+		SYSLOG ((LOG_WARN, MSG_SSSD_FLUSH_CACHE_FAILED, shadow_progname));
 		return -1;
 	}
 
 	code = WEXITSTATUS (status);
 	if (!WIFEXITED (status)) {
-		(void) fprintf (stderr,
-		                _("%s: sss_cache did not terminate normally (signal %d)\n"),
-		                Prog, WTERMSIG (status));
+		SYSLOG ((LOG_WARN, "%s: sss_cache did not terminate normally (signal %d)",
+			shadow_progname, WTERMSIG (status)));
 		return -1;
 	} else if (code == E_CMD_NOTFOUND) {
 		/* sss_cache is not installed, or it is installed but uses an
 		   interpreter that is missing.  Probably the former. */
 		return 0;
 	} else if (code != 0) {
-		(void) fprintf (stderr, _("%s: sss_cache exited with status %d\n"),
-		                Prog, code);
-		(void) fprintf (stderr, _(MSG_SSSD_FLUSH_CACHE_FAILED), Prog);
+		SYSLOG ((LOG_WARN, "%s: sss_cache exited with status %d", shadow_progname, code));
+		SYSLOG ((LOG_WARN, MSG_SSSD_FLUSH_CACHE_FAILED, shadow_progname));
 		return -1;
 	}
 

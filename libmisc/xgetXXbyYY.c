@@ -1,30 +1,7 @@
 /*
- * Copyright (c) 2007 - 2009, Nicolas François
- * All rights reserved.
+ * SPDX-FileCopyrightText: 2007 - 2009, Nicolas François
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the copyright holders or contributors may not be used to
- *    endorse or promote products derived from this software without
- *    specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
- * PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
- * HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * SPDX-License-Identifier: BSD-3-Clause
  */
 
 /*
@@ -54,6 +31,7 @@
 #include <stdio.h>
 #include <errno.h>
 #include "prototypes.h"
+#include "shadowlog.h"
 
 #define XFUNCTION_NAME XPREFIX (FUNCTION_NAME)
 #define XPREFIX(name) XPREFIX1 (name)
@@ -74,7 +52,7 @@
 
 	result = malloc(sizeof(LOOKUP_TYPE));
 	if (NULL == result) {
-		fprintf (stderr, _("%s: out of memory\n"),
+		fprintf (log_get_logfd(), _("%s: out of memory\n"),
 		         "x" STRINGIZE(FUNCTION_NAME));
 		exit (13);
 	}
@@ -84,11 +62,10 @@
 		LOOKUP_TYPE *resbuf = NULL;
 		buffer = (char *)realloc (buffer, length);
 		if (NULL == buffer) {
-			fprintf (stderr, _("%s: out of memory\n"),
+			fprintf (log_get_logfd(), _("%s: out of memory\n"),
 			         "x" STRINGIZE(FUNCTION_NAME));
 			exit (13);
 		}
-		errno = 0;
 		status = REENTRANT_NAME(ARG_NAME, result, buffer,
 		                        length, &resbuf);
 		if ((0 == status) && (resbuf == result)) {
@@ -100,7 +77,7 @@
 			return ret_result;
 		}
 
-		if (ERANGE != errno) {
+		if (ERANGE != status) {
 			free (buffer);
 			free (result);
 			return NULL;
@@ -132,7 +109,7 @@
 	if (result) {
 		result = DUP_FUNCTION(result);
 		if (NULL == result) {
-			fprintf (stderr, _("%s: out of memory\n"),
+			fprintf (log_get_logfd(), _("%s: out of memory\n"),
 			         "x" STRINGIZE(FUNCTION_NAME));
 			exit (13);
 		}

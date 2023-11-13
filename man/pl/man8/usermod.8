@@ -1,13 +1,13 @@
 '\" t
 .\"     Title: usermod
 .\"    Author: Julianne Frances Haugh
-.\" Generator: DocBook XSL Stylesheets v1.79.1 <http://docbook.sf.net/>
-.\"      Date: 01/23/2020
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 11/08/2022
 .\"    Manual: Polecenia Zarządzania Systemem
-.\"    Source: shadow-utils 4.8.1
+.\"    Source: shadow-utils 4.13
 .\"  Language: Polish
 .\"
-.TH "USERMOD" "8" "01/23/2020" "shadow\-utils 4\&.8\&.1" "Polecenia Zarządzania Systemem"
+.TH "USERMOD" "8" "11/08/2022" "shadow\-utils 4\&.13" "Polecenia Zarządzania Systemem"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -36,7 +36,7 @@ usermod \- zmiana danych konta użytkownika
 .PP
 The
 \fBusermod\fR
-command modifies the system account files to reflect the changes that are specified on the command line\&.
+command modifies the system account files\&.
 .SH "OPCJE"
 .PP
 The options which apply to the
@@ -50,14 +50,15 @@ Add the user to the supplementary group(s)\&. Use only with the
 option\&.
 .RE
 .PP
-\fB\-b\fR, \fB\-\-badnames\fR
+\fB\-b\fR, \fB\-\-badname\fR
 .RS 4
 Allow names that do not conform to standards\&.
 .RE
 .PP
 \fB\-c\fR, \fB\-\-comment\fR\ \&\fICOMMENT\fR
 .RS 4
-The new value of the user\*(Aqs password file comment field\&. It is normally modified using the
+update the comment field of the user in
+/etc/passwd, which is normally modified using the
 \fBchfn\fR(1)
 utility\&.
 .RE
@@ -68,17 +69,15 @@ The user\*(Aqs new login directory\&.
 .sp
 If the
 \fB\-m\fR
-option is given, the contents of the current home directory will be moved to the new home directory, which is created if it does not already exist\&.
+option is given, the contents of the current home directory will be moved to the new home directory, which is created if it does not already exist\&. If the current home directory does not exist the new home directory will not be created\&.
 .RE
 .PP
 \fB\-e\fR, \fB\-\-expiredate\fR\ \&\fIEXPIRE_DATE\fR
 .RS 4
 The date on which the user account will be disabled\&. The date is specified in the format
-\fIYYYY\-MM\-DD\fR\&.
+\fIYYYY\-MM\-DD\fR\&. Integers as input are interpreted as days after 1970\-01\-01\&.
 .sp
-An empty
-\fIEXPIRE_DATE\fR
-argument will disable the expiration of the account\&.
+An input of \-1 or an empty string will blank the account expiration field in the shadow password file\&. The account will remain available with no date limit\&.
 .sp
 This option requires a
 /etc/shadow
@@ -89,9 +88,9 @@ entry will be created if there were none\&.
 .PP
 \fB\-f\fR, \fB\-\-inactive\fR\ \&\fIINACTIVE\fR
 .RS 4
-The number of days after a password expires until the account is permanently disabled\&.
-.sp
-A value of 0 disables the account as soon as the password has expired, and a value of \-1 disables the feature\&.
+defines the number of days after the password exceeded its maximum age during which the user may still login by immediately replacing the password\&. This grace period before the account becomes inactive is stored in the shadow password file\&. An input of 0 will disable an expired password with no delay\&. An input of \-1 will blank the respective field in the shadow password file\&. See
+\fBshadow\fR(5)
+for more information\&.
 .sp
 This option requires a
 /etc/shadow
@@ -102,18 +101,19 @@ entry will be created if there were none\&.
 .PP
 \fB\-g\fR, \fB\-\-gid\fR\ \&\fIGROUP\fR
 .RS 4
-The group name or number of the user\*(Aqs new initial login group\&. The group must exist\&.
+The name or numerical ID of the user\*(Aqs new primary group\&. The group must exist\&.
 .sp
 Any file from the user\*(Aqs home directory owned by the previous primary group of the user will be owned by this new group\&.
 .sp
 The group ownership of files outside of the user\*(Aqs home directory must be fixed manually\&.
+.sp
+The change of the group ownership of files inside of the user\*(Aqs home directory is also not done if the home dir owner uid is different from the current or new user id\&. This is a safety measure for special home directories such as
+/\&.
 .RE
 .PP
 \fB\-G\fR, \fB\-\-groups\fR\ \&\fIGROUP1\fR[\fI,GROUP2,\&.\&.\&.\fR[\fI,GROUPN\fR]]]
 .RS 4
-A list of supplementary groups which the user is also a member of\&. Each group is separated from the next by a comma, with no intervening whitespace\&. The groups are subject to the same restrictions as the group given with the
-\fB\-g\fR
-option\&.
+A list of supplementary groups which the user is also a member of\&. Each group is separated from the next by a comma, with no intervening whitespace\&. The groups must exist\&.
 .sp
 If the user is currently a member of a group which is not listed, the user will be removed from the group\&. This behaviour can be changed via the
 \fB\-a\fR
@@ -143,7 +143,7 @@ to
 .PP
 \fB\-m\fR, \fB\-\-move\-home\fR
 .RS 4
-Move the content of the user\*(Aqs home directory to the new location\&.
+moves the content of the user\*(Aqs home directory to the new location\&. If the current home directory does not exist the new home directory will not be created\&.
 .sp
 This option is only valid in combination with the
 \fB\-d\fR
@@ -156,20 +156,29 @@ will try to adapt the ownership of the files and to copy the modes, ACL and exte
 .PP
 \fB\-o\fR, \fB\-\-non\-unique\fR
 .RS 4
-When used with the
+allows to change the user ID to a non\-unique value\&.
+.sp
+This option is only valid in combination with the
 \fB\-u\fR
-option, this option allows to change the user ID to a non\-unique value\&.
+option\&. As a user identity serves as key to map between users on one hand and permissions, file ownerships and other aspects that determine the system\*(Aqs behavior on the other hand, more than one login name will access the account of the given UID\&.
 .RE
 .PP
 \fB\-p\fR, \fB\-\-password\fR\ \&\fIPASSWORD\fR
 .RS 4
-The encrypted password, as returned by
-\fBcrypt\fR(3)\&.
+defines a new password for the user\&. PASSWORD is expected to be encrypted, as returned by
+\fBcrypt \fR(3)\&.
 .sp
 \fBNote:\fR
-This option is not recommended because the password (or encrypted password) will be visible by users listing the processes\&.
+Avoid this option on the command line because the password (or encrypted password) will be visible by users listing the processes\&.
 .sp
 You should make sure the password respects the system\*(Aqs password policy\&.
+.RE
+.PP
+\fB\-r\fR, \fB\-\-remove\fR
+.RS 4
+Remove the user from named supplementary group(s)\&. Use only with the
+\fB\-G\fR
+option\&.
 .RE
 .PP
 \fB\-R\fR, \fB\-\-root\fR\ \&\fICHROOT_DIR\fR
@@ -178,26 +187,26 @@ Apply changes in the
 \fICHROOT_DIR\fR
 directory and use the configuration files from the
 \fICHROOT_DIR\fR
-directory\&.
+directory\&. Only absolute paths are supported\&.
 .RE
 .PP
 \fB\-P\fR, \fB\-\-prefix\fR\ \&\fIPREFIX_DIR\fR
 .RS 4
-Apply changes in the
+Apply changes within the directory tree starting with
 \fIPREFIX_DIR\fR
-directory and use the configuration files from the
-\fIPREFIX_DIR\fR
-directory\&. This option does not chroot and is intended for preparing a cross\-compilation target\&. Some limitations: NIS and LDAP users/groups are not verified\&. PAM authentication is using the host files\&. No SELINUX support\&.
+and use as well the configuration files located there\&. This option does not chroot and is intended for preparing a cross\-compilation target\&. Some limitations: NIS and LDAP users/groups are not verified\&. PAM authentication is using the host files\&. No SELINUX support\&.
 .RE
 .PP
 \fB\-s\fR, \fB\-\-shell\fR\ \&\fISHELL\fR
 .RS 4
-Nazwa nowej pow\(/loki (shell) użytkownika\&. Ustawienie tego pola na puste powoduje, że system wybierze domyślną pow\(/lokę logowania\&.
+changes the user\*(Aqs login shell\&. An empty string for SHELL blanks the field in
+/etc/passwd
+and logs the user into the system\*(Aqs default shell\&.
 .RE
 .PP
 \fB\-u\fR, \fB\-\-uid\fR\ \&\fIUID\fR
 .RS 4
-The new numerical value of the user\*(Aqs ID\&.
+The new value of the user\*(Aqs ID\&.
 .sp
 This value must be unique, unless the
 \fB\-o\fR
@@ -206,6 +215,9 @@ option is used\&. The value must be non\-negative\&.
 The user\*(Aqs mailbox, and any files which the user owns and which are located in the user\*(Aqs home directory will have the file user ID changed automatically\&.
 .sp
 The ownership of files outside of the user\*(Aqs home directory must be fixed manually\&.
+.sp
+The change of the user ownership of files inside of the user\*(Aqs home directory is also not done if the home dir owner uid is different from the current or new user id\&. This is a safety measure for special home directories such as
+/\&.
 .sp
 No checks will be performed with regard to the
 \fBUID_MIN\fR,
@@ -236,7 +248,7 @@ value from
 .RS 4
 Add a range of subordinate uids to the user\*(Aqs account\&.
 .sp
-This option may be specified multiple times to add multiple ranges to a users account\&.
+This option may be specified multiple times to add multiple ranges to a user\*(Aqs account\&.
 .sp
 No checks will be performed with regard to
 \fBSUB_UID_MIN\fR,
@@ -249,7 +261,7 @@ from /etc/login\&.defs\&.
 .RS 4
 Remove a range of subordinate uids from the user\*(Aqs account\&.
 .sp
-This option may be specified multiple times to remove multiple ranges to a users account\&. When both
+This option may be specified multiple times to remove multiple ranges to a user\*(Aqs account\&. When both
 \fB\-\-del\-subuids\fR
 and
 \fB\-\-add\-subuids\fR
@@ -266,7 +278,7 @@ from /etc/login\&.defs\&.
 .RS 4
 Add a range of subordinate gids to the user\*(Aqs account\&.
 .sp
-This option may be specified multiple times to add multiple ranges to a users account\&.
+This option may be specified multiple times to add multiple ranges to a user\*(Aqs account\&.
 .sp
 No checks will be performed with regard to
 \fBSUB_GID_MIN\fR,
@@ -279,7 +291,7 @@ from /etc/login\&.defs\&.
 .RS 4
 Remove a range of subordinate gids from the user\*(Aqs account\&.
 .sp
-This option may be specified multiple times to remove multiple ranges to a users account\&. When both
+This option may be specified multiple times to remove multiple ranges to a user\*(Aqs account\&. When both
 \fB\-\-del\-subgids\fR
 and
 \fB\-\-add\-subgids\fR
@@ -294,19 +306,14 @@ from /etc/login\&.defs\&.
 .PP
 \fB\-Z\fR, \fB\-\-selinux\-user\fR\ \&\fISEUSER\fR
 .RS 4
-The new SELinux user for the user\*(Aqs login\&.
-.sp
-A blank
-\fISEUSER\fR
-will remove the SELinux user mapping for user
-\fILOGIN\fR
-(if any)\&.
+defines the SELinux user to be mapped with
+\fILOGIN\fR\&. An empty string ("") will remove the respective entry (if any)\&. Note that the shadow system doesn\*(Aqt store the selinux\-user, it uses semanage(8) for that\&.
 .RE
 .SH "OSTRZEŻENIA"
 .PP
 You must make certain that the named user is not executing any processes when this command is being executed if the user\*(Aqs numerical user ID, the user\*(Aqs name, or the user\*(Aqs home directory is being changed\&.
 \fBusermod\fR
-checks this on Linux\&. On other platforms it only uses utmp to check if the user is logged in\&.
+checks this on Linux\&. On other operating systems it only uses utmp to check if the user is logged in\&.
 .PP
 You must change the owner of any
 \fBcrontab\fR
@@ -320,138 +327,41 @@ You must make any changes involving NIS on the NIS server\&.
 The following configuration variables in
 /etc/login\&.defs
 change the behavior of this tool:
-.PP
-\fBLASTLOG_UID_MAX\fR (number)
-.RS 4
-Highest user ID number for which the lastlog entries should be updated\&. As higher user IDs are usually tracked by remote user identity and authentication services there is no need to create a huge sparse lastlog file for them\&.
-.sp
-No
-\fBLASTLOG_UID_MAX\fR
-option present in the configuration means that there is no user ID limit for writing lastlog entries\&.
-.RE
-.PP
-\fBMAIL_DIR\fR (string)
-.RS 4
-The mail spool directory\&. This is needed to manipulate the mailbox when its corresponding user account is modified or deleted\&. If not specified, a compile\-time default is used\&.
-.RE
-.PP
-\fBMAIL_FILE\fR (string)
-.RS 4
-Defines the location of the users mail spool files relatively to their home directory\&.
-.RE
-.PP
-The
-\fBMAIL_DIR\fR
-and
-\fBMAIL_FILE\fR
-variables are used by
-\fBuseradd\fR,
-\fBusermod\fR, and
-\fBuserdel\fR
-to create, move, or delete the user\*(Aqs mail spool\&.
-.PP
-If
-\fBMAIL_CHECK_ENAB\fR
-is set to
-\fIyes\fR, they are also used to define the
-\fBMAIL\fR
-environment variable\&.
-.PP
-\fBMAX_MEMBERS_PER_GROUP\fR (number)
-.RS 4
-Maximum members per group entry\&. When the maximum is reached, a new group entry (line) is started in
-/etc/group
-(with the same name, same password, and same GID)\&.
-.sp
-The default value is 0, meaning that there are no limits in the number of members in a group\&.
-.sp
-This feature (split group) permits to limit the length of lines in the group file\&. This is useful to make sure that lines for NIS groups are not larger than 1024 characters\&.
-.sp
-If you need to enforce such limit, you can use 25\&.
-.sp
-Note: split groups may not be supported by all tools (even in the Shadow toolsuite)\&. You should not use this variable unless you really need it\&.
-.RE
-.PP
-\fBSUB_GID_MIN\fR (number), \fBSUB_GID_MAX\fR (number), \fBSUB_GID_COUNT\fR (number)
-.RS 4
-If
-/etc/subuid
-exists, the commands
-\fBuseradd\fR
-and
-\fBnewusers\fR
-(unless the user already have subordinate group IDs) allocate
-\fBSUB_GID_COUNT\fR
-unused group IDs from the range
-\fBSUB_GID_MIN\fR
-to
-\fBSUB_GID_MAX\fR
-for each new user\&.
-.sp
-The default values for
-\fBSUB_GID_MIN\fR,
-\fBSUB_GID_MAX\fR,
-\fBSUB_GID_COUNT\fR
-are respectively 100000, 600100000 and 65536\&.
-.RE
-.PP
-\fBSUB_UID_MIN\fR (number), \fBSUB_UID_MAX\fR (number), \fBSUB_UID_COUNT\fR (number)
-.RS 4
-If
-/etc/subuid
-exists, the commands
-\fBuseradd\fR
-and
-\fBnewusers\fR
-(unless the user already have subordinate user IDs) allocate
-\fBSUB_UID_COUNT\fR
-unused user IDs from the range
-\fBSUB_UID_MIN\fR
-to
-\fBSUB_UID_MAX\fR
-for each new user\&.
-.sp
-The default values for
-\fBSUB_UID_MIN\fR,
-\fBSUB_UID_MAX\fR,
-\fBSUB_UID_COUNT\fR
-are respectively 100000, 600100000 and 65536\&.
-.RE
 .SH "PLIKI"
 .PP
 /etc/group
 .RS 4
-Informacje o grupach użytkownik\('ow\&.
+Group account information
 .RE
 .PP
 /etc/gshadow
 .RS 4
-Informacje chronione o grupach użytkownik\('ow\&.
+Secure group account informatio\&.
 .RE
 .PP
 /etc/login\&.defs
 .RS 4
-Konfiguracja pakietu shadow\&.
+Shadow password suite configuration
 .RE
 .PP
 /etc/passwd
 .RS 4
-Informacja o kontach użytkownik\('ow\&.
+User account information
 .RE
 .PP
 /etc/shadow
 .RS 4
-Informacje chronione o użytkownikach\&.
+Secure user account information
 .RE
 .PP
 /etc/subgid
 .RS 4
-Per user subordinate group IDs\&.
+Per user subordinate group IDs
 .RE
 .PP
 /etc/subuid
 .RS 4
-Per user subordinate user IDs\&.
+Per user subordinate user IDs
 .RE
 .SH "ZOBACZ TAKŻE"
 .PP

@@ -1,33 +1,10 @@
 /*
- * Copyright (c) 1989 - 1994, Julianne Frances Haugh
- * Copyright (c) 1996 - 1999, Marek Michałkiewicz
- * Copyright (c) 2001 - 2005, Tomasz Kłoczko
- * Copyright (c) 2008 - 2009, Nicolas François
- * All rights reserved.
+ * SPDX-FileCopyrightText: 1989 - 1994, Julianne Frances Haugh
+ * SPDX-FileCopyrightText: 1996 - 1999, Marek Michałkiewicz
+ * SPDX-FileCopyrightText: 2001 - 2005, Tomasz Kłoczko
+ * SPDX-FileCopyrightText: 2008 - 2009, Nicolas François
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the copyright holders or contributors may not be used to
- *    endorse or promote products derived from this software without
- *    specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
- * PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
- * HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * SPDX-License-Identifier: BSD-3-Clause
  */
 
 #include <config.h>
@@ -42,6 +19,7 @@
 #endif
 
 #include <assert.h>
+#include <sys/param.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netdb.h>
@@ -257,25 +235,25 @@ static void updwtmpx (const char *filename, const struct utmpx *utx)
 	utent->ut_type = USER_PROCESS;
 #endif				/* HAVE_STRUCT_UTMP_UT_TYPE */
 	utent->ut_pid = getpid ();
-	strncpy (utent->ut_line, line,      sizeof (utent->ut_line));
+	strncpy (utent->ut_line, line,      sizeof (utent->ut_line) - 1);
 #ifdef HAVE_STRUCT_UTMP_UT_ID
 	if (NULL != ut) {
 		strncpy (utent->ut_id, ut->ut_id, sizeof (utent->ut_id));
 	} else {
 		/* XXX - assumes /dev/tty?? */
-		strncpy (utent->ut_id, line + 3, sizeof (utent->ut_id));
+		strncpy (utent->ut_id, line + 3, sizeof (utent->ut_id) - 1);
 	}
 #endif				/* HAVE_STRUCT_UTMP_UT_ID */
 #ifdef HAVE_STRUCT_UTMP_UT_NAME
 	strncpy (utent->ut_name, name,      sizeof (utent->ut_name));
 #endif				/* HAVE_STRUCT_UTMP_UT_NAME */
 #ifdef HAVE_STRUCT_UTMP_UT_USER
-	strncpy (utent->ut_user, name,      sizeof (utent->ut_user));
+	strncpy (utent->ut_user, name,      sizeof (utent->ut_user) - 1);
 #endif				/* HAVE_STRUCT_UTMP_UT_USER */
 	if (NULL != hostname) {
 		struct addrinfo *info = NULL;
 #ifdef HAVE_STRUCT_UTMP_UT_HOST
-		strncpy (utent->ut_host, hostname, sizeof (utent->ut_host));
+		strncpy (utent->ut_host, hostname, sizeof (utent->ut_host) - 1);
 #endif				/* HAVE_STRUCT_UTMP_UT_HOST */
 #ifdef HAVE_STRUCT_UTMP_UT_SYSLEN
 		utent->ut_syslen = MIN (strlen (hostname),
