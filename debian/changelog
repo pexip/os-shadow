@@ -1,3 +1,9 @@
+shadow (1:4.13+dfsg1-1pexip1) pexip-bookworm; urgency=medium
+
+  * Initial bookworm build
+
+ -- Mark Hymers <mark.hymers@pexip.com>  Thu, 16 Nov 2023 10:33:30 +0000
+
 shadow (1:4.13+dfsg1-1) unstable; urgency=medium
 
   [ Balint Reczey ]
