@@ -1,3 +1,9 @@
+shadow (1:4.13+dfsg1-1+b1+pexip24u2) pexip-bookworm; urgency=medium
+
+  * New versioning scheme
+
+ -- Mark Hymers <mark.hymers@pexip.com>  Thu, 01 Feb 2024 16:35:38 +0000
+
 shadow (1:4.13+dfsg1-1+b1pexip1) pexip-bookworm; urgency=medium
 
   * Bump version to supersede Debian point release binNMU.
