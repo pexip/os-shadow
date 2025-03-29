@@ -2,12 +2,12 @@
 .\"     Title: login
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 11/08/2022
+.\"      Date: 03/19/2025
 .\"    Manual: User Commands
-.\"    Source: shadow-utils 4.13
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: English
 .\"
-.TH "LOGIN" "1" "11/08/2022" "shadow\-utils 4\&.13" "User Commands"
+.TH "LOGIN" "1" "03/19/2025" "shadow\-utils 4\&.17\&.4" "User Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -113,11 +113,6 @@ Name of the remote host for this login\&.
 \fB\-p\fR
 .RS 4
 Preserve environment\&.
-.RE
-.PP
-\fB\-r\fR
-.RS 4
-Perform autologin protocol for rlogin\&.
 .RE
 .PP
 The
@@ -368,18 +363,18 @@ Enable setting of resource limits from
 and ulimit, umask, and niceness from the user\*(Aqs passwd gecos field\&.
 .RE
 .PP
-\fBTTYGROUP\fR (string), \fBTTYPERM\fR (string)
+\fBTTYGROUP\fR (string), \fBTTYPERM\fR (number)
 .RS 4
 The terminal permissions: the login tty will be owned by the
 \fBTTYGROUP\fR
 group, and the permissions will be set to
 \fBTTYPERM\fR\&.
 .sp
-By default, the ownership of the terminal is set to the user\*(Aqs primary group and the permissions are set to
-\fI0600\fR\&.
-.sp
 \fBTTYGROUP\fR
 can be either the name of a group or a numeric group identifier\&.
+.sp
+If TTYGROUP is not defined, then the group ownership of the terminal is set to the user\*(Aqs primary group\&. If TTYPERM is not defined, then the permissions are set to
+\fI0600\fR\&.
 .sp
 If you have a
 \fBwrite\fR

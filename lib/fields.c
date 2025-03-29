@@ -14,16 +14,22 @@
 #include <ctype.h>
 #include <string.h>
 #include <stdio.h>
+
 #include "prototypes.h"
+#include "string/strcmp/streq.h"
+#include "string/strspn/stpspn.h"
+#include "string/strspn/stprspn.h"
+#include "string/strtok/stpsep.h"
+
 
 /*
  * valid_field - insure that a field contains all legal characters
  *
  * The supplied field is scanned for non-printable and other illegal
  * characters.
- *  + -1 is returned if an illegal character is present.
- *  +  1 is returned if no illegal characters are present, but the field
- *       contains a non-printable character.
+ *  + -1 is returned if an illegal or control character is present.
+ *  +  1 is returned if no illegal or control characters are present,
+ *       but the field contains a non-printable character.
  *  +  0 is returned otherwise.
  */
 int valid_field (const char *field, const char *illegal)
@@ -37,20 +43,19 @@ int valid_field (const char *field, const char *illegal)
 
 	/* For each character of field, search if it appears in the list
 	 * of illegal characters. */
-	for (cp = field; '\0' != *cp; cp++) {
-		if (strchr (illegal, *cp) != NULL) {
-			err = -1;
-			break;
-		}
+	if (illegal && NULL != strpbrk (field, illegal)) {
+		return -1;
 	}
 
-	if (0 == err) {
-		/* Search if there are some non-printable characters */
-		for (cp = field; '\0' != *cp; cp++) {
-			if (!isprint (*cp)) {
-				err = 1;
-				break;
-			}
+	/* Search if there are non-printable or control characters */
+	for (cp = field; !streq(cp, ""); cp++) {
+		unsigned char c = *cp;
+		if (!isprint (c)) {
+			err = 1;
+		}
+		if (iscntrl (c)) {
+			err = -1;
+			break;
 		}
 	}
 
@@ -63,7 +68,8 @@ int valid_field (const char *field, const char *illegal)
  * prompt the user with the name of the field being changed and the
  * current value.
  */
-void change_field (char *buf, size_t maxsize, const char *prompt)
+void
+change_field(char *buf, size_t maxsize, const char *prompt)
 {
 	char newf[200];
 	char *cp;
@@ -74,34 +80,21 @@ void change_field (char *buf, size_t maxsize, const char *prompt)
 
 	printf ("\t%s [%s]: ", prompt, buf);
 	(void) fflush (stdout);
-	if (fgets (newf, (int) maxsize, stdin) != newf) {
+	if (fgets (newf, maxsize, stdin) != newf) {
 		return;
 	}
 
-	cp = strchr (newf, '\n');
-	if (NULL == cp) {
+	if (stpsep(newf, "\n") == NULL)
 		return;
-	}
-	*cp = '\0';
 
-	if ('\0' != newf[0]) {
+	if (!streq(newf, "")) {
 		/*
 		 * Remove leading and trailing whitespace.  This also
 		 * makes it possible to change the field to empty, by
 		 * entering a space.  --marekm
 		 */
-
-		while (--cp >= newf && isspace (*cp));
-		cp++;
-		*cp = '\0';
-
-		cp = newf;
-		while (('\0' != *cp) && isspace (*cp)) {
-			cp++;
-		}
-
-		strncpy (buf, cp, maxsize - 1);
-		buf[maxsize - 1] = '\0';
+		stpcpy(stprspn(newf, " \t"), "");
+		cp = stpspn(newf, " \t");
+		strcpy (buf, cp);
 	}
 }
-

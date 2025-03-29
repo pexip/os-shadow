@@ -1,2 +1,10 @@
 Tests: smoke
-Restrictions: needs-root superficial
+Restrictions: needs-root, superficial
+
+Tests: upstream
+Depends:
+ expect,
+ procps,
+ @,
+ @builddeps@
+Restrictions: needs-root, build-needed, breaks-testbed, allow-stderr, isolation-machine

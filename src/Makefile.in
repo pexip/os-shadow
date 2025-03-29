@@ -88,14 +88,14 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-bin_PROGRAMS = groups$(EXEEXT) login$(EXEEXT) $(am__EXEEXT_1) \
-	$(am__EXEEXT_2)
+bin_PROGRAMS = login$(EXEEXT) $(am__EXEEXT_1) $(am__EXEEXT_2)
 sbin_PROGRAMS = nologin$(EXEEXT)
-ubin_PROGRAMS = faillog$(EXEEXT) lastlog$(EXEEXT) chage$(EXEEXT) \
-	chfn$(EXEEXT) chsh$(EXEEXT) expiry$(EXEEXT) gpasswd$(EXEEXT) \
-	newgrp$(EXEEXT) passwd$(EXEEXT) $(am__EXEEXT_4)
+ubin_PROGRAMS = faillog$(EXEEXT) chage$(EXEEXT) chfn$(EXEEXT) \
+	chsh$(EXEEXT) expiry$(EXEEXT) gpasswd$(EXEEXT) newgrp$(EXEEXT) \
+	passwd$(EXEEXT) $(am__EXEEXT_4) $(am__EXEEXT_5)
 @ENABLE_SUBIDS_TRUE@am__append_1 = newgidmap newuidmap
-@WITH_SU_TRUE@am__append_2 = su
+@ENABLE_LASTLOG_TRUE@am__append_2 = lastlog
+@WITH_SU_TRUE@am__append_3 = su
 usbin_PROGRAMS = chgpasswd$(EXEEXT) chpasswd$(EXEEXT) \
 	groupadd$(EXEEXT) groupdel$(EXEEXT) groupmems$(EXEEXT) \
 	groupmod$(EXEEXT) grpck$(EXEEXT) grpconv$(EXEEXT) \
@@ -103,13 +103,13 @@ usbin_PROGRAMS = chgpasswd$(EXEEXT) chpasswd$(EXEEXT) \
 	pwck$(EXEEXT) pwconv$(EXEEXT) pwunconv$(EXEEXT) \
 	useradd$(EXEEXT) userdel$(EXEEXT) usermod$(EXEEXT) \
 	vipw$(EXEEXT)
-noinst_PROGRAMS = id$(EXEEXT) sulogin$(EXEEXT) $(am__EXEEXT_3)
-@WITH_SU_TRUE@am__append_3 = su
-@WITH_TCB_FALSE@am__append_4 = passwd
-@ACCT_TOOLS_SETUID_TRUE@am__append_5 = chgpasswd chpasswd groupadd groupdel groupmod newusers useradd userdel usermod
-@ENABLE_SUBIDS_TRUE@@FCAPS_FALSE@am__append_6 = newgidmap newuidmap
-@ENABLE_SUBIDS_TRUE@am__append_7 = getsubids
-@ENABLE_SUBIDS_TRUE@am__append_8 = get_subid_owners \
+noinst_PROGRAMS = sulogin$(EXEEXT) $(am__EXEEXT_3)
+@WITH_SU_TRUE@am__append_4 = su
+@WITH_TCB_FALSE@am__append_5 = passwd
+@ACCT_TOOLS_SETUID_TRUE@am__append_6 = chgpasswd chpasswd groupadd groupdel groupmod newusers useradd userdel usermod
+@ENABLE_SUBIDS_TRUE@@FCAPS_FALSE@am__append_7 = newgidmap newuidmap
+@ENABLE_SUBIDS_TRUE@am__append_8 = getsubids
+@ENABLE_SUBIDS_TRUE@am__append_9 = get_subid_owners \
 @ENABLE_SUBIDS_TRUE@					new_subid_range \
 @ENABLE_SUBIDS_TRUE@					free_subid_range \
 @ENABLE_SUBIDS_TRUE@					check_subid_range
@@ -142,18 +142,16 @@ am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(sbindir)" \
 @ENABLE_SUBIDS_TRUE@	check_subid_range$(EXEEXT)
 @ENABLE_SUBIDS_TRUE@am__EXEEXT_4 = newgidmap$(EXEEXT) \
 @ENABLE_SUBIDS_TRUE@	newuidmap$(EXEEXT)
+@ENABLE_LASTLOG_TRUE@am__EXEEXT_5 = lastlog$(EXEEXT)
 PROGRAMS = $(bin_PROGRAMS) $(noinst_PROGRAMS) $(sbin_PROGRAMS) \
 	$(ubin_PROGRAMS) $(usbin_PROGRAMS)
 chage_SOURCES = chage.c
 chage_OBJECTS = chage.$(OBJEXT)
 am__DEPENDENCIES_1 =
 am__DEPENDENCIES_2 = $(am__DEPENDENCIES_1) \
-	$(top_builddir)/libmisc/libmisc.la \
 	$(top_builddir)/lib/libshadow.la $(am__DEPENDENCIES_1)
-@ACCT_TOOLS_SETUID_TRUE@am__DEPENDENCIES_3 = $(am__DEPENDENCIES_1)
-chage_DEPENDENCIES = $(am__DEPENDENCIES_2) $(am__DEPENDENCIES_3) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+chage_DEPENDENCIES = $(am__DEPENDENCIES_2) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
@@ -161,11 +159,11 @@ am__v_lt_1 =
 check_subid_range_SOURCES = check_subid_range.c
 check_subid_range_OBJECTS =  \
 	check_subid_range-check_subid_range.$(OBJEXT)
-@USE_PAM_FALSE@am__DEPENDENCIES_4 = $(am__DEPENDENCIES_1)
-@ENABLE_SUBIDS_TRUE@am__DEPENDENCIES_5 = $(am__DEPENDENCIES_1) \
+@USE_PAM_FALSE@am__DEPENDENCIES_3 = $(am__DEPENDENCIES_1)
+@ENABLE_SUBIDS_TRUE@am__DEPENDENCIES_4 = $(am__DEPENDENCIES_1) \
 @ENABLE_SUBIDS_TRUE@	$(am__DEPENDENCIES_1) \
 @ENABLE_SUBIDS_TRUE@	$(am__DEPENDENCIES_1) \
-@ENABLE_SUBIDS_TRUE@	$(am__DEPENDENCIES_4) \
+@ENABLE_SUBIDS_TRUE@	$(am__DEPENDENCIES_3) \
 @ENABLE_SUBIDS_TRUE@	$(am__DEPENDENCIES_1) \
 @ENABLE_SUBIDS_TRUE@	$(am__DEPENDENCIES_1) \
 @ENABLE_SUBIDS_TRUE@	$(am__DEPENDENCIES_1) \
@@ -173,17 +171,17 @@ check_subid_range_OBJECTS =  \
 @ENABLE_SUBIDS_TRUE@	$(am__DEPENDENCIES_1)
 @ENABLE_SUBIDS_TRUE@check_subid_range_DEPENDENCIES =  \
 @ENABLE_SUBIDS_TRUE@	$(top_builddir)/lib/libshadow.la \
-@ENABLE_SUBIDS_TRUE@	$(top_builddir)/libmisc/libmisc.la \
-@ENABLE_SUBIDS_TRUE@	$(am__DEPENDENCIES_5)
+@ENABLE_SUBIDS_TRUE@	$(am__DEPENDENCIES_4)
 chfn_SOURCES = chfn.c
 chfn_OBJECTS = chfn.$(OBJEXT)
 chfn_DEPENDENCIES = $(am__DEPENDENCIES_2) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_4) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_3) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 chgpasswd_SOURCES = chgpasswd.c
 chgpasswd_OBJECTS = chgpasswd.$(OBJEXT)
-chgpasswd_DEPENDENCIES = $(am__DEPENDENCIES_2) $(am__DEPENDENCIES_3) \
+@ACCT_TOOLS_SETUID_TRUE@am__DEPENDENCIES_5 = $(am__DEPENDENCIES_1)
+chgpasswd_DEPENDENCIES = $(am__DEPENDENCIES_2) $(am__DEPENDENCIES_5) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 chpasswd_SOURCES = chpasswd.c
@@ -195,7 +193,7 @@ chsh_SOURCES = chsh.c
 chsh_OBJECTS = chsh.$(OBJEXT)
 chsh_DEPENDENCIES = $(am__DEPENDENCIES_2) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_4) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_3) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 expiry_SOURCES = expiry.c
 expiry_OBJECTS = expiry.$(OBJEXT)
@@ -204,31 +202,27 @@ faillog_SOURCES = faillog.c
 faillog_OBJECTS = faillog.$(OBJEXT)
 faillog_LDADD = $(LDADD)
 faillog_DEPENDENCIES = $(am__DEPENDENCIES_1) \
-	$(top_builddir)/libmisc/libmisc.la \
 	$(top_builddir)/lib/libshadow.la $(am__DEPENDENCIES_1)
 free_subid_range_SOURCES = free_subid_range.c
 free_subid_range_OBJECTS =  \
 	free_subid_range-free_subid_range.$(OBJEXT)
 @ENABLE_SUBIDS_TRUE@free_subid_range_DEPENDENCIES =  \
 @ENABLE_SUBIDS_TRUE@	$(top_builddir)/lib/libshadow.la \
-@ENABLE_SUBIDS_TRUE@	$(top_builddir)/libmisc/libmisc.la \
 @ENABLE_SUBIDS_TRUE@	$(top_builddir)/libsubid/libsubid.la \
-@ENABLE_SUBIDS_TRUE@	$(am__DEPENDENCIES_5)
+@ENABLE_SUBIDS_TRUE@	$(am__DEPENDENCIES_4)
 get_subid_owners_SOURCES = get_subid_owners.c
 get_subid_owners_OBJECTS =  \
 	get_subid_owners-get_subid_owners.$(OBJEXT)
 @ENABLE_SUBIDS_TRUE@get_subid_owners_DEPENDENCIES =  \
 @ENABLE_SUBIDS_TRUE@	$(top_builddir)/lib/libshadow.la \
-@ENABLE_SUBIDS_TRUE@	$(top_builddir)/libmisc/libmisc.la \
 @ENABLE_SUBIDS_TRUE@	$(top_builddir)/libsubid/libsubid.la \
-@ENABLE_SUBIDS_TRUE@	$(am__DEPENDENCIES_5)
+@ENABLE_SUBIDS_TRUE@	$(am__DEPENDENCIES_4)
 getsubids_SOURCES = getsubids.c
 getsubids_OBJECTS = getsubids-getsubids.$(OBJEXT)
 @ENABLE_SUBIDS_TRUE@getsubids_DEPENDENCIES =  \
 @ENABLE_SUBIDS_TRUE@	$(top_builddir)/lib/libshadow.la \
-@ENABLE_SUBIDS_TRUE@	$(top_builddir)/libmisc/libmisc.la \
 @ENABLE_SUBIDS_TRUE@	$(top_builddir)/libsubid/libsubid.la \
-@ENABLE_SUBIDS_TRUE@	$(am__DEPENDENCIES_5)
+@ENABLE_SUBIDS_TRUE@	$(am__DEPENDENCIES_4)
 gpasswd_SOURCES = gpasswd.c
 gpasswd_OBJECTS = gpasswd.$(OBJEXT)
 gpasswd_DEPENDENCIES = $(am__DEPENDENCIES_2) $(am__DEPENDENCIES_1) \
@@ -236,12 +230,12 @@ gpasswd_DEPENDENCIES = $(am__DEPENDENCIES_2) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
 groupadd_SOURCES = groupadd.c
 groupadd_OBJECTS = groupadd.$(OBJEXT)
-groupadd_DEPENDENCIES = $(am__DEPENDENCIES_2) $(am__DEPENDENCIES_3) \
+groupadd_DEPENDENCIES = $(am__DEPENDENCIES_2) $(am__DEPENDENCIES_5) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
 groupdel_SOURCES = groupdel.c
 groupdel_OBJECTS = groupdel.$(OBJEXT)
-groupdel_DEPENDENCIES = $(am__DEPENDENCIES_2) $(am__DEPENDENCIES_3) \
+groupdel_DEPENDENCIES = $(am__DEPENDENCIES_2) $(am__DEPENDENCIES_5) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
 groupmems_SOURCES = groupmems.c
@@ -251,15 +245,9 @@ groupmems_DEPENDENCIES = $(am__DEPENDENCIES_2) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
 groupmod_SOURCES = groupmod.c
 groupmod_OBJECTS = groupmod.$(OBJEXT)
-groupmod_DEPENDENCIES = $(am__DEPENDENCIES_2) $(am__DEPENDENCIES_3) \
+groupmod_DEPENDENCIES = $(am__DEPENDENCIES_2) $(am__DEPENDENCIES_5) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
-groups_SOURCES = groups.c
-groups_OBJECTS = groups.$(OBJEXT)
-groups_LDADD = $(LDADD)
-groups_DEPENDENCIES = $(am__DEPENDENCIES_1) \
-	$(top_builddir)/libmisc/libmisc.la \
-	$(top_builddir)/lib/libshadow.la $(am__DEPENDENCIES_1)
 grpck_SOURCES = grpck.c
 grpck_OBJECTS = grpck.$(OBJEXT)
 grpck_DEPENDENCIES = $(am__DEPENDENCIES_2) $(am__DEPENDENCIES_1) \
@@ -272,12 +260,6 @@ grpunconv_SOURCES = grpunconv.c
 grpunconv_OBJECTS = grpunconv.$(OBJEXT)
 grpunconv_DEPENDENCIES = $(am__DEPENDENCIES_2) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
-id_SOURCES = id.c
-id_OBJECTS = id.$(OBJEXT)
-id_LDADD = $(LDADD)
-id_DEPENDENCIES = $(am__DEPENDENCIES_1) \
-	$(top_builddir)/libmisc/libmisc.la \
-	$(top_builddir)/lib/libshadow.la $(am__DEPENDENCIES_1)
 lastlog_SOURCES = lastlog.c
 lastlog_OBJECTS = lastlog.$(OBJEXT)
 lastlog_DEPENDENCIES = $(am__DEPENDENCIES_2) $(am__DEPENDENCIES_1) \
@@ -285,22 +267,20 @@ lastlog_DEPENDENCIES = $(am__DEPENDENCIES_2) $(am__DEPENDENCIES_1) \
 am_login_OBJECTS = login.$(OBJEXT) login_nopam.$(OBJEXT)
 login_OBJECTS = $(am_login_OBJECTS)
 login_DEPENDENCIES = $(am__DEPENDENCIES_2) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_4) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_3) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 logoutd_SOURCES = logoutd.c
 logoutd_OBJECTS = logoutd.$(OBJEXT)
 logoutd_LDADD = $(LDADD)
 logoutd_DEPENDENCIES = $(am__DEPENDENCIES_1) \
-	$(top_builddir)/libmisc/libmisc.la \
 	$(top_builddir)/lib/libshadow.la $(am__DEPENDENCIES_1)
 new_subid_range_SOURCES = new_subid_range.c
 new_subid_range_OBJECTS = new_subid_range-new_subid_range.$(OBJEXT)
 @ENABLE_SUBIDS_TRUE@new_subid_range_DEPENDENCIES =  \
 @ENABLE_SUBIDS_TRUE@	$(top_builddir)/lib/libshadow.la \
-@ENABLE_SUBIDS_TRUE@	$(top_builddir)/libmisc/libmisc.la \
 @ENABLE_SUBIDS_TRUE@	$(top_builddir)/libsubid/libsubid.la \
-@ENABLE_SUBIDS_TRUE@	$(am__DEPENDENCIES_5)
+@ENABLE_SUBIDS_TRUE@	$(am__DEPENDENCIES_4)
 newgidmap_SOURCES = newgidmap.c
 newgidmap_OBJECTS = newgidmap.$(OBJEXT)
 newgidmap_DEPENDENCIES = $(am__DEPENDENCIES_2) $(am__DEPENDENCIES_1) \
@@ -325,8 +305,7 @@ passwd_SOURCES = passwd.c
 passwd_OBJECTS = passwd.$(OBJEXT)
 passwd_DEPENDENCIES = $(am__DEPENDENCIES_2) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_4) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_3) $(am__DEPENDENCIES_1)
 pwck_SOURCES = pwck.c
 pwck_OBJECTS = pwck.$(OBJEXT)
 pwck_DEPENDENCIES = $(am__DEPENDENCIES_2) $(am__DEPENDENCIES_1) \
@@ -342,27 +321,27 @@ pwunconv_DEPENDENCIES = $(am__DEPENDENCIES_2) $(am__DEPENDENCIES_1) \
 am_su_OBJECTS = su.$(OBJEXT) suauth.$(OBJEXT)
 su_OBJECTS = $(am_su_OBJECTS)
 su_DEPENDENCIES = $(am__DEPENDENCIES_2) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_4) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_3) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 sulogin_SOURCES = sulogin.c
 sulogin_OBJECTS = sulogin.$(OBJEXT)
 sulogin_DEPENDENCIES = $(am__DEPENDENCIES_2) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
 useradd_SOURCES = useradd.c
 useradd_OBJECTS = useradd.$(OBJEXT)
-useradd_DEPENDENCIES = $(am__DEPENDENCIES_2) $(am__DEPENDENCIES_3) \
+useradd_DEPENDENCIES = $(am__DEPENDENCIES_2) $(am__DEPENDENCIES_5) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 userdel_SOURCES = userdel.c
 userdel_OBJECTS = userdel.$(OBJEXT)
-userdel_DEPENDENCIES = $(am__DEPENDENCIES_2) $(am__DEPENDENCIES_3) \
+userdel_DEPENDENCIES = $(am__DEPENDENCIES_2) $(am__DEPENDENCIES_5) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 usermod_SOURCES = usermod.c
 usermod_OBJECTS = usermod.$(OBJEXT)
-usermod_DEPENDENCIES = $(am__DEPENDENCIES_2) $(am__DEPENDENCIES_3) \
+usermod_DEPENDENCIES = $(am__DEPENDENCIES_2) $(am__DEPENDENCIES_5) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
@@ -395,10 +374,10 @@ am__depfiles_remade = ./$(DEPDIR)/chage.Po \
 	./$(DEPDIR)/getsubids-getsubids.Po ./$(DEPDIR)/gpasswd.Po \
 	./$(DEPDIR)/groupadd.Po ./$(DEPDIR)/groupdel.Po \
 	./$(DEPDIR)/groupmems.Po ./$(DEPDIR)/groupmod.Po \
-	./$(DEPDIR)/groups.Po ./$(DEPDIR)/grpck.Po \
-	./$(DEPDIR)/grpconv.Po ./$(DEPDIR)/grpunconv.Po \
-	./$(DEPDIR)/id.Po ./$(DEPDIR)/lastlog.Po ./$(DEPDIR)/login.Po \
-	./$(DEPDIR)/login_nopam.Po ./$(DEPDIR)/logoutd.Po \
+	./$(DEPDIR)/grpck.Po ./$(DEPDIR)/grpconv.Po \
+	./$(DEPDIR)/grpunconv.Po ./$(DEPDIR)/lastlog.Po \
+	./$(DEPDIR)/login.Po ./$(DEPDIR)/login_nopam.Po \
+	./$(DEPDIR)/logoutd.Po \
 	./$(DEPDIR)/new_subid_range-new_subid_range.Po \
 	./$(DEPDIR)/newgidmap.Po ./$(DEPDIR)/newgrp.Po \
 	./$(DEPDIR)/newuidmap.Po ./$(DEPDIR)/newusers.Po \
@@ -430,18 +409,18 @@ am__v_CCLD_1 =
 SOURCES = chage.c check_subid_range.c chfn.c chgpasswd.c chpasswd.c \
 	chsh.c expiry.c faillog.c free_subid_range.c \
 	get_subid_owners.c getsubids.c gpasswd.c groupadd.c groupdel.c \
-	groupmems.c groupmod.c groups.c grpck.c grpconv.c grpunconv.c \
-	id.c lastlog.c $(login_SOURCES) logoutd.c new_subid_range.c \
-	newgidmap.c newgrp.c newuidmap.c newusers.c nologin.c passwd.c \
-	pwck.c pwconv.c pwunconv.c $(su_SOURCES) sulogin.c useradd.c \
+	groupmems.c groupmod.c grpck.c grpconv.c grpunconv.c lastlog.c \
+	$(login_SOURCES) logoutd.c new_subid_range.c newgidmap.c \
+	newgrp.c newuidmap.c newusers.c nologin.c passwd.c pwck.c \
+	pwconv.c pwunconv.c $(su_SOURCES) sulogin.c useradd.c \
 	userdel.c usermod.c vipw.c
 DIST_SOURCES = chage.c check_subid_range.c chfn.c chgpasswd.c \
 	chpasswd.c chsh.c expiry.c faillog.c free_subid_range.c \
 	get_subid_owners.c getsubids.c gpasswd.c groupadd.c groupdel.c \
-	groupmems.c groupmod.c groups.c grpck.c grpconv.c grpunconv.c \
-	id.c lastlog.c $(login_SOURCES) logoutd.c new_subid_range.c \
-	newgidmap.c newgrp.c newuidmap.c newusers.c nologin.c passwd.c \
-	pwck.c pwconv.c pwunconv.c $(su_SOURCES) sulogin.c useradd.c \
+	groupmems.c groupmod.c grpck.c grpconv.c grpunconv.c lastlog.c \
+	$(login_SOURCES) logoutd.c new_subid_range.c newgidmap.c \
+	newgrp.c newuidmap.c newusers.c nologin.c passwd.c pwck.c \
+	pwconv.c pwunconv.c $(su_SOURCES) sulogin.c useradd.c \
 	userdel.c usermod.c vipw.c
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
@@ -478,6 +457,8 @@ AWK = @AWK@
 CC = @CC@
 CCDEPMODE = @CCDEPMODE@
 CFLAGS = @CFLAGS@
+CMOCKA_CFLAGS = @CMOCKA_CFLAGS@
+CMOCKA_LIBS = @CMOCKA_LIBS@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CSCOPE = @CSCOPE@
@@ -511,9 +492,15 @@ INTL_MACOSX_LIBS = @INTL_MACOSX_LIBS@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
 LIBACL = @LIBACL@
+LIBADD_DL = @LIBADD_DL@
+LIBADD_DLD_LINK = @LIBADD_DLD_LINK@
+LIBADD_DLOPEN = @LIBADD_DLOPEN@
+LIBADD_SHL_LOAD = @LIBADD_SHL_LOAD@
 LIBATTR = @LIBATTR@
 LIBAUDIT = @LIBAUDIT@
-LIBCRACK = @LIBCRACK@
+LIBBSD = @LIBBSD@
+LIBBSD_CFLAGS = @LIBBSD_CFLAGS@
+LIBBSD_LIBS = @LIBBSD_LIBS@
 LIBCRYPT = @LIBCRYPT@
 LIBECONF = @LIBECONF@
 LIBICONV = @LIBICONV@
@@ -529,6 +516,7 @@ LIBSUBID_ABI = @LIBSUBID_ABI@
 LIBSUBID_ABI_MAJOR = @LIBSUBID_ABI_MAJOR@
 LIBSUBID_ABI_MICRO = @LIBSUBID_ABI_MICRO@
 LIBSUBID_ABI_MINOR = @LIBSUBID_ABI_MINOR@
+LIBSYSTEMD = @LIBSYSTEMD@
 LIBTCB = @LIBTCB@
 LIBTOOL = @LIBTOOL@
 LIPO = @LIPO@
@@ -537,6 +525,8 @@ LN_S = @LN_S@
 LTLIBICONV = @LTLIBICONV@
 LTLIBINTL = @LTLIBINTL@
 LTLIBOBJS = @LTLIBOBJS@
+LT_DLLOADERS = @LT_DLLOADERS@
+LT_DLPREOPEN = @LT_DLPREOPEN@
 LT_SYS_LIBRARY_PATH = @LT_SYS_LIBRARY_PATH@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
@@ -559,6 +549,9 @@ PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
+PKG_CONFIG = @PKG_CONFIG@
+PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
+PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
 POSUB = @POSUB@
 RANLIB = @RANLIB@
 SED = @SED@
@@ -639,17 +632,17 @@ suidperms = 4755
 sgidperms = 2755
 AM_CPPFLAGS = \
 	-I${top_srcdir}/lib \
-	-I$(top_srcdir)/libmisc \
 	-I$(top_srcdir) \
-	-DLOCALEDIR=\"$(datadir)/locale\"
+	-DLOCALEDIR=\"$(datadir)/locale\" \
+	$(ECONF_CPPFLAGS)
 
-suidusbins = $(am__append_5)
-suidbins = $(am__append_3)
-suidubins = chage chfn chsh expiry gpasswd newgrp $(am__append_4) \
-	$(am__append_6)
+AM_CFLAGS = $(LIBBSD_CFLAGS)
+suidusbins = $(am__append_6)
+suidbins = $(am__append_4)
+suidubins = chage chfn chsh expiry gpasswd newgrp $(am__append_5) \
+	$(am__append_7)
 @WITH_TCB_TRUE@shadowsgidubins = passwd
 LDADD = $(INTLLIBS) \
-		 $(top_builddir)/libmisc/libmisc.la \
 		 $(top_builddir)/lib/libshadow.la \
 		 $(LIBTCB)
 
@@ -657,13 +650,13 @@ LDADD = $(INTLLIBS) \
 @ACCT_TOOLS_SETUID_TRUE@LIBPAM_SUID = $(LIBPAM)
 @USE_PAM_FALSE@LIBCRYPT_NOPAM = $(LIBCRYPT)
 @USE_PAM_TRUE@LIBCRYPT_NOPAM = 
-chage_LDADD = $(LDADD) $(LIBPAM_SUID) $(LIBAUDIT) $(LIBSELINUX) $(LIBECONF)
+chage_LDADD = $(LDADD) $(LIBAUDIT) $(LIBSELINUX) $(LIBECONF) -ldl
 newuidmap_LDADD = $(LDADD) $(LIBAUDIT) $(LIBSELINUX) $(LIBCAP) $(LIBECONF) -ldl
 newgidmap_LDADD = $(LDADD) $(LIBAUDIT) $(LIBSELINUX) $(LIBCAP) $(LIBECONF) -ldl
 chfn_LDADD = $(LDADD) $(LIBPAM) $(LIBAUDIT) $(LIBSELINUX) $(LIBCRYPT_NOPAM) $(LIBSKEY) $(LIBMD) $(LIBECONF)
 chgpasswd_LDADD = $(LDADD) $(LIBPAM_SUID) $(LIBAUDIT) $(LIBSELINUX) $(LIBCRYPT) $(LIBECONF)
 chsh_LDADD = $(LDADD) $(LIBPAM) $(LIBAUDIT) $(LIBSELINUX) $(LIBCRYPT_NOPAM) $(LIBSKEY) $(LIBMD) $(LIBECONF)
-chpasswd_LDADD = $(LDADD) $(LIBPAM) $(LIBAUDIT) $(LIBSELINUX) $(LIBCRYPT) $(LIBECONF)
+chpasswd_LDADD = $(LDADD) $(LIBPAM) $(LIBAUDIT) $(LIBSELINUX) $(LIBCRYPT) $(LIBECONF) -ldl
 expiry_LDADD = $(LDADD) $(LIBECONF)
 gpasswd_LDADD = $(LDADD) $(LIBAUDIT) $(LIBSELINUX) $(LIBCRYPT) $(LIBECONF)
 groupadd_LDADD = $(LDADD) $(LIBPAM_SUID) $(LIBAUDIT) $(LIBSELINUX) $(LIBECONF) -ldl
@@ -678,11 +671,11 @@ login_SOURCES = \
 	login.c \
 	login_nopam.c
 
-login_LDADD = $(LDADD) $(LIBPAM) $(LIBAUDIT) $(LIBCRYPT_NOPAM) $(LIBSKEY) $(LIBMD) $(LIBECONF)
+login_LDADD = $(LDADD) $(LIBPAM) $(LIBAUDIT) $(LIBCRYPT_NOPAM) $(LIBSKEY) $(LIBMD) $(LIBECONF) $(LIBSELINUX)
 newgrp_LDADD = $(LDADD) $(LIBAUDIT) $(LIBCRYPT) $(LIBECONF)
 newusers_LDADD = $(LDADD) $(LIBPAM) $(LIBAUDIT) $(LIBSELINUX) $(LIBCRYPT) $(LIBECONF) -ldl
 nologin_LDADD = 
-passwd_LDADD = $(LDADD) $(LIBPAM) $(LIBCRACK) $(LIBAUDIT) $(LIBSELINUX) $(LIBCRYPT_NOPAM) $(LIBECONF)
+passwd_LDADD = $(LDADD) $(LIBPAM) $(LIBAUDIT) $(LIBSELINUX) $(LIBCRYPT_NOPAM) $(LIBECONF) -ldl
 pwck_LDADD = $(LDADD) $(LIBAUDIT) $(LIBSELINUX) $(LIBECONF)
 pwconv_LDADD = $(LDADD) $(LIBAUDIT) $(LIBSELINUX) $(LIBECONF)
 pwunconv_LDADD = $(LDADD) $(LIBAUDIT) $(LIBSELINUX) $(LIBECONF)
@@ -690,7 +683,7 @@ su_SOURCES = \
 	su.c \
 	suauth.c
 
-su_LDADD = $(LDADD) $(LIBPAM) $(LIBAUDIT) $(LIBCRYPT_NOPAM) $(LIBSKEY) $(LIBMD) $(LIBECONF)
+su_LDADD = $(LDADD) $(LIBPAM) $(LIBAUDIT) $(LIBCRYPT_NOPAM) $(LIBSKEY) $(LIBMD) $(LIBECONF) $(LIBSELINUX)
 sulogin_LDADD = $(LDADD) $(LIBCRYPT) $(LIBECONF)
 useradd_LDADD = $(LDADD) $(LIBPAM_SUID) $(LIBAUDIT) $(LIBSELINUX) $(LIBSEMANAGE) $(LIBACL) $(LIBATTR) $(LIBECONF) -ldl
 userdel_LDADD = $(LDADD) $(LIBPAM_SUID) $(LIBAUDIT) $(LIBSELINUX) $(LIBSEMANAGE) $(LIBECONF) -ldl
@@ -709,60 +702,50 @@ vipw_LDADD = $(LDADD) $(LIBAUDIT) $(LIBSELINUX) $(LIBECONF)
 
 @ENABLE_SUBIDS_TRUE@getsubids_LDADD = \
 @ENABLE_SUBIDS_TRUE@	$(top_builddir)/lib/libshadow.la \
-@ENABLE_SUBIDS_TRUE@	$(top_builddir)/libmisc/libmisc.la \
 @ENABLE_SUBIDS_TRUE@	$(top_builddir)/libsubid/libsubid.la \
 @ENABLE_SUBIDS_TRUE@	$(MISCLIBS) -ldl
 
 @ENABLE_SUBIDS_TRUE@getsubids_CPPFLAGS = \
 @ENABLE_SUBIDS_TRUE@	-I$(top_srcdir)/lib \
-@ENABLE_SUBIDS_TRUE@	-I$(top_srcdir)/libmisc \
 @ENABLE_SUBIDS_TRUE@	-I$(top_srcdir) \
-@ENABLE_SUBIDS_TRUE@	-I$(top_srcdir)/libsubid
+@ENABLE_SUBIDS_TRUE@	-I$(top_builddir)/libsubid
 
 @ENABLE_SUBIDS_TRUE@get_subid_owners_LDADD = \
 @ENABLE_SUBIDS_TRUE@	$(top_builddir)/lib/libshadow.la \
-@ENABLE_SUBIDS_TRUE@	$(top_builddir)/libmisc/libmisc.la \
 @ENABLE_SUBIDS_TRUE@	$(top_builddir)/libsubid/libsubid.la \
 @ENABLE_SUBIDS_TRUE@	$(MISCLIBS) -ldl
 
 @ENABLE_SUBIDS_TRUE@get_subid_owners_CPPFLAGS = \
 @ENABLE_SUBIDS_TRUE@	-I$(top_srcdir)/lib \
-@ENABLE_SUBIDS_TRUE@	-I$(top_srcdir)/libmisc \
 @ENABLE_SUBIDS_TRUE@	-I$(top_srcdir) \
-@ENABLE_SUBIDS_TRUE@	-I$(top_srcdir)/libsubid
+@ENABLE_SUBIDS_TRUE@	-I$(top_builddir)/libsubid
 
 @ENABLE_SUBIDS_TRUE@new_subid_range_CPPFLAGS = \
 @ENABLE_SUBIDS_TRUE@	-I$(top_srcdir)/lib \
-@ENABLE_SUBIDS_TRUE@	-I$(top_srcdir)/libmisc \
 @ENABLE_SUBIDS_TRUE@	-I$(top_srcdir) \
-@ENABLE_SUBIDS_TRUE@	-I$(top_srcdir)/libsubid
+@ENABLE_SUBIDS_TRUE@	-I$(top_builddir)/libsubid
 
 @ENABLE_SUBIDS_TRUE@new_subid_range_LDADD = \
 @ENABLE_SUBIDS_TRUE@	$(top_builddir)/lib/libshadow.la \
-@ENABLE_SUBIDS_TRUE@	$(top_builddir)/libmisc/libmisc.la \
 @ENABLE_SUBIDS_TRUE@	$(top_builddir)/libsubid/libsubid.la \
 @ENABLE_SUBIDS_TRUE@	$(MISCLIBS) -ldl
 
 @ENABLE_SUBIDS_TRUE@free_subid_range_CPPFLAGS = \
 @ENABLE_SUBIDS_TRUE@	-I$(top_srcdir)/lib \
-@ENABLE_SUBIDS_TRUE@	-I$(top_srcdir)/libmisc \
 @ENABLE_SUBIDS_TRUE@	-I$(top_srcdir) \
-@ENABLE_SUBIDS_TRUE@	-I$(top_srcdir)/libsubid
+@ENABLE_SUBIDS_TRUE@	-I$(top_builddir)/libsubid
 
 @ENABLE_SUBIDS_TRUE@free_subid_range_LDADD = \
 @ENABLE_SUBIDS_TRUE@	$(top_builddir)/lib/libshadow.la \
-@ENABLE_SUBIDS_TRUE@	$(top_builddir)/libmisc/libmisc.la \
 @ENABLE_SUBIDS_TRUE@	$(top_builddir)/libsubid/libsubid.la \
 @ENABLE_SUBIDS_TRUE@	$(MISCLIBS) -ldl
 
 @ENABLE_SUBIDS_TRUE@check_subid_range_CPPFLAGS = \
 @ENABLE_SUBIDS_TRUE@	-I$(top_srcdir)/lib \
-@ENABLE_SUBIDS_TRUE@	-I$(top_srcdir) \
-@ENABLE_SUBIDS_TRUE@	-I$(top_srcdir)/libmisc
+@ENABLE_SUBIDS_TRUE@	-I$(top_srcdir)
 
 @ENABLE_SUBIDS_TRUE@check_subid_range_LDADD = \
 @ENABLE_SUBIDS_TRUE@	$(top_builddir)/lib/libshadow.la \
-@ENABLE_SUBIDS_TRUE@	$(top_builddir)/libmisc/libmisc.la \
 @ENABLE_SUBIDS_TRUE@	$(MISCLIBS) -ldl
 
 all: all-am
@@ -1068,10 +1051,6 @@ groupmod$(EXEEXT): $(groupmod_OBJECTS) $(groupmod_DEPENDENCIES) $(EXTRA_groupmod
 	@rm -f groupmod$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(groupmod_OBJECTS) $(groupmod_LDADD) $(LIBS)
 
-groups$(EXEEXT): $(groups_OBJECTS) $(groups_DEPENDENCIES) $(EXTRA_groups_DEPENDENCIES) 
-	@rm -f groups$(EXEEXT)
-	$(AM_V_CCLD)$(LINK) $(groups_OBJECTS) $(groups_LDADD) $(LIBS)
-
 grpck$(EXEEXT): $(grpck_OBJECTS) $(grpck_DEPENDENCIES) $(EXTRA_grpck_DEPENDENCIES) 
 	@rm -f grpck$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(grpck_OBJECTS) $(grpck_LDADD) $(LIBS)
@@ -1083,10 +1062,6 @@ grpconv$(EXEEXT): $(grpconv_OBJECTS) $(grpconv_DEPENDENCIES) $(EXTRA_grpconv_DEP
 grpunconv$(EXEEXT): $(grpunconv_OBJECTS) $(grpunconv_DEPENDENCIES) $(EXTRA_grpunconv_DEPENDENCIES) 
 	@rm -f grpunconv$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(grpunconv_OBJECTS) $(grpunconv_LDADD) $(LIBS)
-
-id$(EXEEXT): $(id_OBJECTS) $(id_DEPENDENCIES) $(EXTRA_id_DEPENDENCIES) 
-	@rm -f id$(EXEEXT)
-	$(AM_V_CCLD)$(LINK) $(id_OBJECTS) $(id_LDADD) $(LIBS)
 
 lastlog$(EXEEXT): $(lastlog_OBJECTS) $(lastlog_DEPENDENCIES) $(EXTRA_lastlog_DEPENDENCIES) 
 	@rm -f lastlog$(EXEEXT)
@@ -1186,11 +1161,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/groupdel.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/groupmems.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/groupmod.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/groups.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/grpck.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/grpconv.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/grpunconv.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/id.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lastlog.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/login.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/login_nopam.Po@am__quote@ # am--include-marker
@@ -1220,22 +1193,25 @@ $(am__depfiles_remade):
 am--depfiles: $(am__depfiles_remade)
 
 .c.o:
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
+@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
+@am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(COMPILE) -c -o $@ $<
 
 .c.obj:
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.obj$$||'`;\
+@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ `$(CYGPATH_W) '$<'` &&\
+@am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(COMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
 
 .c.lo:
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LTCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.lo$$||'`;\
+@am__fastdepCC_TRUE@	$(LTCOMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
+@am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Plo
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LTCOMPILE) -c -o $@ $<
@@ -1457,11 +1433,9 @@ distclean: distclean-am
 	-rm -f ./$(DEPDIR)/groupdel.Po
 	-rm -f ./$(DEPDIR)/groupmems.Po
 	-rm -f ./$(DEPDIR)/groupmod.Po
-	-rm -f ./$(DEPDIR)/groups.Po
 	-rm -f ./$(DEPDIR)/grpck.Po
 	-rm -f ./$(DEPDIR)/grpconv.Po
 	-rm -f ./$(DEPDIR)/grpunconv.Po
-	-rm -f ./$(DEPDIR)/id.Po
 	-rm -f ./$(DEPDIR)/lastlog.Po
 	-rm -f ./$(DEPDIR)/login.Po
 	-rm -f ./$(DEPDIR)/login_nopam.Po
@@ -1544,11 +1518,9 @@ maintainer-clean: maintainer-clean-am
 	-rm -f ./$(DEPDIR)/groupdel.Po
 	-rm -f ./$(DEPDIR)/groupmems.Po
 	-rm -f ./$(DEPDIR)/groupmod.Po
-	-rm -f ./$(DEPDIR)/groups.Po
 	-rm -f ./$(DEPDIR)/grpck.Po
 	-rm -f ./$(DEPDIR)/grpconv.Po
 	-rm -f ./$(DEPDIR)/grpunconv.Po
-	-rm -f ./$(DEPDIR)/id.Po
 	-rm -f ./$(DEPDIR)/lastlog.Po
 	-rm -f ./$(DEPDIR)/login.Po
 	-rm -f ./$(DEPDIR)/login_nopam.Po

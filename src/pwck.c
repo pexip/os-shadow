@@ -13,23 +13,26 @@
 #ident "$Id$"
 
 #include <fcntl.h>
+#include <getopt.h>
 #include <grp.h>
 #include <pwd.h>
 #include <stdio.h>
-#include <getopt.h>
+
 #include "chkname.h"
 #include "commonio.h"
 #include "defines.h"
+#include "getdef.h"
+#include "nscd.h"
 #include "prototypes.h"
 #include "pwio.h"
 #include "shadowio.h"
-#include "getdef.h"
-#include "nscd.h"
+#include "shadowlog.h"
 #include "sssd.h"
+#include "string/strcmp/streq.h"
 #ifdef WITH_TCB
 #include "tcbfuncs.h"
 #endif				/* WITH_TCB */
-#include "shadowlog.h"
+
 
 /*
  * Exit codes
@@ -47,7 +50,7 @@
 /*
  * Global variables
  */
-const char *Prog;
+static const char Prog[] = "pwck";
 
 static bool use_system_pw_file = true;
 static bool use_system_spw_file = true;
@@ -66,12 +69,12 @@ static bool quiet = false;		/* don't report warnings, only errors */
 
 /* local function prototypes */
 static void fail_exit (int code);
-static /*@noreturn@*/void usage (int status);
+NORETURN static void usage (int status);
 static void process_flags (int argc, char **argv);
 static void open_files (void);
 static void close_files (bool changed);
-static void check_pw_file (int *errors, bool *changed);
-static void check_spw_file (int *errors, bool *changed);
+static void check_pw_file (bool *errors, bool *changed);
+static void check_spw_file (bool *errors, bool *changed);
 
 extern int allow_bad_names;
 
@@ -109,7 +112,9 @@ static void fail_exit (int code)
 /*
  * usage - print syntax message and exit
  */
-static /*@noreturn@*/void usage (int status)
+NORETURN
+static void
+usage (int status)
 {
 	FILE *usageout = (E_SUCCESS != status) ? stderr : stdout;
 #ifdef WITH_TCB
@@ -362,13 +367,13 @@ static void close_files (bool changed)
 /*
  * check_pw_file - check the content of the passwd file
  */
-static void check_pw_file (int *errors, bool *changed)
+static void check_pw_file (bool *errors, bool *changed)
 {
 	struct commonio_entry *pfe, *tpfe;
 	struct passwd *pwd;
 	const struct spwd *spw;
-	uid_t min_sys_id = (uid_t) getdef_ulong ("SYS_UID_MIN", 101UL);
-	uid_t max_sys_id = (uid_t) getdef_ulong ("SYS_UID_MAX", 999UL);
+	uid_t min_sys_id = getdef_ulong ("SYS_UID_MIN", 101UL);
+	uid_t max_sys_id = getdef_ulong ("SYS_UID_MAX", 999UL);
 
 	/*
 	 * Loop through the entire password file.
@@ -394,7 +399,7 @@ static void check_pw_file (int *errors, bool *changed)
 			 */
 			puts (_("invalid password file entry"));
 			printf (_("delete line '%s'? "), pfe->line);
-			*errors += 1;
+			*errors = true;
 
 			/*
 			 * prompt the user to delete the entry or not
@@ -445,7 +450,7 @@ static void check_pw_file (int *errors, bool *changed)
 				continue;
 			}
 
-			if (strcmp (pwd->pw_name, ent->pw_name) != 0) {
+			if (!streq(pwd->pw_name, ent->pw_name)) {
 				continue;
 			}
 
@@ -455,7 +460,7 @@ static void check_pw_file (int *errors, bool *changed)
 			 */
 			puts (_("duplicate password entry"));
 			printf (_("delete line '%s'? "), pfe->line);
-			*errors += 1;
+			*errors = true;
 
 			/*
 			 * prompt the user to delete the entry or not
@@ -469,10 +474,15 @@ static void check_pw_file (int *errors, bool *changed)
 		 * Check for invalid usernames.  --marekm
 		 */
 
-		if (!is_valid_user_name (pwd->pw_name)) {
-			printf (_("invalid user name '%s': use --badname to ignore\n"),
-					pwd->pw_name);
-			*errors += 1;
+		if (!is_valid_user_name(pwd->pw_name)) {
+			if (errno == EINVAL) {
+				printf(_("invalid user name '%s': use --badname to ignore\n"),
+				       pwd->pw_name);
+			} else {
+				printf(_("invalid user name '%s'\n"),
+				       pwd->pw_name);
+			}
+			*errors = true;
 		}
 
 		/*
@@ -480,7 +490,7 @@ static void check_pw_file (int *errors, bool *changed)
 		 */
 		if (pwd->pw_uid == (uid_t)-1) {
 			printf (_("invalid user ID '%lu'\n"), (long unsigned int)pwd->pw_uid);
-			*errors += 1;
+			*errors = true;
 		}
 
 		/*
@@ -495,7 +505,7 @@ static void check_pw_file (int *errors, bool *changed)
 
 			printf (_("user '%s': no group %lu\n"),
 			        pwd->pw_name, (unsigned long) pwd->pw_gid);
-			*errors += 1;
+			*errors = true;
 		}
 
 		/*
@@ -511,10 +521,10 @@ static void check_pw_file (int *errors, bool *changed)
 				/*
 				 * Home directory does not exist, give a warning (unless intentional)
 				 */
-				if (NULL == nonexistent || strcmp (pwd->pw_dir, nonexistent) != 0) {
+				if (NULL == nonexistent || !streq(pwd->pw_dir, nonexistent)) {
 					printf (_("user '%s': directory '%s' does not exist\n"),
 							pwd->pw_name, pwd->pw_dir);
-					*errors += 1;
+					*errors = true;
 				}
 			}
 		}
@@ -523,7 +533,7 @@ static void check_pw_file (int *errors, bool *changed)
 		 * Make sure the login shell is executable
 		 */
 		if (   !quiet
-		    && ('\0' != pwd->pw_shell[0])
+		    && !streq(pwd->pw_shell, "")
 		    && (access (pwd->pw_shell, F_OK) != 0)) {
 
 			/*
@@ -531,7 +541,7 @@ static void check_pw_file (int *errors, bool *changed)
 			 */
 			printf (_("user '%s': program '%s' does not exist\n"),
 			        pwd->pw_name, pwd->pw_shell);
-			*errors += 1;
+			*errors = true;
 		}
 
 		/*
@@ -546,10 +556,10 @@ static void check_pw_file (int *errors, bool *changed)
 					        pwd->pw_name);
 					printf (_("create tcb directory for %s?"),
 					        pwd->pw_name);
-					*errors += 1;
+					*errors = true;
 					if (yes_or_no (read_only)) {
 						if (shadowtcb_create (pwd->pw_name, pwd->pw_uid) == SHADOWTCB_FAILURE) {
-							*errors += 1;
+							*errors = true;
 							printf (_("failed to create tcb directory for %s\n"), pwd->pw_name);
 							continue;
 						}
@@ -558,7 +568,7 @@ static void check_pw_file (int *errors, bool *changed)
 					}
 				}
 				if (spw_lock () == 0) {
-					*errors += 1;
+					*errors = true;
 					fprintf (stderr,
 					         _("%s: cannot lock %s.\n"),
 					         Prog, spw_dbname ());
@@ -569,7 +579,7 @@ static void check_pw_file (int *errors, bool *changed)
 					fprintf (stderr,
 					         _("%s: cannot open %s\n"),
 					         Prog, spw_dbname ());
-					*errors += 1;
+					*errors = true;
 					if (spw_unlock () == 0) {
 						fprintf (stderr,
 						         _("%s: failed to unlock %s\n"),
@@ -591,7 +601,7 @@ static void check_pw_file (int *errors, bool *changed)
 				        spw_dbname ());
 				printf (_("add user '%s' in %s? "),
 				        pwd->pw_name, spw_dbname ());
-				*errors += 1;
+				*errors = true;
 				if (yes_or_no (read_only)) {
 					struct spwd sp;
 					struct passwd pw;
@@ -607,7 +617,7 @@ static void check_pw_file (int *errors, bool *changed)
 					sp.sp_inact  = -1;
 					sp.sp_expire = -1;
 					sp.sp_flag   = SHADOW_SP_FLAG_UNSET;
-					sp.sp_lstchg = (long) gettime () / SCALE;
+					sp.sp_lstchg = gettime () / DAY;
 					if (0 == sp.sp_lstchg) {
 						/* Better disable aging than
 						 * requiring a password change
@@ -637,11 +647,10 @@ static void check_pw_file (int *errors, bool *changed)
 				 * Make sure no passwords are in passwd.
 				 */
 				if (   !quiet
-				    && (strcmp (pwd->pw_passwd,
-				                SHADOW_PASSWD_STRING) != 0)) {
+				    && !streq(pwd->pw_passwd, SHADOW_PASSWD_STRING)) {
 					printf (_("user %s has an entry in %s, but its password field in %s is not set to 'x'\n"),
 					        pwd->pw_name, spw_dbname (), pw_dbname ());
-					*errors += 1;
+					*errors = true;
 				}
 			}
 		}
@@ -678,7 +687,7 @@ static void check_pw_file (int *errors, bool *changed)
 /*
  * check_spw_file - check the content of the shadowed password file (shadow)
  */
-static void check_spw_file (int *errors, bool *changed)
+static void check_spw_file (bool *errors, bool *changed)
 {
 	struct commonio_entry *spe, *tspe;
 	struct spwd *spw;
@@ -715,7 +724,7 @@ static void check_spw_file (int *errors, bool *changed)
 			 */
 			puts (_("invalid shadow password file entry"));
 			printf (_("delete line '%s'? "), spe->line);
-			*errors += 1;
+			*errors = true;
 
 			/*
 			 * prompt the user to delete the entry or not
@@ -766,7 +775,7 @@ static void check_spw_file (int *errors, bool *changed)
 				continue;
 			}
 
-			if (strcmp (spw->sp_namp, ent->sp_namp) != 0) {
+			if (!streq(spw->sp_namp, ent->sp_namp)) {
 				continue;
 			}
 
@@ -776,7 +785,7 @@ static void check_spw_file (int *errors, bool *changed)
 			 */
 			puts (_("duplicate shadow password entry"));
 			printf (_("delete line '%s'? "), spe->line);
-			*errors += 1;
+			*errors = true;
 
 			/*
 			 * prompt the user to delete the entry or not
@@ -798,7 +807,7 @@ static void check_spw_file (int *errors, bool *changed)
 			printf (_("no matching password file entry in %s\n"),
 			        pw_dbname ());
 			printf (_("delete line '%s'? "), spe->line);
-			*errors += 1;
+			*errors = true;
 
 			/*
 			 * prompt the user to delete the entry or not
@@ -812,12 +821,12 @@ static void check_spw_file (int *errors, bool *changed)
 		 * Warn if last password change in the future.  --marekm
 		 */
 		if (!quiet) {
-			time_t t = time ((time_t *) 0);
+			time_t t = time (NULL);
 			if (   (t != 0)
-			    && (spw->sp_lstchg > (long) t / SCALE)) {
+			    && (spw->sp_lstchg > t / DAY)) {
 				printf (_("user %s: last password change in the future\n"),
 			                spw->sp_namp);
-				*errors += 1;
+				*errors = true;
 			}
 		}
 	}
@@ -828,13 +837,9 @@ static void check_spw_file (int *errors, bool *changed)
  */
 int main (int argc, char **argv)
 {
-	int errors = 0;
+	bool errors = false;
 	bool changed = false;
 
-	/*
-	 * Get my name so that I can use it to report errors.
-	 */
-	Prog = Basename (argv[0]);
 	log_set_progname(Prog);
 	log_set_logfd(stderr);
 
@@ -844,7 +849,7 @@ int main (int argc, char **argv)
 
 	process_root_flag ("-R", argc, argv);
 
-	OPENLOG ("pwck");
+	OPENLOG (Prog);
 
 	/* Parse the command line arguments */
 	process_flags (argc, argv);
@@ -885,13 +890,13 @@ int main (int argc, char **argv)
 	/*
 	 * Tell the user what we did and exit.
 	 */
-	if (0 != errors) {
+	if (errors) {
 		printf (changed ?
 		        _("%s: the files have been updated\n") :
 		        _("%s: no changes\n"), Prog);
 	}
 
 	closelog ();
-	return ((0 != errors) ? E_BADENTRY : E_OKAY);
+	return (errors ? E_BADENTRY : E_OKAY);
 }
 

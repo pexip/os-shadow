@@ -2,12 +2,12 @@
 .\"     Title: pwconv
 .\"    Author: Marek Micha\(/lkiewicz
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 08.11.2022
-.\"    Manual: Befehle zur Systemverwaltung
-.\"    Source: shadow-utils 4.13
+.\"      Date: 19.03.2025
+.\"    Manual: System Management Commands
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: German
 .\"
-.TH "PWCONV" "8" "08.11.2022" "shadow\-utils 4\&.13" "Befehle zur Systemverwaltung"
+.TH "PWCONV" "8" "19.03.2025" "shadow\-utils 4\&.17\&.4" "System Management Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -28,16 +28,16 @@
 .\" * MAIN CONTENT STARTS HERE *
 .\" -----------------------------------------------------------------
 .SH "NAME"
-pwconv, pwunconv, grpconv, grpunconv \- konvertiert zu oder von Shadow\-Passw\(:ortern und \-gruppen
+pwconv, pwunconv, grpconv, grpunconv \- transferieren Passwortdaten \(:uber Benutzer oder Gruppen in gesch\(:utzte Dateien oder zur\(:uck
 .SH "\(:UBERSICHT"
 .HP \w'\fBpwconv\fR\ 'u
-\fBpwconv\fR [\fIOptionen\fR]
+\fBpwconv\fR [\fIoptions\fR]
 .HP \w'\fBpwunconv\fR\ 'u
-\fBpwunconv\fR [\fIOptionen\fR]
+\fBpwunconv\fR [\fIoptions\fR]
 .HP \w'\fBgrpconv\fR\ 'u
-\fBgrpconv\fR [\fIOptionen\fR]
+\fBgrpconv\fR [\fIoptions\fR]
 .HP \w'\fBgrpunconv\fR\ 'u
-\fBgrpunconv\fR [\fIOptionen\fR]
+\fBgrpunconv\fR [\fIoptions\fR]
 .SH "BESCHREIBUNG"
 .PP
 The
@@ -119,7 +119,7 @@ commands are:
 .PP
 \fB\-h\fR, \fB\-\-help\fR
 .RS 4
-zeigt die Hilfe an und beendet das Programm
+zeigt die Hilfe an und beendet das Programm\&.
 .RE
 .PP
 \fB\-R\fR, \fB\-\-root\fR\ \&\fICHROOT_DIR\fR
@@ -154,7 +154,7 @@ change the behavior of
 .PP
 /etc/login\&.defs
 .RS 4
-Konfiguration der Shadow\-Passwort\-Werkzeugsammlung
+konfiguriert die Shadow\-Hilfsprogramme\&.
 .RE
 .SH "SIEHE AUCH"
 .PP

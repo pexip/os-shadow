@@ -1,0 +1,11 @@
+libsubid.so.5 libsubid5 #MINVER#
+ subid_free@Base 1:4.16.0
+ subid_get_gid_owners@Base 1:4.16.0
+ subid_get_gid_ranges@Base 1:4.16.0
+ subid_get_uid_owners@Base 1:4.16.0
+ subid_get_uid_ranges@Base 1:4.16.0
+ subid_grant_gid_range@Base 1:4.16.0
+ subid_grant_uid_range@Base 1:4.16.0
+ subid_init@Base 1:4.16.0
+ subid_ungrant_gid_range@Base 1:4.16.0
+ subid_ungrant_uid_range@Base 1:4.16.0

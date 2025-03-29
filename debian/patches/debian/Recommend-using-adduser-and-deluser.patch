@@ -1,0 +1,46 @@
+From: Shadow package maintainers <pkg-shadow-devel@lists.alioth.debian.org>
+Date: Sat, 22 Jun 2024 17:39:41 +0200
+Subject: Recommend using adduser and deluser
+
+Fixes: #406046
+
+Status wrt upstream: Debian specific patch.
+---
+ man/useradd.8.xml | 6 ++++++
+ man/userdel.8.xml | 6 ++++++
+ 2 files changed, 12 insertions(+)
+
+diff --git a/man/useradd.8.xml b/man/useradd.8.xml
+index 38f2c68..9009d83 100644
+--- a/man/useradd.8.xml
++++ b/man/useradd.8.xml
+@@ -82,6 +82,12 @@
+ 
+   <refsect1 id='description'>
+     <title>DESCRIPTION</title>
++      <para>
++	<command>useradd</command> is a low level utility for adding
++	users.  On Debian, administrators should usually use
++	<citerefentry><refentrytitle>adduser</refentrytitle>
++	<manvolnum>8</manvolnum></citerefentry> instead.
++      </para>
+       <para>
+ 	When invoked without the <option>-D</option> option, the
+ 	<command>useradd</command> command creates a new user account using
+diff --git a/man/userdel.8.xml b/man/userdel.8.xml
+index 32851f1..4373cd8 100644
+--- a/man/userdel.8.xml
++++ b/man/userdel.8.xml
+@@ -58,6 +58,12 @@
+ 
+   <refsect1 id='description'>
+     <title>DESCRIPTION</title>
++    <para>
++      <command>userdel</command> is a low level utility for removing
++      users.  On Debian, administrators should usually use
++      <citerefentry><refentrytitle>deluser</refentrytitle>
++      <manvolnum>8</manvolnum></citerefentry> instead.
++    </para>
+     <para>
+       The <command>userdel</command> command modifies the system account
+       files, deleting all entries that refer to the user name <emphasis

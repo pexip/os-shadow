@@ -1,5 +1,7 @@
 variables:
- RELEASE: 'unstable'
+  RELEASE: 'unstable'
+  # workaround for https://salsa.debian.org/salsa-ci-team/pipeline/-/issues/259
+  SALSA_CI_REPROTEST_ARGS: --vary=domain_host.use_sudo=1
 include:
  - https://salsa.debian.org/salsa-ci-team/pipeline/raw/master/salsa-ci.yml
  - https://salsa.debian.org/salsa-ci-team/pipeline/raw/master/pipeline-jobs.yml

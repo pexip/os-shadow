@@ -1,0 +1,23 @@
+From: Chris Hofstaedtler <zeha@debian.org>
+Date: Mon, 24 Feb 2025 23:24:41 +0100
+Subject: configure.ac: align exec_prefix with prefix
+
+Hopefully upstream will fix this one day.
+Reported as https://github.com/shadow-maint/shadow/issues/1229
+---
+ configure.ac | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/configure.ac b/configure.ac
+index 571e20d..c9cd472 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -18,7 +18,7 @@ AC_SUBST([LIBSUBID_ABI], [libsubid_abi])
+ 
+ dnl Some hacks...
+ test "$prefix" = "NONE" && prefix="/usr"
+-test "$prefix" = "/usr" && exec_prefix=""
++test "$prefix" = "/usr" && exec_prefix="/usr"
+ 
+ AC_USE_SYSTEM_EXTENSIONS
+ 

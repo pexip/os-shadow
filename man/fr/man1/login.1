@@ -2,12 +2,12 @@
 .\"     Title: login
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 08/11/2022
-.\"    Manual: Commandes utilisateur
-.\"    Source: shadow-utils 4.13
+.\"      Date: 19/03/2025
+.\"    Manual: User Commands
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: French
 .\"
-.TH "LOGIN" "1" "08/11/2022" "shadow\-utils 4\&.13" "Commandes utilisateur"
+.TH "LOGIN" "1" "19/03/2025" "shadow\-utils 4\&.17\&.4" "User Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -31,9 +31,9 @@
 login \- D\('emarrer une session sur le syst\(`eme
 .SH "SYNOPSIS"
 .HP \w'\fBlogin\fR\ 'u
-\fBlogin\fR [\-p] [\-h\ \fIhost\fR] [\fInom_utilisateur\fR] [\fIENV=VAR\fR...]
+\fBlogin\fR [\-p] [\-h\ \fIhost\fR] [\fIusername\fR] [\fIENV=VAR\fR...]
 .HP \w'\fBlogin\fR\ 'u
-\fBlogin\fR [\-p] [\-h\ \fIhost\fR] \-f \fInom_utilisateur\fR
+\fBlogin\fR [\-p] [\-h\ \fIhost\fR] \-f \fIusername\fR
 .HP \w'\fBlogin\fR\ 'u
 \fBlogin\fR [\-p] \-r\ \fIhost\fR
 .SH "DESCRIPTION"
@@ -113,11 +113,6 @@ Nom de l\*(Aqh\(^ote distant pour cette connexion\&.
 \fB\-p\fR
 .RS 4
 Pr\('eserver l\*(Aqenvironnement\&.
-.RE
-.PP
-\fB\-r\fR
-.RS 4
-Ex\('ecuter le protocole de connexion automatique (autologin) pour rlogin\&.
 .RE
 .PP
 The

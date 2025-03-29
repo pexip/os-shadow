@@ -1,76 +1,77 @@
 Source: shadow
 Maintainer: Shadow package maintainers <pkg-shadow-devel@lists.alioth.debian.org>
-Uploaders: Balint Reczey <balint@balintreczey.hu>,
-           Serge Hallyn <serge@hallyn.com>
+Uploaders:
+ Serge Hallyn <serge@hallyn.com>,
+ Chris Hofstaedtler <zeha@debian.org>
 Section: admin
 Priority: required
-Build-Depends: debhelper-compat (= 13),
-               gettext,
-               libcrypt-dev,
-               libpam0g-dev,
-               quilt,
-               xsltproc,
-               docbook-xsl,
-               docbook-xml,
-               libxml2-utils,
-               libselinux1-dev [linux-any],
-               libsemanage-dev [linux-any],
-               itstool,
-               bison,
-               libaudit-dev [linux-any]
-Standards-Version: 4.6.1
+Build-Depends:
+ bison,
+ debhelper-compat (= 13),
+ dh-package-notes,
+ dh-sequence-zz-debputy-rrr (>= 0.1.23~),
+ docbook-xml <!nodoc>,
+ docbook-xsl <!nodoc>,
+ gettext,
+ itstool <!nodoc>,
+ libacl1-dev,
+ libattr1-dev,
+ libaudit-dev [linux-any],
+ libbsd-dev,
+ libcrypt-dev,
+ libltdl-dev,
+ libpam0g-dev,
+ libselinux1-dev [linux-any],
+ libsemanage-dev [linux-any],
+ libxml2-utils <!nodoc>,
+ pkgconf,
+ systemd-dev [linux-any],
+ xsltproc <!nodoc>
+Standards-Version: 4.7.0
 Vcs-Git: https://salsa.debian.org/debian/shadow.git -b master
 Vcs-Browser: https://salsa.debian.org/debian/shadow
 Homepage: https://github.com/shadow-maint/shadow
-Rules-Requires-Root: binary-targets
+Rules-Requires-Root: no
 
 Package: passwd
 Architecture: any
 Multi-Arch: foreign
-Depends: ${shlibs:Depends},
-         ${misc:Depends},
-         libpam-modules
-Recommends: sensible-utils
+Depends:
+ base-passwd (>= 3.6.4),
+ libpam-modules,
+ login.defs
+Recommends:
+ sensible-utils
+Replaces:
+ login (<< 1:4.16.0-2~)
 Description: change and administer password and group data
  This package includes passwd, chsh, chfn, and many other programs to
  maintain password and group data.
  .
  Shadow passwords are supported.  See /usr/share/doc/passwd/README.Debian
 
-Package: login
-Architecture: any
+Package: login.defs
+Architecture: all
 Multi-Arch: foreign
-Essential: yes
-Pre-Depends: ${shlibs:Depends},
-             ${misc:Depends},
-             libpam-runtime,
-             libpam-modules
-Breaks: hurd (<< 20140206~) [hurd-any]
-Conflicts: python-4suite (<< 0.99cvs20060405-1)
-Replaces: hurd (<< 20140206~) [hurd-any]
-Description: system login tools
- This package provides some required infrastructure for logins and for
- changing effective user or group IDs, including:
-  * login, the program that invokes a user shell on a virtual terminal;
-  * nologin, a dummy shell for disabled user accounts;
+Replaces:
+ login (<< 1:4.16.0-2~)
+Description: system user management configuration
+ This package provides the login.defs configuration file,
+ used by otherwise unrelated tools managing system users.
 
 Package: uidmap
 Architecture: any
 Multi-Arch: foreign
 Priority: optional
-Depends: ${shlibs:Depends},
-         ${misc:Depends}
 Description: programs to help use subuids
  These programs help unprivileged users to create uid and gid mappings in
  user namespaces.
 
-Package: libsubid4
+Package: libsubid5
 Section: libs
 Priority: optional
 Architecture: any
 Multi-Arch: same
-Pre-Depends: ${misc:Pre-Depends}
-Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: subordinate id handling library -- shared library
  The library provides an interface for querying, granding and ungranting
  subordinate user and group ids.
@@ -80,10 +81,11 @@ Section: libdevel
 Priority: optional
 Architecture: any
 Multi-Arch: same
-Depends: ${misc:Depends}, libsubid4 (= ${binary:Version})
+Depends:
+ libsubid5 (= ${binary:Version})
 Description: subordinate id handling library -- shared library
  The library provides an interface for querying, granding and ungranting
  subordinate user and group ids.
  .
  This package contains the C header files that are
- needed for applications to use the libsubid4 library.
+ needed for applications to use the libsubid library.

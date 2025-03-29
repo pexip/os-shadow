@@ -2,12 +2,12 @@
 .\"     Title: chpasswd
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 11/08/2022
+.\"      Date: 03/19/2025
 .\"    Manual: System Management Commands
-.\"    Source: shadow-utils 4.13
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: English
 .\"
-.TH "CHPASSWD" "8" "11/08/2022" "shadow\-utils 4\&.13" "System Management Commands"
+.TH "CHPASSWD" "8" "03/19/2025" "shadow\-utils 4\&.17\&.4" "System Management Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -68,7 +68,12 @@ command are:
 .RS 4
 Use the specified method to encrypt the passwords\&.
 .sp
-The available methods are DES, MD5, NONE, and SHA256 or SHA512 if your libc support these methods\&.
+The available methods are
+\fIDES\fR,
+\fIMD5\fR, \fISHA256\fR, \fISHA512\fR
+and
+\fINONE\fR
+if your libc supports these methods\&.
 .sp
 By default (if none of the
 \fB\-c\fR,
@@ -106,22 +111,23 @@ directory and use the configuration files from the
 directory\&. Only absolute paths are supported\&.
 .RE
 .PP
+\fB\-P\fR, \fB\-\-prefix\fR\ \&\fIPREFIX_DIR\fR
+.RS 4
+Apply changes to configuration files under the root filesystem found under the directory
+\fIPREFIX_DIR\fR\&. This option does not chroot and is intended for preparing a cross\-compilation target\&. Some limitations: NIS and LDAP users/groups are not verified\&. PAM authentication is using the host files\&. No SELINUX support\&.
+.RE
+.PP
 \fB\-s\fR, \fB\-\-sha\-rounds\fR\ \&\fIROUNDS\fR
 .RS 4
 Use the specified number of rounds to encrypt the passwords\&.
 .sp
-The value 0 means that the system will choose the default number of rounds for the crypt method (5000)\&.
+You can only use this option with crypt method:
+\fISHA256\fR \fISHA512\fR
 .sp
-A minimal value of 1000 and a maximal value of 999,999,999 will be enforced\&.
-.sp
-You can only use this option with the SHA256 or SHA512 crypt method\&.
-.sp
-By default, the number of rounds is defined by the
-\fBSHA_CRYPT_MIN_ROUNDS\fR
-and
-\fBSHA_CRYPT_MAX_ROUNDS\fR
-variables in
+By default, the number of rounds for SHA256 or SHA512 is defined by the SHA_CRYPT_MIN_ROUNDS and SHA_CRYPT_MAX_ROUNDS variables in
 /etc/login\&.defs\&.
+.sp
+A minimal value of 1000 and a maximal value of 999,999,999 will be enforced for SHA256 and SHA512\&. The default number of rounds is 5000\&.
 .RE
 .SH "CAVEATS"
 .PP
@@ -173,7 +179,7 @@ is set to
 or
 \fISHA512\fR, this defines the number of SHA rounds used by the encryption algorithm by default (when the number of rounds is not specified on the command line)\&.
 .sp
-With a lot of rounds, it is more difficult to brute forcing the password\&. But note also that more CPU resources will be needed to authenticate users\&.
+With a lot of rounds, it is more difficult to brute force the password\&. But note also that more CPU resources will be needed to authenticate users\&.
 .sp
 If not specified, the libc will choose the default number of rounds (5000), which is orders of magnitude too low for modern hardware\&.
 .sp

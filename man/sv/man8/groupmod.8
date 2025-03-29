@@ -2,12 +2,12 @@
 .\"     Title: groupmod
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 08-11-2022
-.\"    Manual: Systemhanteringskommandon
-.\"    Source: shadow-utils 4.13
+.\"      Date: 19-03-2025
+.\"    Manual: System Management Commands
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: Swedish
 .\"
-.TH "GROUPMOD" "8" "08-11-2022" "shadow\-utils 4\&.13" "Systemhanteringskommandon"
+.TH "GROUPMOD" "8" "19-03-2025" "shadow\-utils 4\&.17\&.4" "System Management Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -31,7 +31,7 @@
 groupmod \- \(:andra en gruppdefinition p\(oa systemet
 .SH "SYNOPSIS"
 .HP \w'\fBgroupmod\fR\ 'u
-\fBgroupmod\fR [\fIflaggor\fR] \fIGRUPP\fR
+\fBgroupmod\fR [\fIoptions\fR] \fIGROUP\fR
 .SH "BESKRIVNING"
 .PP
 The
@@ -45,7 +45,7 @@ The options which apply to the
 \fBgroupmod\fR
 command are:
 .PP
-\fB\-a\fR, \fB\-\-append\fR\ \&\fIGID\fR
+\fB\-a\fR, \fB\-\-append\fR
 .RS 4
 If group members are specified with \-U, append them to the existing member list, rather than replacing it\&.
 .RE
@@ -131,11 +131,11 @@ directory\&. This option does not chroot and is intended for preparing a cross\-
 .PP
 \fB\-U\fR, \fB\-\-users\fR
 .RS 4
-A list of usernames to add as members of the group\&.
+A comma\-separated list of usernames to add as members of the group\&.
 .sp
 The default behavior (if the
-\fB\-g\fR,
-\fB\-N\fR, and
+\fB\-g\fR
+and
 \fB\-U\fR
 options are not specified) is defined by the
 \fBUSERGROUPS_ENAB\fR

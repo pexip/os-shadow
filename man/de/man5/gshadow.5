@@ -2,12 +2,12 @@
 .\"     Title: gshadow
 .\"    Author: Nicolas Fran\(,cois <nicolas.francois@centraliens.net>
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 08.11.2022
+.\"      Date: 19.03.2025
 .\"    Manual: File Formats and Configuration Files
-.\"    Source: shadow-utils 4.13
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: German
 .\"
-.TH "GSHADOW" "5" "08.11.2022" "shadow\-utils 4\&.13" "File Formats and Configuration"
+.TH "GSHADOW" "5" "19.03.2025" "shadow\-utils 4\&.17\&.4" "File Formats and Configuration"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -28,7 +28,7 @@
 .\" * MAIN CONTENT STARTS HERE *
 .\" -----------------------------------------------------------------
 .SH "NAME"
-gshadow \- Shadow\-Datei f\(:ur Gruppen
+gshadow \- gesch\(:utzte Datei mit Benutzergruppen
 .SH "BESCHREIBUNG"
 .PP
 /etc/gshadow
@@ -36,14 +36,14 @@ contains the shadowed information for group accounts\&.
 .PP
 Um die Sicherheit der Passw\(:orter zu gew\(:ahrleisten, darf diese Datei nicht f\(:ur normale Benutzer lesbar sein\&.
 .PP
-Die darin enthaltenen Zeilen haben folgende Felder, die durch Doppelpunkt getrennt sind:
+Jede Zeile dieser Datei setzt sich aus folgenden, durch Doppelpunkt getrennte Felder zusammen:
 .PP
-\fBGruppenname\fR
+\fBgroup name\fR
 .RS 4
-Es muss sich um einen g\(:ultigen, auf dem System vorhandenen Gruppennamen handeln\&.
+It must be a valid group name, which exists on the system\&.
 .RE
 .PP
-\fBverschl\(:usseltes Passwort\fR
+\fBencrypted password\fR
 .RS 4
 Refer to
 \fBcrypt\fR(3)
@@ -55,15 +55,15 @@ If the password field contains some string that is not a valid result of
 The password is used when a user who is not a member of the group wants to gain the permissions of this group (see
 \fBnewgrp\fR(1))\&.
 .sp
-Dieses Feld kann leer bleiben\&. Dies hat zur Folge, dass nur Gruppenmitglieder von den Rechten der Gruppe Gebrauch machen k\(:onnen\&.
+Dieses Feld kann leer bleiben\&. Dies hat zur Folge, dass die Rechte der Gruppe Gruppenmitglieder vorbehalten sind\&.
 .sp
-A password field which starts with an exclamation mark means that the password is locked\&. The remaining characters on the line represent the password field before the password was locked\&.
+Ein Passwortfeld, das mit einem Ausrufezeichen beginnt, f\(:uhrt dazu, dass das Passwort gesperrt ist\&. Die \(:ubrigen Zeichen entsprechen dem Passwort vor der Sperrung\&.
 .sp
 This password supersedes any password specified in
 /etc/group\&.
 .RE
 .PP
-\fBGruppenverwalter\fR
+\fBadministrators\fR
 .RS 4
 Es muss sich dabei um eine durch Kommas getrennte Liste von Benutzernamen handeln\&.
 .sp
@@ -72,11 +72,11 @@ Gruppenverwalter k\(:onnen das Passwort und die Mitglieder der Gruppe \(:andern\
 Gruppenverwalter haben die gleichen Recht wie die Gruppenmitglieder (siehe unten)\&.
 .RE
 .PP
-\fBMitglieder\fR
+\fBmembers\fR
 .RS 4
 Es muss sich dabei um eine durch Kommas getrennte Liste von Benutzernamen handeln\&.
 .sp
-Mitglieder haben Zugang zu der Gruppe, ohne eine Passwort eingeben zu m\(:ussen\&.
+Mitglieder haben, ohne um ein Passwort gebeten zu werden, Zugang zu der Gruppe\&.
 .sp
 You should use the same list of users as in
 /etc/group\&.
@@ -90,7 +90,7 @@ Informationen zu den Gruppenkonten
 .PP
 /etc/gshadow
 .RS 4
-sichere Informationen zu den Gruppenkonten
+gesch\(:utzte Informationen zu den Gruppenkonten
 .RE
 .SH "SIEHE AUCH"
 .PP

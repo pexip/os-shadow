@@ -2,12 +2,12 @@
 .\"     Title: faillog
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 08/11/2022
-.\"    Manual: Команди керування системою
-.\"    Source: shadow-utils 4.13
+.\"      Date: 19/03/2025
+.\"    Manual: System Management Commands
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: Ukrainian
 .\"
-.TH "faillog" "8" "08/11/2022" "shadow\-utils 4\&.13" "Команди керування системою"
+.TH "faillog" "8" "19/03/2025" "shadow\-utils 4\&.17\&.4" "System Management Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -31,34 +31,37 @@
 faillog \- вивести записи faillog або встановити обмеження на невдалі спроби увійти до системи
 .SH "КОРОТКИЙ ОГЛЯД"
 .HP \w'\fBfaillog\fR\ 'u
-\fBfaillog\fR [\fIпараметри\fR]
+\fBfaillog\fR [\fIoptions\fR]
 .SH "ОПИС"
 .PP
 \fBfaillog\fR
-показує вміст бази даних помилок під час входу до системи (/var/log/faillog)\&. Ця програма також може встановлювати лічильник і обмеження помилок\&. Якщо
+displays the contents of the failure log database (/var/log/faillog)\&. It can also set the failure counters and limits\&. When
 \fBfaillog\fR
-запущено без аргументів, програма покаже лише записи користувачів, при спробах входу до системи яких сталася помилка\&.
+is run without arguments, it only displays the faillog records of the users who had a login failure\&.
 .SH "ПАРАМЕТРИ"
 .PP
-Параметри, які застосовують до команди
-\fBfaillog\fR, є такими:
+The options which apply to the
+\fBfaillog\fR
+command are:
 .PP
 \fB\-a\fR, \fB\-\-all\fR
 .RS 4
-Вивести (або виконати дію) над записами faillog для усіх користувачів, запис яких міститься у базі даних
-faillog\&.
+Display (or act on) faillog records for all users having an entry in the
+faillog
+database\&.
 .sp
-Діапазон учасників можна обмежити за допомогою параметра
-\fB\-u\fR\&.
+The range of users can be restricted with the
+\fB\-u\fR
+option\&.
 .sp
 У режимі показу діапазон буде обмежено наявними користувачами, але буде примусово показано записи faillog, навіть якщо вони є порожніми\&.
 .sp
-З параметрами
+With the
 \fB\-l\fR,
 \fB\-m\fR,
 \fB\-r\fR,
 \fB\-t\fR
-записи користувачів буде змінено, навіть якщо запису користувача не існує у системі\&. Це корисно для скидання записів користувачів, облікові записи яких було вилучено, або встановлення наперед правил для діапазону користувачів\&.
+options, the users\*(Aq records are changed, even if the user does not exist on the system\&. This is useful to reset records of users that have been deleted or to set a policy in advance for a range of users\&.
 .RE
 .PP
 \fB\-h\fR, \fB\-\-help\fR
@@ -66,42 +69,45 @@ faillog\&.
 Показати довідкове повідомлення і завершити роботу\&.
 .RE
 .PP
-\fB\-l\fR, \fB\-\-lock\-secs\fR \fIСЕК\fR
+\fB\-l\fR, \fB\-\-lock\-secs\fR\ \&\fISEC\fR
 .RS 4
-Заблокувати обліковий запис на
-\fIСЕК\fR
-секунд після невдалої спроби увійти до системи\&.
+Lock account for
+\fISEC\fR
+seconds after failed login\&.
 .sp
-Для користування цим параметром потрібен доступ до запису для файла
-/var/log/faillog\&.
+Write access to
+/var/log/faillog
+is required for this option\&.
 .RE
 .PP
-\fB\-m\fR, \fB\-\-maximum\fR \fIМАКСИМУМ\fR
+\fB\-m\fR, \fB\-\-maximum\fR\ \&\fIMAX\fR
 .RS 4
-Встановити максимальну кількість невдалих спроб, після якої обліковий запис буде вимкнено, у значення
-\fIМАКСИМУМ\fR\&.
+Set the maximum number of login failures after the account is disabled to
+\fIMAX\fR\&.
 .sp
-Вибір для
-\fIМАКСИМУМ\fR
-значення 0 призведе до усування обмеження на кількість невдалих спроб увійти до системи\&.
+Selecting a
+\fIMAX\fR
+value of 0 has the effect of not placing a limit on the number of failed logins\&.
 .sp
-Для
+The maximum failure count should always be 0 for
 \fIroot\fR
-максимальною кількістю невдалих спроб увійти до системи має завжди бути 0, щоб запобігти спробам атакувати систему, викликавши відмову в обслуговуванні\&.
+to prevent a denial of services attack against the system\&.
 .sp
-Для користування цим параметром потрібен доступ до запису для файла
-/var/log/faillog\&.
+Write access to
+/var/log/faillog
+is required for this option\&.
 .RE
 .PP
 \fB\-r\fR, \fB\-\-reset\fR
 .RS 4
 Скинути лічильники помилок входу\&.
 .sp
-Для користування цим параметром потрібен доступ до запису для файла
-/var/log/faillog\&.
+Write access to
+/var/log/faillog
+is required for this option\&.
 .RE
 .PP
-\fB\-R\fR, \fB\-\-root\fR \fIКАТАЛОГ_CHROOT\fR
+\fB\-R\fR, \fB\-\-root\fR\ \&\fICHROOT_DIR\fR
 .RS 4
 Apply changes in the
 \fICHROOT_DIR\fR
@@ -110,41 +116,43 @@ directory and use the configuration files from the
 directory\&. Only absolute paths are supported\&.
 .RE
 .PP
-\fB\-t\fR, \fB\-\-time\fR \fIДНІ\fR
+\fB\-t\fR, \fB\-\-time\fR\ \&\fIDAYS\fR
 .RS 4
-Показати записи faillog, які є свіжішими за
-\fIДНІ\fR\&.
+Display faillog records more recent than
+\fIDAYS\fR\&.
 .RE
 .PP
-\fB\-u\fR, \fB\-\-user\fR \fIЗАПИС\fR|\fIДІАПАЗОН\fR
+\fB\-u\fR, \fB\-\-user\fR\ \&\fILOGIN\fR|\fIRANGE\fR
 .RS 4
-Вивести запис журналу помилок або лічильників помилок і обмежень на помилки (якщо використано з
+Display faillog record or maintains failure counters and limits (if used with
 \fB\-l\fR,
 \fB\-m\fR
-або
-\fB\-r\fR) лише для вказаних користувачів\&.
+or
+\fB\-r\fR
+options) only for the specified user(s)\&.
 .sp
-Користувачів можна задавати за обліковим записом для входу, числовим ідентифікатором користувача або значенням
-\fIДІАПАЗОН\fR
-для користувачів\&.
-\fIДІАПАЗОН\fR
-користувачів можна вказати за допомогою мінімального і максимального значень (\fIUID_MIN\-UID_MAX\fR), максимального значення (\fI\-UID_MAX\fR) або мінімального значення (\fIUID_MIN\-\fR)\&.
+The users can be specified by a login name, a numerical user ID, or a
+\fIRANGE\fR
+of users\&. This
+\fIRANGE\fR
+of users can be specified with a min and max values (\fIUID_MIN\-UID_MAX\fR), a max value (\fI\-UID_MAX\fR), or a min value (\fIUID_MIN\-\fR)\&.
 .RE
 .PP
-Якщо не вказано жодного з параметрів
+When none of the
 \fB\-l\fR,
-\fB\-m\fR
-або
-\fB\-r\fR,
+\fB\-m\fR, or
+\fB\-r\fR
+options are used,
 \fBfaillog\fR
-показує запис faillog вказаних користувачів\&.
+displays the faillog record of the specified user(s)\&.
 .SH "ЗАСТЕРЕЖЕННЯ"
 .PP
 \fBfaillog\fR
-виводить дані лише користувачів, які не мали успішних входів до системи з моменту останньої помилки\&. Щоб було виведено запис користувача, який успішно входив до системи з часу останньої помилки, вам слід явним чином надіслати запит щодо користувача за допомогою прапорця
+only prints out users with no successful login since the last failure\&. To print out a user who has had a successful login since their last failure, you must explicitly request the user with the
 \fB\-u\fR
-або наказати програмі вивести дані усіх користувачів за допомогою прапорця
-\fB\-a\fR\&.
+flag, or print out all users with the
+\fB\-a\fR
+flag\&.
 .SH "ФАЙЛИ"
 .PP
 /var/log/faillog

@@ -1,7 +1,0 @@
-debian/login.defs etc
-usr/share/locale/*/LC_MESSAGES/shadow.mo
-sbin/nologin usr/sbin
-usr/bin/faillog
-usr/bin/lastlog
-usr/bin/newgrp
-bin/login

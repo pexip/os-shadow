@@ -2,12 +2,12 @@
 .\"     Title: usermod
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 11/08/2022
+.\"      Date: 03/19/2025
 .\"    Manual: System Management Commands
-.\"    Source: shadow-utils 4.13
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: English
 .\"
-.TH "USERMOD" "8" "11/08/2022" "shadow\-utils 4\&.13" "System Management Commands"
+.TH "USERMOD" "8" "03/19/2025" "shadow\-utils 4\&.17\&.4" "System Management Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -309,6 +309,18 @@ from /etc/login\&.defs\&.
 defines the SELinux user to be mapped with
 \fILOGIN\fR\&. An empty string ("") will remove the respective entry (if any)\&. Note that the shadow system doesn\*(Aqt store the selinux\-user, it uses semanage(8) for that\&.
 .RE
+.PP
+\fB\-\-selinux\-range\fR\ \&\fISERANGE\fR
+.RS 4
+defines the SELinux MLS range for the new account\&. Note that the shadow system doesn\*(Aqt store the selinux\-range, it uses
+\fBsemanage\fR(8)
+for that\&.
+.sp
+This option is only valid if the
+\fB\-Z\fR
+(or
+\fB\-\-selinux\-user\fR) option is specified\&.
+.RE
 .SH "CAVEATS"
 .PP
 You must make certain that the named user is not executing any processes when this command is being executed if the user\*(Aqs numerical user ID, the user\*(Aqs name, or the user\*(Aqs home directory is being changed\&.
@@ -435,7 +447,7 @@ Group account information
 .PP
 /etc/gshadow
 .RS 4
-Secure group account informatio\&.
+Secure group account information
 .RE
 .PP
 /etc/login\&.defs

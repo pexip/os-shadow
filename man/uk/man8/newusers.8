@@ -2,12 +2,12 @@
 .\"     Title: newusers
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 08/11/2022
-.\"    Manual: Команди керування системою
-.\"    Source: shadow-utils 4.13
+.\"      Date: 19/03/2025
+.\"    Manual: System Management Commands
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: Ukrainian
 .\"
-.TH "newusers" "8" "08/11/2022" "shadow\-utils 4\&.13" "Команди керування системою"
+.TH "newusers" "8" "19/03/2025" "shadow\-utils 4\&.17\&.4" "System Management Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -31,15 +31,15 @@
 newusers \- пакетне оновлення і створення облікових записів користувачів
 .SH "КОРОТКИЙ ОГЛЯД"
 .HP \w'\fBnewusers\fR\ 'u
-\fBnewusers\fR [\fIпараметри\fR] [\fIфайл\fR]
+\fBnewusers\fR [\fIoptions\fR] [\fIfile\fR]
 .SH "ОПИС"
 .PP
-Команда
+The
 \fBnewusers\fR
-читає
-\fIфайл\fR
-(або, типово, стандартного джерела вхідних даних) і використовує ці дані для оновлення набору наявних записів користувачів або створення записів нових користувачів\&. Кожен рядок записано у тому самому форматі, що і стандартний файл паролів (див\&.
-\fBpasswd\fR(5))\&. Винятки з цього правила описано нижче:
+command reads a
+\fIfile\fR
+(or the standard input by default) and uses this information to update a set of existing users or to create new users\&. Each line is in the same format as the standard password file (see
+\fBpasswd\fR(5)) with the exceptions explained below:
 .PP
 pw_name:pw_passwd:pw_uid:pw_gid:pw_gecos:pw_dir:pw_shell
 .PP
@@ -47,8 +47,8 @@ pw_name:pw_passwd:pw_uid:pw_gid:pw_gecos:pw_dir:pw_shell
 .RS 4
 Це ім\*(Aqя користувача\&.
 .sp
-Це може бути ім\*(Aqя нового користувача або ім\*(Aqя наявного користувача (або користувача, запис якого створено раніше за допомогою
-\fBnewusers\fR)\&. У випадку наявного користувача буде змінено дані щодо користувача\&. Якщо запису користувача не існуватиме, його буде створено\&.
+It can be the name of a new user or the name of an existing user (or a user created before by
+\fBnewusers\fR)\&. In case of an existing user, the user\*(Aqs information will be changed, otherwise a new user will be created\&.
 .RE
 .PP
 \fIpw_passwd\fR
@@ -60,14 +60,13 @@ pw_name:pw_passwd:pw_uid:pw_gid:pw_gecos:pw_dir:pw_shell
 .RS 4
 Це поле буде використано для визначення UID користувача\&.
 .sp
-Якщо поле є порожнім, новий (невикористаний) UID буде визначено
-\fBnewusers\fR
-автоматично\&.
+If the field is empty, a new (unused) UID will be defined automatically by
+\fBnewusers\fR\&.
 .sp
 Якщо у цьому полі міститься число, це число буде використано як UID\&.
 .sp
-Якщо у цьому полі міститься ім\*(Aqя наявного користувача (або ім\*(Aqя користувача, запис якого було створено раніше за допомогою
-\fBnewusers\fR), буде використано UID вказаного користувача\&.
+If this field contains the name of an existing user (or the name of a user created before by
+\fBnewusers\fR), the UID of the specified user will be used\&.
 .sp
 Якщо буде змінено UID наявного користувача, власність на файли файла користувача має бути виправлено вручну\&.
 .RE
@@ -76,19 +75,19 @@ pw_name:pw_passwd:pw_uid:pw_gid:pw_gecos:pw_dir:pw_shell
 .RS 4
 Це поле використовують для визначення ідентифікатора основної групи користувача\&.
 .sp
-Якщо у цьому полі міститься ім\*(Aqя наявної групи (або групи, яку раніше створено за допомогою
-\fBnewusers\fR), GID цієї групи буде використано як ідентифікатор основної групи користувача\&.
+If this field contains the name of an existing group (or a group created before by
+\fBnewusers\fR), the GID of this group will be used as the primary group ID for the user\&.
 .sp
 Якщо у цьому полі записано число, це число буде використано як ідентифікатор основної групи користувача\&. Якщо груп із цим GID не існує, буде створено нову групу з цим GID і назвою, яка збігається із іменем користувача\&.
 .sp
-Якщо це поле є порожнім, буде створено нову групу із назвою, яка збігається із іменем користувача, а GID буде автоматично визначено за допомогою
+If this field is empty, a new group will be created with the name of the user and a GID will be automatically defined by
 \fBnewusers\fR
-для використання як ідентифікатора основної групи для користувача і як GID для нової групи\&.
+to be used as the primary group ID for the user and as the GID for the new group\&.
 .sp
-Якщо у цьому полі міститься назва групи, якої не існує (і її не було створено раніше за допомогою
-\fBnewusers\fR), буде створено нову групу із вказаною назвою, а GID буде автоматично визначено за допомогою
+If this field contains the name of a group which does not exist (and was not created before by
+\fBnewusers\fR), a new group will be created with the specified name and a GID will be automatically defined by
 \fBnewusers\fR
-для використання як ідентифікатора основної групи для користувача і GID для нової групи\&.
+to be used as the primary group ID for the user and GID for the new group\&.
 .RE
 .PP
 \fIpw_gecos\fR
@@ -100,13 +99,13 @@ pw_name:pw_passwd:pw_uid:pw_gid:pw_gecos:pw_dir:pw_shell
 .RS 4
 Це поле призначено для визначення домашнього каталогу користувача\&.
 .sp
-Якщо це поле не вказує на наявний каталог, вказаний каталог буде створено\&. Власником буде користувач, обліковий запис якого буде створено або оновлено, та його основна група\&. Зауважте, що
-\fInewusers не створює батьківських каталогів\fR
-домашнього каталогу нового користувача\&. Команда newusers не зможе створити домашній каталог, якщо не існує батьківських щодо нього каталогів, і надішле повідомлення до stderr із інформуванням користувача про помилку\&. Команда newusers не перерве роботу і не поверне помилку до оболонки, з якої її віддано, якщо їй не вдасться створити домашній каталог, а продовжить обробку пакета вказаних нових користувачів\&.
+If this field does not specify an existing directory, the specified directory is created, with ownership set to the user being created or updated and its primary group\&. Note that
+\fInewusers does not create parent directories \fR
+of the new user\*(Aqs home directory\&. The newusers command will fail to create the home directory if the parent directories do not exist, and will send a message to stderr informing the user of the failure\&. The newusers command will not halt or return a failure to the calling shell if it fails to create the home directory, it will continue to process the batch of new users specified\&.
 .sp
-Якщо буде змінено домашній каталог наявного користувача,
+If the home directory of an existing user is changed,
 \fBnewusers\fR
-не пересуватиме і не копіюватиме вміст старого каталогу до нового місця\&. Це доведеться зробити вручну\&.
+does not move or copy the content of the old directory to the new location\&. This should be done manually\&.
 .RE
 .PP
 \fIpw_shell\fR
@@ -115,13 +114,14 @@ pw_name:pw_passwd:pw_uid:pw_gid:pw_gecos:pw_dir:pw_shell
 .RE
 .PP
 \fBnewusers\fR
-спочатку намагається створити або змінити дані усіх вказаних користувачів, а потім записує ці зміни до баз даних користувачів або груп\&. Якщо станеться помилка (окрім остаточного запису до баз даних), змін до баз даних не вноситимуться\&.
+first tries to create or change all the specified users, and then write these changes to the user or group databases\&. If an error occurs (except in the final writes to the databases), no changes are committed to the databases\&.
 .PP
 Цю команду призначено для використання у великих системних середовищах, де одночасно оновлюють багато облікових записів\&.
 .SH "ПАРАМЕТРИ"
 .PP
-Параметри, які застосовують до команди
-\fBnewusers\fR, є такими:
+The options which apply to the
+\fBnewusers\fR
+command are:
 .PP
 \fB\-\-badname\fR\ \&
 .RS 4
@@ -144,17 +144,18 @@ pw_name:pw_passwd:pw_uid:pw_gid:pw_gecos:pw_dir:pw_shell
 .RS 4
 Створити загальносистемний обліковий запис\&.
 .sp
-Записи загальносистемних користувачів буде створено без даних щодо застарівання у
-/etc/shadow, а їхні числові ідентифікатори буде вибрано у діапазоні
-\fBSYS_UID_MIN\fR\-\fBSYS_UID_MAX\fR, який визначено у
-login\&.defs, а не у
+System users will be created with no aging information in
+/etc/shadow, and their numeric identifiers are chosen in the
+\fBSYS_UID_MIN\fR\-\fBSYS_UID_MAX\fR
+range, defined in
+login\&.defs, instead of
 \fBUID_MIN\fR\-\fBUID_MAX\fR
-(та їхніх відповідників
+(and their
 \fBGID\fR
-для створення груп)\&.
+counterparts for the creation of groups)\&.
 .RE
 .PP
-\fB\-R\fR, \fB\-\-root\fR \fIКАТАЛОГ_CHROOT\fR
+\fB\-R\fR, \fB\-\-root\fR\ \&\fICHROOT_DIR\fR
 .RS 4
 Apply changes in the
 \fICHROOT_DIR\fR
@@ -167,14 +168,13 @@ directory\&. Only absolute paths are supported\&.
 .RS 4
 Використати вказану кількість циклів шифрування паролів\&.
 .sp
-Значення 0 означає, що система вибере типову кількість проходів для методу шифрування (5000)\&.
+You can only use this option with crypt method:
+\fISHA256\fR \fISHA512\fR
 .sp
-Буде примусово встановлено мінімальне значення 1000 і максимальне значення 999999999\&.
-.sp
-Ви можете скористатися цим параметром у поєднанні із методами шифрування SHA256 або SHA512\&.
-.sp
-Типово, кількість проходів визначається за допомогою змінних SHA_CRYPT_MIN_ROUNDS і SHA_CRYPT_MAX_ROUNDS у
+By default, the number of rounds for SHA256 or SHA512 is defined by the SHA_CRYPT_MIN_ROUNDS and SHA_CRYPT_MAX_ROUNDS variables in
 /etc/login\&.defs\&.
+.sp
+A minimal value of 1000 and a maximal value of 999,999,999 will be enforced for SHA256 and SHA512\&. The default is 5000\&.
 .RE
 .SH "ЗАСТЕРЕЖЕННЯ"
 .PP
@@ -183,9 +183,9 @@ directory\&. Only absolute paths are supported\&.
 Вам слід переконатися, що паролі і метод шифрування відповідає правилам поводження з паролями у системі\&.
 .SH "НАЛАШТУВАННЯ"
 .PP
-Вказані нижче змінні налаштувань у
+The following configuration variables in
 /etc/login\&.defs
-змінюють поведінку цього інструмента:
+change the behavior of this tool:
 
 
 

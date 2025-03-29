@@ -2,12 +2,12 @@
 .\"     Title: logoutd
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 08/11/2022
-.\"    Manual: Команди керування системою
-.\"    Source: shadow-utils 4.13
+.\"      Date: 19/03/2025
+.\"    Manual: System Management Commands
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: Ukrainian
 .\"
-.TH "logoutd" "8" "08/11/2022" "shadow\-utils 4\&.13" "Команди керування системою"
+.TH "logoutd" "8" "19/03/2025" "shadow\-utils 4\&.17\&.4" "System Management Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -35,13 +35,15 @@ logoutd \- примусово застосувати обмеження щодо
 .SH "ОПИС"
 .PP
 \fBlogoutd\fR
-накладає обмеження на час входу та порт, які вказано у
+enforces the login time and port restrictions specified in
 /etc/porttime\&.
 \fBlogoutd\fR
-має бути запущено з
-/etc/rc\&. Система виконуватиме регулярне сканування
-/var/run/utmp\&. Буде виконано перевірку кожного користувача з метою визначення того, чи має доступ користувач до іменованого порту у поточний момент часу\&. Усі сеанси роботи, які порушуватимуть обмеження у
-/etc/porttime, буде перервано\&.
+should be started from
+/etc/rc\&. The
+/var/run/utmp
+file is scanned periodically and each user name is checked to see if the named user is permitted on the named port at the current time\&. Any login session which is violating the restrictions in
+/etc/porttime
+is terminated\&.
 .SH "ФАЙЛИ"
 .PP
 /etc/porttime

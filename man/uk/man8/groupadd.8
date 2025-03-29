@@ -2,12 +2,12 @@
 .\"     Title: groupadd
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 08/11/2022
-.\"    Manual: Команди керування системою
-.\"    Source: shadow-utils 4.13
+.\"      Date: 19/03/2025
+.\"    Manual: System Management Commands
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: Ukrainian
 .\"
-.TH "groupadd" "8" "08/11/2022" "shadow\-utils 4\&.13" "Команди керування системою"
+.TH "groupadd" "8" "19/03/2025" "shadow\-utils 4\&.17\&.4" "System Management Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -31,41 +31,45 @@
 groupadd \- створення нової групи
 .SH "КОРОТКИЙ ОГЛЯД"
 .HP \w'\fBgroupadd\fR\ 'u
-\fBgroupadd\fR [\fIПАРАМЕТРИ\fR] \fIНОВА_ГРУПА\fR
+\fBgroupadd\fR [\fIOPTIONS\fR] \fINEWGROUP\fR
 .SH "ОПИС"
 .PP
-Команда
+The
 \fBgroupadd\fR
-створює обліковий запис групи з використанням значень, які вказано у командному рядку, і типових для системи значень\&. Запис нової групи буде додано до файлів системи, якщо у цьому буде потреба\&.
+command creates a new group account using the values specified on the command line plus the default values from the system\&. The new group will be entered into the system files as needed\&.
 .PP
 Groupnames may contain only lower and upper case letters, digits, underscores, or dashes\&. They can end with a dollar sign\&. Dashes are not allowed at the beginning of the groupname\&. Fully numeric groupnames and groupnames \&. or \&.\&. are also disallowed\&.
 .PP
 Довжина назв груп не може перевищувати 32 символи\&.
 .SH "ПАРАМЕТРИ"
 .PP
-Параметри, які застосовують до команди
-\fBgroupadd\fR, є такими:
+The options which apply to the
+\fBgroupadd\fR
+command are:
 .PP
 \fB\-f\fR, \fB\-\-force\fR
 .RS 4
-Використання цього параметра призведе до простого виходу з команди зі станом успіху, якщо вказана група вже існує\&. Якщо використано разом із
-\fB\-g\fR, і вказаний GID вже існує, буде вибрано інший (унікальний) GID (тобто буде вимкнено
-\fB\-g\fR)\&.
+This option causes the command to simply exit with success status if the specified group already exists\&. When used with
+\fB\-g\fR, and the specified GID already exists, another (unique) GID is chosen (i\&.e\&.
+\fB\-g\fR
+is turned off)\&.
 .RE
 .PP
-\fB\-g\fR, \fB\-\-gid\fR \fIGID\fR
+\fB\-g\fR, \fB\-\-gid\fR\ \&\fIGID\fR
 .RS 4
-Числове значення ідентифікатора групи\&.
+The numerical value of the group\*(Aqs ID\&.
 \fIGID\fR
-має бути унікальним, якщо не використано параметр
-\fB\-o\fR\&. Значення має бути невід\*(Aqємним\&. Типовим є використання найменшого значення ідентифікатора, яке дорівнює або перевищує
-\fBМІНІМАЛЬНИЙ_GID\fR
-і є більшим за значення ідентифікатора будь\-якої іншої групи\&.
+must be unique, unless the
+\fB\-o\fR
+option is used\&. The value must be non\-negative\&. The default is to use the smallest ID value greater than or equal to
+\fBGID_MIN\fR
+and greater than every other group\&.
 .sp
-Див\&. також описи параметрів
+See also the
 \fB\-r\fR
-і
-\fBМАКСИМАЛЬНИЙ_GID\fR\&.
+option and the
+\fBGID_MAX\fR
+description\&.
 .RE
 .PP
 \fB\-h\fR, \fB\-\-help\fR
@@ -73,47 +77,43 @@ Groupnames may contain only lower and upper case letters, digits, underscores, o
 Показати довідкове повідомлення і завершити роботу\&.
 .RE
 .PP
-\fB\-K\fR, \fB\-\-key\fR \fIКЛЮЧ\fR=\fIЗНАЧЕННЯ\fR
+\fB\-K\fR, \fB\-\-key\fR\ \&\fIKEY\fR=\fIVALUE\fR
 .RS 4
-Має пріоритет над типовими значенням у
+Overrides
 /etc/login\&.defs
-(GID_MIN, GID_MAX та іншими)\&. Може бути вказано декілька параметрів
-\fB\-K\fR\&.
+defaults (GID_MIN, GID_MAX and others)\&. Multiple
+\fB\-K\fR
+options can be specified\&.
 .sp
-Приклад:
-\fB\-K\fR
-\fIМІНІМАЛЬНИЙ_GID\fR=\fI100\fR
-\fB\-K\fR
-\fIМАКСИМАЛЬНИЙ_GID\fR=\fI499\fR
+Example:
+\fB\-K\fR\ \&\fIGID_MIN\fR=\fI100\fR\ \&
+\fB\-K\fR\ \&\fIGID_MAX\fR=\fI499\fR
 .sp
-Зауваження:
-\fB\-K\fR
-\fIМІНІМАЛЬНИЙ_GID\fR=\fI10\fR,\fIМАКСИМАЛЬНИЙ_GID\fR=\fI499\fR
-ще не працює\&.
+Note:
+\fB\-K\fR\ \&\fIGID_MIN\fR=\fI10\fR,\fIGID_MAX\fR=\fI499\fR
+doesn\*(Aqt work yet\&.
 .RE
 .PP
 \fB\-o\fR, \fB\-\-non\-unique\fR
 .RS 4
-уможливлює створення груп із вже використаним числовим ідентифікатором\&. У результаті для цього
-\fIGID\fR
-прив\*(Aqязка до групи
-\fIНОВА_ГРУПА\fR
-може бути неунікальною\&.
+permits the creation of a group with an already used numerical ID\&. As a result, for this
+\fIGID\fR, the mapping towards group
+\fINEWGROUP\fR
+may not be unique\&.
 .RE
 .PP
-\fB\-p\fR, \fB\-\-password\fR \fIПАРОЛЬ\fR
+\fB\-p\fR, \fB\-\-password\fR\ \&\fIPASSWORD\fR
 .RS 4
-визначає початковий пароль до облікового запису групи\&. ПАРОЛЬ має бути зашифровано у форматі, який повертає
-\fBcrypt\fR(3)\&.
+defines an initial password for the group account\&. PASSWORD is expected to be encrypted, as returned by
+\fBcrypt \fR(3)\&.
 .sp
-Без цього параметра обліковий запис групи буде заблоковано; для нього також не буде визначено пароля, тобто у відповідному полі файла облікових записів системи
+Without this option, the group account will be locked and with no password defined, i\&.e\&. a single exclamation mark in the respective field of ths system account file
 /etc/group
-або
-/etc/gshadow
-буде вказано одинарний знак оклику\&.
+or
+/etc/gshadow\&.
 .sp
-\fBЗауваження:\fR
-не рекомендуємо користуватися цим параметром, оскільки пароль (або шифрований пароль) буде видимим для користувачів, які мають доступ до списку процесів\&.
+\fBNote:\fR
+This option is not recommended because the password (or encrypted password) will be visible by users listing the processes\&.
 .sp
 Вам слід переконатися, що пароль відповідає правилам складання паролів системи\&.
 .RE
@@ -122,14 +122,14 @@ Groupnames may contain only lower and upper case letters, digits, underscores, o
 .RS 4
 Створити загальносистемну групу\&.
 .sp
-Числові ідентифікатори нових груп системи буде вибрано у діапазоні
+The numeric identifiers of new system groups are chosen in the
 \fBSYS_GID_MIN\fR\-\fBSYS_GID_MAX\fR
 range, defined in
-login\&.defs, замість діапазону
-\fBМІНІМАЛЬНИЙ_GID\fR\-\fBМАКСИМАЛЬНИЙ_GID\fR\&.
+login\&.defs, instead of
+\fBGID_MIN\fR\-\fBGID_MAX\fR\&.
 .RE
 .PP
-\fB\-R\fR, \fB\-\-root\fR \fIКАТАЛОГ_CHROOT\fR
+\fB\-R\fR, \fB\-\-root\fR\ \&\fICHROOT_DIR\fR
 .RS 4
 Apply changes in the
 \fICHROOT_DIR\fR
@@ -138,30 +138,30 @@ directory and use the configuration files from the
 directory\&. Only absolute paths are supported\&.
 .RE
 .PP
-\fB\-P\fR, \fB\-\-prefix\fR \fIКАТАЛОГ_ПРЕФІКСА\fR
+\fB\-P\fR, \fB\-\-prefix\fR\ \&\fIPREFIX_DIR\fR
 .RS 4
-Застосувати зміни до файлів налаштувань у кореневій файловій системі з каталогу
-\fIКАТАЛОГ_ПРЕФІКСА\fR\&. Використання цього параметра не змінює кореневої теки\&. Параметр призначено лише для приготування цілі для компіляції коду для іншої операційної системи\&. Обмеження: не буде виконано перевірку користувачів/груп NIS і LDAP\&. При розпізнаванні у PAM буде використано файли основної системи\&. Підтримки SELINUX не передбачено\&.
+Apply changes to configuration files under the root filesystem found under the directory
+\fIPREFIX_DIR\fR\&. This option does not chroot and is intended for preparing a cross\-compilation target\&. Some limitations: NIS and LDAP users/groups are not verified\&. PAM authentication is using the host files\&. No SELINUX support\&.
 .RE
 .PP
 \fB\-U\fR, \fB\-\-users\fR
 .RS 4
-Список імен користувачів, яких слід додати як учасників групи\&.
+A comma\-separated list of usernames to add as members of the group\&.
 .sp
-Типову поведінку (якщо не вказано параметрів
+The default behavior (if the
 \fB\-g\fR,
-\fB\-N\fR
-і
-\fB\-U\fR) буде визначено змінною
+\fB\-N\fR, and
+\fB\-U\fR
+options are not specified) is defined by the
 \fBUSERGROUPS_ENAB\fR
-у
+variable in
 /etc/login\&.defs\&.
 .RE
 .SH "НАЛАШТУВАННЯ"
 .PP
-Вказані нижче змінні налаштувань у
+The following configuration variables in
 /etc/login\&.defs
-змінюють поведінку цього інструмента:
+change the behavior of this tool:
 .SH "ФАЙЛИ"
 .PP
 /etc/group
@@ -182,44 +182,44 @@ directory\&. Only absolute paths are supported\&.
 .PP
 Не можна додавати групи NIS або LDAP\&. Для таких груп цю дію має бути виконано на відповідному сервері\&.
 .PP
-Якщо назва групи вже існує у зовнішній базі даних груп, зокрема NIS або LDAP,
+If the groupname already exists in an external group database such as NIS or LDAP,
 \fBgroupadd\fR
-відмовить у запиті щодо створення групи\&.
+will deny the group creation request\&.
 .SH "ЗНАЧЕННЯ ВИХОДУ"
 .PP
-Команда
+The
 \fBgroupadd\fR
-завершує роботу із такими значеннями:
+command exits with the following values:
 .PP
 \fI0\fR
 .RS 4
-успіх
+success
 .RE
 .PP
 \fI2\fR
 .RS 4
-некоректний синтаксис команди
+invalid command syntax
 .RE
 .PP
 \fI3\fR
 .RS 4
-некоректний аргумент параметра
+invalid argument to option
 .RE
 .PP
 \fI4\fR
 .RS 4
-GID вже використано (якщо викликано без
+GID is already used (when called without
 \fB\-o\fR)
 .RE
 .PP
 \fI9\fR
 .RS 4
-назву групи вже використано
+group name is already used
 .RE
 .PP
 \fI10\fR
 .RS 4
-не вдалося оновити файл груп
+can\*(Aqt update group file
 .RE
 .SH "ДИВ\&. ТАКОЖ"
 .PP

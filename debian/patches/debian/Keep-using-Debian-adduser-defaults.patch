@@ -1,0 +1,52 @@
+From: Balint Reczey <balint@balintreczey.hu>
+Date: Sat, 22 Jun 2024 17:39:41 +0200
+Subject: Keep using Debian's adduser defaults
+
+Bug: https://github.com/shadow-maint/shadow/issues/501
+Bug-Debian: https://bugs.debian.org/1004710
+Forwarded: not-needed
+
+Upstream's bbf4b79bc49fd1826eb41f6629669ef0b647267b commit
+in 4.9 merged those values from upstream's default configuration file
+which is not shipped in Debian.
+This patch keeps the program's compiled in defaults in sync with the
+configuration files shipped in Debian (debian/default/useradd).
+---
+ man/useradd.8.xml | 2 +-
+ src/useradd.c     | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/man/useradd.8.xml b/man/useradd.8.xml
+index eda1fef..38f2c68 100644
+--- a/man/useradd.8.xml
++++ b/man/useradd.8.xml
+@@ -248,7 +248,7 @@
+ 	    command line), useradd will set the primary group of the new
+ 	    user to the value specified by the <option>GROUP</option>
+ 	    variable in <filename>/etc/default/useradd</filename>, or
+-	    1000 by default.
++	    100 by default.
+ 	  </para>
+ 	</listitem>
+       </varlistentry>
+diff --git a/src/useradd.c b/src/useradd.c
+index 6e744b0..dc65618 100644
+--- a/src/useradd.c
++++ b/src/useradd.c
+@@ -97,14 +97,14 @@ static const char Prog[] = "useradd";
+ /*
+  * These defaults are used if there is no defaults file.
+  */
+-static gid_t def_group = 1000;
++static gid_t def_group = 100;
+ static const char *def_groups = "";
+ static const char *def_gname = "other";
+ static const char *def_home = "/home";
+ static const char *def_shell = "/bin/bash";
+ static const char *def_template = SKEL_DIR;
+ static const char *def_usrtemplate = USRSKELDIR;
+-static const char *def_create_mail_spool = "yes";
++static const char *def_create_mail_spool = "no";
+ static const char *def_log_init = "yes";
+ 
+ static long def_inactive = -1;

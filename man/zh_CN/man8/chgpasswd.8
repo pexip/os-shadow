@@ -2,12 +2,12 @@
 .\"     Title: chgpasswd
 .\"    Author: Thomas K\(/loczko <kloczek@pld.org.pl>
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 2022-11-08
-.\"    Manual: 系统管理命令
-.\"    Source: shadow-utils 4.13
+.\"      Date: 2025-03-19
+.\"    Manual: System Management Commands
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: Chinese Simplified
 .\"
-.TH "CHGPASSWD" "8" "2022-11-08" "shadow\-utils 4\&.13" "系统管理命令"
+.TH "CHGPASSWD" "8" "2025-03-19" "shadow\-utils 4\&.17\&.4" "System Management Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -31,7 +31,7 @@
 chgpasswd \- 批量更新组密码
 .SH "大纲"
 .HP \w'\fBchgpasswd\fR\ 'u
-\fBchgpasswd\fR [\fI选项\fR]
+\fBchgpasswd\fR [\fIoptions\fR]
 .SH "描述"
 .PP
 The
@@ -63,7 +63,12 @@ command are:
 .RS 4
 使用指定的方法加密密码。
 .sp
-可用的方法有 DES, MD5, NONE, and SHA256 或 SHA512，前提是您的 libc 支持这写方法。
+The available methods are
+\fIDES\fR,
+\fIMD5\fR, \fISHA256\fR, \fISHA512\fR
+and
+\fINONE\fR
+if your libc supports these methods\&.
 .RE
 .PP
 \fB\-e\fR, \fB\-\-encrypted\fR
@@ -94,14 +99,13 @@ directory\&. Only absolute paths are supported\&.
 .RS 4
 使用指定次数的轮转来加密密码。
 .sp
-值 0 表示让系统为加密方法选择默认的轮转次数 (5000)。
+You can only use this option with crypt method:
+\fISHA256\fR \fISHA512\fR
 .sp
-会强制最小 1,000，最大 9,9999,9999
-.sp
-您只可以对 SHA256 或 SHA512 使用此选项。
-.sp
-By default, the number of rounds is defined by the SHA_CRYPT_MIN_ROUNDS and SHA_CRYPT_MAX_ROUNDS variables in
+By default, the number of rounds for SHA256 or SHA512 is defined by the SHA_CRYPT_MIN_ROUNDS and SHA_CRYPT_MAX_ROUNDS variables in
 /etc/login\&.defs\&.
+.sp
+A minimal value of 1000 and a maximal value of 999,999,999 will be enforced for SHA256 and SHA512\&. The default number of rounds is 5000\&.
 .RE
 .SH "CAVEATS"
 .PP

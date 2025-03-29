@@ -1,0 +1,37 @@
+From: Chris Hofstaedtler <zeha@debian.org>
+Date: Sun, 16 Mar 2025 13:29:45 +0100
+Subject: Exclude Debian-globally allocated UIDs from sys_uid range warning
+
+Bug: http://bugs.debian.org/1100563
+---
+ src/useradd.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
+
+diff --git a/src/useradd.c b/src/useradd.c
+index dc65618..25a5920 100644
+--- a/src/useradd.c
++++ b/src/useradd.c
+@@ -2382,14 +2382,21 @@ static void create_mail (void)
+ #endif
+ }
+ 
++/* See Debian Policy 9.2.2 "UID and GID classes"
++ * https://www.debian.org/doc/debian-policy/ch-opersys.html#uid-and-gid-classes
++ */
++#define DEBIAN_GLOBAL_UID_MIN ((uid_t)60000)
++#define DEBIAN_GLOBAL_UID_MAX ((uid_t)64999)
++
+ static void check_uid_range(int rflg, uid_t user_id)
+ {
+ 	uid_t uid_min ;
+ 	uid_t uid_max ;
+ 	if (rflg) {
+ 		uid_max = getdef_ulong("SYS_UID_MAX",getdef_ulong("UID_MIN",1000UL)-1);
+-		if (user_id > uid_max) {
+-			fprintf(stderr, _("%s warning: %s's uid %d is greater than SYS_UID_MAX %d\n"), Prog, user_name, user_id, uid_max);
++		if (user_id > uid_max
++			&& (!(user_id >= DEBIAN_GLOBAL_UID_MIN && user_id <= DEBIAN_GLOBAL_UID_MAX))) {
++				fprintf(stderr, _("%s warning: %s's uid %d is greater than SYS_UID_MAX %d\n"), Prog, user_name, user_id, uid_max);
+ 		}
+ 	}else{
+ 		uid_min = getdef_ulong("UID_MIN", 1000UL);

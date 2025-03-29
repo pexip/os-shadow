@@ -2,12 +2,12 @@
 .\"     Title: chgpasswd
 .\"    Author: Thomas K\(/loczko <kloczek@pld.org.pl>
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 08/11/2022
-.\"    Manual: Commandes de gestion du syst\(`eme
-.\"    Source: shadow-utils 4.13
+.\"      Date: 19/03/2025
+.\"    Manual: System Management Commands
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: French
 .\"
-.TH "CHGPASSWD" "8" "08/11/2022" "shadow\-utils 4\&.13" "Commandes de gestion du syst\(`em"
+.TH "CHGPASSWD" "8" "19/03/2025" "shadow\-utils 4\&.17\&.4" "System Management Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -63,7 +63,12 @@ command are:
 .RS 4
 Utiliser la m\('ethode pr\('ecis\('ee pour chiffrer les mots de passe\&.
 .sp
-Les m\('ethodes disponibles sont DES, MD5, NONE et SHA256 ou SHA512 si votre libc prend en charge ces m\('ethodes\&.
+The available methods are
+\fIDES\fR,
+\fIMD5\fR, \fISHA256\fR, \fISHA512\fR
+and
+\fINONE\fR
+if your libc supports these methods\&.
 .RE
 .PP
 \fB\-e\fR, \fB\-\-encrypted\fR
@@ -94,14 +99,13 @@ directory\&. Only absolute paths are supported\&.
 .RS 4
 Utiliser le nombre de rounds pr\('ecis\('e pour chiffrer les mots de passe\&.
 .sp
-La valeur 0 signifie que le syst\(`eme choisira la valeur par d\('efaut du nombre de rounds pour la m\('ethode de chiffrement (5\ \&000)\&.
+You can only use this option with crypt method:
+\fISHA256\fR \fISHA512\fR
 .sp
-Une valeur minimale de 1\ \&000 et une valeur maximale de 999\ \&999\ \&999 seront impos\('ees\&.
-.sp
-Vous ne pouvez utiliser cette m\('ethode qu\*(Aqavec les m\('ethodes de chiffrement SHA256 ou SHA512\&.
-.sp
-By default, the number of rounds is defined by the SHA_CRYPT_MIN_ROUNDS and SHA_CRYPT_MAX_ROUNDS variables in
+By default, the number of rounds for SHA256 or SHA512 is defined by the SHA_CRYPT_MIN_ROUNDS and SHA_CRYPT_MAX_ROUNDS variables in
 /etc/login\&.defs\&.
+.sp
+A minimal value of 1000 and a maximal value of 999,999,999 will be enforced for SHA256 and SHA512\&. The default number of rounds is 5000\&.
 .RE
 .SH "AVERTISSEMENTS"
 .PP

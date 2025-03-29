@@ -1,0 +1,6 @@
+# debputy does not need misc:Depends
+debhelper-but-no-misc-depends libsubid-dev
+debhelper-but-no-misc-depends libsubid5
+debhelper-but-no-misc-depends login.defs
+debhelper-but-no-misc-depends passwd
+debhelper-but-no-misc-depends uidmap

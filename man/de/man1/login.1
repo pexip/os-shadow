@@ -2,12 +2,12 @@
 .\"     Title: login
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 08.11.2022
-.\"    Manual: Dienstprogramme f\(:ur Benutzer
-.\"    Source: shadow-utils 4.13
+.\"      Date: 19.03.2025
+.\"    Manual: User Commands
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: German
 .\"
-.TH "LOGIN" "1" "08.11.2022" "shadow\-utils 4\&.13" "Dienstprogramme f\(:ur Benutzer"
+.TH "LOGIN" "1" "19.03.2025" "shadow\-utils 4\&.17\&.4" "User Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -31,9 +31,9 @@
 login \- startet eine Sitzung auf dem System
 .SH "\(:UBERSICHT"
 .HP \w'\fBlogin\fR\ 'u
-\fBlogin\fR [\-p] [\-h\ \fIhost\fR] [\fIBenutzername\fR] [\fIENV=VAR\fR...]
+\fBlogin\fR [\-p] [\-h\ \fIhost\fR] [\fIusername\fR] [\fIENV=VAR\fR...]
 .HP \w'\fBlogin\fR\ 'u
-\fBlogin\fR [\-p] [\-h\ \fIhost\fR] \-f \fIBenutzername\fR
+\fBlogin\fR [\-p] [\-h\ \fIhost\fR] \-f \fIusername\fR
 .HP \w'\fBlogin\fR\ 'u
 \fBlogin\fR [\-p] \-r\ \fIhost\fR
 .SH "BESCHREIBUNG"
@@ -80,9 +80,9 @@ On some installations, the environmental variable
 will be initialized to the terminal type on your tty line, as specified in
 /etc/ttytype\&.
 .PP
-Ein Startskript f\(:ur Ihren Befehlsinterpreter kann auch ausgef\(:uhrt werden\&. Sehen Sie bitte in den entsprechenden Handbuchseiten f\(:ur weitere Informationen dar\(:uber nach\&.
+Ein Startskript f\(:ur Ihren Befehlsinterpreter kann auch ausgef\(:uhrt werden\&. F\(:ur weitere Informationen dar\(:uber sehen Sie bitte in den entsprechenden Handbuchseiten nach\&.
 .PP
-Eine Subsystem\-Anmeldung wird durch einen \(Fc*\(Fo als erstes Zeichen der Anmelde\-Shell gekennzeichnet\&. Das angegebene Home\-Verzeichnis wird als Wurzel f\(:ur das Dateisystem verwendet, auf welchem der Benutzer tats\(:achlich angemeldet ist\&.
+Eine Subsystem\-Anmeldung wird durch einen \(Fc*\(Fo als erstes Zeichen der Anmelde\-Shell gekennzeichnet\&. Das angegebene pers\(:onliche Verzeichnis wird zur Wurzel des Verzeichnisbaumes, in dem der Benutzer tats\(:achlich angemeldet ist\&.
 .PP
 The
 \fBlogin\fR
@@ -98,7 +98,7 @@ from the shell prompt without
 .PP
 \fB\-f\fR
 .RS 4
-Keine Authentifizierung durchf\(:uhren, Benutzer ist bereits angemeldet\&.
+Keine Authentifizierung durchf\(:uhren, der Benutzer ist vorauthentifiziert\&.
 .sp
 Note: In that case,
 \fIusername\fR
@@ -107,17 +107,12 @@ is mandatory\&.
 .PP
 \fB\-h\fR
 .RS 4
-Name des entfernt stehenden Rechners f\(:ur die Anmeldung
+Name des fernen Rechners f\(:ur diese Anmeldung\&.
 .RE
 .PP
 \fB\-p\fR
 .RS 4
-beh\(:alt die Umgebungseinstellungen bei
-.RE
-.PP
-\fB\-r\fR
-.RS 4
-f\(:uhrt das Autologin\-Protokoll f\(:ur rlogin aus
+beh\(:alt die Umgebung bei\&.
 .RE
 .PP
 The
@@ -134,7 +129,7 @@ This version of
 \fBlogin\fR
 has many compilation options, only some of which may be in use at any particular site\&.
 .PP
-Der Ort der Konfigurationsdateien kann je nach Konfiguration des Systems unterschiedlich sein\&.
+Der Ort von Dateien ist von der Konfiguration des Systems abh\(:angig\&.
 .PP
 The
 \fBlogin\fR
@@ -158,12 +153,12 @@ change the behavior of this tool:
 .PP
 /var/run/utmp
 .RS 4
-Liste der aktuellen angemeldeten Sitzungen
+Liste aktueller Anmeldungen
 .RE
 .PP
 /var/log/wtmp
 .RS 4
-Liste der vorangegangenen angemeldeten Sitzungen
+Liste vorangegangener Anmeldungen
 .RE
 .PP
 /etc/passwd
@@ -173,7 +168,7 @@ Informationen zu den Benutzerkonten
 .PP
 /etc/shadow
 .RS 4
-verschl\(:usselte Informationen zu den Benutzerkonten
+gesch\(:utzte Informationen zu den Benutzerkonten
 .RE
 .PP
 /etc/motd
@@ -183,7 +178,7 @@ Datei mit der Systemmeldung des Tages
 .PP
 /etc/nologin
 .RS 4
-verhindert, dass sich Benutzer au\(sser Root anmelden
+existiert diese Datei, kann sich mit Ausnahme des Systemadministrators niemand anmelden\&.
 .RE
 .PP
 /etc/ttytype
@@ -193,12 +188,12 @@ Liste der Terminaltypen
 .PP
 $HOME/\&.hushlogin
 .RS 4
-unterdr\(:uckt die Ausgabe von Systemnachrichten
+unterdr\(:uckt die Ausgabe von Systemnachrichten nach erfolgreicher Anmeldung
 .RE
 .PP
 /etc/login\&.defs
 .RS 4
-Konfiguration der Shadow\-Passwort\-Werkzeugsammlung
+konfiguriert die Shadow\-Hilfsprogramme\&.
 .RE
 .SH "SIEHE AUCH"
 .PP

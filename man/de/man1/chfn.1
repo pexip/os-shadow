@@ -2,12 +2,12 @@
 .\"     Title: chfn
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 08.11.2022
-.\"    Manual: Dienstprogramme f\(:ur Benutzer
-.\"    Source: shadow-utils 4.13
+.\"      Date: 19.03.2025
+.\"    Manual: User Commands
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: German
 .\"
-.TH "CHFN" "1" "08.11.2022" "shadow\-utils 4\&.13" "Dienstprogramme f\(:ur Benutzer"
+.TH "CHFN" "1" "19.03.2025" "shadow\-utils 4\&.17\&.4" "User Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -28,10 +28,10 @@
 .\" * MAIN CONTENT STARTS HERE *
 .\" -----------------------------------------------------------------
 .SH "NAME"
-chfn \- \(:andert den vollst\(:andigen Namen eines Benutzers und sonstige Informationen
+chfn \- \(:andert den vollst\(:andigen Namen und sonstige Informationen zum Benutzer
 .SH "\(:UBERSICHT"
 .HP \w'\fBchfn\fR\ 'u
-\fBchfn\fR [\fIOptionen\fR] [\fIANMELDENAME\fR]
+\fBchfn\fR [\fIoptions\fR] [\fILOGIN\fR]
 .SH "BESCHREIBUNG"
 .PP
 The
@@ -56,22 +56,22 @@ command are:
 .PP
 \fB\-f\fR, \fB\-\-full\-name\fR\ \&\fIFULL_NAME\fR
 .RS 4
-ver\(:andert den vollst\(:andigen Namen des Benutzers
+\(:andert den vollst\(:andigen Namen des Benutzers\&.
 .RE
 .PP
 \fB\-h\fR, \fB\-\-home\-phone\fR\ \&\fIHOME_PHONE\fR
 .RS 4
-\(:andert die private Telefonnummer des Benutzers
+\(:andert die private Telefonnummer des Benutzers\&.
 .RE
 .PP
 \fB\-o\fR, \fB\-\-other\fR\ \&\fIOTHER\fR
 .RS 4
-Ver\(:andert die sonstigen Informationen \(:uber den Benutzer in der GECOS\-Zeile\&. In diesem Feld werden Kontoinformationen anderer Anwendungen gespeichert\&. Es kann nur vom Superuser ver\(:andert werden\&.
+\(:andert sonstige GECOS\-Informationen \(:uber den Benutzer\&. In diesem Feld werden Kontoinformationen anderer Anwendungen gespeichert\&. Es kann nur vom Systemadministrator ver\(:andert werden\&.
 .RE
 .PP
 \fB\-r\fR, \fB\-\-room\fR\ \&\fIROOM_NUMBER\fR
 .RS 4
-\(:andert die Zimmernummer des Benutzers
+\(:andert die Raumnummer des Benutzers\&.
 .RE
 .PP
 \fB\-R\fR, \fB\-\-root\fR\ \&\fICHROOT_DIR\fR
@@ -85,12 +85,12 @@ directory\&. Only absolute paths are supported\&.
 .PP
 \fB\-u\fR, \fB\-\-help\fR
 .RS 4
-zeigt die Hilfe an und beendet das Programm
+zeigt die Hilfe an und beendet das Programm\&.
 .RE
 .PP
 \fB\-w\fR, \fB\-\-work\-phone\fR\ \&\fIWORK_PHONE\fR
 .RS 4
-ver\(:andert die berufliche Telefonnummer des Benutzers
+\(:andert die berufliche Telefonnummer des Benutzers\&.
 .RE
 .PP
 If none of the options are selected,
@@ -109,7 +109,7 @@ change the behavior of this tool:
 .PP
 /etc/login\&.defs
 .RS 4
-Konfiguration der Shadow\-Passwort\-Werkzeugsammlung
+konfiguriert die Shadow\-Hilfsprogramme\&.
 .RE
 .PP
 /etc/passwd

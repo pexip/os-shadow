@@ -1,0 +1,25 @@
+From: Chris Hofstaedtler <zeha@debian.org>
+Date: Tue, 6 Aug 2024 00:16:59 +0200
+Subject: Define LOGIN_NAME_MAX on HURD
+
+---
+ lib/chkname.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/lib/chkname.c b/lib/chkname.c
+index 57d6d96..6af55a9 100644
+--- a/lib/chkname.c
++++ b/lib/chkname.c
+@@ -29,6 +29,12 @@
+ #include <stddef.h>
+ #include <unistd.h>
+ 
++#ifdef __GNU__
++#ifndef LOGIN_NAME_MAX
++#define LOGIN_NAME_MAX 256
++#endif
++#endif
++
+ #include "defines.h"
+ #include "chkname.h"
+ #include "string/ctype/strisascii/strisdigit.h"

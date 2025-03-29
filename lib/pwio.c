@@ -26,7 +26,8 @@ static /*@null@*/ /*@only@*/void *passwd_dup (const void *ent)
 	return __pw_dup (pw);
 }
 
-static void passwd_free (/*@out@*/ /*@only@*/void *ent)
+static void
+passwd_free(/*@only@*/void *ent)
 {
 	struct passwd *pw = ent;
 
@@ -42,7 +43,7 @@ static const char *passwd_getname (const void *ent)
 
 static void *passwd_parse (const char *line)
 {
-	return (void *) sgetpwent (line);
+	return sgetpwent (line);
 }
 
 static int passwd_put (const void *ent, FILE * file)
@@ -137,7 +138,7 @@ int pw_open (int mode)
 
 int pw_update (const struct passwd *pw)
 {
-	return commonio_update (&passwd_db, (const void *) pw);
+	return commonio_update (&passwd_db, pw);
 }
 
 int pw_remove (const char *name)
@@ -182,15 +183,23 @@ struct commonio_db *__pw_get_db (void)
 
 static int pw_cmp (const void *p1, const void *p2)
 {
+	const struct commonio_entry *const *ce1;
+	const struct commonio_entry *const *ce2;
+	const struct passwd *pw1, *pw2;
 	uid_t u1, u2;
 
-	if ((*(struct commonio_entry **) p1)->eptr == NULL)
+	ce1 = p1;
+	pw1 = (*ce1)->eptr;
+	if (pw1 == NULL)
 		return 1;
-	if ((*(struct commonio_entry **) p2)->eptr == NULL)
+
+	ce2 = p2;
+	pw2 = (*ce2)->eptr;
+	if (pw2 == NULL)
 		return -1;
 
-	u1 = ((struct passwd *) (*(struct commonio_entry **) p1)->eptr)->pw_uid;
-	u2 = ((struct passwd *) (*(struct commonio_entry **) p2)->eptr)->pw_uid;
+	u1 = pw1->pw_uid;
+	u2 = pw2->pw_uid;
 
 	if (u1 < u2)
 		return -1;

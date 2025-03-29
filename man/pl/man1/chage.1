@@ -2,12 +2,12 @@
 .\"     Title: chage
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 11/08/2022
-.\"    Manual: Polecenia użytkownik\('ow
-.\"    Source: shadow-utils 4.13
+.\"      Date: 03/19/2025
+.\"    Manual: User Commands
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: Polish
 .\"
-.TH "CHAGE" "1" "11/08/2022" "shadow\-utils 4\&.13" "Polecenia użytkownik\('ow"
+.TH "CHAGE" "1" "03/19/2025" "shadow\-utils 4\&.17\&.4" "User Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -31,7 +31,7 @@
 chage \- zmiana informacji o terminie ważności has\(/la użytkownika
 .SH "STRESZCZENIE"
 .HP \w'\fBchage\fR\ 'u
-\fBchage\fR [\fIopcje\fR] \fILOGIN\fR
+\fBchage\fR [\fIoptions\fR] \fILOGIN\fR
 .SH "OPIS"
 .PP
 The
@@ -136,6 +136,12 @@ Apply changes in the
 directory and use the configuration files from the
 \fICHROOT_DIR\fR
 directory\&. Only absolute paths are supported\&.
+.RE
+.PP
+\fB\-P\fR, \fB\-\-prefix\fR\ \&\fIPREFIX_DIR\fR
+.RS 4
+Apply changes to configuration files under the root filesystem found under the directory
+\fIPREFIX_DIR\fR\&. This option does not chroot and is intended for preparing a cross\-compilation target\&. Some limitations: NIS and LDAP users/groups are not verified\&. No SELINUX support\&.
 .RE
 .PP
 \fB\-W\fR, \fB\-\-warndays\fR\ \&\fIWARN_DAYS\fR

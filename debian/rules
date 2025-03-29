@@ -4,22 +4,39 @@
 # Enable PIE, BINDNOW, and possible future flags.
 export DEB_BUILD_MAINT_OPTIONS = hardening=+all
 DPKG_EXPORT_BUILDFLAGS = 1
+include /usr/share/dpkg/architecture.mk
 include /usr/share/dpkg/buildflags.mk
+include /usr/share/debhelper/dh_package_notes/package-notes.mk
 
 # Adds extra options when calling the configure script:
-DEB_CONFIGURE_EXTRA_FLAGS := --without-libcrack \
+DEB_CONFIGURE_EXTRA_FLAGS := \
+	--bindir=/usr/bin \
+	--sbindir=/usr/sbin \
 	--mandir=/usr/share/man \
 	--with-libpam \
 	--with-yescrypt \
 	--enable-shadowgrp \
+	--enable-subordinate-ids \
+	--enable-lastlog=no \
 	--enable-man \
 	--disable-account-tools-setuid \
 	--with-group-name-max-length=32 \
-	--without-acl \
-	--without-attr \
+	--with-acl \
+	--with-attr \
 	--without-su \
 	--without-tcb \
-	 SHELL=/bin/sh
+
+
+ifeq ($(DEB_HOST_ARCH_OS),linux)
+DEB_CONFIGURE_EXTRA_FLAGS += --with-audit
+DEB_CONFIGURE_EXTRA_FLAGS += --with-btrfs
+endif
+
+ifneq ($(filter nodoc,$(DEB_BUILD_PROFILES)),)
+DEB_CONFIGURE_EXTRA_FLAGS += --disable-man
+endif
+
+DEB_CONFIGURE_EXTRA_FLAGS += SHELL=/bin/sh
 
 # Set the default editor for vipw/vigr
 CFLAGS += -DDEFAULT_EDITOR="\"sensible-editor\""
@@ -27,52 +44,19 @@ CFLAGS += -DDEFAULT_EDITOR="\"sensible-editor\""
 %:
 	dh $@
 
-override_dh_auto_configure:
-	cp debian/HOME_MODE.xml man/login.defs.d/HOME_MODE.xml
-	dh_auto_configure -- $(DEB_CONFIGURE_EXTRA_FLAGS)
+execute_after_dh_auto_clean:
+	# rebuild lib/getdate.c
+	rm -f lib/getdate.c
 
-override_dh_install-arch:
-ifneq ($(DEB_HOST_ARCH_OS),linux)
-	sed -i 's/session    optional   pam_keyinit.so/# Linux only # session    optional   pam_keyinit.so/' debian/login.pam
-endif
-	dh_install -a
-ifeq ($(DEB_HOST_ARCH_OS),hurd)
-	# /bin/login is provided by the hurd package.
-	rm -f debian/login/bin/login
-endif
+override_dh_auto_configure:
+	dh_auto_configure -- $(DEB_CONFIGURE_EXTRA_FLAGS)
 
 override_dh_installpam:
 	# Distribute the pam.d files; unless for the commands with disabled PAM
 	# support
-	dh_installpam -p login
 	dh_installpam -p passwd --name=passwd
 	dh_installpam -p passwd --name=chfn
 	dh_installpam -p passwd --name=chsh
 	dh_installpam -p passwd --name=chpasswd
 	dh_installpam -p passwd --name=newusers
 
-override_dh_builddeb-arch:
-	# uidmap
-	chmod u+s debian/uidmap/usr/bin/newuidmap
-	chmod u+s debian/uidmap/usr/bin/newgidmap
-	# login
-	# No real need for login to be setuid root
-	# chmod u+s debian/login/bin/login
-	chmod u+s debian/login/usr/bin/newgrp
-	# passwd
-	chmod u+s debian/passwd/usr/bin/chfn
-	chmod u+s debian/passwd/usr/bin/chsh
-	chmod u+s debian/passwd/usr/bin/gpasswd
-	chmod u+s debian/passwd/usr/bin/passwd
-	chgrp shadow debian/passwd/usr/bin/chage
-	chgrp shadow debian/passwd/usr/bin/expiry
-	chmod g+s debian/passwd/usr/bin/chage
-	chmod g+s debian/passwd/usr/bin/expiry
-	dh_builddeb -a
-
-override_dh_auto_clean:
-	sed -i 's/# Linux only # //' debian/login.pam
-	dh_auto_clean
-
-override_dh_clean:
-	dh_clean ./man/login.defs.d/HOME_MODE.xml

@@ -1,3 +1,5 @@
+#include <config.h>
+
 #include <dirent.h>
 #include <errno.h>
 #include <stdio.h>
@@ -8,96 +10,95 @@
 #include <sys/wait.h>
 #include <unistd.h>
 #include <lib/prototypes.h>
+
 #include "run_part.h"
 #include "shadowlog_internal.h"
 
-int run_part (char *script_path, const char *name, const char *action)
+
+static int run_part(char *script_path, const char *name, const char *action)
 {
-	int pid;
+	pid_t pid;
 	int wait_status;
-	int pid_status;
+	pid_t pid_status;
 	char *args[] = { script_path, NULL };
 
 	pid=fork();
 	if (pid==-1) {
-		perror ("Could not fork");
+		fprintf(shadow_logfd, "fork: %s\n", strerror(errno));
 		return 1;
 	}
 	if (pid==0) {
-		setenv ("ACTION",action,1);
-		setenv ("SUBJECT",name,1);
-		execv (script_path,args);
-		perror ("execv");
-		exit(1);
+		setenv("ACTION",action,1);
+		setenv("SUBJECT",name,1);
+		execv(script_path,args);
+		fprintf(shadow_logfd, "execv: %s\n", strerror(errno));
+		_exit(1);
 	}
 
-	pid_status = wait (&wait_status);
+	pid_status = wait(&wait_status);
 	if (pid_status == pid) {
 		return (wait_status);
 	}
 
-	perror ("waitpid");
+	fprintf(shadow_logfd, "waitpid: %s\n", strerror(errno));
 	return (1);
 }
 
-int run_parts (const char *directory, const char *name, const char *action)
+int run_parts(const char *directory, const char *name, const char *action)
 {
 	struct dirent **namelist;
 	int scanlist;
 	int n;
 	int execute_result = 0;
 
-	scanlist = scandir (directory, &namelist, 0, alphasort);
+	scanlist = scandir(directory, &namelist, NULL, alphasort);
 	if (scanlist<=0) {
 		return (0);
 	}
 
 	for (n=0; n<scanlist; n++) {
-		int path_length;
-		struct stat sb;
+		char         *s;
+		struct stat  sb;
 
-		path_length=strlen(directory) + strlen(namelist[n]->d_name) + 2;
-		char *s = (char*)malloc(path_length);
-		if (!s) {
-			printf ("could not allocate memory\n");
+		if (asprintf(&s, "%s/%s", directory, namelist[n]->d_name) == -1) {
+			fprintf(shadow_logfd, "asprintf: %s\n", strerror(errno));
 			for (; n<scanlist; n++) {
-				free (namelist[n]);
+				free(namelist[n]);
 			}
-			free (namelist);
+			free(namelist);
 			return (1);
 		}
-		snprintf (s, path_length, "%s/%s", directory, namelist[n]->d_name);
 
 		execute_result = 0;
-		if (stat (s, &sb) == -1) {
-			perror ("stat");
-			free (s);
+		if (stat(s, &sb) == -1) {
+			fprintf(shadow_logfd, "stat: %s\n", strerror(errno));
+			free(s);
 			for (; n<scanlist; n++) {
-				free (namelist[n]);
+				free(namelist[n]);
 			}
-			free (namelist);
+			free(namelist);
 			return (1);
 		}
 
-		if (S_ISREG (sb.st_mode) || S_ISLNK (sb.st_mode)) {
-			execute_result = run_part (s, name, action);
+		if (S_ISREG(sb.st_mode) || S_ISLNK(sb.st_mode)) {
+			execute_result = run_part(s, name, action);
 		}
 
-		free (s);
+		free(s);
 
 		if (execute_result!=0) {
-			fprintf (shadow_logfd,
+			fprintf(shadow_logfd,
 				"%s: did not exit cleanly.\n",
 			    namelist[n]->d_name);
 			for (; n<scanlist; n++) {
-				free (namelist[n]);
+				free(namelist[n]);
 			}
 			break;
 		}
 
-		free (namelist[n]);
+		free(namelist[n]);
 	}
-	free (namelist);
+	free(namelist);
 
 	return (execute_result);
 }

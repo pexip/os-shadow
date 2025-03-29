@@ -2,12 +2,12 @@
 .\"     Title: shadow
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 11/08/2022
+.\"      Date: 03/19/2025
 .\"    Manual: File Formats and Configuration Files
-.\"    Source: shadow-utils 4.13
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: Russian
 .\"
-.TH "shadow" "5" "11/08/2022" "shadow\-utils 4\&.13" "File Formats and Configuration"
+.TH "shadow" "5" "03/19/2025" "shadow\-utils 4\&.17\&.4" "File Formats and Configuration"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -38,12 +38,12 @@ is a file which contains the password information for the system\*(Aqs accounts 
 .PP
 Each line of this file contains 9 fields, separated by colons (\(Fo:\(Fc), in the following order:
 .PP
-\fBимя пользователя для входа в систему\fR
+\fBlogin name\fR
 .RS 4
-Должно содержать правильное имя учётной записи, которая существует в системе\&.
+It must be a valid account name, which exists on the system\&.
 .RE
 .PP
-\fBшифрованный пароль\fR
+\fBencrypted password\fR
 .RS 4
 This field may be empty, in which case no passwords are required to authenticate as the specified login name\&. However, some applications which read the
 /etc/shadow
@@ -59,7 +59,7 @@ If the password field contains some string that is not a valid result of
 \fBcrypt\fR(3), for instance ! or *, the user will not be able to use a unix password to log in (but the user may log in the system by other means)\&.
 .RE
 .PP
-\fBдата последней смены пароля\fR
+\fBdate of last password change\fR
 .RS 4
 The date of the last password change, expressed as the number of days since Jan 1, 1970 00:00 UTC\&.
 .sp
@@ -68,14 +68,14 @@ The value 0 has a special meaning, which is that the user should change her pass
 Пустое значение обозначает, что проверка устаревания пароля выключена\&.
 .RE
 .PP
-\fBминимальный срок действия пароля\fR
+\fBminimum password age\fR
 .RS 4
 Минимальный срок действия пароля в днях, которые пользователь должен ждать, чтобы поменять пароль\&.
 .sp
 An empty field and value 0 mean that there is no minimum password age\&.
 .RE
 .PP
-\fBмаксимальный срок действия пароля\fR
+\fBmaximum password age\fR
 .RS 4
 Максимальный срок действия пароля в днях, после которого пользователь должен изменить пароль\&.
 .sp
@@ -86,14 +86,14 @@ An empty field and value 0 mean that there is no minimum password age\&.
 Если максимальный срок действия пароля меньше чем минимальный срок действия пароля, то пользователь не сможет изменить свой пароль\&.
 .RE
 .PP
-\fBпериод предупреждения о пароле\fR
+\fBpassword warning period\fR
 .RS 4
 Количество дней до устаревания пароля (смотрите максимальный срок действия пароля) во время которых пользователю выдаётся предупреждение\&.
 .sp
 Пустое значение поля и 0 отключают период предупреждения о пароле\&.
 .RE
 .PP
-\fBпериод неактивности пароля\fR
+\fBpassword inactivity period\fR
 .RS 4
 Количество дней после устаревания пароля (смотрите максимальный срок действия пароля) во время которых пароль всё ещё принимается (и пользователь должен обновить свой пароль при следующем входе)\&.
 .sp
@@ -102,7 +102,7 @@ After expiration of the password and this expiration period is elapsed, no login
 Пустое значение поля означает, что период неактивности отсутствует\&.
 .RE
 .PP
-\fBдата истечения срока действия учётной записи\fR
+\fBaccount expiration date\fR
 .RS 4
 The date of expiration of the account, expressed as the number of days since Jan 1, 1970 00:00 UTC\&.
 .sp
@@ -113,7 +113,7 @@ Note that an account expiration differs from a password expiration\&. In case of
 Значение 0 не должно использоваться, так как это может рассматриваться как неустаревающая учётная запись или что запись устарела 1 января 1970 года\&.
 .RE
 .PP
-\fBзарезервированное поле\fR
+\fBreserved field\fR
 .RS 4
 Это поле зарезервировано для использования в будущем\&.
 .RE

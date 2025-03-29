@@ -2,12 +2,12 @@
 .\"     Title: shadow
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 08/11/2022
+.\"      Date: 19/03/2025
 .\"    Manual: File Formats and Configuration Files
-.\"    Source: shadow-utils 4.13
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: Italian
 .\"
-.TH "SHADOW" "5" "08/11/2022" "shadow\-utils 4\&.13" "File Formats and Configuration"
+.TH "SHADOW" "5" "19/03/2025" "shadow\-utils 4\&.17\&.4" "File Formats and Configuration"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -38,12 +38,12 @@ Questo file non deve essere leggibile dagli utenti normali se si vuole mantenere
 .PP
 Each line of this file contains 9 fields, separated by colons (\(Fo:\(Fc), in the following order:
 .PP
-\fBnome di login\fR
+\fBlogin name\fR
 .RS 4
-Deve essere un nome valido di un account esistente nel sistema\&.
+It must be a valid account name, which exists on the system\&.
 .RE
 .PP
-\fBpassword cifrata\fR
+\fBencrypted password\fR
 .RS 4
 This field may be empty, in which case no passwords are required to authenticate as the specified login name\&. However, some applications which read the
 /etc/shadow
@@ -59,7 +59,7 @@ If the password field contains some string that is not a valid result of
 \fBcrypt\fR(3), for instance ! or *, the user will not be able to use a unix password to log in (but the user may log in the system by other means)\&.
 .RE
 .PP
-\fBdata dell\*(Aqultimo cambio di password\fR
+\fBdate of last password change\fR
 .RS 4
 The date of the last password change, expressed as the number of days since Jan 1, 1970 00:00 UTC\&.
 .sp
@@ -68,14 +68,14 @@ The value 0 has a special meaning, which is that the user should change her pass
 Un campo vuoto implica che la scadenza della password \(`e disabilitata\&.
 .RE
 .PP
-\fBet\(`a minima password\fR
+\fBminimum password age\fR
 .RS 4
 L\*(Aqet\(`a minima password \(`e il numero di giorni che l\*(Aqutente dovr\(`a attendere prima di poter cambiare nuovamente la propria password\&.
 .sp
 An empty field and value 0 mean that there is no minimum password age\&.
 .RE
 .PP
-\fBet\(`a massima password\fR
+\fBmaximum password age\fR
 .RS 4
 L\*(Aqet\(`a massima password \(`e il numero di giorni dopo il quale l\*(Aqutente deve cambiare la propria password\&.
 .sp
@@ -86,14 +86,14 @@ Un campo vuoto indica che non ci sono una et\(`a massima password, un periodo di
 Se l\*(Aqet\(`a massima password \(`e minore dell\*(Aqet\(`a minima password, l\*(Aqutente non pu\(`o cambiare la propria password\&.
 .RE
 .PP
-\fBperiodo avviso password\fR
+\fBpassword warning period\fR
 .RS 4
 Il numero di giorni prima della scadenza di una password (vedere et\(`a massima password, sopra) durante il quale l\*(Aqutente riceve un avviso\&.
 .sp
 Un campo vuoto e il valore 0 indicano che non c\*(Aq\(`e un periodo di avviso password\&.
 .RE
 .PP
-\fBperiodo inattivit\(`a password\fR
+\fBpassword inactivity period\fR
 .RS 4
 Il numero di giorni dopo la scadenza della password (vedere et\(`a massima password, sopra) durante il quale la password \(`e ancora accettata (e l\*(Aqutente dovrebbe aggiornare la propria password al primo accesso)\&.
 .sp
@@ -102,7 +102,7 @@ After expiration of the password and this expiration period is elapsed, no login
 Un campo vuoto implica che non \(`e applicato il periodo di inattivit\(`a\&.
 .RE
 .PP
-\fBdata scadenza account\fR
+\fBaccount expiration date\fR
 .RS 4
 The date of expiration of the account, expressed as the number of days since Jan 1, 1970 00:00 UTC\&.
 .sp
@@ -113,7 +113,7 @@ Un campo vuoto implica che l\*(Aqaccount non scade mai\&.
 Il valore 0 non andrebbe usato perch\('e potrebbe essere interpretato come account che non scade o come scaduto il 1 gennaio 1970\&.
 .RE
 .PP
-\fBcampo riservato\fR
+\fBreserved field\fR
 .RS 4
 Questo campo \(`e riservato per uso futuro\&.
 .RE

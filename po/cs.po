@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: shadow 4.2\n"
 "Report-Msgid-Bugs-To: pkg-shadow-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2022-11-08 10:37-0600\n"
+"POT-Creation-Date: 2025-03-19 14:03-0500\n"
 "PO-Revision-Date: 2014-08-24 15:07+0200\n"
 "Last-Translator: Miroslav Kure <kurem@debian.cz>\n"
 "Language-Team: Czech <debian-l10n-czech@lists.debian.org>\n"
@@ -18,233 +18,8 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 
 #, c-format
-msgid ""
-"Multiple entries named '%s' in %s. Please fix this with pwck or grpck.\n"
-msgstr ""
-"Zjištěno několik záznamů pojmenovaných „%s“ v souboru %s. Napravte to prosím "
-"pomocí pwck nebo grpck.\n"
-
-#, c-format
-msgid "crypt method not supported by libcrypt? (%s)\n"
-msgstr "typ šifry není knihovnou libcrypt podporován? (%s)\n"
-
-#, c-format
-msgid "configuration error - cannot parse %s value: '%s'"
-msgstr "konfigurační chyba - nelze zpracovat hodnotu %s: „%s“"
-
-msgid "Could not allocate space for config info.\n"
-msgstr "Nelze alokovat dostatek místa pro konfigurační údaje.\n"
-
-#, c-format
-msgid "configuration error - unknown item '%s' (notify administrator)\n"
-msgstr ""
-"konfigurační chyba - neznámá položka „%s“ (informujte správce systému)\n"
-
-#, c-format
-msgid "%s: nscd did not terminate normally (signal %d)\n"
-msgstr "%s: nscd nebyl ukončen normálně (signál %d)\n"
-
-#, c-format
-msgid "%s: nscd exited with status %d\n"
-msgstr "%s: nscd skončil se stavem %d\n"
-
-msgid "Password: "
-msgstr "Heslo: "
-
-#, c-format
-msgid "%s's Password: "
-msgstr "Heslo uživatele %s: "
-
-#, fuzzy
-#| msgid "Cannot open audit interface - aborting.\n"
-msgid "Cannot open audit interface.\n"
-msgstr "Nelze otevřít auditní rozhraní - končím.\n"
-
-#, c-format
-msgid "%s: can not get previous SELinux process context: %s\n"
-msgstr ""
-
-#, c-format
-msgid "[libsemanage]: %s\n"
-msgstr "[libsemanage]: %s\n"
-
-#, c-format
-msgid "Cannot create SELinux management handle\n"
-msgstr "Nelze vytvořit spojení k SELinuxovému semanage\n"
-
-#, c-format
-msgid "SELinux policy not managed\n"
-msgstr "Politika SELinuxu není řízená\n"
-
-#, c-format
-msgid "Cannot read SELinux policy store\n"
-msgstr "Nelze číst úložiště SELinux politik\n"
-
-#, c-format
-msgid "Cannot establish SELinux management connection\n"
-msgstr "Nelze navázat spojení k SELinuxovému semanage\n"
-
-#, c-format
-msgid "Cannot begin SELinux transaction\n"
-msgstr "Nelze zahájit SELinux transakci\n"
-
-#, c-format
-msgid "Could not query seuser for %s\n"
-msgstr "Dotaz na „seuser“ uživatele %s selhal\n"
-
-#, c-format
-msgid "Could not set serange for %s\n"
-msgstr "Nelze nastavit „serange“ uživatele %s\n"
-
-#, c-format
-msgid "Could not set sename for %s\n"
-msgstr "Nelze nastavit „sename“ uživatele %s\n"
-
-#, c-format
-msgid "Could not modify login mapping for %s\n"
-msgstr "Nelze změnit mapování uživatele %s na SEuživatele\n"
-
-#, c-format
-msgid "Cannot create SELinux login mapping for %s\n"
-msgstr "Nelze vytvořit mapování uživatele %s na SEuživatele\n"
-
-#, c-format
-msgid "Could not set name for %s\n"
-msgstr "Nelze nastavit jméno uživatele %s\n"
-
-#, c-format
-msgid "Could not set SELinux user for %s\n"
-msgstr "Nelze nastavit SELinux uživatele pro %s\n"
-
-#, c-format
-msgid "Could not add login mapping for %s\n"
-msgstr "Nelze přidat mapování uživatele %s na SEuživatele\n"
-
-#, c-format
-msgid "Cannot init SELinux management\n"
-msgstr "Nelze inicializovat správu SELinuxu\n"
-
-#, c-format
-msgid "Cannot create SELinux user key\n"
-msgstr "Nelze vytvořit uživatelský klíč k SELinuxu\n"
-
-#, c-format
-msgid "Cannot verify the SELinux user\n"
-msgstr "Nelze ověřit SELinux uživatele\n"
-
-#, c-format
-msgid "Cannot modify SELinux user mapping\n"
-msgstr "Nelze změnit mapování na SELinuxového uživatele\n"
-
-#, c-format
-msgid "Cannot add SELinux user mapping\n"
-msgstr "Nelze přidat mapování na SELinuxového uživatele\n"
-
-#, c-format
-msgid "Cannot commit SELinux transaction\n"
-msgstr "Nelze dokončit SELinuxovou transakci\n"
-
-#, c-format
-msgid "Login mapping for %s is not defined, OK if default mapping was used\n"
-msgstr ""
-"Mapování uživatele %s není definováno, OK, pokud bylo použito výchozí "
-"mapování\n"
-
-#, c-format
-msgid "Login mapping for %s is defined in policy, cannot be deleted\n"
-msgstr "Mapování uživatele %s je definováno v politice, nemůže být smazáno\n"
-
-#, c-format
-msgid "Could not delete login mapping for %s"
-msgstr "Nelze smazat mapování pro uživatele %s"
-
-#, c-format
-msgid "%s: out of memory\n"
-msgstr "%s: došla paměť\n"
-
-#, c-format
-msgid "%s: Cannot stat %s: %s\n"
-msgstr "%s: nelze zavolat stat %s: %s\n"
-
-#, c-format
-msgid "%s: %s is neither a directory, nor a symlink.\n"
-msgstr "%s: %s není ani adresář, ani symbolický odkaz.\n"
-
-#, c-format
-msgid "%s: Cannot read symbolic link %s: %s\n"
-msgstr "%s: Nelze číst symbolický odkaz %s: %s\n"
-
-#, c-format
-msgid "%s: Suspiciously long symlink: %s\n"
-msgstr "%s: Podezřele dlouhý symbolický odkaz: %s\n"
-
-#, c-format
-msgid "%s: Cannot create directory %s: %s\n"
-msgstr "%s: Nelze vytvořit adresář %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot change owner of %s: %s\n"
-msgstr "%s: Nelze změnit vlastníka %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot change mode of %s: %s\n"
-msgstr "%s: Nelze změnit oprávnění k %s: %s\n"
-
-#, c-format
-msgid "%s: unlink: %s: %s\n"
-msgstr "%s: smazání: %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot remove directory %s: %s\n"
-msgstr "%s: Nelze odstranit adresář %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot rename %s to %s: %s\n"
-msgstr "%s: Nelze přejmenovat %s na %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot remove %s: %s\n"
-msgstr "%s: Nelze odstranit %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot create symbolic link %s: %s\n"
-msgstr "%s: Nelze vytvořit symbolický odkaz %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot change owners of %s: %s\n"
-msgstr "%s: Nelze změnit vlastníky %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot lstat %s: %s\n"
-msgstr "%s: Nelze zavolat lstat %s: %s\n"
-
-#, c-format
-msgid "%s: Warning, user %s has no tcb shadow file.\n"
-msgstr "%s: Varování, uživatel %s nemá v tcb svůj soubor shadow.\n"
-
-#, c-format
-msgid ""
-"%s: Emergency: %s's tcb shadow is not a regular file with st_nlink=1.\n"
-"The account is left locked.\n"
-msgstr ""
-"%s: Krizový stav: shadow v tcb uživatele %s není běžným souborem "
-"(st_nlink=1).\n"
-"Účet je ponechán zamknutý.\n"
-
-#, c-format
-msgid "%s: mkdir: %s: %s\n"
-msgstr "%s: vytvoření adresáře: %s: %s\n"
-
-#, c-format
-msgid "%s: Cannot open %s: %s\n"
-msgstr "%s: Nelze otevřít %s: %s\n"
-
-#, c-format
 msgid "Warning: unknown group %s\n"
 msgstr "Varování: neznámá skupina %s\n"
-
-msgid "Warning: too many groups\n"
-msgstr "Varování: příliš mnoho skupin\n"
 
 msgid "Your password has expired."
 msgstr "Platnost vašeho hesla vypršela."
@@ -286,14 +61,22 @@ msgid "%s: failed to unlock %s\n"
 msgstr "%s: nepodařilo se odemknout %s\n"
 
 #, c-format
+msgid ""
+"Multiple entries named '%s' in %s. Please fix this with pwck or grpck.\n"
+msgstr ""
+"Zjištěno několik záznamů pojmenovaných „%s“ v souboru %s. Napravte to prosím "
+"pomocí pwck nebo grpck.\n"
+
+#, c-format
 msgid "%s: "
 msgstr "%s: "
 
 msgid ": "
 msgstr ": "
 
-msgid "Environment overflow\n"
-msgstr "Přetečení prostředí\n"
+#, c-format
+msgid "crypt method not supported by libcrypt? (%s)\n"
+msgstr "typ šifry není knihovnou libcrypt podporován? (%s)\n"
 
 #, c-format
 msgid "You may not change $%s\n"
@@ -405,8 +188,16 @@ msgid "%s: Can't get unique UID (no more available UIDs)\n"
 msgstr "%s: Nelze získat jedinečné UID (volná UID neexistují)\n"
 
 #, c-format
-msgid "%s: Not enough arguments to form %u mappings\n"
-msgstr "%s: Nedostatek argumentů pro vytvoření %u mapování\n"
+msgid "configuration error - cannot parse %s value: '%s'"
+msgstr "konfigurační chyba - nelze zpracovat hodnotu %s: „%s“"
+
+msgid "Could not allocate space for config info.\n"
+msgstr "Nelze alokovat dostatek místa pro konfigurační údaje.\n"
+
+#, c-format
+msgid "configuration error - unknown item '%s' (notify administrator)\n"
+msgstr ""
+"konfigurační chyba - neznámá položka „%s“ (informujte správce systému)\n"
 
 #, c-format
 msgid "%s: Memory allocation failure\n"
@@ -435,8 +226,9 @@ msgstr "Nelze nastavit jméno uživatele %s\n"
 msgid "%s: Could not set caps\n"
 msgstr "Nelze nastavit jméno uživatele %s\n"
 
-#, c-format
-msgid "%s: snprintf failed!\n"
+#, fuzzy, c-format
+#| msgid "%s: snprintf failed!\n"
+msgid "%s: stpeprintf failed!\n"
 msgstr "%s: snprintf selhalo!\n"
 
 #, c-format
@@ -447,8 +239,21 @@ msgstr "%s: otevření %s selhalo: %s\n"
 msgid "%s: write to %s failed: %s\n"
 msgstr "%s: zápis do %s selhal: %s\n"
 
+#, fuzzy, c-format
+#| msgid "%s: open of %s failed: %s\n"
+msgid "%s: closing %s failed: %s\n"
+msgstr "%s: otevření %s selhalo: %s\n"
+
 msgid "Too many logins.\n"
 msgstr "Příliš mnoho přihlášení.\n"
+
+#, c-format
+msgid ""
+"\n"
+"%s login: "
+msgstr ""
+"\n"
+"Přihlašovací jméno na %s: "
 
 msgid "You have new mail."
 msgstr "Máte novou poštu."
@@ -458,6 +263,14 @@ msgstr "Nemáte žádnou poštu."
 
 msgid "You have mail."
 msgstr "Máte poštu."
+
+#, c-format
+msgid "%s: nscd did not terminate normally (signal %d)\n"
+msgstr "%s: nscd nebyl ukončen normálně (signál %d)\n"
+
+#, c-format
+msgid "%s: nscd exited with status %d\n"
+msgstr "%s: nscd skončil se stavem %d\n"
 
 msgid "no change"
 msgstr "beze změny"
@@ -470,9 +283,6 @@ msgstr "pouze změna velikosti písmen"
 
 msgid "too similar"
 msgstr "příliš podobné"
-
-msgid "too simple"
-msgstr "příliš jednoduché"
 
 msgid "rotated"
 msgstr "rotované"
@@ -519,6 +329,13 @@ msgstr ""
 "%s: (uživatel %s) volání pam_chauthtok() selhalo, chyba:\n"
 "%s\n"
 
+msgid "Password: "
+msgstr "Heslo: "
+
+#, c-format
+msgid "%s's Password: "
+msgstr "Heslo uživatele %s: "
+
 #, c-format
 msgid "Incorrect password for %s.\n"
 msgstr "Chybné heslo pro %s.\n"
@@ -545,16 +362,13 @@ msgid "%s: cannot access chroot directory %s: %s\n"
 msgstr "%s: nelze přistoupit k chroot adresáři %s: %s\n"
 
 #, c-format
-msgid "%s: cannot chdir to chroot directory %s: %s\n"
-msgstr "%s: nelze přejít (chdir) do chroot adresáře %s: %s\n"
-
-#, c-format
 msgid "%s: unable to chroot to directory %s: %s\n"
 msgstr "%s: nelze změnit kořen (chroot) na adresář %s: %s\n"
 
-#, c-format
-msgid "Unable to obtain random bytes.\n"
-msgstr ""
+#, fuzzy, c-format
+#| msgid "%s: cannot chdir to chroot directory %s: %s\n"
+msgid "%s: cannot chdir in chroot directory %s: %s\n"
+msgstr "%s: nelze přejít (chdir) do chroot adresáře %s: %s\n"
 
 #, c-format
 msgid ""
@@ -571,6 +385,110 @@ msgid ""
 "method.\n"
 msgstr ""
 
+#, fuzzy
+#| msgid "Cannot open audit interface - aborting.\n"
+msgid "Cannot open audit interface.\n"
+msgstr "Nelze otevřít auditní rozhraní - končím.\n"
+
+#, c-format
+msgid "%s: can not get previous SELinux process context: %s\n"
+msgstr ""
+
+#, c-format
+msgid "[libsemanage]: %s\n"
+msgstr "[libsemanage]: %s\n"
+
+#, c-format
+msgid "Cannot create SELinux management handle\n"
+msgstr "Nelze vytvořit spojení k SELinuxovému semanage\n"
+
+#, c-format
+msgid "SELinux policy not managed\n"
+msgstr "Politika SELinuxu není řízená\n"
+
+#, c-format
+msgid "Cannot read SELinux policy store\n"
+msgstr "Nelze číst úložiště SELinux politik\n"
+
+#, c-format
+msgid "Cannot establish SELinux management connection\n"
+msgstr "Nelze navázat spojení k SELinuxovému semanage\n"
+
+#, c-format
+msgid "Cannot begin SELinux transaction\n"
+msgstr "Nelze zahájit SELinux transakci\n"
+
+#, c-format
+msgid "Could not query seuser for %s\n"
+msgstr "Dotaz na „seuser“ uživatele %s selhal\n"
+
+#, fuzzy, c-format
+#| msgid "Could not set serange for %s\n"
+msgid "Could not set serange for %s to %s\n"
+msgstr "Nelze nastavit „serange“ uživatele %s\n"
+
+#, c-format
+msgid "Could not set sename for %s\n"
+msgstr "Nelze nastavit „sename“ uživatele %s\n"
+
+#, c-format
+msgid "Could not modify login mapping for %s\n"
+msgstr "Nelze změnit mapování uživatele %s na SEuživatele\n"
+
+#, c-format
+msgid "Cannot create SELinux login mapping for %s\n"
+msgstr "Nelze vytvořit mapování uživatele %s na SEuživatele\n"
+
+#, c-format
+msgid "Could not set name for %s\n"
+msgstr "Nelze nastavit jméno uživatele %s\n"
+
+#, c-format
+msgid "Could not set SELinux user for %s\n"
+msgstr "Nelze nastavit SELinux uživatele pro %s\n"
+
+#, c-format
+msgid "Could not add login mapping for %s\n"
+msgstr "Nelze přidat mapování uživatele %s na SEuživatele\n"
+
+#, c-format
+msgid "Cannot init SELinux management\n"
+msgstr "Nelze inicializovat správu SELinuxu\n"
+
+#, c-format
+msgid "Cannot create SELinux user key\n"
+msgstr "Nelze vytvořit uživatelský klíč k SELinuxu\n"
+
+#, c-format
+msgid "Cannot verify the SELinux user\n"
+msgstr "Nelze ověřit SELinux uživatele\n"
+
+#, c-format
+msgid "Cannot modify SELinux user mapping\n"
+msgstr "Nelze změnit mapování na SELinuxového uživatele\n"
+
+#, c-format
+msgid "Cannot add SELinux user mapping\n"
+msgstr "Nelze přidat mapování na SELinuxového uživatele\n"
+
+#, c-format
+msgid "Cannot commit SELinux transaction\n"
+msgstr "Nelze dokončit SELinuxovou transakci\n"
+
+#, c-format
+msgid "Login mapping for %s is not defined, OK if default mapping was used\n"
+msgstr ""
+"Mapování uživatele %s není definováno, OK, pokud bylo použito výchozí "
+"mapování\n"
+
+#, c-format
+msgid "Login mapping for %s is defined in policy, cannot be deleted\n"
+msgstr "Mapování uživatele %s je definováno v politice, nemůže být smazáno\n"
+
+#, c-format
+msgid "Could not delete login mapping for %s"
+msgstr "Nelze smazat mapování pro uživatele %s"
+
 #, c-format
 msgid "Unable to cd to '%s'\n"
 msgstr "Nelze přejít do „%s“\n"
@@ -583,12 +501,93 @@ msgid "Cannot execute %s"
 msgstr "%s nelze spustit"
 
 #, c-format
+msgid "Maximum subsystem depth reached\n"
+msgstr ""
+
+#, c-format
 msgid "Invalid root directory '%s'\n"
 msgstr "Chybný kořenový adresář „%s“\n"
 
 #, c-format
 msgid "Can't change root directory to '%s'\n"
 msgstr "Nelze změnit kořenový adresář na „%s“\n"
+
+#, c-format
+msgid "%s: out of memory\n"
+msgstr "%s: došla paměť\n"
+
+#, c-format
+msgid "%s: Cannot stat %s: %s\n"
+msgstr "%s: nelze zavolat stat %s: %s\n"
+
+#, c-format
+msgid "%s: %s is neither a directory, nor a symlink.\n"
+msgstr "%s: %s není ani adresář, ani symbolický odkaz.\n"
+
+#, c-format
+msgid "%s: Cannot read symbolic link %s: %s\n"
+msgstr "%s: Nelze číst symbolický odkaz %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot create directory %s: %s\n"
+msgstr "%s: Nelze vytvořit adresář %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot change owner of %s: %s\n"
+msgstr "%s: Nelze změnit vlastníka %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot change mode of %s: %s\n"
+msgstr "%s: Nelze změnit oprávnění k %s: %s\n"
+
+#, c-format
+msgid "%s: unlink: %s: %s\n"
+msgstr "%s: smazání: %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot remove directory %s: %s\n"
+msgstr "%s: Nelze odstranit adresář %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot rename %s to %s: %s\n"
+msgstr "%s: Nelze přejmenovat %s na %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot remove %s: %s\n"
+msgstr "%s: Nelze odstranit %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot create symbolic link %s: %s\n"
+msgstr "%s: Nelze vytvořit symbolický odkaz %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot change owners of %s: %s\n"
+msgstr "%s: Nelze změnit vlastníky %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot lstat %s: %s\n"
+msgstr "%s: Nelze zavolat lstat %s: %s\n"
+
+#, c-format
+msgid "%s: Warning, user %s has no tcb shadow file.\n"
+msgstr "%s: Varování, uživatel %s nemá v tcb svůj soubor shadow.\n"
+
+#, c-format
+msgid ""
+"%s: Emergency: %s's tcb shadow is not a regular file with st_nlink=1.\n"
+"The account is left locked.\n"
+msgstr ""
+"%s: Krizový stav: shadow v tcb uživatele %s není běžným souborem "
+"(st_nlink=1).\n"
+"Účet je ponechán zamknutý.\n"
+
+#, c-format
+msgid "%s: mkdir: %s: %s\n"
+msgstr "%s: vytvoření adresáře: %s: %s\n"
+
+#, c-format
+msgid "%s: Cannot open %s: %s\n"
+msgstr "%s: Nelze otevřít %s: %s\n"
 
 #, c-format
 msgid "%s: user %s is currently logged in\n"
@@ -662,6 +661,11 @@ msgstr ""
 msgid "  -R, --root CHROOT_DIR         directory to chroot into\n"
 msgstr "  -R, --root CHROOT_ADRESÁŘ     adresář, do kterého přejít\n"
 
+#, fuzzy
+#| msgid "  -R, --root CHROOT_DIR         directory to chroot into\n"
+msgid "  -P, --prefix PREFIX_DIR       directory prefix\n"
+msgstr "  -R, --root CHROOT_ADRESÁŘ     adresář, do kterého přejít\n"
+
 msgid ""
 "  -W, --warndays WARN_DAYS      set expiration warning days to WARN_DAYS\n"
 msgstr ""
@@ -689,11 +693,14 @@ msgstr "Vypnuté heslo"
 msgid "Account Expiration Date (YYYY-MM-DD)"
 msgstr "Vypršení platnosti účtu (RRRR-MM-DD)"
 
-msgid "Last password change\t\t\t\t\t: "
-msgstr "Poslední změna hesla\t\t\t\t\t: "
-
 msgid "never"
 msgstr "nikdy"
+
+msgid "future"
+msgstr ""
+
+msgid "Last password change\t\t\t\t\t: "
+msgstr "Poslední změna hesla\t\t\t\t\t: "
 
 msgid "password must be changed"
 msgstr "heslo musí být změněno"
@@ -734,14 +741,6 @@ msgstr "%s: nepoužívejte „l“ s ostatními parametry\n"
 #, c-format
 msgid "%s: Permission denied.\n"
 msgstr "%s: Přístup odmítnut.\n"
-
-#, c-format
-msgid "%s: Cannot determine your user name.\n"
-msgstr "%s: vaše uživatelské jméno nelze zjistit.\n"
-
-#, c-format
-msgid "%s: PAM: %s\n"
-msgstr "%s: PAM: %s\n"
 
 #, c-format
 msgid "%s: cannot lock %s; try again later.\n"
@@ -827,6 +826,14 @@ msgstr "Ostatní"
 msgid "%s: fields too long\n"
 msgstr "%s: položka je příliš dlouhá\n"
 
+#, c-format
+msgid "%s: Cannot determine your user name.\n"
+msgstr "%s: vaše uživatelské jméno nelze zjistit.\n"
+
+#, c-format
+msgid "%s: PAM: %s\n"
+msgstr "%s: PAM: %s\n"
+
 msgid "Cannot change ID to root.\n"
 msgstr "Nelze změnit ID na root.\n"
 
@@ -862,17 +869,14 @@ msgstr "%s: „%s“ obsahuje jiné znaky než ASCII\n"
 msgid "%s: '%s' contains illegal characters\n"
 msgstr "%s: „%s“ obsahuje nepovolené znaky\n"
 
+#, fuzzy, c-format
+#| msgid "%s: '%s' is not a valid group name\n"
+msgid "%s: Provided user name is not a valid name\n"
+msgstr "%s: „%s“ není platným jménem skupiny\n"
+
 #, c-format
 msgid "%s: user '%s' does not exist\n"
 msgstr "%s: uživatel „%s“ neexistuje\n"
-
-#, c-format
-msgid "%s: cannot change user '%s' on NIS client.\n"
-msgstr "%s: uživatele „%s“ nelze na NIS klientu změnit.\n"
-
-#, c-format
-msgid "%s: '%s' is the NIS master for this client.\n"
-msgstr "%s: „%s“ je hlavním NIS serverem pro tohoto klienta.\n"
 
 #, c-format
 msgid "Changing the user information for %s\n"
@@ -911,6 +915,11 @@ msgid ""
 "                                or YESCRYPT crypt algorithms\n"
 msgstr "  -s, --sha-rounds              počet SHA iterací algoritmu SHA*\n"
 
+#, fuzzy, c-format
+#| msgid "%s: unsupported crypt method: %s\n"
+msgid "%s: no crypt method defined\n"
+msgstr "%s: nepodporovaný typ šifry: %s\n"
+
 #, c-format
 msgid "%s: %s flag is only allowed with the %s flag\n"
 msgstr "%s: přepínač %s je povolen pouze s přepínačem %s\n"
@@ -923,36 +932,42 @@ msgstr "%s: přepínače -c, -e a -m se navzájem vylučují\n"
 msgid "%s: unsupported crypt method: %s\n"
 msgstr "%s: nepodporovaný typ šifry: %s\n"
 
-#, c-format
-msgid "%s: line %d: line too long\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: line too long\n"
+msgid "%s: line %jd: line too long\n"
 msgstr "%s: řádek %d je příliš dlouhý\n"
 
-#, c-format
-msgid "%s: line %d: missing new password\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: missing new password\n"
+msgid "%s: line %jd: missing new password\n"
 msgstr "%s: řádek %d: chybí nové heslo\n"
 
 #, c-format
 msgid "%s: failed to crypt password with salt '%s': %s\n"
 msgstr "%s: nepodařilo se zašifrovat heslo se solí „%s“: %s\n"
 
-#, c-format
-msgid "%s: line %d: group '%s' does not exist\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: group '%s' does not exist\n"
+msgid "%s: line %jd: group '%s' does not exist\n"
 msgstr "%s: řádek %d: skupina „%s“ neexistuje\n"
 
-#, c-format
-msgid "%s: line %d: failed to prepare the new %s entry '%s'\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: failed to prepare the new %s entry '%s'\n"
+msgid "%s: line %jd: failed to prepare the new %s entry '%s'\n"
 msgstr "%s: řádek %d: selhala příprava nového %s záznamu „%s“\n"
 
 #, c-format
 msgid "%s: error detected, changes ignored\n"
 msgstr "%s: chyba, změny budou ignorovány\n"
 
-#, c-format
-msgid "%s: (line %d, user %s) password not changed\n"
+#, fuzzy, c-format
+#| msgid "%s: (line %d, user %s) password not changed\n"
+msgid "%s: (line %jd, user %s) password not changed\n"
 msgstr "%s: (řádek %d: uživatel %s) heslo nebylo změněno\n"
 
-#, c-format
-msgid "%s: line %d: user '%s' does not exist\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: user '%s' does not exist\n"
+msgid "%s: line %jd: user '%s' does not exist\n"
 msgstr "%s: řádek %d: uživatel „%s“ neexistuje\n"
 
 msgid "  -s, --shell SHELL             new login shell for the user account\n"
@@ -960,6 +975,16 @@ msgstr "  -s, --shell SHELL             nový přihlašovací shell uživatele\n
 
 msgid "Login Shell"
 msgstr "Přihlašovací shell"
+
+#, fuzzy, c-format
+#| msgid "%s: Cannot get the size of %s: %s\n"
+msgid "Cannot parse shell files: %s"
+msgstr "%s: nelze zjistit velikost %s: %s\n"
+
+#, fuzzy, c-format
+#| msgid "%s: cannot create new defaults file\n"
+msgid "Cannot evaluate entries in shell files: %s"
+msgstr "%s: nelze vytvořit nový soubor s výchozími hodnotami\n"
 
 #, c-format
 msgid "You may not change the shell for '%s'.\n"
@@ -972,6 +997,11 @@ msgstr "Měním přihlašovací shell pro %s\n"
 #, c-format
 msgid "%s: Invalid entry: %s\n"
 msgstr "%s: chybná položka %s\n"
+
+#, fuzzy, c-format
+#| msgid "%s: %s is an invalid shell\n"
+msgid "%s: Warning: %s is an invalid shell\n"
+msgstr "%s: %s není platný shell\n"
 
 #, c-format
 msgid "%s: %s is an invalid shell\n"
@@ -1211,11 +1241,6 @@ msgid "  -r, --system                  create a system account\n"
 msgstr "  -r, --system                  vytvoří systémový účet\n"
 
 #, fuzzy
-#| msgid "  -R, --root CHROOT_DIR         directory to chroot into\n"
-msgid "  -P, --prefix PREFIX_DI        directory prefix\n"
-msgstr "  -R, --root CHROOT_ADRESÁŘ     adresář, do kterého přejít\n"
-
-#, fuzzy
 #| msgid "  -l, --list                    list the members of the group\n"
 msgid "  -U, --users USERS             list of user members of this group\n"
 msgstr "  -l, --list                    vypíše členy skupiny\n"
@@ -1228,6 +1253,11 @@ msgstr "chybné uživatelské jméno „%s“\n"
 #, c-format
 msgid "%s: '%s' is not a valid group name\n"
 msgstr "%s: „%s“ není platným jménem skupiny\n"
+
+#, fuzzy, c-format
+#| msgid "%s: Cannot open %s: %s\n"
+msgid "%s: cannot open %s: %s\n"
+msgstr "%s: Nelze otevřít %s: %s\n"
 
 #, c-format
 msgid "%s: invalid group ID '%s'\n"
@@ -1272,14 +1302,6 @@ msgstr "%s: nelze odstranit primární skupinu uživatele „%s“.\n"
 #, c-format
 msgid "%s: group '%s' does not exist\n"
 msgstr "%s: skupina „%s“ neexistuje\n"
-
-#, c-format
-msgid "%s: group '%s' is a NIS group\n"
-msgstr "%s: skupina „%s“ je NIS skupinou\n"
-
-#, c-format
-msgid "%s: %s is the NIS master\n"
-msgstr "%s: %s je hlavním NIS serverem\n"
 
 #, c-format
 msgid "%s: user '%s' is already a member of '%s'\n"
@@ -1373,14 +1395,6 @@ msgstr "  -p, --password HESLO          změní heslo na (šifrované) HESLO\n"
 #, c-format
 msgid "%s: invalid group name '%s'\n"
 msgstr "%s: neplatné jméno skupiny „%s“\n"
-
-#, c-format
-msgid "%s: group %s is a NIS group\n"
-msgstr "%s: skupina %s je NIS skupinou\n"
-
-#, c-format
-msgid "%s: unknown user %s\n"
-msgstr "%s: neznámý uživatel %s\n"
 
 #, c-format
 msgid ""
@@ -1491,12 +1505,6 @@ msgstr "%s: žádné změny nebyly provedeny\n"
 msgid "%s: cannot delete %s\n"
 msgstr "%s: nelze smazat %s\n"
 
-msgid "Usage: id [-a]\n"
-msgstr "Použití: id [-a]\n"
-
-msgid " groups="
-msgstr " skupiny="
-
 msgid ""
 "  -b, --before DAYS             print only lastlog records older than DAYS\n"
 msgstr ""
@@ -1504,7 +1512,7 @@ msgstr ""
 
 #, fuzzy
 msgid ""
-"  -C, --clear                   clear lastlog record of an user (usable only "
+"  -C, --clear                   clear lastlog record of a user (usable only "
 "with -u)\n"
 msgstr ""
 "  -a, --all                     zobrazí záznamy faillogu o všech "
@@ -1528,6 +1536,16 @@ msgid ""
 "  -u, --user LOGIN              print lastlog record of the specified LOGIN\n"
 msgstr ""
 "  -u, --user ÚČET               zobrazí záznamy lastlogu pro uživatele ÚČET\n"
+
+#, fuzzy
+#| msgid ""
+#| "  -a, --all                     display faillog records for all users\n"
+msgid ""
+"  -a, --active                  print lastlog excluding '**Never logged "
+"in**' users"
+msgstr ""
+"  -a, --all                     zobrazí záznamy faillogu o všech "
+"uživatelích\n"
 
 #, fuzzy, c-format
 #| msgid "Username                Port     Latest"
@@ -1577,10 +1595,6 @@ msgid "       %s [-p] [-h host] [-f name]\n"
 msgstr "         %s [-p] [-h počítač] [-f jméno]\n"
 
 #, c-format
-msgid "       %s [-p] -r host\n"
-msgstr "         %s [-p] -r počítač\n"
-
-#, c-format
 msgid "configuration error - cannot parse %s value: '%d'"
 msgstr "konfigurační chyba - nelze zpracovat hodnotu %s: „%d“"
 
@@ -1604,9 +1618,6 @@ msgstr ""
 #, c-format
 msgid "%s: Cannot possibly work without effective root\n"
 msgstr "%s: Bez efektivních oprávnění uživatele root nelze pracovat\n"
-
-msgid "No utmp entry.  You must exec \"login\" from the lowest level \"sh\""
-msgstr "utmp záznam neexistuje. Musíte spustit „login“ z nejnižšího „sh“"
 
 #, c-format
 msgid ""
@@ -1642,14 +1653,6 @@ msgid "Cannot find user (%s)\n"
 msgstr "Nelze nalézt uživatele (%s)\n"
 
 #, c-format
-msgid ""
-"\n"
-"%s login: "
-msgstr ""
-"\n"
-"Přihlašovací jméno na %s: "
-
-#, c-format
 msgid "%s: failure forking: %s"
 msgstr "%s: chyba rozdvojení: %s"
 
@@ -1682,9 +1685,13 @@ msgstr "Použití: logoutd\n"
 msgid "%s: gid range [%lu-%lu) -> [%lu-%lu) not allowed\n"
 msgstr "%s: rozsah gid [%lu-%lu) -> [%lu-%lu) není povolen\n"
 
-#, c-format
+#, fuzzy, c-format
+#| msgid ""
+#| "usage: %s <pid> <gid> <lowergid> <count> [ <gid> <lowergid> "
+#| "<count> ] ... \n"
 msgid ""
-"usage: %s <pid> <gid> <lowergid> <count> [ <gid> <lowergid> <count> ] ... \n"
+"usage: %s [<pid|fd:<pidfd>] <gid> <lowergid> <count> [ <gid> <lowergid> "
+"<count> ] ... \n"
 msgstr ""
 "použití: %s <pid> <gid> <spodnígid> <počet> [ <gid> <spodnígid> "
 "<počet> ] ...\n"
@@ -1713,18 +1720,15 @@ msgstr "%s: selhalo odstranění %s\n"
 msgid "%s: failed to setgroups %s policy: %s\n"
 msgstr "%s: nepodařilo se odemknout %s\n"
 
-#, c-format
-msgid "%s: Could not open proc directory for target %u\n"
-msgstr "%s: Nelze otevřít proc adresář cílového procesu %u\n"
-
-#, c-format
-msgid "%s: Could not stat directory for target %u\n"
+#, fuzzy, c-format
+#| msgid "%s: Could not stat directory for target %u\n"
+msgid "%s: Could not stat directory for process\n"
 msgstr "%s: Nelze zavolat stat na adresář cílového procesu %u\n"
 
 #, c-format
 msgid ""
-"%s: Target %u is owned by a different user: uid:%lu pw_uid:%lu st_uid:%lu, "
-"gid:%lu pw_gid:%lu st_gid:%lu\n"
+"%s: Target process is owned by a different user: uid:%lu pw_uid:%lu st_uid:"
+"%lu, gid:%lu pw_gid:%lu st_gid:%lu\n"
 msgstr ""
 
 msgid "Usage: newgrp [-] [group]\n"
@@ -1744,29 +1748,34 @@ msgstr "Neplatné heslo.\n"
 msgid "%s: failure forking: %s\n"
 msgstr "%s: chyba rozdvojení: %s\n"
 
+#, fuzzy, c-format
+#| msgid "%s: '%s' is not a valid group name\n"
+msgid "%s: provided group is not a valid group name\n"
+msgstr "%s: „%s“ není platným jménem skupiny\n"
+
 #, c-format
 msgid "%s: GID '%lu' does not exist\n"
 msgstr "%s: GID „%lu“ neexistuje\n"
-
-msgid "too many groups\n"
-msgstr "příliš mnoho skupin\n"
 
 #, c-format
 msgid "%s: uid range [%lu-%lu) -> [%lu-%lu) not allowed\n"
 msgstr "%s: rozsah uid [%lu-%lu) -> [%lu-%lu) není povolen\n"
 
-#, c-format
+#, fuzzy, c-format
+#| msgid ""
+#| "usage: %s <pid> <uid> <loweruid> <count> [ <uid> <loweruid> "
+#| "<count> ] ... \n"
 msgid ""
-"usage: %s <pid> <uid> <loweruid> <count> [ <uid> <loweruid> <count> ] ... \n"
+"usage: %s [<pid>|fd:<pidfd>] <uid> <loweruid> <count> [ <uid> <loweruid> "
+"<count> ] ... \n"
 msgstr ""
 "použití: %s <pid> <uid> <spodníuid> <počet> [ <uid> <spodníuid> "
 "<počet> ] ...\n"
 
-#, c-format
-msgid ""
-"%s: Target process %u is owned by a different user: uid:%lu pw_uid:%lu "
-"st_uid:%lu, gid:%lu pw_gid:%lu st_gid:%lu\n"
-msgstr ""
+#, fuzzy, c-format
+#| msgid "%s: Could not stat directory for target %u\n"
+msgid "%s: Could not stat directory for target process\n"
+msgstr "%s: Nelze zavolat stat na adresář cílového procesu %u\n"
 
 #, fuzzy
 #| msgid "  -q, --quiet                   quiet mode\n"
@@ -1790,7 +1799,16 @@ msgid "%s: invalid user name '%s': use --badname to ignore\n"
 msgstr "%s: chybné uživatelské jméno „%s“\n"
 
 #, c-format
-msgid "%s: line %d: invalid line\n"
+msgid "%s: invalid user name '%s'\n"
+msgstr "%s: chybné uživatelské jméno „%s“\n"
+
+#, c-format
+msgid "%s: Provide '--crypt-method' before number of rounds\n"
+msgstr ""
+
+#, fuzzy, c-format
+#| msgid "%s: line %d: invalid line\n"
+msgid "%s: line %jd: invalid line\n"
 msgstr "%s: řádek %d: chybný řádek\n"
 
 #, c-format
@@ -1798,46 +1816,58 @@ msgid "%s: cannot update the entry of user %s (not in the passwd database)\n"
 msgstr ""
 "%s: položku pro uživatele %s nelze aktualizovat (není v passwd databázi)\n"
 
-#, c-format
-msgid "%s: line %d: can't create user\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: can't create user\n"
+msgid "%s: line %jd: can't create user\n"
 msgstr "%s: řádek %d: nelze vytvořit uživatele\n"
 
-#, c-format
-msgid "%s: line %d: can't create group\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: can't create group\n"
+msgid "%s: line %jd: can't create group\n"
 msgstr "%s: řádek %d: nelze vytvořit skupinu\n"
 
-#, c-format
-msgid "%s: line %d: user '%s' does not exist in %s\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: user '%s' does not exist in %s\n"
+msgid "%s: line %jd: user '%s' does not exist in %s\n"
 msgstr "%s: řádek %d: uživatel „%s“ v %s neexistuje\n"
 
-#, c-format
-msgid "%s: line %d: can't update password\n"
+#, fuzzy, c-format
+#| msgid "%s: unlink: %s: %s\n"
+msgid "%s: line %jd: %s\n"
+msgstr "%s: smazání: %s: %s\n"
+
+#, fuzzy, c-format
+#| msgid "%s: line %d: can't update password\n"
+msgid "%s: line %jd: can't update password\n"
 msgstr "%s: řádek %d: heslo nelze aktualizovat\n"
 
 #, fuzzy, c-format
 #| msgid "%s: line %d: mkdir %s failed: %s\n"
-msgid "%s: line %d: homedir must be an absolute path\n"
+msgid "%s: line %jd: homedir must be an absolute path\n"
 msgstr "%s: řádek %d: volání mkdir %s selhalo: %s\n"
 
-#, c-format
-msgid "%s: line %d: mkdir %s failed: %s\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: mkdir %s failed: %s\n"
+msgid "%s: line %jd: mkdir %s failed: %s\n"
 msgstr "%s: řádek %d: volání mkdir %s selhalo: %s\n"
 
-#, c-format
-msgid "%s: line %d: chown %s failed: %s\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: chown %s failed: %s\n"
+msgid "%s: line %jd: chown %s failed: %s\n"
 msgstr "%s: řádek %d: volání chown %s selhalo: %s\n"
 
-#, c-format
-msgid "%s: line %d: can't update entry\n"
+#, fuzzy, c-format
+#| msgid "%s: line %d: can't update entry\n"
+msgid "%s: line %jd: can't update entry\n"
 msgstr "%s: řádek %d: položku nelze aktualizovat\n"
-
-#, c-format
-msgid "%s: failed to prepare new %s entry\n"
-msgstr "%s: příprava nového záznamu %s selhala\n"
 
 #, c-format
 msgid "%s: can't find subordinate user range\n"
 msgstr "%s: nelze nalézt rozsah podřízených uživatelů\n"
+
+#, c-format
+msgid "%s: failed to prepare new %s entry\n"
+msgstr "%s: příprava nového záznamu %s selhala\n"
 
 #, c-format
 msgid "%s: can't find subordinate group range\n"
@@ -1907,6 +1937,11 @@ msgstr ""
 "  -x, --maxdays MAX_DNŮ         nastaví maximální počet dnů před změnou\n"
 "                                hesla na MAX_DNŮ\n"
 
+#, fuzzy
+#| msgid "  -l, --list                    show account aging information\n"
+msgid "  -s, --stdin                   read new token from stdin\n"
+msgstr "  -l, --list                    zobrazí informace o účtu\n"
+
 msgid "Old password: "
 msgstr "Staré heslo: "
 
@@ -1925,6 +1960,11 @@ msgid ""
 msgstr ""
 "Zadejte nové heslo (počet znaků v intervalu %d až %d).\n"
 "Použijte kombinaci velkých a malých písmen s číslicemi.\n"
+
+#, fuzzy
+#| msgid "%s: fields too long\n"
+msgid "Password is too long.\n"
+msgstr "%s: položka je příliš dlouhá\n"
 
 msgid "New password: "
 msgstr "Nové heslo: "
@@ -1968,6 +2008,11 @@ msgstr ""
 #, c-format
 msgid "%s: repository %s not supported\n"
 msgstr "%s: úložna %s není podporována\n"
+
+#, fuzzy, c-format
+#| msgid "%s: only root can use the -g/--group option\n"
+msgid "%s: only root can use --stdin/-s option\n"
+msgstr "%s: volbu -g/--group může používat pouze root\n"
 
 #, fuzzy, c-format
 #| msgid "%s: %s is not authorized to change the password of %s\n"
@@ -2027,6 +2072,11 @@ msgstr "duplikovaná položka v souboru s hesly"
 #, fuzzy, c-format
 #| msgid "%s: invalid user name '%s'\n"
 msgid "invalid user name '%s': use --badname to ignore\n"
+msgstr "%s: chybné uživatelské jméno „%s“\n"
+
+#, fuzzy, c-format
+#| msgid "%s: invalid user name '%s'\n"
+msgid "invalid user name '%s'\n"
 msgstr "%s: chybné uživatelské jméno „%s“\n"
 
 #, c-format
@@ -2122,11 +2172,9 @@ msgstr "%s: chyba signálu\n"
 msgid "Session terminated, terminating shell..."
 msgstr "Sezení skončeno, ukončuji shell..."
 
-#, c-format
 msgid " ...killed.\n"
 msgstr " ...zabit.\n"
 
-#, c-format
 msgid " ...waiting for child to terminate.\n"
 msgstr " ...čeká na ukončení potomka.\n"
 
@@ -2213,6 +2261,11 @@ msgstr "%s: Toto času nejste oprávněni používat su\n"
 msgid "No passwd entry for user '%s'\n"
 msgstr "V databázi není záznam pro uživatele „%s“\n"
 
+#, fuzzy, c-format
+#| msgid "invalid user name '%s'\n"
+msgid "Overlong user name '%s'\n"
+msgstr "chybné uživatelské jméno „%s“\n"
+
 #, c-format
 msgid "%s: must be run from a terminal\n"
 msgstr "%s: musí být spuštěno z terminálu\n"
@@ -2254,8 +2307,16 @@ msgstr "Vstupuji do režimu údržby systému"
 msgid "%s: %s was created, but could not be removed\n"
 msgstr "%s: %s byl vytvořen, ale nemůže být odstraněn\n"
 
-#, c-format
-msgid "%s: the %s configuration in %s will be ignored\n"
+#, fuzzy, c-format
+#| msgid "%s: the %s configuration in %s will be ignored\n"
+msgid "%s: the %s= configuration in %s will be ignored\n"
+msgstr "%s: nastavení %s v %s bude ignorováno\n"
+
+#, fuzzy, c-format
+#| msgid "%s: the %s configuration in %s will be ignored\n"
+msgid ""
+"%s: the '%s=' configuration in %s has an invalid group, ignoring the bad "
+"group\n"
 msgstr "%s: nastavení %s v %s bude ignorováno\n"
 
 #, fuzzy, c-format
@@ -2266,10 +2327,6 @@ msgstr "%s: nelze vytvořit nový soubor s výchozími hodnotami\n"
 #, fuzzy, c-format
 #| msgid "%s: cannot create new defaults file\n"
 msgid "%s: cannot create directory for defaults file\n"
-msgstr "%s: nelze vytvořit nový soubor s výchozími hodnotami\n"
-
-#, c-format
-msgid "%s: cannot create new defaults file\n"
 msgstr "%s: nelze vytvořit nový soubor s výchozími hodnotami\n"
 
 #, c-format
@@ -2287,10 +2344,6 @@ msgstr "%s: Nelze vytvořit záložní soubor (%s): %s\n"
 #, c-format
 msgid "%s: rename: %s: %s\n"
 msgstr "%s: přejmenovat: %s: %s\n"
-
-#, c-format
-msgid "%s: group '%s' is a NIS group.\n"
-msgstr "%s: skupina „%s“ je NIS skupinou.\n"
 
 #, c-format
 msgid "%s: too many groups specified (max %d).\n"
@@ -2424,6 +2477,17 @@ msgstr ""
 msgid ""
 "  -Z, --selinux-user SEUSER     use a specific SEUSER for the SELinux user "
 "mapping\n"
+msgstr ""
+"  -Z, --selinux-user SEUŽIVATEL pro mapování na SELinuxového uživatele\n"
+"                                použije SEUŽIVATELe\n"
+
+#, fuzzy
+#| msgid ""
+#| "  -Z, --selinux-user SEUSER     use a specific SEUSER for the SELinux "
+#| "user mapping\n"
+msgid ""
+"      --selinux-range SERANGE   use a specific MLS range for the SELinux "
+"user mapping\n"
 msgstr ""
 "  -Z, --selinux-user SEUŽIVATEL pro mapování na SELinuxového uživatele\n"
 "                                použije SEUŽIVATELe\n"
@@ -2571,6 +2635,16 @@ msgstr ""
 msgid "Setting mailbox file permissions"
 msgstr "Nastavuji oprávnění k poštovní schránce"
 
+#, fuzzy
+#| msgid "Creating mailbox file"
+msgid "Synchronize mailbox file"
+msgstr "Vytvářím poštovní schránku"
+
+#, fuzzy
+#| msgid "Creating mailbox file"
+msgid "Closing mailbox file"
+msgstr "Vytvářím poštovní schránku"
+
 #, c-format
 msgid "%s warning: %s's uid %d is greater than SYS_UID_MAX %d\n"
 msgstr ""
@@ -2705,10 +2779,6 @@ msgid "%s: Cannot remove tcb files for %s: %s\n"
 msgstr "%s: Nelze odstranit tcb soubory uživatele %s: %s\n"
 
 #, c-format
-msgid "%s: user %s is a NIS user\n"
-msgstr "%s: uživatel %s je NIS uživatelem\n"
-
-#, c-format
 msgid "%s: %s home directory (%s) not found\n"
 msgstr "%s: domovský adresář uživatele %s (%s) nebyl nalezen\n"
 
@@ -2830,6 +2900,16 @@ msgstr ""
 "  -Z, --selinux-user SEUŽIVATEL nové mapování uživatelského účtu na\n"
 "                                uživatele SELinuxu\n"
 
+#, fuzzy
+#| msgid ""
+#| "  -Z, --selinux-user SEUSER     new SELinux user mapping for the user "
+#| "account\n"
+msgid ""
+"      --selinux-range SERANGE   new SELinux MLS range for the user account\n"
+msgstr ""
+"  -Z, --selinux-user SEUŽIVATEL nové mapování uživatelského účtu na\n"
+"                                uživatele SELinuxu\n"
+
 #, c-format
 msgid ""
 "%s: unlocking the user's password would result in a passwordless account.\n"
@@ -2924,8 +3004,22 @@ msgstr ""
 "%s: nepodařilo se zkopírovat lastlog záznamy uživatele %lu uživateli %lu: "
 "%s\n"
 
+#, fuzzy, c-format
+#| msgid "%s: failed to copy the lastlog entry of user %lu to user %lu: %s\n"
+msgid "%s: failed to copy the lastlog entry of user %ju to user %ju: %s\n"
+msgstr ""
+"%s: nepodařilo se zkopírovat lastlog záznamy uživatele %lu uživateli %lu: "
+"%s\n"
+
 #, c-format
 msgid "%s: failed to copy the faillog entry of user %lu to user %lu: %s\n"
+msgstr ""
+"%s: nepodařilo se zkopírovat faillog záznamy uživatele %lu uživateli %lu: "
+"%s\n"
+
+#, fuzzy, c-format
+#| msgid "%s: failed to copy the faillog entry of user %lu to user %lu: %s\n"
+msgid "%s: failed to copy the faillog entry of user %ju to user %ju: %s\n"
 msgstr ""
 "%s: nepodařilo se zkopírovat faillog záznamy uživatele %lu uživateli %lu: "
 "%s\n"
@@ -2940,22 +3034,24 @@ msgstr "chyba při změně vlastníka poštovní schránky"
 msgid "failed to rename mailbox"
 msgstr "chyba při přejmenovávání poštovní schránky"
 
-#, c-format
-msgid "%s: failed to remove uid range %lu-%lu from '%s'\n"
+#, fuzzy, c-format
+#| msgid "%s: failed to remove uid range %lu-%lu from '%s'\n"
+msgid "%s: failed to remove uid range %ju-%ju from '%s'\n"
 msgstr "%s: odebrání rozsahu uid %lu-%lu z „%s“ selhalo\n"
 
 #, fuzzy, c-format
 #| msgid "%s: failed to add uid range %lu-%lu from '%s'\n"
-msgid "%s: failed to add uid range %lu-%lu to '%s'\n"
+msgid "%s: failed to add uid range %ju-%ju to '%s'\n"
 msgstr "%s: přidání rozsahu uid %lu-%lu z „%s“ selhalo\n"
 
-#, c-format
-msgid "%s: failed to remove gid range %lu-%lu from '%s'\n"
+#, fuzzy, c-format
+#| msgid "%s: failed to remove gid range %lu-%lu from '%s'\n"
+msgid "%s: failed to remove gid range %ju-%ju from '%s'\n"
 msgstr "%s: odebrání rozsahu gid %lu-%lu z „%s“ selhalo\n"
 
 #, fuzzy, c-format
 #| msgid "%s: failed to add gid range %lu-%lu from '%s'\n"
-msgid "%s: failed to add gid range %lu-%lu to '%s'\n"
+msgid "%s: failed to add gid range %ju-%ju to '%s'\n"
 msgstr "%s: přidání rozsahu gid %lu-%lu z „%s“ selhalo\n"
 
 #, c-format
@@ -3030,8 +3126,10 @@ msgstr "dočasný soubor se nepodařilo smazat"
 msgid "failed to stat edited file"
 msgstr "na upravovaný soubor se nepodařilo zavolat stat()"
 
-msgid "failed to allocate memory"
-msgstr "nepodařilo se alokovat paměť"
+#, fuzzy
+#| msgid "%s: snprintf failed!\n"
+msgid "asprintf(3) failed"
+msgstr "%s: snprintf selhalo!\n"
 
 msgid "failed to create backup file"
 msgstr "vytvoření záložního souboru selhalo"
@@ -3044,6 +3142,82 @@ msgstr "%s: %s nelze obnovit: %s (změny jsou v %s)\n"
 msgid "%s: failed to find tcb directory for %s\n"
 msgstr "%s: nepodařilo se nalézt tcb adresář uživatele %s\n"
 
+#~ msgid "Warning: too many groups\n"
+#~ msgstr "Varování: příliš mnoho skupin\n"
+
+#~ msgid "Environment overflow\n"
+#~ msgstr "Přetečení prostředí\n"
+
+#, c-format
+#~ msgid "%s: Suspiciously long symlink: %s\n"
+#~ msgstr "%s: Podezřele dlouhý symbolický odkaz: %s\n"
+
+#, c-format
+#~ msgid "%s: cannot change user '%s' on NIS client.\n"
+#~ msgstr "%s: uživatele „%s“ nelze na NIS klientu změnit.\n"
+
+#, c-format
+#~ msgid "%s: '%s' is the NIS master for this client.\n"
+#~ msgstr "%s: „%s“ je hlavním NIS serverem pro tohoto klienta.\n"
+
+#, c-format
+#~ msgid "%s: group '%s' is a NIS group\n"
+#~ msgstr "%s: skupina „%s“ je NIS skupinou\n"
+
+#, c-format
+#~ msgid "%s: %s is the NIS master\n"
+#~ msgstr "%s: %s je hlavním NIS serverem\n"
+
+#, c-format
+#~ msgid "%s: group %s is a NIS group\n"
+#~ msgstr "%s: skupina %s je NIS skupinou\n"
+
+#, c-format
+#~ msgid "%s: unknown user %s\n"
+#~ msgstr "%s: neznámý uživatel %s\n"
+
+#~ msgid "Usage: id [-a]\n"
+#~ msgstr "Použití: id [-a]\n"
+
+#~ msgid " groups="
+#~ msgstr " skupiny="
+
+#, c-format
+#~ msgid "       %s [-p] -r host\n"
+#~ msgstr "         %s [-p] -r počítač\n"
+
+#~ msgid "too many groups\n"
+#~ msgstr "příliš mnoho skupin\n"
+
+#, c-format
+#~ msgid "%s: cannot create new defaults file\n"
+#~ msgstr "%s: nelze vytvořit nový soubor s výchozími hodnotami\n"
+
+#, c-format
+#~ msgid "%s: group '%s' is a NIS group.\n"
+#~ msgstr "%s: skupina „%s“ je NIS skupinou.\n"
+
+#, c-format
+#~ msgid "%s: user %s is a NIS user\n"
+#~ msgstr "%s: uživatel %s je NIS uživatelem\n"
+
+#, c-format
+#~ msgid "%s: Not enough arguments to form %u mappings\n"
+#~ msgstr "%s: Nedostatek argumentů pro vytvoření %u mapování\n"
+
+#~ msgid "too simple"
+#~ msgstr "příliš jednoduché"
+
+#~ msgid "No utmp entry.  You must exec \"login\" from the lowest level \"sh\""
+#~ msgstr "utmp záznam neexistuje. Musíte spustit „login“ z nejnižšího „sh“"
+
+#, c-format
+#~ msgid "%s: Could not open proc directory for target %u\n"
+#~ msgstr "%s: Nelze otevřít proc adresář cílového procesu %u\n"
+
+#~ msgid "failed to allocate memory"
+#~ msgstr "nepodařilo se alokovat paměť"
+
 #~ msgid "Usage: id\n"
 #~ msgstr "Použití: id\n"
 
@@ -3052,16 +3226,8 @@ msgstr "%s: nepodařilo se nalézt tcb adresář uživatele %s\n"
 #~ msgstr "Poslední přihlášení: %.19s na %s"
 
 #, c-format
-#~ msgid "%s: invalid user name '%s'\n"
-#~ msgstr "%s: chybné uživatelské jméno „%s“\n"
-
-#, c-format
 #~ msgid "%s: password expiry information changed.\n"
 #~ msgstr "%s: informace o vypršení platnosti hesla byly změněny.\n"
-
-#, c-format
-#~ msgid "invalid user name '%s'\n"
-#~ msgstr "chybné uživatelské jméno „%s“\n"
 
 #~ msgid "Username         Port     From             Latest"
 #~ msgstr "Uživatel         Port     Z                Naposledy"

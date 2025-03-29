@@ -12,10 +12,12 @@
 #include <string.h>
 #include <pwd.h>
 #include <stdbool.h>
+
 #include "subordinateio.h"
 #include "idmapping.h"
 #include "subid.h"
 #include "shadowlog.h"
+
 
 bool subid_init(const char *progname, FILE * logfd)
 {
@@ -42,6 +44,11 @@ bool subid_init(const char *progname, FILE * logfd)
 	return true;
 }
 
+void subid_free(void *ptr)
+{
+	free_subid_pointer(ptr);
+}
+
 static
 int get_subid_ranges(const char *owner, enum subid_type id_type, struct subid_range **ranges)
 {
@@ -66,12 +73,12 @@ int get_subid_owner(unsigned long id, enum subid_type id_type, uid_t **owner)
 
 int subid_get_uid_owners(uid_t uid, uid_t **owner)
 {
-	return get_subid_owner((unsigned long)uid, ID_TYPE_UID, owner);
+	return get_subid_owner(uid, ID_TYPE_UID, owner);
 }
 
 int subid_get_gid_owners(gid_t gid, uid_t **owner)
 {
-	return get_subid_owner((unsigned long)gid, ID_TYPE_GID, owner);
+	return get_subid_owner(gid, ID_TYPE_GID, owner);
 }
 
 static

@@ -2,12 +2,12 @@
 .\"     Title: gshadow
 .\"    Author: Nicolas Fran\(,cois <nicolas.francois@centraliens.net>
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 2022-11-08
+.\"      Date: 2025-03-19
 .\"    Manual: File Formats and Configuration Files
-.\"    Source: shadow-utils 4.13
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: Chinese Simplified
 .\"
-.TH "GSHADOW" "5" "2022-11-08" "shadow\-utils 4\&.13" "File Formats and Configuration"
+.TH "GSHADOW" "5" "2025-03-19" "shadow\-utils 4\&.17\&.4" "File Formats and Configuration"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -38,12 +38,12 @@ contains the shadowed information for group accounts\&.
 .PP
 此文件的每行包含逗号分隔的如下字段：
 .PP
-\fB组名\fR
+\fBgroup name\fR
 .RS 4
-必须是系统中已经存在的有效组。
+It must be a valid group name, which exists on the system\&.
 .RE
 .PP
-\fB加密了的密码\fR
+\fBencrypted password\fR
 .RS 4
 Refer to
 \fBcrypt\fR(3)
@@ -63,7 +63,7 @@ This password supersedes any password specified in
 /etc/group\&.
 .RE
 .PP
-\fB管理员\fR
+\fBadministrators\fR
 .RS 4
 必须是一个逗号分隔的用户名列表。
 .sp
@@ -72,7 +72,7 @@ This password supersedes any password specified in
 管理员也有成员一样的权限(请看下边)。
 .RE
 .PP
-\fB成员\fR
+\fBmembers\fR
 .RS 4
 必须是一个逗号分隔的用户名列表。
 .sp

@@ -2,12 +2,12 @@
 .\"     Title: lastlog
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 08/11/2022
-.\"    Manual: Comandi per la gestione del sistema
-.\"    Source: shadow-utils 4.13
+.\"      Date: 19/03/2025
+.\"    Manual: System Management Commands
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: Italian
 .\"
-.TH "LASTLOG" "8" "08/11/2022" "shadow\-utils 4\&.13" "Comandi per la gestione del si"
+.TH "LASTLOG" "8" "19/03/2025" "shadow\-utils 4\&.17\&.4" "System Management Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -31,7 +31,7 @@
 lastlog \- riepiloga gli accessi pi\(`u recenti di tutti gli utenti o dell\*(Aqutente dato
 .SH "SINOSSI"
 .HP \w'\fBlastlog\fR\ 'u
-\fBlastlog\fR [\fIopzioni\fR]
+\fBlastlog\fR [\fIoptions\fR]
 .SH "DESCRIZIONE"
 .PP
 \fBlastlog\fR
@@ -101,6 +101,11 @@ of users\&. This
 of users can be specified with a min and max values (\fIUID_MIN\-UID_MAX\fR), a max value (\fI\-UID_MAX\fR), or a min value (\fIUID_MIN\-\fR)\&.
 .RE
 .PP
+\fB\-a\fR
+.RS 4
+Print the lastlog records of the users that have logged in at least once\&. Excludes records for users with \*(Aq**Never logged in**\*(Aq\&.
+.RE
+.PP
 If the user has never logged in the message
 \fI** Never logged in**\fR
 will be displayed instead of the port and time\&.
@@ -129,5 +134,5 @@ Database degli orari dei precedenti accessi utente\&.
 Se ci sono dei grossi scarti tra i valori di UID, il programma lastlog pu\(`o restare in esecuzione per un tempo prolungato senza produrre output sullo schermo (ad es\&. se nel database lastlog non ci sono registrazioni per UID tra 170 e 800, il programma sembrer\(`a bloccato mentre esamina gli UID tra 171 e 799)\&.
 .PP
 Having high UIDs can create problems when handling the
-<term> /var/log/lastlog</term>
+/var/log/lastlog
 with external tools\&. Although the actual file is sparse and does not use too much space, certain applications are not designed to identify sparse files by default and may require a specific option to handle them\&.

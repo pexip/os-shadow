@@ -2,12 +2,12 @@
 .\"     Title: vipw
 .\"    Author: Marek Micha\(/lkiewicz
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 08.11.2022
-.\"    Manual: Befehle zur Systemverwaltung
-.\"    Source: shadow-utils 4.13
+.\"      Date: 19.03.2025
+.\"    Manual: System Management Commands
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: German
 .\"
-.TH "VIPW" "8" "08.11.2022" "shadow\-utils 4\&.13" "Befehle zur Systemverwaltung"
+.TH "VIPW" "8" "19.03.2025" "shadow\-utils 4\&.17\&.4" "System Management Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -28,19 +28,19 @@
 .\" * MAIN CONTENT STARTS HERE *
 .\" -----------------------------------------------------------------
 .SH "NAME"
-vipw, vigr \- bearbeitet die Passwort\-, Gruppen\-, Shadow\-Passwort\- oder Shadow\-Gruppen\-Datei
+vipw, vigr \- bearbeitet die Passwort\- und die Gruppendatei in den ungesch\(:utzten und gesch\(:utzen Versionen
 .SH "\(:UBERSICHT"
 .HP \w'\fBvipw\fR\ 'u
-\fBvipw\fR [\fIOptionen\fR]
+\fBvipw\fR [\fIoptions\fR]
 .HP \w'\fBvigr\fR\ 'u
-\fBvigr\fR [\fIOptionen\fR]
+\fBvigr\fR [\fIoptions\fR]
 .SH "BESCHREIBUNG"
 .PP
 The
 \fBvipw\fR
 and
 \fBvigr\fR
-commands edits the files
+commands edit the files
 /etc/passwd
 and
 /etc/group, respectively\&. With the
@@ -62,17 +62,17 @@ commands are:
 .PP
 \fB\-g\fR, \fB\-\-group\fR
 .RS 4
-bearbeitet die Gruppendatenbank
+bearbeitet die Daten bez\(:uglich Gruppen\&.
 .RE
 .PP
 \fB\-h\fR, \fB\-\-help\fR
 .RS 4
-zeigt die Hilfe an und beendet das Programm
+zeigt die Hilfe an und beendet das Programm\&.
 .RE
 .PP
 \fB\-p\fR, \fB\-\-passwd\fR
 .RS 4
-bearbeitet die Passwd\-Datenbank
+bearbeitet die Daten bez\(:uglich Benutzern\&.
 .RE
 .PP
 \fB\-q\fR, \fB\-\-quiet\fR
@@ -91,13 +91,13 @@ directory\&. Only absolute paths are supported\&.
 .PP
 \fB\-s\fR, \fB\-\-shadow\fR
 .RS 4
-bearbeitet die Shadow\- oder Gshadow\-Datenbank
+bearbeitet die gesch\(:utzten Dateiversionen\&.
 .RE
 .SH "UMGEBUNGSVARIABLEN"
 .PP
 \fBVISUAL\fR
 .RS 4
-der verwendete Editor
+der zu verwendende Editor
 .RE
 .PP
 \fBEDITOR\fR
@@ -115,7 +115,7 @@ Informationen zu den Gruppenkonten
 .PP
 /etc/gshadow
 .RS 4
-sichere Informationen zu den Gruppenkonten
+gesch\(:utzte Informationen zu den Gruppenkonten
 .RE
 .PP
 /etc/passwd
@@ -125,7 +125,7 @@ Informationen zu den Benutzerkonten
 .PP
 /etc/shadow
 .RS 4
-verschl\(:usselte Informationen zu den Benutzerkonten
+gesch\(:utzte Informationen zu den Benutzerkonten
 .RE
 .SH "SIEHE AUCH"
 .PP

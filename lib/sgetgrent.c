@@ -14,8 +14,16 @@
 #include <stdio.h>
 #include <sys/types.h>
 #include <grp.h>
+#include <string.h>
+
+#include "alloc/malloc.h"
+#include "alloc/reallocf.h"
+#include "atoi/getnum.h"
 #include "defines.h"
 #include "prototypes.h"
+#include "string/strcmp/streq.h"
+#include "string/strtok/stpsep.h"
+
 
 #define	NFIELDS	4
 
@@ -25,19 +33,15 @@
  *	list() converts the comma-separated list of member names into
  *	an array of character pointers.
  *
- *	WARNING: I profiled this once with and without strchr() calls
- *	and found that using a register variable and an explicit loop
- *	works best.  For large /etc/group files, this is a major win.
- *
  * FINALLY added dynamic allocation.  Still need to fix sgetsgent().
  *  --marekm
  */
-static char **list (char *s)
+static char **
+list(char *s)
 {
-	static char **members = 0;
-	static int size = 0;	/* max members + 1 */
-	int i;
-	char **rbuf;
+	static char **members = NULL;
+	static size_t size = 0;	/* max members + 1 */
+	size_t i;
 
 	i = 0;
 	for (;;) {
@@ -45,40 +49,24 @@ static char **list (char *s)
 		   member name, or terminating NULL).  */
 		if (i >= size) {
 			size = i + 100;	/* at least: i + 1 */
-			if (members) {
-				rbuf =
-				    realloc (members, size * sizeof (char *));
-			} else {
-				/* for old (before ANSI C) implementations of
-				   realloc() that don't handle NULL properly */
-				rbuf = malloc (size * sizeof (char *));
-			}
-			if (!rbuf) {
-				free (members);
-				members = 0;
+			members = REALLOCF(members, size, char *);
+			if (!members) {
 				size = 0;
-				return (char **) 0;
+				return NULL;
 			}
-			members = rbuf;
 		}
-		if (!s || s[0] == '\0')
+		if (!s || streq(s, ""))
 			break;
-		members[i++] = s;
-		while (('\0' != *s) && (',' != *s)) {
-			s++;
-		}
-		if ('\0' != *s) {
-			*s++ = '\0';
-		}
+		members[i++] = strsep(&s, ",");
 	}
-	members[i] = (char *) 0;
+	members[i] = NULL;
 	return members;
 }
 
 
 struct group *sgetgrent (const char *buf)
 {
-	static char *grpbuf = 0;
+	static char *grpbuf = NULL;
 	static size_t size = 0;
 	static char *grpfields[NFIELDS];
 	static struct group grent;
@@ -90,38 +78,29 @@ struct group *sgetgrent (const char *buf)
 		   allocate a larger block */
 		free (grpbuf);
 		size = strlen (buf) + 1000;	/* at least: strlen(buf) + 1 */
-		grpbuf = malloc (size);
-		if (!grpbuf) {
+		grpbuf = MALLOC(size, char);
+		if (grpbuf == NULL) {
 			size = 0;
-			return 0;
+			return NULL;
 		}
 	}
 	strcpy (grpbuf, buf);
+	stpsep(grpbuf, "\n");
 
-	cp = strrchr (grpbuf, '\n');
-	if (NULL != cp) {
-		*cp = '\0';
-	}
+	for (cp = grpbuf, i = 0; (i < NFIELDS) && (NULL != cp); i++)
+		grpfields[i] = strsep(&cp, ":");
 
-	for (cp = grpbuf, i = 0; (i < NFIELDS) && (NULL != cp); i++) {
-		grpfields[i] = cp;
-		cp = strchr (cp, ':');
-		if (NULL != cp) {
-			*cp = '\0';
-			cp++;
-		}
-	}
-	if (i < (NFIELDS - 1) || *grpfields[2] == '\0' || cp != NULL) {
-		return (struct group *) 0;
+	if (i < NFIELDS || streq(grpfields[2], "") || cp != NULL) {
+		return NULL;
 	}
 	grent.gr_name = grpfields[0];
 	grent.gr_passwd = grpfields[1];
-	if (get_gid (grpfields[2], &grent.gr_gid) == 0) {
-		return (struct group *) 0;
+	if (get_gid(grpfields[2], &grent.gr_gid) == -1) {
+		return NULL;
 	}
 	grent.gr_mem = list (grpfields[3]);
 	if (NULL == grent.gr_mem) {
-		return (struct group *) 0;	/* out of memory */
+		return NULL;	/* out of memory */
 	}
 
 	return &grent;

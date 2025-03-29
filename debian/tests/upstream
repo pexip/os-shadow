@@ -1,0 +1,15 @@
+#!/bin/sh
+useradd ubuntu
+
+export BUILD_BASE_DIR=$(pwd)
+
+cd tests
+
+cleanup() {
+  cp testsuite.log $AUTOPKGTEST_ARTIFACTS/
+  cat testsuite.log
+}
+
+trap cleanup TERM EXIT
+
+./run_some 2>&1

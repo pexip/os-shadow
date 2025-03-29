@@ -51,7 +51,8 @@
       <replaceable>files</replaceable>.
     </para>
     <para>
-      Note, that <command>useradd</command> will only create entries in
+      Note, that <command>newusers</command>, <command>useradd</command>, and
+      <command>usermod</command> will only create entries in
       <filename>/etc/subuid</filename> if subid delegation is managed via subid
       files.
     </para>
@@ -130,7 +131,7 @@
 	<refentrytitle>newuidmap</refentrytitle><manvolnum>1</manvolnum>
       </citerefentry>,
       <citerefentry>
-	<refentrytitle>newusers</refentrytitle><manvolnum>1</manvolnum>
+	<refentrytitle>newusers</refentrytitle><manvolnum>8</manvolnum>
       </citerefentry>,
       <citerefentry>
 	<refentrytitle>subgid</refentrytitle><manvolnum>5</manvolnum>

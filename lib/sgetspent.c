@@ -14,17 +14,29 @@
 
 #ident "$Id$"
 
+#include <stddef.h>
+#include <stdio.h>
 #include <sys/types.h>
+#include <string.h>
+
+#include "atoi/a2i/a2s.h"
+#include "atoi/str2i/str2u.h"
+#include "defines.h"
 #include "prototypes.h"
 #include "shadowlog_internal.h"
-#include "defines.h"
-#include <stdio.h>
+#include "string/strcmp/streq.h"
+#include "string/strtok/stpsep.h"
+
+
 #define	FIELDS	9
 #define	OFIELDS	5
+
+
 /*
  * sgetspent - convert string in shadow file format to (struct spwd *)
  */
-struct spwd *sgetspent (const char *string)
+struct spwd *
+sgetspent(const char *string)
 {
 	static char spwbuf[PASSWD_ENTRY_MAX_LENGTH];
 	static struct spwd spwd;
@@ -41,40 +53,24 @@ struct spwd *sgetspent (const char *string)
 		fprintf (shadow_logfd,
 		         "%s: Too long passwd entry encountered, file corruption?\n",
 		         shadow_progname);
-		return 0;	/* fail if too long */
+		return NULL;	/* fail if too long */
 	}
 	strcpy (spwbuf, string);
-
-	cp = strrchr (spwbuf, '\n');
-	if (NULL != cp) {
-		*cp = '\0';
-	}
+	stpsep(spwbuf, "\n");
 
 	/*
 	 * Tokenize the string into colon separated fields.  Allow up to
 	 * FIELDS different fields.
 	 */
 
-	for (cp = spwbuf, i = 0; ('\0' != *cp) && (i < FIELDS); i++) {
-		fields[i] = cp;
-		while (('\0' != *cp) && (':' != *cp)) {
-			cp++;
-		}
+	for (cp = spwbuf, i = 0; cp != NULL && i < FIELDS; i++)
+		fields[i] = strsep(&cp, ":");
 
-		if ('\0' != *cp) {
-			*cp = '\0';
-			cp++;
-		}
-	}
+	if (i == (FIELDS - 1))
+		fields[i++] = "";
 
-	if (i == (FIELDS - 1)) {
-		fields[i++] = cp;
-	}
-
-	if ( ((NULL != cp) && ('\0' != *cp)) ||
-	     ((i != FIELDS) && (i != OFIELDS)) ) {
-		return 0;
-	}
+	if (cp != NULL || (i != FIELDS && i != OFIELDS))
+		return NULL;
 
 	/*
 	 * Start populating the structure.  The fields are all in
@@ -90,34 +86,28 @@ struct spwd *sgetspent (const char *string)
 	 * incorrectly formatted number.
 	 */
 
-	if (fields[2][0] == '\0') {
+	if (streq(fields[2], ""))
 		spwd.sp_lstchg = -1;
-	} else if (   (getlong (fields[2], &spwd.sp_lstchg) == 0)
-	           || (spwd.sp_lstchg < 0)) {
-		return 0;
-	}
+	else if (a2sl(&spwd.sp_lstchg, fields[2], NULL, 0, 0, LONG_MAX) == -1)
+		return NULL;
 
 	/*
 	 * Get the minimum period between password changes.
 	 */
 
-	if (fields[3][0] == '\0') {
+	if (streq(fields[3], ""))
 		spwd.sp_min = -1;
-	} else if (   (getlong (fields[3], &spwd.sp_min) == 0)
-	           || (spwd.sp_min < 0)) {
-		return 0;
-	}
+	else if (a2sl(&spwd.sp_min, fields[3], NULL, 0, 0, LONG_MAX) == -1)
+		return NULL;
 
 	/*
 	 * Get the maximum number of days a password is valid.
 	 */
 
-	if (fields[4][0] == '\0') {
+	if (streq(fields[4], ""))
 		spwd.sp_max = -1;
-	} else if (   (getlong (fields[4], &spwd.sp_max) == 0)
-	           || (spwd.sp_max < 0)) {
-		return 0;
-	}
+	else if (a2sl(&spwd.sp_max, fields[4], NULL, 0, 0, LONG_MAX) == -1)
+		return NULL;
 
 	/*
 	 * If there are only OFIELDS fields (this is a SVR3.2 /etc/shadow
@@ -137,51 +127,43 @@ struct spwd *sgetspent (const char *string)
 	 * Get the number of days of password expiry warning.
 	 */
 
-	if (fields[5][0] == '\0') {
+	if (streq(fields[5], ""))
 		spwd.sp_warn = -1;
-	} else if (   (getlong (fields[5], &spwd.sp_warn) == 0)
-	           || (spwd.sp_warn < 0)) {
-		return 0;
-	}
+	else if (a2sl(&spwd.sp_warn, fields[5], NULL, 0, 0, LONG_MAX) == -1)
+		return NULL;
 
 	/*
 	 * Get the number of days of inactivity before an account is
 	 * disabled.
 	 */
 
-	if (fields[6][0] == '\0') {
+	if (streq(fields[6], ""))
 		spwd.sp_inact = -1;
-	} else if (   (getlong (fields[6], &spwd.sp_inact) == 0)
-	           || (spwd.sp_inact < 0)) {
-		return 0;
-	}
+	else if (a2sl(&spwd.sp_inact, fields[6], NULL, 0, 0, LONG_MAX) == -1)
+		return NULL;
 
 	/*
 	 * Get the number of days after the epoch before the account is
 	 * set to expire.
 	 */
 
-	if (fields[7][0] == '\0') {
+	if (streq(fields[7], ""))
 		spwd.sp_expire = -1;
-	} else if (   (getlong (fields[7], &spwd.sp_expire) == 0)
-	           || (spwd.sp_expire < 0)) {
-		return 0;
-	}
+	else if (a2sl(&spwd.sp_expire, fields[7], NULL, 0, 0, LONG_MAX) == -1)
+		return NULL;
 
 	/*
 	 * This field is reserved for future use.  But it isn't supposed
 	 * to have anything other than a valid integer in it.
 	 */
 
-	if (fields[8][0] == '\0') {
+	if (streq(fields[8], ""))
 		spwd.sp_flag = SHADOW_SP_FLAG_UNSET;
-	} else if (getulong (fields[8], &spwd.sp_flag) == 0) {
-		return 0;
-	}
+	else if (str2ul(&spwd.sp_flag, fields[8]) == -1)
+		return NULL;
 
 	return (&spwd);
 }
 #else
-extern int errno;		/* warning: ANSI C forbids an empty source file */
+extern int ISO_C_forbids_an_empty_translation_unit;
 #endif
-

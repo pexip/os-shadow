@@ -17,26 +17,33 @@
 
 #include <errno.h>
 #include <fcntl.h>
+#include <getopt.h>
 #include <grp.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <strings.h>
 #include <time.h>
 #include <unistd.h>
-#include <getopt.h>
-#include "nscd.h"
-#include "sssd.h"
-#include "prototypes.h"
+
+#include "attr.h"
 /*@-exitarg@*/
 #include "exitcodes.h"
+#include "nscd.h"
+#include "prototypes.h"
+#include "string/strcmp/streq.h"
+
 #ifdef SHADOWGRP
 #include "groupio.h"
 #include "sgroupio.h"
 #include "shadowlog.h"
+#include "sssd.h"
+
+
 /*
  * Global variables
  */
-const char *Prog;
+static const char Prog[] = "grpconv";
 
 static bool gr_locked  = false;
 static bool sgr_locked = false;
@@ -123,7 +130,6 @@ int main (int argc, char **argv)
 	const struct sgrp *sg;
 	struct sgrp sgent;
 
-	Prog = Basename (argv[0]);
 	log_set_progname(Prog);
 	log_set_logfd(stderr);
 
@@ -133,7 +139,7 @@ int main (int argc, char **argv)
 
 	process_root_flag ("-R", argc, argv);
 
-	OPENLOG ("grpconv");
+	OPENLOG (Prog);
 
 	process_flags (argc, argv);
 
@@ -166,17 +172,17 @@ int main (int argc, char **argv)
 	 */
 	(void) sgr_rewind ();
 	while ((sg = sgr_next ()) != NULL) {
-		if (gr_locate (sg->sg_name) != NULL) {
+		if (gr_locate (sg->sg_namp) != NULL) {
 			continue;
 		}
 
-		if (sgr_remove (sg->sg_name) == 0) {
+		if (sgr_remove (sg->sg_namp) == 0) {
 			/*
 			 * This shouldn't happen (the entry exists) but...
 			 */
 			fprintf (stderr,
 			         _("%s: cannot remove entry '%s' from %s\n"),
-			         Prog, sg->sg_name, sgr_dbname ());
+			         Prog, sg->sg_namp, sgr_dbname ());
 			fail_exit (3);
 		}
 		(void) sgr_rewind ();
@@ -192,14 +198,14 @@ int main (int argc, char **argv)
 		if (NULL != sg) {
 			/* update existing shadow group entry */
 			sgent = *sg;
-			if (strcmp (gr->gr_passwd, SHADOW_PASSWD_STRING) != 0)
+			if (!streq(gr->gr_passwd, SHADOW_PASSWD_STRING))
 				sgent.sg_passwd = gr->gr_passwd;
 		} else {
-			static char *empty = 0;
+			static char *empty = NULL;
 
 			/* add new shadow group entry */
-			memset (&sgent, 0, sizeof sgent);
-			sgent.sg_name = gr->gr_name;
+			bzero(&sgent, sizeof sgent);
+			sgent.sg_namp = gr->gr_name;
 			sgent.sg_passwd = gr->gr_passwd;
 			sgent.sg_adm = &empty;
 		}
@@ -214,7 +220,7 @@ int main (int argc, char **argv)
 		if (sgr_update (&sgent) == 0) {
 			fprintf (stderr,
 			         _("%s: failed to prepare the new %s entry '%s'\n"),
-			         Prog, sgr_dbname (), sgent.sg_name);
+			         Prog, sgr_dbname (), sgent.sg_namp);
 			fail_exit (3);
 		}
 		/* remove password from /etc/group */
@@ -259,7 +265,7 @@ int main (int argc, char **argv)
 	return 0;
 }
 #else				/* !SHADOWGRP */
-int main (int unused(argc), char **argv)
+int main (MAYBE_UNUSED int argc, char **argv)
 {
 	fprintf (stderr,
 		 "%s: not configured for shadow group support.\n", argv[0]);

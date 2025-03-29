@@ -1,12 +1,12 @@
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ([2.69])
-m4_define([libsubid_abi_major], 4)
+m4_define([libsubid_abi_major], 5)
 m4_define([libsubid_abi_minor], 0)
 m4_define([libsubid_abi_micro], 0)
 m4_define([libsubid_abi], [libsubid_abi_major.libsubid_abi_minor.libsubid_abi_micro])
-AC_INIT([shadow], [4.13], [pkg-shadow-devel@lists.alioth.debian.org], [],
+AC_INIT([shadow], [4.17.4], [pkg-shadow-devel@lists.alioth.debian.org], [],
 	[https://github.com/shadow-maint/shadow])
-AM_INIT_AUTOMAKE([1.11 foreign dist-xz])
+AM_INIT_AUTOMAKE([1.11 foreign dist-xz subdir-objects tar-pax])
 AC_CONFIG_MACRO_DIRS([m4])
 AM_SILENT_RULES([yes])
 AC_CONFIG_HEADERS([config.h])
@@ -32,47 +32,23 @@ AC_PROG_CC
 AC_PROG_LN_S
 AC_PROG_YACC
 LT_INIT
+LT_LIB_DLLOAD
 
 dnl Checks for libraries.
-
-dnl Checks for header files.
-AC_HEADER_STDBOOL
-
-AC_CHECK_HEADERS(crypt.h errno.h fcntl.h limits.h unistd.h sys/time.h utmp.h \
-	utmpx.h termios.h termio.h sgtty.h sys/ioctl.h syslog.h paths.h \
-	utime.h ulimit.h sys/capability.h sys/random.h sys/resource.h \
-	gshadow.h lastlog.h locale.h rpc/key_prot.h netdb.h acl/libacl.h \
-	attr/libattr.h attr/error_context.h)
 
 dnl shadow now uses the libc's shadow implementation
 AC_CHECK_HEADER([shadow.h],,[AC_MSG_ERROR([You need a libc with shadow.h])])
 
-AC_CHECK_FUNCS(arc4random_buf l64a fchmod fchown fsync futimes \
+AC_CHECK_FUNCS(arc4random_buf futimes \
 	getentropy getrandom getspnam getusershell \
-	getutent initgroups lckpwdf lutimes \
-	setgroups updwtmp updwtmpx innetgr getpwnam_r \
-	getpwuid_r getgrnam_r getgrgid_r getspnam_r \
-	memset_s explicit_bzero)
+	lckpwdf lutimes \
+	updwtmpx innetgr \
+	getspnam_r \
+	rpmatch \
+	memset_explicit explicit_bzero stpecpy stpeprintf)
 AC_SYS_LARGEFILE
 
 dnl Checks for typedefs, structures, and compiler characteristics.
-AC_CHECK_MEMBERS([struct stat.st_atim])
-AC_CHECK_MEMBERS([struct stat.st_atimensec])
-AC_CHECK_MEMBERS([struct stat.st_mtim])
-AC_CHECK_MEMBERS([struct stat.st_mtimensec])
-AC_STRUCT_TM
-
-AC_CHECK_MEMBERS([struct utmp.ut_type,
-                  struct utmp.ut_id,
-                  struct utmp.ut_name,
-                  struct utmp.ut_user,
-                  struct utmp.ut_host,
-                  struct utmp.ut_syslen,
-                  struct utmp.ut_addr,
-                  struct utmp.ut_addr_v6,
-                  struct utmp.ut_time,
-                  struct utmp.ut_xtime,
-                  struct utmp.ut_tv],,,[[#include <utmp.h>]])
 
 AC_CHECK_MEMBERS([struct utmpx.ut_name,
                   struct utmpx.ut_host,
@@ -82,57 +58,15 @@ AC_CHECK_MEMBERS([struct utmpx.ut_name,
                   struct utmpx.ut_time,
                   struct utmpx.ut_xtime],,,[[#include <utmpx.h>]])
 
-if test "$ac_cv_header_lastlog_h" = "yes"; then
-	AC_CACHE_CHECK(for ll_host in struct lastlog,
-		ac_cv_struct_lastlog_ll_host,
-		AC_COMPILE_IFELSE([AC_LANG_PROGRAM([#include <lastlog.h>],
-					[struct lastlog ll; char *cp = ll.ll_host;]
-				)],
-			[ac_cv_struct_lastlog_ll_host=yes],
-			[ac_cv_struct_lastlog_ll_host=no]
-		)
-	)
-
-	if test "$ac_cv_struct_lastlog_ll_host" = "yes"; then
-		AC_DEFINE(HAVE_LL_HOST, 1,
-			[Define if struct lastlog has ll_host])
-	fi
-fi
-
 dnl Checks for library functions.
-AC_TYPE_GETGROUPS
 AC_FUNC_UTIME_NULL
-AC_REPLACE_FUNCS(mkdir putgrent putpwent putspent rename rmdir)
+AC_REPLACE_FUNCS(putgrent putpwent putspent)
 AC_REPLACE_FUNCS(sgetgrent sgetpwent sgetspent)
-AC_REPLACE_FUNCS(snprintf strcasecmp strdup strerror strstr)
 
 AC_CHECK_FUNC(setpgrp)
 AC_CHECK_FUNC(secure_getenv, [AC_DEFINE(HAS_SECURE_GETENV,
                                         1,
                                         [Defined to 1 if you have the declaration of 'secure_getenv'])])
-
-if test "$ac_cv_header_shadow_h" = "yes"; then
-	AC_CACHE_CHECK(for working shadow group support,
-		ac_cv_libc_shadowgrp,
-		AC_RUN_IFELSE([AC_LANG_SOURCE([
-				#include <shadow.h>
-				main()
-				{
-					struct sgrp *sg = sgetsgent("test:x::");
-					/* NYS libc on Red Hat 3.0.3 has broken shadow group support */
-					return !sg || !sg->sg_adm || !sg->sg_mem;
-				}]
-			)],
-			[ac_cv_libc_shadowgrp=yes],
-			[ac_cv_libc_shadowgrp=no],
-			[ac_cv_libc_shadowgrp=no]
-		)
-	)
-
-	if test "$ac_cv_libc_shadowgrp" = "yes"; then
-		AC_DEFINE(HAVE_SHADOWGRP, 1, [Have working shadow group support in libc])
-	fi
-fi
 
 AC_CACHE_CHECK([location of shared mail directory], shadow_cv_maildir,
 [for shadow_cv_maildir in /var/mail /var/spool/mail /usr/spool/mail /usr/mail none; do
@@ -156,18 +90,6 @@ if test $shadow_cv_mailfile != none; then
 		[Name of user's mail spool file if stored in user's home directory.])
 fi
 
-AC_CACHE_CHECK([location of utmp], shadow_cv_utmpdir,
-[for shadow_cv_utmpdir in /var/run /var/adm /usr/adm /etc none; do
-	if test -f $shadow_cv_utmpdir/utmp; then
-		break
-	fi
-done])
-if test "$shadow_cv_utmpdir" = "none"; then
-	AC_MSG_WARN(utmp file not found)
-fi
-AC_DEFINE_UNQUOTED(_UTMP_FILE, "$shadow_cv_utmpdir/utmp",
-	[Path for utmp file.])
-
 AC_CACHE_CHECK([location of faillog/lastlog/wtmp], shadow_cv_logdir,
 [for shadow_cv_logdir in /var/log /var/adm /usr/adm /etc; do
 	if test -d $shadow_cv_logdir; then
@@ -181,21 +103,8 @@ AC_DEFINE_UNQUOTED(LASTLOG_FILE, "$shadow_cv_logdir/lastlog",
 AC_DEFINE_UNQUOTED(FAILLOG_FILE, "$shadow_cv_logdir/faillog",
 	[Path for faillog file.])
 
-AC_CACHE_CHECK([location of the passwd program], shadow_cv_passwd_dir,
-[if test -f /usr/bin/passwd; then
-	shadow_cv_passwd_dir=/usr/bin
-else
-	shadow_cv_passwd_dir=/bin
-fi])
-AC_DEFINE_UNQUOTED(PASSWD_PROGRAM, "$shadow_cv_passwd_dir/passwd",
+AC_DEFINE_UNQUOTED(PASSWD_PROGRAM, "$exec_prefix/bin/passwd",
 	[Path to passwd program.])
-
-dnl XXX - quick hack, should disappear before anyone notices :).
-AC_DEFINE(USE_SYSLOG, 1, [Define to use syslog().])
-if test "$ac_cv_func_ruserok" = "yes"; then
-	AC_DEFINE(RLOGIN, 1, [Define if login should support the -r flag for rlogind.])
-	AC_DEFINE(RUSEROK, 0, [Define to the ruserok() "success" return value (0 or 1).])
-fi
 
 AC_ARG_ENABLE(shadowgrp,
 	[AS_HELP_STRING([--enable-shadowgrp], [enable shadow group support @<:@default=yes@:>@])],
@@ -226,22 +135,25 @@ AC_ARG_ENABLE(account-tools-setuid,
 	[enable_acct_tools_setuid="no"]
 )
 
-AC_ARG_ENABLE(utmpx,
-	[AS_HELP_STRING([--enable-utmpx],
-	                [enable loggin in utmpx / wtmpx @<:@default=no@:>@])],
-	[case "${enableval}" in
-	 yes) enable_utmpx="yes" ;;
-	  no) enable_utmpx="no" ;;
-	   *) AC_MSG_ERROR(bad value ${enableval} for --enable-utmpx) ;;
-	 esac],
-	[enable_utmpx="no"]
-)
-
 AC_ARG_ENABLE(subordinate-ids,
 	[AS_HELP_STRING([--enable-subordinate-ids],
 		[support subordinate ids @<:@default=yes@:>@])],
 	[enable_subids="${enableval}"],
 	[enable_subids="maybe"]
+)
+
+AC_ARG_ENABLE(lastlog,
+	[AS_HELP_STRING([--enable-lastlog],
+		[enable lastlog @<:@default=no@:>@])],
+	[enable_lastlog="${enableval}"],
+	[enable_lastlog="no"]
+)
+
+AC_ARG_ENABLE(logind,
+	[AS_HELP_STRING([--enable-logind],
+		[enable logind @<:@default=yes@:>@])],
+	[enable_logind="${enableval}"],
+	[enable_logind="yes"]
 )
 
 AC_ARG_WITH(audit,
@@ -268,9 +180,6 @@ AC_ARG_WITH(skey,
 AC_ARG_WITH(tcb,
 	[AS_HELP_STRING([--with-tcb], [use tcb support (incomplete) @<:@default=yes if found@:>@])],
 	[with_tcb=$withval], [with_tcb=maybe])
-AC_ARG_WITH(libcrack,
-	[AS_HELP_STRING([--with-libcrack], [use libcrack @<:@default=no@:>@])],
-	[with_libcrack=$withval], [with_libcrack=no])
 AC_ARG_WITH(sha-crypt,
 	[AS_HELP_STRING([--with-sha-crypt], [allow the SHA256 and SHA512 password encryption algorithms @<:@default=yes@:>@])],
 	[with_sha_crypt=$withval], [with_sha_crypt=yes])
@@ -292,6 +201,9 @@ AC_ARG_WITH(group-name-max-length,
 AC_ARG_WITH(su,
 	[AS_HELP_STRING([--with-su], [build and install su program and man page @<:@default=yes@:>@])],
 	[with_su=$withval], [with_su=yes])
+AC_ARG_WITH(libbsd,
+	[AS_HELP_STRING([--with-libbsd], [use libbsd support @<:@default=yes if found@:>@])],
+	[with_libbsd=$withval], [with_libbsd=yes])
 
 if test "$with_group_name_max_length" = "no" ; then
 	with_group_name_max_length=0
@@ -301,6 +213,7 @@ fi
 AC_DEFINE_UNQUOTED(GROUP_NAME_MAX_LENGTH, $with_group_name_max_length, [max group name length])
 AC_SUBST(GROUP_NAME_MAX_LENGTH)
 GROUP_NAME_MAX_LENGTH="$with_group_name_max_length"
+
 
 AM_CONDITIONAL(USE_SHA_CRYPT, test "x$with_sha_crypt" = "xyes")
 if test "$with_sha_crypt" = "yes"; then
@@ -336,12 +249,16 @@ dnl Check for some functions in libc first, only if not found check for
 dnl other libraries.  This should prevent linking libnsl if not really
 dnl needed (Linux glibc, Irix), but still link it if needed (Solaris).
 
-AC_SEARCH_LIBS(inet_ntoa, inet)
-AC_SEARCH_LIBS(socket, socket)
 AC_SEARCH_LIBS(gethostbyname, nsl)
+
+PKG_CHECK_MODULES([CMOCKA], [cmocka], [have_cmocka="yes"],
+	[AC_MSG_WARN([libcmocka not found, cmocka tests will not be built])])
+AM_CONDITIONAL([HAVE_CMOCKA], [test x$have_cmocka = xyes])
 
 AC_CHECK_LIB([econf],[econf_readDirs],[LIBECONF="-leconf"],[LIBECONF=""])
 if test -n "$LIBECONF"; then
+        AC_DEFINE_UNQUOTED([VENDORDIR], ["$enable_vendordir"],
+					[Directory for distribution provided configuration files])
 	ECONF_CPPFLAGS="-DUSE_ECONF=1"
 	AC_ARG_ENABLE([vendordir],
 		AS_HELP_STRING([--enable-vendordir=DIR], [Directory for distribution provided configuration files]),,[])
@@ -349,6 +266,9 @@ fi
 AC_SUBST(ECONF_CPPFLAGS)
 AC_SUBST(LIBECONF)
 AC_SUBST([VENDORDIR], [$enable_vendordir])
+if test "x$enable_vendordir" != x; then
+	AC_DEFINE(HAVE_VENDORDIR, 1, [Define to support vendor settings.])
+fi
 AM_CONDITIONAL([HAVE_VENDORDIR], [test "x$enable_vendordir" != x])
 
 if test "$enable_shadowgrp" = "yes"; then
@@ -393,6 +313,39 @@ if test "$enable_subids" != "no"; then
 fi
 AM_CONDITIONAL(ENABLE_SUBIDS, test "x$enable_subids" != "xno")
 
+if test "$enable_lastlog" = "yes" && test "$ac_cv_header_lastlog_h" = "yes"; then
+	AC_CACHE_CHECK(for ll_host in struct lastlog,
+		ac_cv_struct_lastlog_ll_host,
+		AC_COMPILE_IFELSE([AC_LANG_PROGRAM([#include <lastlog.h>],
+					[struct lastlog ll; char *cp = ll.ll_host;]
+				)],
+			[ac_cv_struct_lastlog_ll_host=yes],
+			[ac_cv_struct_lastlog_ll_host=no]
+		)
+	)
+
+	if test "$ac_cv_struct_lastlog_ll_host" = "yes"; then
+		AC_DEFINE(HAVE_LL_HOST, 1,
+			[Define if struct lastlog has ll_host])
+		AC_DEFINE(ENABLE_LASTLOG, 1, [Define to support lastlog.])
+		enable_lastlog="yes"
+	else
+		AC_MSG_ERROR([Cannot enable support for lastlog on systems where the data structures aren't available])
+		enable_subids="no"
+	fi
+fi
+AM_CONDITIONAL(ENABLE_LASTLOG, test "x$enable_lastlog" != "xno")
+
+AC_SUBST(LIBSYSTEMD)
+if test "$enable_logind" = "yes"; then
+	AC_CHECK_LIB(systemd, sd_session_get_remote_host,
+		[enable_logind="yes"; [LIBSYSTEMD=-lsystemd];
+		AC_DEFINE(ENABLE_LOGIND, 1,
+			[Define to manage session support with logind.])],
+		[enable_logind="no"])
+fi
+AM_CONDITIONAL(ENABLE_LOGIND, test "x$enable_logind" != "xno")
+
 AC_SUBST(LIBCRYPT)
 AC_CHECK_LIB(crypt, crypt, [LIBCRYPT=-lcrypt],
 	[AC_MSG_ERROR([crypt() not found])])
@@ -400,6 +353,28 @@ AC_CHECK_LIB(crypt, crypt, [LIBCRYPT=-lcrypt],
 AC_SUBST(LIYESCRYPT)
 AC_CHECK_LIB(crypt, crypt, [LIYESCRYPT=-lcrypt],
 	[AC_MSG_ERROR([crypt() not found])])
+
+AC_SUBST(LIBBSD)
+if test "$with_libbsd" != "no"; then
+	AC_SEARCH_LIBS([readpassphrase], [bsd], [], [
+		AC_MSG_ERROR([readpassphrase() is missing, either from libc or libbsd])
+	])
+	AS_IF([test "$ac_cv_search_readpassphrase" = "-lbsd"], [
+		PKG_CHECK_MODULES([LIBBSD], [libbsd-overlay])
+	])
+	dnl Make sure either the libc or libbsd provide the header.
+	save_CFLAGS="$CFLAGS"
+	CFLAGS="$CFLAGS $LIBBSD_CFLAGS"
+	AC_CHECK_HEADERS([readpassphrase.h])
+	AS_IF([test "$ac_cv_header_readpassphrase_h" != "yes"], [
+		AC_MSG_ERROR([readpassphrase.h is missing])
+	])
+	CFLAGS="$save_CFLAGS"
+	AC_DEFINE(WITH_LIBBSD, 1, [Build shadow with libbsd support])
+else
+	AC_DEFINE(WITH_LIBBSD, 0, [Build shadow without libbsd support])
+fi
+AM_CONDITIONAL(WITH_LIBBSD, test x$with_libbsd = xyes)
 
 AC_SUBST(LIBACL)
 if test "$with_acl" != "no"; then
@@ -483,17 +458,6 @@ if test "$with_audit" != "no"; then
 	else
 		with_audit="no"
 	fi
-fi
-
-AC_SUBST(LIBCRACK)
-if test "$with_libcrack" = "yes"; then
-	echo "checking cracklib flavour, don't be surprised by the results"
-	AC_CHECK_LIB(crack, FascistCheck,
-		[LIBCRACK=-lcrack AC_DEFINE(HAVE_LIBCRACK, 1, [Defined if you have libcrack.])])
-	AC_CHECK_LIB(crack, FascistHistory,
-		AC_DEFINE(HAVE_LIBCRACK_HIST, 1, [Defined if you have the ts&szs cracklib.]))
-	AC_CHECK_LIB(crack, FascistHistoryPw,
-		AC_DEFINE(HAVE_LIBCRACK_PW, 1, [Defined if it includes *Pw functions.]))
 fi
 
 if test "$with_btrfs" != "no"; then
@@ -672,7 +636,7 @@ AC_SUBST(LIBMD)
 if test "$with_skey" = "yes"; then
 	AC_CHECK_LIB(md, MD5Init, [LIBMD=-lmd])
 	AC_CHECK_LIB(skey, skeychallenge, [LIBSKEY=-lskey],
-		[AC_MSG_ERROR([liskey missing. You can download S/Key source code from http://rsync1.it.gentoo.org/gentoo/distfiles/skey-1.1.5.tar.bz2])])
+		[AC_MSG_ERROR([libskey missing. You can download S/Key source code from http://rsync1.it.gentoo.org/gentoo/distfiles/skey-1.1.5.tar.bz2])])
 	AC_DEFINE(SKEY, 1, [Define to support S/Key logins.])
 	AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
 		#include <stdio.h>
@@ -682,14 +646,7 @@ if test "$with_skey" = "yes"; then
 	]])],[AC_DEFINE(SKEY_BSD_STYLE, 1, [Define to support newer BSD S/Key API])],[])
 fi
 
-if test "$enable_utmpx" = "yes"; then
-	if test "$ac_cv_header_utmpx_h" != "yes"; then
-		AC_MSG_ERROR([The utmpx.h header file is required for utmpx support.])
-	fi
-	AC_DEFINE(USE_UTMPX,
-	          1,
-	          [Define if utmpx should be used])
-fi
+AC_CHECK_FUNC(fgetpwent_r, [AC_DEFINE(HAVE_FGETPWENT_R, 1, [Defined to 1 if you have the declaration of 'fgetpwent_r'])])
 
 AC_DEFINE_UNQUOTED(SHELL, ["$SHELL"], [The default shell.])
 
@@ -723,7 +680,6 @@ AC_CONFIG_FILES([
 	man/uk/Makefile
 	man/zh_CN/Makefile
 	man/zh_TW/Makefile
-	libmisc/Makefile
 	lib/Makefile
 	libsubid/Makefile
 	libsubid/subid.h
@@ -731,7 +687,8 @@ AC_CONFIG_FILES([
 	contrib/Makefile
 	etc/Makefile
 	etc/pam.d/Makefile
-	shadow.spec
+	etc/shadow-maint/Makefile
+	tests/unit/Makefile
 ])
 AC_OUTPUT
 
@@ -739,7 +696,6 @@ echo
 echo "shadow will be compiled with the following features:"
 echo
 echo "	auditing support:		$with_audit"
-echo "	CrackLib support:		$with_libcrack"
 echo "	PAM support:			$with_libpam"
 if test "$with_libpam" = "yes"; then
 echo "	suid account management tools:	$enable_acct_tools_setuid"
@@ -757,6 +713,9 @@ echo "	yescrypt passwords encryption:	$with_yescrypt"
 echo "	nscd support:			$with_nscd"
 echo "	sssd support:			$with_sssd"
 echo "	subordinate IDs support:	$enable_subids"
+echo "	enable lastlog:			$enable_lastlog"
+echo "	enable logind:			$enable_logind"
 echo "	use file caps:			$with_fcaps"
 echo "	install su:			$with_su"
+echo "	enabled vendor dir:             $enable_vendordir"
 echo

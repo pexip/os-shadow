@@ -2,12 +2,12 @@
 .\"     Title: login.defs
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 08.11.2022
+.\"      Date: 19.03.2025
 .\"    Manual: File Formats and Configuration Files
-.\"    Source: shadow-utils 4.13
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: German
 .\"
-.TH "LOGIN\&.DEFS" "5" "08.11.2022" "shadow\-utils 4\&.13" "File Formats and Configuration"
+.TH "LOGIN\&.DEFS" "5" "19.03.2025" "shadow\-utils 4\&.17\&.4" "File Formats and Configuration"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -28,14 +28,14 @@
 .\" * MAIN CONTENT STARTS HERE *
 .\" -----------------------------------------------------------------
 .SH "NAME"
-login.defs \- Konfiguration der Werkzeugsammlung f\(:ur Shadow\-Passw\(:orter
+login.defs \- Konfiguration der Shadow\-Passwort\-Programmsammlung
 .SH "BESCHREIBUNG"
 .PP
 The
 /etc/login\&.defs
 file defines the site\-specific configuration for the shadow password suite\&. This file is required\&. Absence of this file will not prevent system operation, but will probably result in undesirable operation\&.
 .PP
-Diese Datei ist eine lesbare Textdatei\&. Jede Zeile der Datei beschreibt einen Konfigurationsparameter\&. Eine Zeile besteht aus einem Konfigurationsnamen und einem Wert, die durch ein Leerzeichen getrennt sind\&. Leer\- und Kommentarzeilen werden nicht beachtet\&. Kommentare werden mit dem Rautezeichen \(Fc#\(Fo eingeleitet\&. Die Raute muss das erste nicht leere Zeichen der Zeile sein\&.
+Diese Datei ist eine lesbare Textdatei\&. Jede Zeile der Datei beschreibt einen Konfigurationsparameter und besteht aus dessen Namen und einem Wert; beides durch Leerraumzeichen voneinander getrennt\&. Leer\- und Kommentarzeilen werden nicht beachtet\&. Kommentare werden mit dem Rautezeichen \(Fc#\(Fo eingeleitet, wobei es das erste nicht leere Zeichen der Zeile sein muss\&.
 .PP
 Parameter values may be of four types: strings, booleans, numbers, and long numbers\&. A string is comprised of any printable characters\&. A boolean should be either the value
 \fIyes\fR
@@ -46,7 +46,7 @@ value\&. Numbers (both regular and long) may be either decimal values, octal val
 \fI0\fR) or hexadecimal values (precede the value with
 \fI0x\fR)\&. The maximum value of the regular and long numeric parameters is machine\-dependent\&.
 .PP
-Die folgenden Konfigurationsm\(:oglichkeiten sind vorhanden:
+Folgende Merkmale k\(:onnen konfiguriert werden:
 .PP
 \fBPASS_MAX_DAYS\fR,
 \fBPASS_MIN_DAYS\fR
@@ -55,7 +55,7 @@ and
 are only used at the time of account creation\&. Any changes to these settings won\*(Aqt affect existing accounts\&.
 .SH "QUERVERWEISE"
 .PP
-Die folgenden Querverweise zeigen, welche Programme aus der Shadow\-Passwort\-Werkzeugsammlung welche Parameter verwenden\&.
+Die folgenden Querverweise zeigen, welche Programme aus der Shadow\-Passwort\-Sammlung welche Parameter verwenden\&.
 .PP
 chfn
 .RS 4
@@ -192,8 +192,7 @@ USERGROUPS_ENAB
 .PP
 sulogin
 .RS 4
-ENV_HZ
-ENV_TZ
+ENV_HZ ENV_TZ
 .RE
 .PP
 useradd

@@ -2,12 +2,12 @@
 .\"     Title: chpasswd
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 08/11/2022
-.\"    Manual: Команди керування системою
-.\"    Source: shadow-utils 4.13
+.\"      Date: 19/03/2025
+.\"    Manual: System Management Commands
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: Ukrainian
 .\"
-.TH "chpasswd" "8" "08/11/2022" "shadow\-utils 4\&.13" "Команди керування системою"
+.TH "chpasswd" "8" "19/03/2025" "shadow\-utils 4\&.17\&.4" "System Management Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -31,53 +31,59 @@
 chpasswd \- оновлення паролів у пакетному режимі
 .SH "КОРОТКИЙ ОГЛЯД"
 .HP \w'\fBchpasswd\fR\ 'u
-\fBchpasswd\fR [\fIпараметри\fR]
+\fBchpasswd\fR [\fIoptions\fR]
 .SH "ОПИС"
 .PP
-Команда
+The
 \fBchpasswd\fR
-читає список пар ім\*(Aqя користувача \(em пароль зі стандартного джерела вхідних даних і використовує ці дані для оновлення набору наявних записів користувачів\&. Кожен рядок записується у такому форматі:
+command reads a list of user name and password pairs from standard input and uses this information to update a group of existing users\&. Each line is of the format:
 .PP
-\fIім\*(Aqя_користувача\fR:\fIпароль\fR
+\fIuser_name\fR:\fIpassword\fR
 .PP
-Типово, паролі має бути надано простим текстом\&. Паролі буде зашифровано за допомогою
-\fBchpasswd\fR\&. Також буде оновлено дані щодо віку пароля, якщо такі збережено\&.
+By default the passwords must be supplied in clear\-text, and are encrypted by
+\fBchpasswd\fR\&. Also the password age will be updated, if present\&.
 .PP
-Типовий алгоритм шифрування може бути визначено для системи за допомогою змінної
+The default encryption algorithm can be defined for the system with the
 \fBENCRYPT_METHOD\fR
-або
+or
 \fBMD5_CRYPT_ENAB\fR
-у
-/etc/login\&.defs, і може бути перезаписано за допомогою параметрів
+variables of
+/etc/login\&.defs, and can be overwritten with the
 \fB\-e\fR,
-\fB\-m\fR
-або
-\fB\-c\fR\&.
+\fB\-m\fR, or
+\fB\-c\fR
+options\&.
 .PP
 \fBchpasswd\fR
-спершу оновлює усі паролі у пам\*(Aqяті, а потім записує усі зміни на диск, якщо не сталося помилок для якогось з користувачів\&.
+first updates all the passwords in memory, and then commits all the changes to disk if no errors occurred for any user\&.
 .PP
 Цю команду призначено для використання у великих системних середовищах, де одночасно створюють багато облікових записів\&.
 .SH "ПАРАМЕТРИ"
 .PP
-Параметри, які застосовують до команди
-\fBchpasswd\fR, є такими:
+The options which apply to the
+\fBchpasswd\fR
+command are:
 .PP
-\fB\-c\fR, \fB\-\-crypt\-method\fR \fIMETHOD\fR
+\fB\-c\fR, \fB\-\-crypt\-method\fR\ \&\fIMETHOD\fR
 .RS 4
 Скористатися для шифрування паролів вказаним методом\&.
 .sp
-Доступними методами є DES, MD5, NONE і SHA256 або SHA512, якщо у вашій libc передбачено підтримку цих методів\&.
+The available methods are
+\fIDES\fR,
+\fIMD5\fR, \fISHA256\fR, \fISHA512\fR
+and
+\fINONE\fR
+if your libc supports these methods\&.
 .sp
-Типово, (якщо не вказано жодного з параметрів
+By default (if none of the
 \fB\-c\fR,
-\fB\-m\fR
-або
-\fB\-e\fR), метод шифрування буде визначено змінною
+\fB\-m\fR, or
+\fB\-e\fR
+options are specified), the encryption method is defined by the
 \fBENCRYPT_METHOD\fR
-або
+or
 \fBMD5_CRYPT_ENAB\fR
-у
+variables of
 /etc/login\&.defs\&.
 .RE
 .PP
@@ -96,7 +102,7 @@ chpasswd \- оновлення паролів у пакетному режимі
 Скористатися шифруванням MD5 замість DES, якщо надані паролі не зашифровано\&.
 .RE
 .PP
-\fB\-R\fR, \fB\-\-root\fR \fIКАТАЛОГ_CHROOT\fR
+\fB\-R\fR, \fB\-\-root\fR\ \&\fICHROOT_DIR\fR
 .RS 4
 Apply changes in the
 \fICHROOT_DIR\fR
@@ -105,31 +111,32 @@ directory and use the configuration files from the
 directory\&. Only absolute paths are supported\&.
 .RE
 .PP
-\fB\-s\fR, \fB\-\-sha\-rounds\fR \fIROUNDS\fR
+\fB\-P\fR, \fB\-\-prefix\fR\ \&\fIPREFIX_DIR\fR
+.RS 4
+Apply changes to configuration files under the root filesystem found under the directory
+\fIPREFIX_DIR\fR\&. This option does not chroot and is intended for preparing a cross\-compilation target\&. Some limitations: NIS and LDAP users/groups are not verified\&. PAM authentication is using the host files\&. No SELINUX support\&.
+.RE
+.PP
+\fB\-s\fR, \fB\-\-sha\-rounds\fR\ \&\fIROUNDS\fR
 .RS 4
 Використати вказану кількість циклів шифрування паролів\&.
 .sp
-Значення 0 означає, що система вибере типову кількість проходів для методу шифрування (5000)\&.
+You can only use this option with crypt method:
+\fISHA256\fR \fISHA512\fR
 .sp
-Буде примусово встановлено мінімальне значення 1000 і максимальне значення 999999999\&.
-.sp
-Ви можете скористатися цим параметром у поєднанні із методами шифрування SHA256 або SHA512\&.
-.sp
-Типово, кількість проходів визначено змінними
-\fBSHA_CRYPT_MIN_ROUNDS\fR
-і
-\fBSHA_CRYPT_MAX_ROUNDS\fR
-у
+By default, the number of rounds for SHA256 or SHA512 is defined by the SHA_CRYPT_MIN_ROUNDS and SHA_CRYPT_MAX_ROUNDS variables in
 /etc/login\&.defs\&.
+.sp
+A minimal value of 1000 and a maximal value of 999,999,999 will be enforced for SHA256 and SHA512\&. The default number of rounds is 5000\&.
 .RE
 .SH "ЗАСТЕРЕЖЕННЯ"
 .PP
 Не забудьте встановити права доступу або umask, щоб запобігти доступності до читання нешифрованих файлів сторонніми користувачами\&.
 .SH "НАЛАШТУВАННЯ"
 .PP
-Вказані нижче змінні налаштувань у
+The following configuration variables in
 /etc/login\&.defs
-змінюють поведінку цього інструмента:
+change the behavior of this tool:
 
 .SH "ФАЙЛИ"
 .PP

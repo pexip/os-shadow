@@ -2,12 +2,12 @@
 .\"     Title: passwd
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 11/08/2022
+.\"      Date: 03/19/2025
 .\"    Manual: User Commands
-.\"    Source: shadow-utils 4.13
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: English
 .\"
-.TH "PASSWD" "1" "11/08/2022" "shadow\-utils 4\&.13" "User Commands"
+.TH "PASSWD" "1" "03/19/2025" "shadow\-utils 4\&.17\&.4" "User Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -49,44 +49,9 @@ refuses to change the password and exits\&.
 .PP
 The user is then prompted twice for a replacement password\&. The second entry is compared against the first and both are required to match in order for the password to be changed\&.
 .PP
-Then, the password is tested for complexity\&. As a general guideline, passwords should consist of 6 to 8 characters including one or more characters from each of the following sets:
-.sp
-.RS 4
-.ie n \{\
-\h'-04'\(bu\h'+03'\c
-.\}
-.el \{\
-.sp -1
-.IP \(bu 2.3
-.\}
-lower case alphabetics
-.RE
-.sp
-.RS 4
-.ie n \{\
-\h'-04'\(bu\h'+03'\c
-.\}
-.el \{\
-.sp -1
-.IP \(bu 2.3
-.\}
-digits 0 thru 9
-.RE
-.sp
-.RS 4
-.ie n \{\
-\h'-04'\(bu\h'+03'\c
-.\}
-.el \{\
-.sp -1
-.IP \(bu 2.3
-.\}
-punctuation marks
-.RE
-.PP
-Care must be taken not to include the system default erase or kill characters\&.
+Then, the password is tested for complexity\&.
 \fBpasswd\fR
-will reject any password which is not suitably complex\&.
+will reject any password which is not suitably complex\&. Care must be taken not to include the system default erase or kill characters\&.
 .SS "Hints for user passwords"
 .PP
 The security of a password depends upon the strength of the encryption algorithm and the size of the key space\&. The legacy
@@ -96,7 +61,9 @@ System encryption method is based on the NBS DES algorithm\&. More recent method
 .PP
 Compromises in password security normally result from careless password selection or handling\&. For this reason, you should not select a password which appears in a dictionary or which must be written down\&. The password should also not be a proper name, your license number, birth date, or street address\&. Any of these may be used as guesses to violate system security\&.
 .PP
-You can find advice on how to choose a strong password on http://en\&.wikipedia\&.org/wiki/Password_strength
+As a general guideline, passwords should be long and random\&. It\*(Aqs fine to use simple character sets, such as passwords consisting only of lowercase letters, if that helps memorizing longer passwords\&. For a password consisting only of lowercase English letters randomly chosen, and a length of 32, there are 26^32 (approximately 2^150) different possible combinations\&. Being an exponential equation, it\*(Aqs apparent that the exponent (the length) is more important than the base (the size of the character set)\&.
+.PP
+You can find advice on how to choose a strong password on https://en\&.wikipedia\&.org/wiki/Password_strength
 .SH "OPTIONS"
 .PP
 The options which apply to the
@@ -143,7 +110,7 @@ Lock the password of the named account\&. This option disables a password by cha
 .sp
 Note that this does not disable the account\&. The user may still be able to login using another authentication token (e\&.g\&. an SSH key)\&. To disable the account, administrators should use
 \fBusermod \-\-expiredate 1\fR
-(this set the account\*(Aqs expire date to Jan 2, 1970)\&.
+(this sets the account\*(Aqs expire date to Jan 2, 1970)\&.
 .sp
 Users with a locked password are not allowed to change their password\&.
 .RE
@@ -175,6 +142,12 @@ directory and use the configuration files from the
 directory\&. Only absolute paths are supported\&.
 .RE
 .PP
+\fB\-P\fR, \fB\-\-prefix\fR\ \&\fIPREFIX_DIR\fR
+.RS 4
+Apply changes to configuration files under the root filesystem found under the directory
+\fIPREFIX_DIR\fR\&. This option does not chroot and is intended for preparing a cross\-compilation target\&. Some limitations: NIS and LDAP users/groups are not verified\&. No PAM support\&. No SELINUX support\&.
+.RE
+.PP
 \fB\-S\fR, \fB\-\-status\fR
 .RS 4
 Display account status information\&. The status information consists of 7 fields\&. The first field is the user\*(Aqs login name\&. The second field indicates if the user account has a locked password (L), has no password (NP), or has a usable password (P)\&. The third field gives the date of the last password change\&. The next four fields are the minimum age, maximum age, warning period, and inactivity period for the password\&. These ages are expressed in days\&.
@@ -204,6 +177,11 @@ Passing the number
 as
 \fIMAX_DAYS\fR
 will remove checking a password\*(Aqs validity\&.
+.RE
+.PP
+\fB\-s\fR, \fB\-\-stdin\fR
+.RS 4
+This option is used to indicate that passwd should read the new password from standard input, which can be a pipe\&.
 .RE
 .SH "CAVEATS"
 .PP
@@ -282,7 +260,7 @@ is set to
 or
 \fISHA512\fR, this defines the number of SHA rounds used by the encryption algorithm by default (when the number of rounds is not specified on the command line)\&.
 .sp
-With a lot of rounds, it is more difficult to brute forcing the password\&. But note also that more CPU resources will be needed to authenticate users\&.
+With a lot of rounds, it is more difficult to brute force the password\&. But note also that more CPU resources will be needed to authenticate users\&.
 .sp
 If not specified, the libc will choose the default number of rounds (5000), which is orders of magnitude too low for modern hardware\&.
 .sp
@@ -361,7 +339,10 @@ invalid argument to option
 .SH "SEE ALSO"
 .PP
 \fBchpasswd\fR(8),
+\fBmakepasswd\fR(1),
 \fBpasswd\fR(5),
 \fBshadow\fR(5),
 \fBlogin.defs\fR(5),
 \fBusermod\fR(8)\&.
+.PP
+The following web page comically (yet correctly) compares the strength of two different methods for choosing a password: "https://xkcd\&.com/936/"

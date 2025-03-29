@@ -2,12 +2,12 @@
 .\"     Title: passwd
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 08/11/2022
-.\"    Manual: Comandi utente
-.\"    Source: shadow-utils 4.13
+.\"      Date: 19/03/2025
+.\"    Manual: User Commands
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: Italian
 .\"
-.TH "PASSWD" "1" "08/11/2022" "shadow\-utils 4\&.13" "Comandi utente"
+.TH "PASSWD" "1" "19/03/2025" "shadow\-utils 4\&.17\&.4" "User Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -31,7 +31,7 @@
 passwd \- cambia la password utente
 .SH "SINOSSI"
 .HP \w'\fBpasswd\fR\ 'u
-\fBpasswd\fR [\fIopzioni\fR] [\fILOGIN\fR]
+\fBpasswd\fR [\fIoptions\fR] [\fILOGIN\fR]
 .SH "DESCRIZIONE"
 .PP
 The
@@ -49,44 +49,9 @@ refuses to change the password and exits\&.
 .PP
 All\*(Aqutente viene quindi chiesto di inserire la nuova password due volte\&. Le due password sono confrontate e devono essere uguali affinch\('e la password venga accettata\&.
 .PP
-Quindi viene misurata la complessit\(`a della password\&. In linea di massima le password dovrebbero contenere dai 6 agli 8 caratteri, includendovi uno o pi\(`u caratteri da ciascuno dei seguenti insiemi:
-.sp
-.RS 4
-.ie n \{\
-\h'-04'\(bu\h'+03'\c
-.\}
-.el \{\
-.sp -1
-.IP \(bu 2.3
-.\}
-lettere minuscole
-.RE
-.sp
-.RS 4
-.ie n \{\
-\h'-04'\(bu\h'+03'\c
-.\}
-.el \{\
-.sp -1
-.IP \(bu 2.3
-.\}
-numeri da 0 a 9
-.RE
-.sp
-.RS 4
-.ie n \{\
-\h'-04'\(bu\h'+03'\c
-.\}
-.el \{\
-.sp -1
-.IP \(bu 2.3
-.\}
-segni di punteggiatura
-.RE
-.PP
-Care must be taken not to include the system default erase or kill characters\&.
+Then, the password is tested for complexity\&.
 \fBpasswd\fR
-will reject any password which is not suitably complex\&.
+will reject any password which is not suitably complex\&. Care must be taken not to include the system default erase or kill characters\&.
 .SS "Suggerimenti per password utente"
 .PP
 The security of a password depends upon the strength of the encryption algorithm and the size of the key space\&. The legacy
@@ -96,7 +61,9 @@ System encryption method is based on the NBS DES algorithm\&. More recent method
 .PP
 La compromissione di una password avviene normalmente a seguito di incuria nella scelta o nella gestione della password\&. Per questo motivo non si devono utilizzare password che appaiono nei dizionari o che devono essere scritte\&. La password non deve essere uno nome proprio, il numero della patente, la data di nascita o l\*(Aqindirizzo\&. Uno qualunque di questi potrebbe essere indovinato per violare la sicurezza del sistema\&.
 .PP
-You can find advice on how to choose a strong password on http://en\&.wikipedia\&.org/wiki/Password_strength
+As a general guideline, passwords should be long and random\&. It\*(Aqs fine to use simple character sets, such as passwords consisting only of lowercase letters, if that helps memorizing longer passwords\&. For a password consisting only of lowercase English letters randomly chosen, and a length of 32, there are 26^32 (approximately 2^150) different possible combinations\&. Being an exponential equation, it\*(Aqs apparent that the exponent (the length) is more important than the base (the size of the character set)\&.
+.PP
+You can find advice on how to choose a strong password on https://en\&.wikipedia\&.org/wiki/Password_strength
 .SH "OPZIONI"
 .PP
 The options which apply to the
@@ -143,7 +110,7 @@ Blocca la password dell\*(Aqaccount indicato\&. Questa opzione disabilita una pa
 .sp
 Note that this does not disable the account\&. The user may still be able to login using another authentication token (e\&.g\&. an SSH key)\&. To disable the account, administrators should use
 \fBusermod \-\-expiredate 1\fR
-(this set the account\*(Aqs expire date to Jan 2, 1970)\&.
+(this sets the account\*(Aqs expire date to Jan 2, 1970)\&.
 .sp
 Gli utenti con password bloccata non la possono cambiare\&.
 .RE
@@ -175,6 +142,12 @@ directory and use the configuration files from the
 directory\&. Only absolute paths are supported\&.
 .RE
 .PP
+\fB\-P\fR, \fB\-\-prefix\fR\ \&\fIPREFIX_DIR\fR
+.RS 4
+Apply changes to configuration files under the root filesystem found under the directory
+\fIPREFIX_DIR\fR\&. This option does not chroot and is intended for preparing a cross\-compilation target\&. Some limitations: NIS and LDAP users/groups are not verified\&. No PAM support\&. No SELINUX support\&.
+.RE
+.PP
 \fB\-S\fR, \fB\-\-status\fR
 .RS 4
 Visualizza le informazioni sullo stato di un account\&. Lo stato consiste di 7 campi\&. Il primo campo \(`e il nome dell\*(Aqutente\&. Il secondo campo indica se l\*(Aqaccount ha una password bloccata (L), non ha password (NP) o ha una password valida (P)\&. Il terzo campo contiene la data di ultima modifica della password\&. I successivi quattro campi sono l\*(Aqet\(`a minima, la massima, il periodo di avviso e quello di inattivit\(`a\&. Queste et\(`a sono espresse in giorni\&.
@@ -204,6 +177,11 @@ Passing the number
 as
 \fIMAX_DAYS\fR
 will remove checking a password\*(Aqs validity\&.
+.RE
+.PP
+\fB\-s\fR, \fB\-\-stdin\fR
+.RS 4
+This option is used to indicate that passwd should read the new password from standard input, which can be a pipe\&.
 .RE
 .SH "AVVISI/CAVEAT"
 .PP
@@ -277,7 +255,10 @@ invalid argument to option
 .SH "VEDERE ANCHE"
 .PP
 \fBchpasswd\fR(8),
+\fBmakepasswd\fR(1),
 \fBpasswd\fR(5),
 \fBshadow\fR(5),
 \fBlogin.defs\fR(5),
 \fBusermod\fR(8)\&.
+.PP
+The following web page comically (yet correctly) compares the strength of two different methods for choosing a password: "https://xkcd\&.com/936/"

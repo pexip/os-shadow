@@ -6,10 +6,10 @@ config.xml: ../config.xml.in
 	cp ../config.xml $@
 
 messages.mo: ../po/$(LANG).po
-	msgfmt ../po/$(LANG).po -o messages.mo
+	msgfmt $< -o messages.mo
 
 login.defs.d:
-	ln -sf ../login.defs.d login.defs.d
+	ln -sf $(srcdir)/../login.defs.d login.defs.d
 
 %.xml: ../%.xml messages.mo login.defs.d
 	if grep -q SHADOW-CONFIG-HERE $< ; then \
@@ -17,7 +17,7 @@ login.defs.d:
 	else \
 	    sed -e 's/^\(<!DOCTYPE .*docbookx.dtd"\)>/\1 [<!ENTITY % config SYSTEM "config.xml">%config;]>/' $< > $@; \
 	fi
-	itstool -d -l $(LANG) -m messages.mo -o . $@
+	itstool -i $(srcdir)/../its.rules -d -l $(LANG) -m messages.mo -o . $@
 	sed -i 's:\(^<refentry .*\)>:\1 lang="$(LANG)">:' $@
 
 include ../generate_mans.mak

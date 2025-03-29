@@ -2,12 +2,12 @@
 .\"     Title: sg
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 08/11/2022
-.\"    Manual: Команди користувача
-.\"    Source: shadow-utils 4.13
+.\"      Date: 19/03/2025
+.\"    Manual: User Commands
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: Ukrainian
 .\"
-.TH "sg" "1" "08/11/2022" "shadow\-utils 4\&.13" "Команди користувача"
+.TH "sg" "1" "19/03/2025" "shadow\-utils 4\&.17\&.4" "User Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -31,30 +31,34 @@
 sg \- виконання команди від імені іншого ідентифікатора групи
 .SH "КОРОТКИЙ ОГЛЯД"
 .HP \w'\fBsg\fR\ 'u
-\fBsg\fR [\-] [група\ [\-c]\ команда]
+\fBsg\fR [\-] [group\ [\-c\ ]\ command]
 .SH "ОПИС"
 .PP
-Команда
+The
 \fBsg\fR
-працює подібно до команди
-\fBnewgrp\fR, але приймає команду\&. Цю команду буде виконано за допомогою оболонки
-/bin/sh\&. У більшості оболонок, з яких ви можете запустити
-\fBsg\fR, вам доведеться брати багатослівні команди у лапки\&. Іншою відмінністю між
+command works similar to
 \fBnewgrp\fR
-і
+but accepts a command\&. The command will be executed with the
+/bin/sh
+shell\&. With most shells you may run
 \fBsg\fR
-є те, що деякі оболонки обробляють
+from, you need to enclose multi\-word commands in quotes\&. Another difference between
 \fBnewgrp\fR
-по\-особливому, замінюючи себе новим екземпляром оболонки, який створює
-\fBnewgrp\fR\&. Такого не трапляється з
-\fBsg\fR\&. Отже, після виходу з команди
+and
 \fBsg\fR
-ви повернетеся до вашого попереднього ідентифікатора групи\&.
+is that some shells treat
+\fBnewgrp\fR
+specially, replacing themselves with a new instance of a shell that
+\fBnewgrp\fR
+creates\&. This doesn\*(Aqt happen with
+\fBsg\fR, so upon exit from a
+\fBsg\fR
+command you are returned to your previous group ID\&.
 .SH "НАЛАШТУВАННЯ"
 .PP
-Вказані нижче змінні налаштувань у
+The following configuration variables in
 /etc/login\&.defs
-змінюють поведінку цього інструмента:
+change the behavior of this tool:
 .SH "ФАЙЛИ"
 .PP
 /etc/passwd
@@ -83,4 +87,4 @@ sg \- виконання команди від імені іншого іден�
 \fBnewgrp\fR(1),
 \fBsu\fR(1),
 \fBgpasswd\fR(1),
-\fBгрупа\fR(5), \fBgshadow\fR(5)\&.
+\fBgroup\fR(5), \fBgshadow\fR(5)\&.

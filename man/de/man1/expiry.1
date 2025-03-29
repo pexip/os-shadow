@@ -2,12 +2,12 @@
 .\"     Title: expiry
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 08.11.2022
-.\"    Manual: Dienstprogramme f\(:ur Benutzer
-.\"    Source: shadow-utils 4.13
+.\"      Date: 19.03.2025
+.\"    Manual: User Commands
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: German
 .\"
-.TH "EXPIRY" "1" "08.11.2022" "shadow\-utils 4\&.13" "Dienstprogramme f\(:ur Benutzer"
+.TH "EXPIRY" "1" "19.03.2025" "shadow\-utils 4\&.17\&.4" "User Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -28,10 +28,10 @@
 .\" * MAIN CONTENT STARTS HERE *
 .\" -----------------------------------------------------------------
 .SH "NAME"
-expiry \- \(:uberpr\(:uft die Regeln f\(:ur den Verfall des Passworts und setzt diese um
+expiry \- \(:uberpr\(:uft das Passwort auf G\(:ultigkeit
 .SH "\(:UBERSICHT"
 .HP \w'\fBexpiry\fR\ 'u
-\fBexpiry\fR \fIOption\fR
+\fBexpiry\fR \fIoption\fR
 .SH "BESCHREIBUNG"
 .PP
 The
@@ -45,7 +45,7 @@ command are:
 .PP
 \fB\-c\fR, \fB\-\-check\fR
 .RS 4
-\(:uberpr\(:uft den Verfall des Passworts des aktuellen Benutzers
+\(:uberpr\(:uft, ob das Passwort des aktuellen Benutzers abgelaufen ist\&.
 .RE
 .PP
 \fB\-f\fR, \fB\-\-force\fR
@@ -55,7 +55,7 @@ erzwingt den Wechsel des Passworts des aktuellen Benutzers, falls dieses abgelau
 .PP
 \fB\-h\fR, \fB\-\-help\fR
 .RS 4
-zeigt die Hilfe an und beendet das Programm
+zeigt die Hilfe an und beendet das Programm\&.
 .RE
 .SH "DATEIEN"
 .PP
@@ -66,7 +66,7 @@ Informationen zu den Benutzerkonten
 .PP
 /etc/shadow
 .RS 4
-verschl\(:usselte Informationen zu den Benutzerkonten
+gesch\(:utzte Informationen zu den Benutzerkonten
 .RE
 .SH "SIEHE AUCH"
 .PP

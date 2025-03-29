@@ -2,12 +2,12 @@
 .\"     Title: chsh
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 11/08/2022
-.\"    Manual: Пользовательские команды
-.\"    Source: shadow-utils 4.13
+.\"      Date: 03/19/2025
+.\"    Manual: User Commands
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: Russian
 .\"
-.TH "chsh" "1" "11/08/2022" "shadow\-utils 4\&.13" "Пользовательские команды"
+.TH "chsh" "1" "03/19/2025" "shadow\-utils 4\&.17\&.4" "User Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -31,7 +31,7 @@
 chsh \- изменяет регистрационную оболочку пользователя
 .SH "СИНТАКСИС"
 .HP \w'\fBchsh\fR\ 'u
-\fBchsh\fR [\fIпараметры\fR] [\fIУЧЁТНАЯ_ЗАПИСЬ\fR]
+\fBchsh\fR [\fIoptions\fR] [\fILOGIN\fR]
 .SH "ОПИСАНИЕ"
 .PP
 The
@@ -73,6 +73,12 @@ marks\&.
 .PP
 The only restriction placed on the login shell is that the command name must be listed in
 /etc/shells, unless the invoker is the superuser, and then any value may be added\&. An account with a restricted login shell may not change her login shell\&. For this reason, placing
+/bin/rsh
+in
+/etc/shells
+is discouraged since accidentally changing to a restricted shell would prevent the user from ever changing her login shell back to its original value\&.
+.PP
+For this reason, placing
 /bin/rsh
 in
 /etc/shells

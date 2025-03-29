@@ -2,12 +2,12 @@
 .\"     Title: chfn
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 08/11/2022
-.\"    Manual: Команди користувача
-.\"    Source: shadow-utils 4.13
+.\"      Date: 19/03/2025
+.\"    Manual: User Commands
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: Ukrainian
 .\"
-.TH "chfn" "1" "08/11/2022" "shadow\-utils 4\&.13" "Команди користувача"
+.TH "chfn" "1" "19/03/2025" "shadow\-utils 4\&.17\&.4" "User Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -31,48 +31,50 @@
 chfn \- зміна справжнього імені користувача і відомостей щодо нього
 .SH "КОРОТКИЙ ОГЛЯД"
 .HP \w'\fBchfn\fR\ 'u
-\fBchfn\fR [\fIпараметри\fR] [\fIЗАПИС\fR]
+\fBchfn\fR [\fIoptions\fR] [\fILOGIN\fR]
 .SH "ОПИС"
 .PP
-Команда
+The
 \fBchfn\fR
-змінює повне ім\*(Aqя користувача, номер кімнати в офісі, номер телефону в офісі і дані щодо домашнього телефону для облікового запису користувача\&. Ці дані, зазвичай, виводить
+command changes user fullname, office room number, office phone number, and home phone number information for a user\*(Aqs account\&. This information is typically printed by
 \fBfinger\fR(1)
-та подібні програми\&. Звичайні користувачі можуть змінювати значення полів лише для власного облікового запису, відповідно до обмежень у
-/etc/login\&.defs\&. (Типовими налаштуваннями користувачам заборонено змінювати власне повне ім\*(Aqя\&.) Надкористувач може змінювати будь\-яке поле будь\-якого облікового запису\&. Крім того, лише надкористувач може використовувати параметр
+and similar programs\&. A normal user may only change the fields for her own account, subject to the restrictions in
+/etc/login\&.defs\&. (The default configuration is to prevent users from changing their fullname\&.) The superuser may change any field for any account\&. Additionally, only the superuser may use the
 \fB\-o\fR
-для зміни невизначених частин поля GECOS\&.
+option to change the undefined portions of the GECOS field\&.
 .PP
-Ці поля не повинні містити двокрапок\&. Окрім поля
-\fIother\fR, у полях не повинно міститися ком та знаків рівності\&. Також рекомендуємо уникати символів поза US\-ASCII, втім, примусово це обмеження застосовується лише до номерів телефонів\&. Поле
+These fields must not contain any colons\&. Except for the
 \fIother\fR
-використовують для зберігання облікових даних, які використовують інші програми\&.
+field, they should not contain any comma or equal sign\&. It is also recommended to avoid non\-US\-ASCII characters, but this is only enforced for the phone numbers\&. The
+\fIother\fR
+field is used to store accounting information used by other applications\&.
 .SH "ПАРАМЕТРИ"
 .PP
-Параметри, які застосовують до команди
-\fBchfn\fR, є такими:
+The options which apply to the
+\fBchfn\fR
+command are:
 .PP
-\fB\-f\fR, \fB\-\-full\-name\fR \fIІМ\*(AqЯ_ПОВНІСТЮ\fR
+\fB\-f\fR, \fB\-\-full\-name\fR\ \&\fIFULL_NAME\fR
 .RS 4
 Змінити повне ім\*(Aqя користувача\&.
 .RE
 .PP
-\fB\-h\fR, \fB\-\-home\-phone\fR \fIДОМАШНІЙ_ТЕЛЕФОН\fR
+\fB\-h\fR, \fB\-\-home\-phone\fR\ \&\fIHOME_PHONE\fR
 .RS 4
 Змінити домашній телефон користувача\&.
 .RE
 .PP
-\fB\-o\fR, \fB\-\-other\fR \fIІНШЕ\fR
+\fB\-o\fR, \fB\-\-other\fR\ \&\fIOTHER\fR
 .RS 4
 Змінити інші відомості GECOS користувача\&. Це поле використовують для зберігання облікових даних, які використовують інші програми, його вміст може змінювати надкористувач\&.
 .RE
 .PP
-\fB\-r\fR, \fB\-\-room\fR \fIНОМЕР_КІМНАТИ\fR
+\fB\-r\fR, \fB\-\-room\fR\ \&\fIROOM_NUMBER\fR
 .RS 4
 Змінити номер кімнати користувача\&.
 .RE
 .PP
-\fB\-R\fR, \fB\-\-root\fR \fIКАТАЛОГ_CHROOT\fR
+\fB\-R\fR, \fB\-\-root\fR\ \&\fICHROOT_DIR\fR
 .RS 4
 Apply changes in the
 \fICHROOT_DIR\fR
@@ -86,21 +88,23 @@ directory\&. Only absolute paths are supported\&.
 Показати довідкове повідомлення і завершити роботу\&.
 .RE
 .PP
-\fB\-w\fR, \fB\-\-work\-phone\fR \fIРОБОЧИЙ_ТЕЛЕФОН\fR
+\fB\-w\fR, \fB\-\-work\-phone\fR\ \&\fIWORK_PHONE\fR
 .RS 4
 Змінити робочий телефон користувача\&.
 .RE
 .PP
-Якщо не буде вказано жодного параметра,
+If none of the options are selected,
 \fBchfn\fR
-буде запущено в інтерактивному режимі \(em програма покаже користувачеві поточні значення для усіх полів\&. Введіть нове значення, щоб змінити поле або нічого не вводьте, щоб лишити поточне значення\&. Поточне значення буде взято у квадратні дужки (\fB[ ]\fR)\&. Без параметрів
+operates in an interactive fashion, prompting the user with the current values for all of the fields\&. Enter the new value to change the field, or leave the line blank to use the current value\&. The current value is displayed between a pair of
+\fB[ ]\fR
+marks\&. Without options,
 \fBchfn\fR
-попросить вказати поточний обліковий запис користувача\&.\&.
+prompts for the current user account\&.
 .SH "НАЛАШТУВАННЯ"
 .PP
-Вказані нижче змінні налаштувань у
+The following configuration variables in
 /etc/login\&.defs
-змінюють поведінку цього інструмента:
+change the behavior of this tool:
 .SH "ФАЙЛИ"
 .PP
 /etc/login\&.defs

@@ -24,19 +24,25 @@
 #include <unistd.h>
 #include <grp.h>
 #include <getopt.h>
-#include "nscd.h"
-#include "sssd.h"
-#include "prototypes.h"
+
+#include "attr.h"
 /*@-exitarg@*/
 #include "exitcodes.h"
+#include "nscd.h"
+#include "prototypes.h"
+#include "sssd.h"
+#include "string/strcmp/streq.h"
+
 #ifdef SHADOWGRP
 #include "groupio.h"
 #include "sgroupio.h"
 #include "shadowlog.h"
+
+
 /*
  * Global variables
  */
-const char *Prog;
+static const char Prog[] = "grpunconv";
 
 static bool gr_locked  = false;
 static bool sgr_locked = false;
@@ -122,7 +128,6 @@ int main (int argc, char **argv)
 	struct group grent;
 	const struct sgrp *sg;
 
-	Prog = Basename (argv[0]);
 	log_set_progname(Prog);
 	log_set_logfd(stderr);
 
@@ -132,7 +137,7 @@ int main (int argc, char **argv)
 
 	process_root_flag ("-R", argc, argv);
 
-	OPENLOG ("grpunconv");
+	OPENLOG (Prog);
 
 	process_flags (argc, argv);
 
@@ -173,7 +178,7 @@ int main (int argc, char **argv)
 	while ((gr = gr_next ()) != NULL) {
 		sg = sgr_locate (gr->gr_name);
 		if (   (NULL != sg)
-		    && (strcmp (gr->gr_passwd, SHADOW_PASSWD_STRING) == 0)) {
+		    && streq(gr->gr_passwd, SHADOW_PASSWD_STRING)) {
 			/* add password to /etc/group */
 			grent = *gr;
 			grent.gr_passwd = sg->sg_passwd;
@@ -222,7 +227,7 @@ int main (int argc, char **argv)
 	return 0;
 }
 #else				/* !SHADOWGRP */
-int main (int unused(argc), char **argv)
+int main (MAYBE_UNUSED int argc, char **argv)
 {
 	fprintf (stderr,
 		 "%s: not configured for shadow group support.\n", argv[0]);

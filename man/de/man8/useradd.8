@@ -2,12 +2,12 @@
 .\"     Title: useradd
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 08.11.2022
-.\"    Manual: Befehle zur Systemverwaltung
-.\"    Source: shadow-utils 4.13
+.\"      Date: 19.03.2025
+.\"    Manual: System Management Commands
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: German
 .\"
-.TH "USERADD" "8" "08.11.2022" "shadow\-utils 4\&.13" "Befehle zur Systemverwaltung"
+.TH "USERADD" "8" "19.03.2025" "shadow\-utils 4\&.17\&.4" "System Management Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -31,11 +31,11 @@
 useradd \- erstellt einen neuen Benutzer oder aktualisiert die Standardwerte f\(:ur neue Benutzer
 .SH "\(:UBERSICHT"
 .HP \w'\fBuseradd\fR\ 'u
-\fBuseradd\fR [\fIOptionen\fR] \fIANMELDENAME\fR
+\fBuseradd\fR [\fIoptions\fR] \fILOGIN\fR
 .HP \w'\fBuseradd\fR\ 'u
 \fBuseradd\fR \-D
 .HP \w'\fBuseradd\fR\ 'u
-\fBuseradd\fR \-D [\fIOptionen\fR]
+\fBuseradd\fR \-D [\fIoptions\fR]
 .SH "BESCHREIBUNG"
 .PP
 When invoked without the
@@ -59,7 +59,7 @@ command are:
 .PP
 \fB\-\-badname\fR\ \&
 .RS 4
-Allow names that do not conform to standards\&.
+erlaube Namen, die nicht den Standards entsprechen\&.
 .RE
 .PP
 \fB\-b\fR, \fB\-\-base\-dir\fR\ \&\fIBASE_DIR\fR
@@ -155,7 +155,7 @@ variable in
 \fIyes\fR
 (or
 \fB\-U/\-\-user\-group\fR
-is specified on the command line), a group will be created for the user, with the same name as her loginname\&. If the variable is set to
+is specified on the command line), a group will be created for the user, with the same name as the loginname\&. If the variable is set to
 \fIno\fR
 (or
 \fB\-N/\-\-no\-user\-group\fR
@@ -169,12 +169,16 @@ variable in
 .RS 4
 A list of supplementary groups which the user is also a member of\&. Each group is separated from the next by a comma, with no intervening whitespace\&. The groups are subject to the same restrictions as the group given with the
 \fB\-g\fR
-option\&. The default is for the user to belong only to the initial group\&.
+option\&. The default is for the user to belong only to the initial group\&. In addition to passing in the \-G flag, you can add the option
+\fBGROUPS\fR
+to the file
+/etc/default/useradd
+which in turn will add all users to those supplementary groups\&.
 .RE
 .PP
 \fB\-h\fR, \fB\-\-help\fR
 .RS 4
-zeigt die Hilfe an und beendet das Programm
+zeigt die Hilfe an und beendet das Programm\&.
 .RE
 .PP
 \fB\-k\fR, \fB\-\-skel\fR\ \&\fISKEL_DIR\fR
@@ -194,7 +198,11 @@ variable in
 or, by default,
 /etc/skel\&.
 .sp
-Soweit m\(:oglich, werden die ACLs und erweiterten Attribute kopiert\&.
+Absolute symlinks that link back to the skel directory will have the
+/etc/skel
+prefix replaced with the user\*(Aqs home directory\&.
+.sp
+Soweit m\(:oglich, werden die ACLs und erweiterte Attribute kopiert\&.
 .RE
 .PP
 \fB\-K\fR, \fB\-\-key\fR\ \&\fIKEY\fR=\fIVALUE\fR
@@ -219,9 +227,13 @@ options can be specified, e\&.g\&.:
 .PP
 \fB\-l\fR, \fB\-\-no\-log\-init\fR
 .RS 4
-F\(:ugt den Benutzer nicht zu den Datenbanken lastlog und faillog hinzu\&.
+l\(:asst den Benutzer bei den Aufzeichnungen von
+\fBlastlog\fR(8)
+und
+\fBfaillog\fR(8)
+au\(ssen vor\&.
 .sp
-By default, the user\*(Aqs entries in the lastlog and faillog databases are reset to avoid reusing the entry from a previously deleted user\&.
+Standardm\(:a\(ssig werden die Benutzereintr\(:age in den Datenbanken f\(:ur lastlog und faillog zur\(:uckgesetzt, um zu vermeiden, dass der Eintrag eines fr\(:uher gel\(:oschten Benutzers erneut verwendet wird\&.
 .sp
 If this option is not specified,
 \fBuseradd\fR
@@ -366,7 +378,7 @@ description\&.
 .PP
 \fB\-U\fR, \fB\-\-user\-group\fR
 .RS 4
-erstellt eine Gruppe mit dem gleichen Name wie der Benutzer und f\(:ugt diesen der Gruppe hinzu
+erstellt eine Gruppe mit dem gleichen Namen wie der Benutzer und f\(:ugt diesen der Gruppe hinzu\&.
 .sp
 The default behavior (if the
 \fB\-g\fR,
@@ -380,9 +392,21 @@ variable in
 .PP
 \fB\-Z\fR, \fB\-\-selinux\-user\fR\ \&\fISEUSER\fR
 .RS 4
-defines the SELinux user for the new account\&. Without this option, a SELinux uses the default user\&. Note that the shadow system doesn\*(Aqt store the selinux\-user, it uses
+defines the SELinux user for the new account\&. Without this option, SELinux uses the default user\&. Note that the shadow system doesn\*(Aqt store the selinux\-user, it uses
 \fBsemanage\fR(8)
 for that\&.
+.RE
+.PP
+\fB\-\-selinux\-range\fR\ \&\fISERANGE\fR
+.RS 4
+defines the SELinux MLS range for the new account\&. Without this option, SELinux uses the default range\&. Note that the shadow system doesn\*(Aqt store the selinux\-range, it uses
+\fBsemanage\fR(8)
+for that\&.
+.sp
+This option is only valid if the
+\fB\-Z\fR
+(or
+\fB\-\-selinux\-user\fR) option is specified\&.
 .RE
 .SS "Die Standardwerte ver\(:andern"
 .PP
@@ -459,7 +483,7 @@ directory (or any other skeleton directory specified in
 or on the command line)\&.
 .SH "WARNUNGEN"
 .PP
-Sie d\(:urfen einen Benutzer nicht einer NIS\- oder LDAP\-Gruppe hinzuf\(:ugen\&. Dies muss auf dem entsprechenden Server durchgef\(:uhrt werden\&.
+Sie d\(:urfen einer NIS\- oder LDAP\-Gruppe keine Benutzer hinzuf\(:ugen\&. Dies muss auf dem entsprechenden Server durchgef\(:uhrt werden\&.
 .PP
 Similarly, if the username already exists in an external user database such as NIS or LDAP,
 \fBuseradd\fR
@@ -469,7 +493,7 @@ Usernames may contain only lower and upper case letters, digits, underscores, or
 \fBls\fR
 output\&.
 .PP
-Benutzernamen d\(:urfen nur bis zu 32 Zeichen lang sein\&.
+Benutzernamen d\(:urfen nur bis zu 256 Zeichen lang sein\&.
 .SH "KONFIGURATION"
 .PP
 The following configuration variables in
@@ -484,7 +508,7 @@ Informationen zu den Benutzerkonten
 .PP
 /etc/shadow
 .RS 4
-verschl\(:usselte Informationen zu den Benutzerkonten
+gesch\(:utzte Informationen zu den Benutzerkonten
 .RE
 .PP
 /etc/group
@@ -494,7 +518,7 @@ Informationen zu den Gruppenkonten
 .PP
 /etc/gshadow
 .RS 4
-sichere Informationen zu den Gruppenkonten
+gesch\(:utzte Informationen zu den Gruppenkonten
 .RE
 .PP
 /etc/default/useradd
@@ -518,22 +542,22 @@ will execute after user addition\&. If a script exits non\-zero then execution w
 .PP
 /etc/skel/
 .RS 4
-Verzeichnis, das die Standarddateien enth\(:alt
+Verzeichnis, das die Dateien mit Standardwerten enth\(:alt
 .RE
 .PP
 /etc/subgid
 .RS 4
-Per user subordinate group IDs\&.
+enth\(:alt untergeordnete Gruppenkennungen der einzelnen Benutzer\&.
 .RE
 .PP
 /etc/subuid
 .RS 4
-Per user subordinate user IDs\&.
+enth\(:alt untergeordnete Benutzerkennungen der einzelnen Benutzer\&.
 .RE
 .PP
 /etc/login\&.defs
 .RS 4
-Konfiguration der Shadow\-Passwort\-Werkzeugsammlung
+konfiguriert die Shadow\-Hilfsprogramme\&.
 .RE
 .SH "R\(:UCKGABEWERTE"
 .PP
@@ -590,6 +614,11 @@ can\*(Aqt create home directory
 \fI14\fR
 .RS 4
 can\*(Aqt update SELinux user mapping
+.RE
+.PP
+\fI19\fR
+.RS 4
+invalid user or group name
 .RE
 .SH "SIEHE AUCH"
 .PP

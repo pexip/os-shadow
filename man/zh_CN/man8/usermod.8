@@ -2,12 +2,12 @@
 .\"     Title: usermod
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 2022-11-08
-.\"    Manual: 系统管理命令
-.\"    Source: shadow-utils 4.13
+.\"      Date: 2025-03-19
+.\"    Manual: System Management Commands
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: Chinese Simplified
 .\"
-.TH "USERMOD" "8" "2022-11-08" "shadow\-utils 4\&.13" "系统管理命令"
+.TH "USERMOD" "8" "2025-03-19" "shadow\-utils 4\&.17\&.4" "System Management Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -31,7 +31,7 @@
 usermod \- 修改一个用户账户
 .SH "大纲"
 .HP \w'\fBusermod\fR\ 'u
-\fBusermod\fR [\fI选项\fR] \fI登录\fR
+\fBusermod\fR [\fIoptions\fR] \fILOGIN\fR
 .SH "描述"
 .PP
 The
@@ -309,6 +309,18 @@ from /etc/login\&.defs\&.
 defines the SELinux user to be mapped with
 \fILOGIN\fR\&. An empty string ("") will remove the respective entry (if any)\&. Note that the shadow system doesn\*(Aqt store the selinux\-user, it uses semanage(8) for that\&.
 .RE
+.PP
+\fB\-\-selinux\-range\fR\ \&\fISERANGE\fR
+.RS 4
+defines the SELinux MLS range for the new account\&. Note that the shadow system doesn\*(Aqt store the selinux\-range, it uses
+\fBsemanage\fR(8)
+for that\&.
+.sp
+This option is only valid if the
+\fB\-Z\fR
+(or
+\fB\-\-selinux\-user\fR) option is specified\&.
+.RE
 .SH "CAVEATS"
 .PP
 You must make certain that the named user is not executing any processes when this command is being executed if the user\*(Aqs numerical user ID, the user\*(Aqs name, or the user\*(Aqs home directory is being changed\&.
@@ -336,7 +348,7 @@ Group account information
 .PP
 /etc/gshadow
 .RS 4
-Secure group account informatio\&.
+Secure group account information
 .RE
 .PP
 /etc/login\&.defs

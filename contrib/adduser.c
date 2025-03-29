@@ -60,7 +60,7 @@
 ** Added in the password date field, which should always reflect the last
 **     date the password was changed, for expiry purposes.  "passwd" always
 **     updates this field, so the adduser program should set it up right
-**     initially (or a user could keep thier initial password forever ;)
+**     initially (or a user could keep their initial password forever ;)
 **     The number is in days since Jan 1st, 1970.
 **
 **                       Have fun with it, and someone please make
@@ -117,6 +117,9 @@
 #include <sys/time.h>
 #include <sys/stat.h>
 #include <syslog.h>
+
+#include "string/strcmp/streq.h"
+
 
 #define IMMEDIATE_CHANGE	/* Expire newly created password, must be changed
 				 * immediately upon next login */
@@ -291,12 +294,10 @@ main (void)
 	  printf ("Home Directory [%s/%s]: ", DEFAULT_HOME, usrname);
 	  fflush (stdout);
 	  safeget (dir, sizeof (dir));
-	  if (!strlen (dir))
-	    {			/* hit return */
-	      sprintf (dir, "%s/%s", DEFAULT_HOME, usrname);
-	    }
+	  if (!strlen(dir))  /* hit return */
+	    sprintf(dir, "%s/%s", DEFAULT_HOME, usrname);
 	  else if (dir[strlen (dir) - 1] == '/')
-	    sprintf (dir+strlen(dir), "%s", usrname);
+	    strcat(dir, usrname);
 	}
       else
 	{
@@ -308,7 +309,7 @@ main (void)
       fflush (stdout);
       safeget (shell, sizeof (shell));
       if (!strlen (shell))
-	sprintf (shell, "%s", DEFAULT_SHELL);
+	strcpy(shell, DEFAULT_SHELL);
       else
 	{
 	  char *sh;
@@ -316,7 +317,7 @@ main (void)
 #ifdef HAVE_GETUSERSHELL
 	  setusershell ();
 	  while ((sh = getusershell ()) != NULL)
-	    if (!strcmp (shell, sh))
+	    if (streq(shell, sh))
 	      ok = 1;
 	  endusershell ();
 #endif
@@ -327,7 +328,7 @@ main (void)
 	      else
 		{
 		  printf ("Shell NOT in /etc/shells, DEFAULT used\n");
-		  sprintf (shell, "%s", DEFAULT_SHELL);
+		  strcpy(shell, DEFAULT_SHELL);
 		}
 	    }
 	}
@@ -489,14 +490,14 @@ safeget (char *buf, int maxlen)
   while ((c = getc (stdin)) != EOF && (c != '\n') && (++i < maxlen))
     {
       bad = (!isalnum (c) && (c != '_') && (c != ' '));
-      *(buf++) = (char) c;
+      *(buf++) = c;
     }
-  *buf = '\0';
+  stpcpy(buf, "");
 
   if (bad)
     {
       printf ("\nString contained banned character. Please stick to alphanumerics.\n");
-      *bstart = '\0';
+      stpcpy(bstart, "");
     }
 }
 

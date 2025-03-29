@@ -2,12 +2,12 @@
 .\"     Title: gshadow
 .\"    Author: Nicolas Fran\(,cois <nicolas.francois@centraliens.net>
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 08/11/2022
+.\"      Date: 19/03/2025
 .\"    Manual: File Formats and Configuration Files
-.\"    Source: shadow-utils 4.13
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: French
 .\"
-.TH "GSHADOW" "5" "08/11/2022" "shadow\-utils 4\&.13" "File Formats and Configuration"
+.TH "GSHADOW" "5" "19/03/2025" "shadow\-utils 4\&.17\&.4" "File Formats and Configuration"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -38,12 +38,12 @@ Ce fichier ne doit pas \(^etre accessible en lecture par les utilisateurs normau
 .PP
 Chaque ligne de ce fichier contient les champs suivants, s\('epar\('es par des deux\-points (\(Fo\ \&:\ \&\(Fc)\ \&:
 .PP
-\fBnom du groupe\fR
+\fBgroup name\fR
 .RS 4
-Ce doit \(^etre un nom de groupe valable, qui existe sur le syst\(`eme\&.
+It must be a valid group name, which exists on the system\&.
 .RE
 .PP
-\fBmot de passe chiffr\('e\fR
+\fBencrypted password\fR
 .RS 4
 Refer to
 \fBcrypt\fR(3)
@@ -63,7 +63,7 @@ This password supersedes any password specified in
 /etc/group\&.
 .RE
 .PP
-\fBadministrateurs\fR
+\fBadministrators\fR
 .RS 4
 Ce champ doit \(^etre une liste d\*(Aqutilisateurs, s\('epar\('es par des virgules\&.
 .sp
@@ -72,7 +72,7 @@ Les administrateurs peuvent modifier le mot de passe ou les membres du groupe\&.
 Les administrateurs peuvent aussi avoir les m\(^emes permissions que les membres (voir ci\-dessous)\&.
 .RE
 .PP
-\fBmembres\fR
+\fBmembers\fR
 .RS 4
 Ce champ doit \(^etre une liste d\*(Aqutilisateurs, s\('epar\('es par des virgules\&.
 .sp
