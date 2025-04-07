@@ -1,3 +1,10 @@
+# CVE-2023-4641
+0001-gpasswd-1-Fix-password-leak.patch
+
+# CVE-2023-29383
+0002-Added-control-character-check.patch
+0003-Overhaul-valid_field.patch
+
 # These patches are only for the testsuite:
 #900_testsuite_groupmems
 #901_testsuite_gcov

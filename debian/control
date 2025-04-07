@@ -1,7 +1,8 @@
 Source: shadow
 Maintainer: Shadow package maintainers <pkg-shadow-devel@lists.alioth.debian.org>
-Uploaders: Balint Reczey <balint@balintreczey.hu>,
-           Serge Hallyn <serge@hallyn.com>
+Uploaders:
+ Serge Hallyn <serge@hallyn.com>,
+ Chris Hofstaedtler <zeha@debian.org>
 Section: admin
 Priority: required
 Build-Depends: debhelper-compat (= 13),
