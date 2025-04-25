@@ -2,12 +2,12 @@
 .\"     Title: chpasswd
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 08/11/2022
-.\"    Manual: Comandi per la gestione del sistema
-.\"    Source: shadow-utils 4.13
+.\"      Date: 19/03/2025
+.\"    Manual: System Management Commands
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: Italian
 .\"
-.TH "CHPASSWD" "8" "08/11/2022" "shadow\-utils 4\&.13" "Comandi per la gestione del si"
+.TH "CHPASSWD" "8" "19/03/2025" "shadow\-utils 4\&.17\&.4" "System Management Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -31,7 +31,7 @@
 chpasswd \- aggiorna le password in modo non interattivo
 .SH "SINOSSI"
 .HP \w'\fBchpasswd\fR\ 'u
-\fBchpasswd\fR [\fIopzioni\fR]
+\fBchpasswd\fR [\fIoptions\fR]
 .SH "DESCRIZIONE"
 .PP
 The
@@ -68,7 +68,12 @@ command are:
 .RS 4
 Utilizza il metodo specificato per cifrare le password\&.
 .sp
-I metodi disponibili sono DES, MD5, NONE e SHA256 o SHA512 se la propria libc lo consente\&.
+The available methods are
+\fIDES\fR,
+\fIMD5\fR, \fISHA256\fR, \fISHA512\fR
+and
+\fINONE\fR
+if your libc supports these methods\&.
 .sp
 By default (if none of the
 \fB\-c\fR,
@@ -106,22 +111,23 @@ directory and use the configuration files from the
 directory\&. Only absolute paths are supported\&.
 .RE
 .PP
+\fB\-P\fR, \fB\-\-prefix\fR\ \&\fIPREFIX_DIR\fR
+.RS 4
+Apply changes to configuration files under the root filesystem found under the directory
+\fIPREFIX_DIR\fR\&. This option does not chroot and is intended for preparing a cross\-compilation target\&. Some limitations: NIS and LDAP users/groups are not verified\&. PAM authentication is using the host files\&. No SELINUX support\&.
+.RE
+.PP
 \fB\-s\fR, \fB\-\-sha\-rounds\fR\ \&\fIROUNDS\fR
 .RS 4
 Usa il numero specificato di cicli per cifrare la password\&.
 .sp
-Il valore 0 indica che il sistema utilizzer\(`a il numero predefinito di cicli per il metodo crypt (5000)\&.
+You can only use this option with crypt method:
+\fISHA256\fR \fISHA512\fR
 .sp
-I valori minimo di 1\&.000 e massimo di 999\&.999\&.999 sono forzati\&.
-.sp
-Si pu\(`o utilizzare questa opzione solo con i metodi di cifratura SHA256 o SHA512\&.
-.sp
-By default, the number of rounds is defined by the
-\fBSHA_CRYPT_MIN_ROUNDS\fR
-and
-\fBSHA_CRYPT_MAX_ROUNDS\fR
-variables in
+By default, the number of rounds for SHA256 or SHA512 is defined by the SHA_CRYPT_MIN_ROUNDS and SHA_CRYPT_MAX_ROUNDS variables in
 /etc/login\&.defs\&.
+.sp
+A minimal value of 1000 and a maximal value of 999,999,999 will be enforced for SHA256 and SHA512\&. The default number of rounds is 5000\&.
 .RE
 .SH "AVVISI/CAVEAT"
 .PP

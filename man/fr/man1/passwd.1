@@ -2,12 +2,12 @@
 .\"     Title: passwd
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 08/11/2022
-.\"    Manual: Commandes utilisateur
-.\"    Source: shadow-utils 4.13
+.\"      Date: 19/03/2025
+.\"    Manual: User Commands
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: French
 .\"
-.TH "PASSWD" "1" "08/11/2022" "shadow\-utils 4\&.13" "Commandes utilisateur"
+.TH "PASSWD" "1" "19/03/2025" "shadow\-utils 4\&.17\&.4" "User Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -49,44 +49,9 @@ refuses to change the password and exits\&.
 .PP
 Le nouveau mot de passe sera demand\('e deux fois \(`a l\*(Aqutilisateur\&. Le second mot de passe est compar\('e avec le premier\&. Ces deux mots de passe devront \(^etre identiques pour que le mot de passe soit chang\('e\&.
 .PP
-La complexit\('e de ce mot de passe est alors test\('ee\&. Comme ligne de conduite g\('en\('erale, un mot de passe doit toujours \(^etre constitu\('e de 6 \(`a 8 caract\(`eres en en choisissant un ou plus parmi chacun des ensembles suivants\ \&:
-.sp
-.RS 4
-.ie n \{\
-\h'-04'\(bu\h'+03'\c
-.\}
-.el \{\
-.sp -1
-.IP \(bu 2.3
-.\}
-caract\(`eres alphab\('etiques minuscules
-.RE
-.sp
-.RS 4
-.ie n \{\
-\h'-04'\(bu\h'+03'\c
-.\}
-.el \{\
-.sp -1
-.IP \(bu 2.3
-.\}
-chiffres de 0 \(`a 9
-.RE
-.sp
-.RS 4
-.ie n \{\
-\h'-04'\(bu\h'+03'\c
-.\}
-.el \{\
-.sp -1
-.IP \(bu 2.3
-.\}
-marques de ponctuation
-.RE
-.PP
-Care must be taken not to include the system default erase or kill characters\&.
+Then, the password is tested for complexity\&.
 \fBpasswd\fR
-will reject any password which is not suitably complex\&.
+will reject any password which is not suitably complex\&. Care must be taken not to include the system default erase or kill characters\&.
 .SS "Astuces pour les mots de passe"
 .PP
 The security of a password depends upon the strength of the encryption algorithm and the size of the key space\&. The legacy
@@ -96,7 +61,9 @@ System encryption method is based on the NBS DES algorithm\&. More recent method
 .PP
 Les compromissions de la s\('ecurit\('e des mots de passe r\('esultent le plus souvent d\*(Aqune n\('egligence dans le choix du mot de passe, ou lors de son utilisation\&. Pour cette raison, vous ne devez pas s\('electionner de mot de passe apparaissant dans un dictionnaire ou devant \(^etre \('ecrit\&. Le mot de passe ne doit pas non plus \(^etre un nom propre, un num\('ero min\('eralogique, une date de naissance, ou une adresse\&. En effet ceux\-ci pourraient \(^etre devin\('es pour violer la s\('ecurit\('e du syst\(`eme\&.
 .PP
-Vous pouvez trouver des conseils sur la fa\(,con de choisir un mot de passe robuste sur http://en\&.wikipedia\&.org/wiki/Password_strength (en anglais)\&.
+As a general guideline, passwords should be long and random\&. It\*(Aqs fine to use simple character sets, such as passwords consisting only of lowercase letters, if that helps memorizing longer passwords\&. For a password consisting only of lowercase English letters randomly chosen, and a length of 32, there are 26^32 (approximately 2^150) different possible combinations\&. Being an exponential equation, it\*(Aqs apparent that the exponent (the length) is more important than the base (the size of the character set)\&.
+.PP
+You can find advice on how to choose a strong password on https://en\&.wikipedia\&.org/wiki/Password_strength
 .SH "OPTIONS"
 .PP
 The options which apply to the
@@ -143,7 +110,7 @@ Verrouiller le mot de passe du compte indiqu\('e\&. Cette option d\('esactive un
 .sp
 Note that this does not disable the account\&. The user may still be able to login using another authentication token (e\&.g\&. an SSH key)\&. To disable the account, administrators should use
 \fBusermod \-\-expiredate 1\fR
-(this set the account\*(Aqs expire date to Jan 2, 1970)\&.
+(this sets the account\*(Aqs expire date to Jan 2, 1970)\&.
 .sp
 Les utilisateurs avec un mot de passe verrouill\('e ne sont pas autoris\('es \(`a le changer\&.
 .RE
@@ -175,6 +142,12 @@ directory and use the configuration files from the
 directory\&. Only absolute paths are supported\&.
 .RE
 .PP
+\fB\-P\fR, \fB\-\-prefix\fR\ \&\fIPREFIX_DIR\fR
+.RS 4
+Apply changes to configuration files under the root filesystem found under the directory
+\fIPREFIX_DIR\fR\&. This option does not chroot and is intended for preparing a cross\-compilation target\&. Some limitations: NIS and LDAP users/groups are not verified\&. No PAM support\&. No SELINUX support\&.
+.RE
+.PP
 \fB\-S\fR, \fB\-\-status\fR
 .RS 4
 Afficher l\*(Aq\('etat d\*(Aqun compte\&. Cet \('etat est constitu\('e de 7 champs\&. Le premier champ est le nom du compte\&. Le second champ indique si le mot de passe est bloqu\('e (L), n\*(Aqa pas de mot de passe (NP) ou a un mot de passe utilisable (P)\&. Le troisi\(`eme champ donne la date de derni\(`ere modification du mot de passe\&. Les quatre champs suivants sont\ \&: la dur\('ee minimum avant modification, la dur\('ee maximum de validit\('e, la dur\('ee d\*(Aqavertissement, et la dur\('ee d\*(Aqinactivit\('e autoris\('ee pour le mot de passe\&. Les dur\('ees sont exprim\('ees en jours\&.
@@ -204,6 +177,11 @@ Passing the number
 as
 \fIMAX_DAYS\fR
 will remove checking a password\*(Aqs validity\&.
+.RE
+.PP
+\fB\-s\fR, \fB\-\-stdin\fR
+.RS 4
+This option is used to indicate that passwd should read the new password from standard input, which can be a pipe\&.
 .RE
 .SH "AVERTISSEMENTS"
 .PP
@@ -277,7 +255,10 @@ invalid argument to option
 .SH "VOIR AUSSI"
 .PP
 \fBchpasswd\fR(8),
+\fBmakepasswd\fR(1),
 \fBpasswd\fR(5),
 \fBshadow\fR(5),
 \fBlogin.defs\fR(5),
 \fBusermod\fR(8)\&.
+.PP
+The following web page comically (yet correctly) compares the strength of two different methods for choosing a password: "https://xkcd\&.com/936/"

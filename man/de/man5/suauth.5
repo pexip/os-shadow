@@ -2,12 +2,12 @@
 .\"     Title: suauth
 .\"    Author: Marek Micha\(/lkiewicz
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 08.11.2022
+.\"      Date: 19.03.2025
 .\"    Manual: File Formats and Configuration Files
-.\"    Source: shadow-utils 4.13
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: German
 .\"
-.TH "SUAUTH" "5" "08.11.2022" "shadow\-utils 4\&.13" "File Formats and Configuration"
+.TH "SUAUTH" "5" "19.03.2025" "shadow\-utils 4\&.17\&.4" "File Formats and Configuration"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -28,7 +28,7 @@
 .\" * MAIN CONTENT STARTS HERE *
 .\" -----------------------------------------------------------------
 .SH "NAME"
-suauth \- ausf\(:uhrliche Kontrolldatei f\(:ur su
+suauth \- Datei zur detaillierten Steuerung von \fBsu\fR
 .SH "\(:UBERSICHT"
 .HP \w'\fB/etc/suauth\fR\ 'u
 \fB/etc/suauth\fR
@@ -49,7 +49,7 @@ is referenced whenever the su command is called\&. It can change the behaviour o
 .RE
 .\}
 .PP
-2) dem Benutzer, der su ausf\(:uhrt (oder einer Gruppe, deren Mitglied er ist)
+2) die Herkunftsidentit\(:at; ; der Benutzer, der su ausf\(:uhrt (oder eine Gruppe, deren Mitglied er ist)
 .PP
 Die Datei ist folgenderma\(ssen aufgebaut, wobei Zeilen, die mit einem # beginnen, als Kommentare behandelt und daher ignoriert werden:
 .sp
@@ -79,24 +79,30 @@ appears one or more group names, delimited by ","\&. It is not sufficient to hav
 \fB/etc/group\fR(5)
 is necessary\&.
 .PP
-Als Aktion k\(:onnen nur die folgenden Optionen angegeben werden\&.
+Nur eine der folgenden Aktionen kann angegeben werden:
 .PP
 \fIDENY\fR
 .RS 4
-Der Versuch, su auszuf\(:uhren, wird abgebrochen, ehe nach einem Passwort gefragt wird\&.
+Der Versuch,
+\fBsu\fR
+auszuf\(:uhren, wird abgebrochen, ehe nach einem Passwort gefragt wird\&.
 .RE
 .PP
 \fINOPASS\fR
 .RS 4
-Der Versuch, su auszuf\(:uhren, hat automatisch Erfolg\&. Ein Passwort wird nicht abgefragt\&.
+Der Versuch,
+\fBsu\fR
+auszuf\(:uhren, hat automatisch Erfolg\&. Ein Passwort wird nicht abgefragt\&.
 .RE
 .PP
 \fIOWNPASS\fR
 .RS 4
-Damit der Befehl su Erfolg hat, muss der Benutzer sein eigenes Passwort eingeben\&. Darauf wird er hingewiesen\&.
+Damit der Befehl
+\fBsu\fR
+Erfolg hat, muss der Benutzer sein eigenes Passwort eingeben\&. Darauf wird hingewiesen\&.
 .RE
 .PP
-Beachten Sie, dass es sich um drei selbst\(:andige Felder handelt, die durch einen Doppelpunkt getrennt sind\&. Neben den Doppelpunkten darf sich kein Leerzeichen befinden\&. Beachten Sie zudem, dass die Datei von oben nach unten Zeile f\(:ur Zeile durchgegangen wird\&. Die erste Regel, die zutreffend ist, wird angewendet, ohne dass die Datei weiter ausgewertet wird\&. Damit kann ein Systemadministrator eine strenge Kontrolle aus\(:uben\&.
+Beachten Sie, dass es sich um drei selbst\(:andige Felder handelt, die durch einen Doppelpunkt getrennt sind\&. Neben den Doppelpunkten darf sich kein Leerraumzeichen befinden\&. Beachten Sie zudem, dass die Datei von oben nach unten Zeile f\(:ur Zeile durchgegangen wird\&. Die erste zutreffende Regel wird angewendet, ohne dass die Datei weiter ausgewertet wird\&. Dies erlaubt dem Systemadmistrator oder der Systemadministratorin eine feine Steuerung\&.
 .SH "BEISPIEL"
 .sp
 .if n \{\
@@ -135,7 +141,7 @@ Beachten Sie, dass es sich um drei selbst\(:andige Felder handelt, die durch ein
 .RE
 .SH "FEHLER"
 .PP
-Es gibt zahlreiche Fehlerquellen\&. Die Auswertung der Datei ist sehr empfindlich bei Syntaxfehlern, zus\(:atzlichen Leerzeichen (au\(sser am Anfang und Schluss einer Zeile) und dem besonderen Zeichen, das die verschiedenen Felder von einander trennt\&.
+Es gibt zahlreiche Fehlerquellen\&. Die Auswertung der Datei ist sehr empfindlich bei Syntaxfehlern, zus\(:atzlichen Leerraumzeichen (au\(sser am Anfang und am Schluss einer Zeile) und dem speziellen Zeichen, das die verschiedenen Einheiten voneinander trennt\&.
 .SH "DIAGNOSE"
 .PP
 An error parsing the file is reported using

@@ -87,11 +87,14 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-@WITH_SU_TRUE@am__append_1 = man1/su.1
-@USE_PAM_FALSE@am__append_2 = $(man_nopam)
-@ENABLE_SUBIDS_TRUE@am__append_3 = $(man_subids)
-@USE_PAM_TRUE@am__append_4 = $(man_nopam)
-@ENABLE_SUBIDS_FALSE@am__append_5 = $(man_subids)
+@ENABLE_LASTLOG_TRUE@am__append_1 = man8/lastlog.8
+@WITH_SU_TRUE@am__append_2 = man1/su.1
+@WITH_SU_TRUE@am__append_3 = man5/suauth.5
+@USE_PAM_FALSE@am__append_4 = $(man_nopam)
+@ENABLE_SUBIDS_TRUE@am__append_5 = $(man_subids)
+@ENABLE_LASTLOG_TRUE@am__append_6 = lastlog.8.xml
+@USE_PAM_TRUE@am__append_7 = $(man_nopam)
+@ENABLE_SUBIDS_FALSE@am__append_8 = $(man_subids)
 subdir = man
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/gettext.m4 \
@@ -238,6 +241,8 @@ AWK = @AWK@
 CC = @CC@
 CCDEPMODE = @CCDEPMODE@
 CFLAGS = @CFLAGS@
+CMOCKA_CFLAGS = @CMOCKA_CFLAGS@
+CMOCKA_LIBS = @CMOCKA_LIBS@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CSCOPE = @CSCOPE@
@@ -271,9 +276,15 @@ INTL_MACOSX_LIBS = @INTL_MACOSX_LIBS@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
 LIBACL = @LIBACL@
+LIBADD_DL = @LIBADD_DL@
+LIBADD_DLD_LINK = @LIBADD_DLD_LINK@
+LIBADD_DLOPEN = @LIBADD_DLOPEN@
+LIBADD_SHL_LOAD = @LIBADD_SHL_LOAD@
 LIBATTR = @LIBATTR@
 LIBAUDIT = @LIBAUDIT@
-LIBCRACK = @LIBCRACK@
+LIBBSD = @LIBBSD@
+LIBBSD_CFLAGS = @LIBBSD_CFLAGS@
+LIBBSD_LIBS = @LIBBSD_LIBS@
 LIBCRYPT = @LIBCRYPT@
 LIBECONF = @LIBECONF@
 LIBICONV = @LIBICONV@
@@ -289,6 +300,7 @@ LIBSUBID_ABI = @LIBSUBID_ABI@
 LIBSUBID_ABI_MAJOR = @LIBSUBID_ABI_MAJOR@
 LIBSUBID_ABI_MICRO = @LIBSUBID_ABI_MICRO@
 LIBSUBID_ABI_MINOR = @LIBSUBID_ABI_MINOR@
+LIBSYSTEMD = @LIBSYSTEMD@
 LIBTCB = @LIBTCB@
 LIBTOOL = @LIBTOOL@
 LIPO = @LIPO@
@@ -297,6 +309,8 @@ LN_S = @LN_S@
 LTLIBICONV = @LTLIBICONV@
 LTLIBINTL = @LTLIBINTL@
 LTLIBOBJS = @LTLIBOBJS@
+LT_DLLOADERS = @LT_DLLOADERS@
+LT_DLPREOPEN = @LT_DLPREOPEN@
 LT_SYS_LIBRARY_PATH = @LT_SYS_LIBRARY_PATH@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
@@ -319,6 +333,9 @@ PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
+PKG_CONFIG = @PKG_CONFIG@
+PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
+PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
 POSUB = @POSUB@
 RANLIB = @RANLIB@
 SED = @SED@
@@ -397,19 +414,16 @@ top_srcdir = @top_srcdir@
 man_MANS = man1/chage.1 man1/chfn.1 man8/chgpasswd.8 man8/chpasswd.8 \
 	man1/chsh.1 man1/expiry.1 man5/faillog.5 man8/faillog.8 \
 	man3/getspnam.3 man1/gpasswd.1 man8/groupadd.8 man8/groupdel.8 \
-	man8/groupmems.8 man8/groupmod.8 man1/groups.1 man8/grpck.8 \
-	man8/grpconv.8 man8/grpunconv.8 man5/gshadow.5 man8/lastlog.8 \
-	man1/login.1 man5/login.defs.5 man8/logoutd.8 man1/newgrp.1 \
-	man8/newusers.8 man8/nologin.8 man1/passwd.1 man5/passwd.5 \
-	man8/pwck.8 man8/pwconv.8 man8/pwunconv.8 man1/sg.1 \
-	man3/shadow.3 man5/shadow.5 man5/suauth.5 man8/useradd.8 \
-	man8/userdel.8 man8/usermod.8 man8/vigr.8 man8/vipw.8 \
-	$(am__append_1) $(am__append_2) $(am__append_3)
-man_nopam = \
-	man5/limits.5 \
-	man5/login.access.5 \
-	man5/porttime.5
-
+	man8/groupmems.8 man8/groupmod.8 man8/grpck.8 man8/grpconv.8 \
+	man8/grpunconv.8 man5/gshadow.5 man1/login.1 man5/login.defs.5 \
+	man8/logoutd.8 man1/newgrp.1 man8/newusers.8 man8/nologin.8 \
+	man1/passwd.1 man5/passwd.5 man8/pwck.8 man8/pwconv.8 \
+	man8/pwunconv.8 man1/sg.1 man3/shadow.3 man5/shadow.5 \
+	man8/useradd.8 man8/userdel.8 man8/usermod.8 man8/vigr.8 \
+	man8/vipw.8 $(am__append_1) $(am__append_2) $(am__append_4) \
+	$(am__append_5)
+man_nopam = man5/limits.5 man5/login.access.5 man5/porttime.5 \
+	$(am__append_3)
 man_subids = \
 	man1/getsubids.1 \
 	man1/newgidmap.1 \
@@ -417,53 +431,19 @@ man_subids = \
 	man5/subgid.5 \
 	man5/subuid.5
 
-man_XMANS = \
-	chage.1.xml \
-	chfn.1.xml \
-	chgpasswd.8.xml \
-	chpasswd.8.xml \
-	chsh.1.xml \
-	expiry.1.xml \
-	faillog.5.xml \
-	faillog.8.xml \
-	getsubids.1.xml \
-	gpasswd.1.xml \
-	groupadd.8.xml \
-	groupdel.8.xml \
-	groupmems.8.xml \
-	groupmod.8.xml \
-	groups.1.xml \
-	grpck.8.xml \
-	gshadow.5.xml \
-	lastlog.8.xml \
-	limits.5.xml \
-	login.1.xml \
-	login.access.5.xml \
-	login.defs.5.xml \
-	logoutd.8.xml \
-	newgidmap.1.xml \
-	newgrp.1.xml \
-	newuidmap.1.xml \
-	newusers.8.xml \
-	nologin.8.xml \
-	passwd.1.xml \
-	passwd.5.xml \
-	porttime.5.xml \
-	pwck.8.xml \
-	pwconv.8.xml \
-	shadow.3.xml \
-	shadow.5.xml \
-	sg.1.xml \
-	su.1.xml \
-	suauth.5.xml \
-	subgid.5.xml \
-	subuid.5.xml \
-	useradd.8.xml \
-	userdel.8.xml \
-	usermod.8.xml \
-	vipw.8.xml
-
+man_XMANS = chage.1.xml chfn.1.xml chgpasswd.8.xml chpasswd.8.xml \
+	chsh.1.xml expiry.1.xml faillog.5.xml faillog.8.xml \
+	getsubids.1.xml gpasswd.1.xml groupadd.8.xml groupdel.8.xml \
+	groupmems.8.xml groupmod.8.xml grpck.8.xml gshadow.5.xml \
+	limits.5.xml login.1.xml login.access.5.xml login.defs.5.xml \
+	logoutd.8.xml newgidmap.1.xml newgrp.1.xml newuidmap.1.xml \
+	newusers.8.xml nologin.8.xml passwd.1.xml passwd.5.xml \
+	porttime.5.xml pwck.8.xml pwconv.8.xml shadow.3.xml \
+	shadow.5.xml sg.1.xml su.1.xml suauth.5.xml subgid.5.xml \
+	subuid.5.xml useradd.8.xml userdel.8.xml usermod.8.xml \
+	vipw.8.xml $(am__append_6)
 login_defs_v = \
+	BCRYPT_MIN_ROUNDS.xml \
 	CHFN_AUTH.xml \
 	CHFN_RESTRICT.xml \
 	CHSH_AUTH.xml \
@@ -530,12 +510,15 @@ login_defs_v = \
 	SUB_GID_COUNT.xml \
 	SUB_UID_COUNT.xml \
 	SYS_GID_MAX.xml \
-	SYS_UID_MAX.xml
+	SYS_UID_MAX.xml \
+	YESCRYPT_COST_FACTOR.xml
 
-EXTRA_DIST = $(man_MANS) $(man_XMANS) $(addprefix \
-	login.defs.d/,$(login_defs_v)) man1/id.1 id.1.xml \
-	man8/sulogin.8 sulogin.8.xml generate_mans.mak \
-	generate_translations.mak $(am__append_4) $(am__append_5)
+EXTRA_DIST = $(man_MANS) $(man_XMANS) config.xml $(addprefix \
+	login.defs.d/,$(login_defs_v)) man8/sulogin.8 sulogin.8.xml \
+	generate_mans.mak generate_translations.mak its.rules \
+	shadow-man.xsl $(am__append_7) $(am__append_8)
+@ENABLE_REGENERATE_MAN_TRUE@@HAVE_VENDORDIR_FALSE@VENDORDIR_COND = without_vendordir
+@ENABLE_REGENERATE_MAN_TRUE@@HAVE_VENDORDIR_TRUE@VENDORDIR_COND = with_vendordir
 @ENABLE_REGENERATE_MAN_TRUE@@USE_PAM_FALSE@PAM_COND = no_pam
 @ENABLE_REGENERATE_MAN_TRUE@@USE_PAM_TRUE@PAM_COND = pam
 @ENABLE_REGENERATE_MAN_TRUE@@SHADOWGRP_FALSE@SHADOWGRP_COND = no_gshadow
@@ -544,9 +527,16 @@ EXTRA_DIST = $(man_MANS) $(man_XMANS) $(addprefix \
 @ENABLE_REGENERATE_MAN_TRUE@@WITH_TCB_TRUE@TCB_COND = tcb
 @ENABLE_REGENERATE_MAN_TRUE@@USE_SHA_CRYPT_FALSE@SHA_CRYPT_COND = no_sha_crypt
 @ENABLE_REGENERATE_MAN_TRUE@@USE_SHA_CRYPT_TRUE@SHA_CRYPT_COND = sha_crypt
+@ENABLE_REGENERATE_MAN_TRUE@@USE_BCRYPT_FALSE@BCRYPT_COND = no_bcrypt
+@ENABLE_REGENERATE_MAN_TRUE@@USE_BCRYPT_TRUE@BCRYPT_COND = bcrypt
+@ENABLE_REGENERATE_MAN_TRUE@@USE_YESCRYPT_FALSE@YESCRYPT_COND = no_yescrypt
+@ENABLE_REGENERATE_MAN_TRUE@@USE_YESCRYPT_TRUE@YESCRYPT_COND = yescrypt
 @ENABLE_REGENERATE_MAN_TRUE@@ENABLE_SUBIDS_FALSE@SUBIDS_COND = no_subids
 @ENABLE_REGENERATE_MAN_TRUE@@ENABLE_SUBIDS_TRUE@SUBIDS_COND = subids
-@ENABLE_REGENERATE_MAN_TRUE@CLEANFILES = $(man_MANS) man1/id.1 man8/sulogin.8
+@ENABLE_LASTLOG_FALSE@@ENABLE_REGENERATE_MAN_TRUE@LASTLOG_COND = no_lastlog
+@ENABLE_LASTLOG_TRUE@@ENABLE_REGENERATE_MAN_TRUE@@USE_PAM_FALSE@LASTLOG_COND = lastlog
+@ENABLE_LASTLOG_TRUE@@ENABLE_REGENERATE_MAN_TRUE@@USE_PAM_TRUE@LASTLOG_COND = no_lastlog
+@ENABLE_REGENERATE_MAN_TRUE@CLEANFILES = $(man_MANS) man8/sulogin.8
 all: all-recursive
 
 .SUFFIXES:
@@ -1047,9 +1037,9 @@ uninstall-man: uninstall-man1 uninstall-man3 uninstall-man5 \
 .PRECIOUS: Makefile
 
 
-generate_mans.deps: *.xml
+generate_mans.deps: $(man_XMANS)
 	echo "# This file is generated" > $@
-	awk 'BEGIN{FS="\"";} /^<!ENTITY .* * SYSTEM ".*">$$/{ f=FILENAME; sub(/.xml/,"",f); print "man" substr(f, length (f)) "/" f ": " $$2 }' $(man_XMANS) >> $@
+	awk 'BEGIN{FS="\"";} /^<!ENTITY .* * SYSTEM ".*">$$/{ f=FILENAME; sub(/.xml/,"",f); print "man" substr(f, length (f)) "/" f ": " $$2 }' $< >> $@
 
 @ENABLE_REGENERATE_MAN_TRUE@@ENABLE_REGENERATE_MAN_TRUE@include generate_mans.deps
 
@@ -1061,11 +1051,13 @@ generate_mans.deps: *.xml
 @ENABLE_REGENERATE_MAN_TRUE@	fi
 
 @ENABLE_REGENERATE_MAN_TRUE@man1/% man3/% man5/% man8/%: %.xml-config Makefile config.xml
-@ENABLE_REGENERATE_MAN_TRUE@	$(XSLTPROC) --stringparam profile.condition "$(PAM_COND);$(SHADOWGRP_COND);$(TCB_COND);$(SHA_CRYPT_COND);$(SUBIDS_COND)" \
+@ENABLE_REGENERATE_MAN_TRUE@	$(XSLTPROC) --stringparam profile.condition "$(PAM_COND);$(SHADOWGRP_COND);$(TCB_COND);$(SHA_CRYPT_COND);$(BCRYPT_COND);$(YESCRYPT_COND);$(SUBIDS_COND);$(VENDORDIR_COND);$(LASTLOG_COND)" \
 @ENABLE_REGENERATE_MAN_TRUE@	            --param "man.authors.section.enabled" "0" \
 @ENABLE_REGENERATE_MAN_TRUE@	            --stringparam "man.output.base.dir" "" \
+@ENABLE_REGENERATE_MAN_TRUE@	            --stringparam vendordir "$(VENDORDIR)" \
 @ENABLE_REGENERATE_MAN_TRUE@	            --param "man.output.in.separate.dir" "1" \
-@ENABLE_REGENERATE_MAN_TRUE@	            -nonet http://docbook.sourceforge.net/release/xsl/current/manpages/profile-docbook.xsl $<
+@ENABLE_REGENERATE_MAN_TRUE@	            --path "$(srcdir)/login.defs.d" \
+@ENABLE_REGENERATE_MAN_TRUE@	            -nonet $(top_srcdir)/man/shadow-man.xsl $<
 
 @ENABLE_REGENERATE_MAN_TRUE@clean-local:
 @ENABLE_REGENERATE_MAN_TRUE@	rm -rf man1 man3 man5 man8

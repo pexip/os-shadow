@@ -2,12 +2,12 @@
 .\"     Title: passwd
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 08/11/2022
-.\"    Manual: Команди користувача
-.\"    Source: shadow-utils 4.13
+.\"      Date: 19/03/2025
+.\"    Manual: User Commands
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: Ukrainian
 .\"
-.TH "passwd" "1" "08/11/2022" "shadow\-utils 4\&.13" "Команди користувача"
+.TH "passwd" "1" "19/03/2025" "shadow\-utils 4\&.17\&.4" "User Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -31,81 +31,50 @@
 passwd \- зміна пароля користувача
 .SH "КОРОТКИЙ ОГЛЯД"
 .HP \w'\fBpasswd\fR\ 'u
-\fBpasswd\fR [\fIпараметри\fR] [\fIЗАПИС\fR]
+\fBpasswd\fR [\fIoptions\fR] [\fILOGIN\fR]
 .SH "ОПИС"
 .PP
-Команда
+The
 \fBpasswd\fR
-змінює паролі до облікових записів користувачів\&. Звичайний користувач може змінювати пароль лише для власного облікового запису, а надкористувач може змінювати пароль для будь\-якого облікового запису\&.
+command changes passwords for user accounts\&. A normal user may only change the password for their own account, while the superuser may change the password for any account\&.
 \fBpasswd\fR
-також змінює період чинності облікового запису або пов\*(Aqязаного з ним пароля\&.
+also changes the account or associated password validity period\&.
 .SS "Зміни паролів"
 .PP
 Спочатку програма попросить користувача ввести старий пароль, якщо такий існує\&. Потім цей пароль буде зашифровано і порівняно із збереженим паролем\&. Користувачу буде надано лише одну спробу ввести правильний пароль\&. Надкористувач може обійти цей крок, тому може змінювати забуті паролі\&.
 .PP
-Після введення пароля буде перевірено дані щодо віку пароля, щоб визначити, чи може користувач змінювати пароль на поточний момент часу\&. Якщо користувач не може цього робити,
+After the password has been entered, password aging information is checked to see if the user is permitted to change the password at this time\&. If not,
 \fBpasswd\fR
-відмовить у зміні пароля і завершить роботу\&.
+refuses to change the password and exits\&.
 .PP
 Потім програма попросить користувача ввести пароль\-замінник двічі\&. Друге введене значення буде порівняно із першим \(em вони мають бути однаковими, щоб пароль було змінено\&.
 .PP
-Далі, пароль буде перевірено на складність\&. Загальним правилом є те, що пароль має складатися з від 6 до 8 символів, включаючи один або декілька символів з кожного з таких наборів:
-.sp
-.RS 4
-.ie n \{\
-\h'-04'\(bu\h'+03'\c
-.\}
-.el \{\
-.sp -1
-.IP \(bu 2.3
-.\}
-малі літери латинської абетки
-.RE
-.sp
-.RS 4
-.ie n \{\
-\h'-04'\(bu\h'+03'\c
-.\}
-.el \{\
-.sp -1
-.IP \(bu 2.3
-.\}
-цифри від 0 до 9
-.RE
-.sp
-.RS 4
-.ie n \{\
-\h'-04'\(bu\h'+03'\c
-.\}
-.el \{\
-.sp -1
-.IP \(bu 2.3
-.\}
-символи пунктуації
-.RE
-.PP
-До пароля не можна включати типові символи вилучення або витирання системи\&.
+Then, the password is tested for complexity\&.
 \fBpasswd\fR
-не прийме пароля, який не є достатньо складним\&.
+will reject any password which is not suitably complex\&. Care must be taken not to include the system default erase or kill characters\&.
 .SS "Підказки для паролів користувача"
 .PP
-Захист пароля залежить від складності алгоритму шифрування та розміру простору ключів\&. Застарілий спосіб шифрування системи
+The security of a password depends upon the strength of the encryption algorithm and the size of the key space\&. The legacy
 \fIUNIX\fR
-засновано на алгоритмі DES NBS\&. На сьогодні, рекомендують сучасніші методи (див\&.
-\fBENCRYPT_METHOD\fR)\&. Розмір простору ключів залежить від випадковості пароля, яку було вибрано\&.
+System encryption method is based on the NBS DES algorithm\&. More recent methods are now recommended (see
+\fBENCRYPT_METHOD\fR)\&. The size of the key space depends upon the randomness of the password which is selected\&.
 .PP
 Послаблення захисту паролями, зазвичай, є результатом необдуманого вибору пароля або поводження з ним\&. З цієї причини, не слід вибирати пароль зі словника або десь його записувати\&. Не слід також вибирати для пароля власне ім\*(Aqя, номер водійського посвідчення, дату народження або назву вулиці, на якій ви мешкаєте\&. Вибір будь\-якого з цих варіантів може призвести до вгадування пароля і компрометації захисту системи\&.
 .PP
-Поради щодо вибору надійного пароля можна знайти на сторінці https://uk\&.wikipedia\&.org/wiki/Надійність_пароля
+As a general guideline, passwords should be long and random\&. It\*(Aqs fine to use simple character sets, such as passwords consisting only of lowercase letters, if that helps memorizing longer passwords\&. For a password consisting only of lowercase English letters randomly chosen, and a length of 32, there are 26^32 (approximately 2^150) different possible combinations\&. Being an exponential equation, it\*(Aqs apparent that the exponent (the length) is more important than the base (the size of the character set)\&.
+.PP
+You can find advice on how to choose a strong password on https://en\&.wikipedia\&.org/wiki/Password_strength
 .SH "ПАРАМЕТРИ"
 .PP
-Параметри, які застосовують до команди
-\fBpasswd\fR, є такими:
+The options which apply to the
+\fBpasswd\fR
+command are:
 .PP
 \fB\-a\fR, \fB\-\-all\fR
 .RS 4
-Цим параметром можна скористатися лише у поєднанні із
-\fB\-S\fR\&. Його використання призведе до показу стану для усіх користувачів\&.
+This option can be used only with
+\fB\-S\fR
+and causes show status for all users\&.
 .RE
 .PP
 \fB\-d\fR, \fB\-\-delete\fR
@@ -123,11 +92,11 @@ passwd \- зміна пароля користувача
 Показати довідкове повідомлення і завершити роботу\&.
 .RE
 .PP
-\fB\-i\fR, \fB\-\-inactive\fR \fIНЕАКТИВНИЙ\fR
+\fB\-i\fR, \fB\-\-inactive\fR\ \&\fIINACTIVE\fR
 .RS 4
-Цей параметр використовують для вимикання облікового запису за вказану кількість днів після завершення строку дії пароля\&. Після того, як мине
-\fIНЕАКТИВНИЙ\fR
-днів з моменту завершення строку дії пароля, користувач не зможе увійти до облікового запису\&.
+This option is used to disable an account after the password has been expired for a number of days\&. After a user account has had an expired password for
+\fIINACTIVE\fR
+days, the user may no longer sign on to the account\&.
 .RE
 .PP
 \fB\-k\fR, \fB\-\-keep\-tokens\fR
@@ -139,17 +108,17 @@ passwd \- зміна пароля користувача
 .RS 4
 Заблокувати пароль іменованого облікового запису\&. За допомогою цього параметра можна вимкнути пароль, змінивши його на значення, яке не відповідає зашифрованому значенню (буде додано \(aa!\(aa на початку пароля)\&.
 .sp
-Зауважте, що це не призведе до вимикання облікового запису\&. Користувач зможе входити до системи за допомогою іншого жетона розпізнавання (наприклад ключа SSH)\&. Щоб вимкнути обліковий запис, адміністраторам слід користуватися
+Note that this does not disable the account\&. The user may still be able to login using another authentication token (e\&.g\&. an SSH key)\&. To disable the account, administrators should use
 \fBusermod \-\-expiredate 1\fR
-(ця команда встановить для дати завершення строку дії облікового запису значення 2 січня 1970 року)\&.
+(this sets the account\*(Aqs expire date to Jan 2, 1970)\&.
 .sp
 Користувачі із заблокованим паролем не зможуть змінювати власний пароль\&.
 .RE
 .PP
-\fB\-n\fR, \fB\-\-mindays\fR \fIДНІ\fR
+\fB\-n\fR, \fB\-\-mindays\fR\ \&\fIMIN_DAYS\fR
 .RS 4
-Встановити мінімальну кількість днів між змінами пароля
-\fIДНІ\fR\&. Нульове значення для цього поля вказує, що користувач може змінювати пароль будь\-коли\&.
+Set the minimum number of days between password changes to
+\fIMIN_DAYS\fR\&. A value of zero for this field indicates that the user may change their password at any time\&.
 .RE
 .PP
 \fB\-q\fR, \fB\-\-quiet\fR
@@ -157,19 +126,26 @@ passwd \- зміна пароля користувача
 Режим без повідомлень\&.
 .RE
 .PP
-\fB\-r\fR, \fB\-\-repository\fR \fIСХОВИЩЕ\fR
+\fB\-r\fR, \fB\-\-repository\fR\ \&\fIREPOSITORY\fR
 .RS 4
-змінити пароль у сховищі
-\fIСХОВИЩЕ\fR
+change password in
+\fIREPOSITORY\fR
+repository
 .RE
 .PP
-\fB\-R\fR, \fB\-\-root\fR \fIКАТАЛОГ_CHROOT\fR
+\fB\-R\fR, \fB\-\-root\fR\ \&\fICHROOT_DIR\fR
 .RS 4
 Apply changes in the
 \fICHROOT_DIR\fR
 directory and use the configuration files from the
 \fICHROOT_DIR\fR
 directory\&. Only absolute paths are supported\&.
+.RE
+.PP
+\fB\-P\fR, \fB\-\-prefix\fR\ \&\fIPREFIX_DIR\fR
+.RS 4
+Apply changes to configuration files under the root filesystem found under the directory
+\fIPREFIX_DIR\fR\&. This option does not chroot and is intended for preparing a cross\-compilation target\&. Some limitations: NIS and LDAP users/groups are not verified\&. No PAM support\&. No SELINUX support\&.
 .RE
 .PP
 \fB\-S\fR, \fB\-\-status\fR
@@ -179,27 +155,33 @@ directory\&. Only absolute paths are supported\&.
 .PP
 \fB\-u\fR, \fB\-\-unlock\fR
 .RS 4
-Розблокувати пароль для іменованого облікового запису\&. Цей параметр повторно вмикає пароль, замінюючи пароль на попереднє його значення (на значення до використання параметра
-\fB\-l\fR)\&.
+Unlock the password of the named account\&. This option re\-enables a password by changing the password back to its previous value (to the value before using the
+\fB\-l\fR
+option)\&.
 .RE
 .PP
-\fB\-w\fR, \fB\-\-warndays\fR \fIДНІ\fR
+\fB\-w\fR, \fB\-\-warndays\fR\ \&\fIWARN_DAYS\fR
 .RS 4
-Встановити кількість днів між попередженням про потребу у зміні пароля і завершенням строку дії пароля\&. Параметром
-\fIДНІ\fR
-є кількість днів до завершення строку дії пароля, коли система попереджуватиме користувача про те, що пароль невдовзі доведеться змінити\&.
+Set the number of days of warning before a password change is required\&. The
+\fIWARN_DAYS\fR
+option is the number of days prior to the password expiring that a user will be warned that their password is about to expire\&.
 .RE
 .PP
-\fB\-x\fR, \fB\-\-maxdays\fR \fIМАКСИМАЛЬНО_ДНІВ\fR
+\fB\-x\fR, \fB\-\-maxdays\fR\ \&\fIMAX_DAYS\fR
 .RS 4
-Встановити максимальну кількість днів, протягом яких пароль лишатиметься чинним\&. Щойно мине
-\fIМАКСИМАЛЬНО_ДНІВ\fR, система вимагатиме від користувача змінити пароль\&.
+Set the maximum number of days a password remains valid\&. After
+\fIMAX_DAYS\fR, the password is required to be changed\&.
 .sp
-Передавання числа
+Passing the number
 \fI\-1\fR
-у полі
-\fIМАКСИМАЛЬНО_ДНІВ\fR
-призведе до вилучення перевірки чинності паролів\&.
+as
+\fIMAX_DAYS\fR
+will remove checking a password\*(Aqs validity\&.
+.RE
+.PP
+\fB\-s\fR, \fB\-\-stdin\fR
+.RS 4
+This option is used to indicate that passwd should read the new password from standard input, which can be a pipe\&.
 .RE
 .SH "ЗАСТЕРЕЖЕННЯ"
 .PP
@@ -208,9 +190,9 @@ directory\&. Only absolute paths are supported\&.
 Можливо, користувачі не зможуть змінити свій пароль у системі, якщо увімкнено NIS, і користувачі не увійшли до сервера NIS\&.
 .SH "НАЛАШТУВАННЯ"
 .PP
-Вказані нижче змінні налаштувань у
+The following configuration variables in
 /etc/login\&.defs
-змінюють поведінку цього інструмента:
+change the behavior of this tool:
 .SH "ФАЙЛИ"
 .PP
 /etc/passwd
@@ -229,51 +211,54 @@ directory\&. Only absolute paths are supported\&.
 .RE
 .SH "ЗНАЧЕННЯ ВИХОДУ"
 .PP
-Команда
+The
 \fBpasswd\fR
-завершує роботу із такими значеннями:
+command exits with the following values:
 .PP
 \fI0\fR
 .RS 4
-успіх
+success
 .RE
 .PP
 \fI1\fR
 .RS 4
-відмовлено у доступі
+permission denied
 .RE
 .PP
 \fI2\fR
 .RS 4
-некоректне поєднання параметрів
+invalid combination of options
 .RE
 .PP
 \fI3\fR
 .RS 4
-неочікувана помилка, нічого не виконано
+unexpected failure, nothing done
 .RE
 .PP
 \fI4\fR
 .RS 4
-неочікувана помилка, не вистачає файла
+unexpected failure,
 passwd
+file missing
 .RE
 .PP
 \fI5\fR
 .RS 4
-файл
 passwd
-зайнято, повторіть спробу
+file busy, try again
 .RE
 .PP
 \fI6\fR
 .RS 4
-некоректний аргумент параметра
+invalid argument to option
 .RE
 .SH "ДИВ\&. ТАКОЖ"
 .PP
 \fBchpasswd\fR(8),
+\fBmakepasswd\fR(1),
 \fBpasswd\fR(5),
 \fBshadow\fR(5),
 \fBlogin.defs\fR(5),
 \fBusermod\fR(8)\&.
+.PP
+The following web page comically (yet correctly) compares the strength of two different methods for choosing a password: "https://xkcd\&.com/936/"

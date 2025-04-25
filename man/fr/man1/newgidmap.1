@@ -2,12 +2,12 @@
 .\"     Title: newgidmap
 .\"    Author: Eric Biederman
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 08/11/2022
-.\"    Manual: Commandes utilisateur
-.\"    Source: shadow-utils 4.13
+.\"      Date: 19/03/2025
+.\"    Manual: User Commands
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: French
 .\"
-.TH "NEWGIDMAP" "1" "08/11/2022" "shadow\-utils 4\&.13" "Commandes utilisateur"
+.TH "NEWGIDMAP" "1" "19/03/2025" "shadow\-utils 4\&.17\&.4" "User Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -74,6 +74,16 @@ before setting
 /proc/[pid]/gid_map\&.
 .PP
 Note that newgidmap may be used only once for a given process\&.
+.PP
+Instead of an integer process id, the first argument may be specified as
+\fIfd:N\fR, where the integer N is the file descriptor number for the calling process\*(Aqs opened file descriptor for the directory
+/proc/[pid]\&. In this case,
+\fBnewgidmap\fR
+will use
+openat(2)
+to open the
+gid_map
+file under that directory, avoiding a TOCTTOU in case the process exits and the pid is immediately reused\&.
 .SH "OPTIONS"
 .PP
 There currently are no options to the

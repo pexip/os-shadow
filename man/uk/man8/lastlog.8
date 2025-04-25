@@ -2,12 +2,12 @@
 .\"     Title: lastlog
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 08/11/2022
-.\"    Manual: Команди керування системою
-.\"    Source: shadow-utils 4.13
+.\"      Date: 19/03/2025
+.\"    Manual: System Management Commands
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: Ukrainian
 .\"
-.TH "lastlog" "8" "08/11/2022" "shadow\-utils 4\&.13" "Команди керування системою"
+.TH "lastlog" "8" "19/03/2025" "shadow\-utils 4\&.17\&.4" "System Management Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -31,31 +31,33 @@
 lastlog \- виведення даних щодо останнього входу до системи для усіх користувачів або для вказаного користувача\&.
 .SH "КОРОТКИЙ ОГЛЯД"
 .HP \w'\fBlastlog\fR\ 'u
-\fBlastlog\fR [\fIпараметри\fR]
+\fBlastlog\fR [\fIoptions\fR]
 .SH "ОПИС"
 .PP
 \fBlastlog\fR
-форматує і виводить вміст журналу записів останнього входу до системи у файлі
-/var/log/lastlog\&. Буде виведено дані
-\fIім\*(Aqя користувача\fR,
-\fIпорт\fR
-і
-\fIчас останнього входу до системи\fR\&. Типовий варіант (без прапорців) призведе до виведення записів lastlog, які буде упорядковано за порядком у
+formats and prints the contents of the last login log
+/var/log/lastlog
+file\&. The
+\fIlogin\-name\fR,
+\fIport\fR, and
+\fIlast login time\fR
+will be printed\&. The default (no flags) causes lastlog entries to be printed, sorted by their order in
 /etc/passwd\&.
 .SH "ПАРАМЕТРИ"
 .PP
-Параметри, які застосовують до команди
-\fBlastlog\fR, є такими:
+The options which apply to the
+\fBlastlog\fR
+command are:
 .PP
-\fB\-b\fR, \fB\-\-before\fR \fIДНІ\fR
+\fB\-b\fR, \fB\-\-before\fR\ \&\fIDAYS\fR
 .RS 4
-Вивести лише ті записи lastlog, вік яких перевищує
-\fIДНІ\fR\&.
+Print only lastlog records older than
+\fIDAYS\fR\&.
 .RE
 .PP
 \fB\-C\fR, \fB\-\-clear\fR
 .RS 4
-Вилучити запис lastlog користувача\&. Цей параметр можна використовувати лише разом із
+Clear lastlog record of a user\&. This option can be used only together with
 \fB\-u\fR
 (\fB\-\-user\fR))\&.
 .RE
@@ -65,7 +67,7 @@ lastlog \- виведення даних щодо останнього вход�
 Показати довідкове повідомлення і завершити роботу\&.
 .RE
 .PP
-\fB\-R\fR, \fB\-\-root\fR \fIКАТАЛОГ_CHROOT\fR
+\fB\-R\fR, \fB\-\-root\fR\ \&\fICHROOT_DIR\fR
 .RS 4
 Apply changes in the
 \fICHROOT_DIR\fR
@@ -76,48 +78,50 @@ directory\&. Only absolute paths are supported\&.
 .PP
 \fB\-S\fR, \fB\-\-set\fR
 .RS 4
-Встановити для запису lastlog користувача поточний час\&. Цей параметр можна використовувати лише разом із
+Set lastlog record of a user to the current time\&. This option can be used only together with
 \fB\-u\fR
 (\fB\-\-user\fR))\&.
 .RE
 .PP
-\fB\-t\fR, \fB\-\-time\fR \fIДНІ\fR
+\fB\-t\fR, \fB\-\-time\fR\ \&\fIDAYS\fR
 .RS 4
-Вивести записи lastlog, які є свіжішими за
-\fIДНІ\fR\&.
+Print the lastlog records more recent than
+\fIDAYS\fR\&.
 .RE
 .PP
-\fB\-u\fR, \fB\-\-user\fR \fIЗАПИС\fR|\fIДІАПАЗОН\fR
+\fB\-u\fR, \fB\-\-user\fR\ \&\fILOGIN\fR|\fIRANGE\fR
 .RS 4
 Вивести запис lastlog для вказаних користувачів\&.
 .sp
-Користувачів можна задавати за обліковим записом для входу, числовим ідентифікатором користувача або значенням
-\fIДІАПАЗОН\fR
-для користувачів\&.
-\fIДІАПАЗОН\fR
-користувачів можна вказати за допомогою мінімального і максимального значень (\fIUID_MIN\-UID_MAX\fR), максимального значення (\fI\-UID_MAX\fR) або мінімального значення (\fIUID_MIN\-\fR)\&.
+The users can be specified by a login name, a numerical user ID, or a
+\fIRANGE\fR
+of users\&. This
+\fIRANGE\fR
+of users can be specified with a min and max values (\fIUID_MIN\-UID_MAX\fR), a max value (\fI\-UID_MAX\fR), or a min value (\fIUID_MIN\-\fR)\&.
 .RE
 .PP
-Якщо користувач ніколи не входив до системи, буде виведено повідомлення
-\fI** Ніколи не входив **\fR
-замість порту і часу\&.
+\fB\-a\fR
+.RS 4
+Print the lastlog records of the users that have logged in at least once\&. Excludes records for users with \*(Aq**Never logged in**\*(Aq\&.
+.RE
+.PP
+If the user has never logged in the message
+\fI** Never logged in**\fR
+will be displayed instead of the port and time\&.
 .PP
 Буде виведено записи лише для поточних користувачів системи\&. У системі можуть існувати дані для записів користувачів, які було раніше вилучено\&.
 .SH "ЗАУВАЖЕННЯ"
 .PP
-Файл
+The
 lastlog
-є базою даних, які містить дані щодо останнього входу до системи кожного з користувачів\&. Вам не слід оновлювати його вміст вручну\&. Це розріджений файл, тому його розмір на диску, зазвичай, є набагато меншим за показаний
-\fBls \-l\fR
-(ця команда може показати дуже великий розмір, якщо у вашому
+file is a database which contains info on the last login of each user\&. You should not rotate it\&. It is a sparse file, so its size on the disk is usually much smaller than the one shown by "\fBls \-l\fR" (which can indicate a really big file if you have in
 passwd
-є записи із великими значеннями UID)\&. Переглянути справжній розмір файла можна за допомогою команди
-\fBls \-s\fR\&.
+users with a high UID)\&. You can display its real size with "\fBls \-s\fR"\&.
 .SH "НАЛАШТУВАННЯ"
 .PP
-Вказані нижче змінні налаштувань у
+The following configuration variables in
 /etc/login\&.defs
-змінюють поведінку цього інструмента:
+change the behavior of this tool:
 .SH "ФАЙЛИ"
 .PP
 /var/log/lastlog
@@ -128,6 +132,6 @@ passwd
 .PP
 Великі прогалини у числах UID призведуть до того, що програма lastlog працюватиме довше без виведення даних на екран (тобто, якщо у базі даних lastlog немає записів для користувачів із UID між 170 і 800, може здатися, що lastlog зависла, доки програма обробляє UID у діапазоні 171\-799)\&.
 .PP
-Наявність великих значень UID може створити проблеми при обробці
-<term>/var/log/lastlog</term>
-за допомогою зовнішніх інструментів\&. Хоча сам файл є розрідженим і він не використовує надто багато місця на диску, деякі програми типово не призначено для визначення розріджених файлів \(em такі програми можуть потребувати для обробки певного параметра\&.
+Having high UIDs can create problems when handling the
+/var/log/lastlog
+with external tools\&. Although the actual file is sparse and does not use too much space, certain applications are not designed to identify sparse files by default and may require a specific option to handle them\&.

@@ -6,41 +6,8 @@
 
 #include "config.h"
 
-#if HAVE_STDBOOL_H
-# include <stdbool.h>
-#else
-# if ! HAVE__BOOL
-#  ifdef __cplusplus
-typedef bool _Bool;
-#  else
-typedef unsigned char _Bool;
-#  endif
-# endif
-# define bool _Bool
-# define false (0)
-# define true  (1)
-# define __bool_true_false_are_defined 1
-#endif
-
-/* Take care of NLS matters.  */
-#ifdef S_SPLINT_S
-extern char *setlocale(int categories, const char *locale);
-# define LC_ALL		(6)
-extern char * bindtextdomain (const char * domainname, const char * dirname);
-extern char * textdomain (const char * domainname);
-# define _(Text) Text
-# define ngettext(Msgid1, Msgid2, N) \
-    ((N) == 1 ? (const char *) (Msgid1) : (const char *) (Msgid2))
-#else
-#ifdef HAVE_LOCALE_H
-# include <locale.h>
-#else
-# undef setlocale
-# define setlocale(category, locale)	(NULL)
-# ifndef LC_ALL
-#  define LC_ALL	6
-# endif
-#endif
+#include <stdbool.h>
+#include <locale.h>
 
 #define gettext_noop(String) (String)
 /* #define gettext_def(String) "#define String" */
@@ -57,59 +24,34 @@ extern char * textdomain (const char * domainname);
 # define ngettext(Msgid1, Msgid2, N) \
     ((N) == 1 ? (const char *) (Msgid1) : (const char *) (Msgid2))
 #endif
-#endif
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#if HAVE_ERRNO_H
-# include <errno.h>
-#endif
+#include <errno.h>
 
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 
-#if HAVE_UNISTD_H
-# include <unistd.h>
-#endif
+#include <unistd.h>
 
 /*
  * crypt(3), crypt_gensalt(3), and their
  * feature test macros may be defined in here.
  */
-#if HAVE_CRYPT_H
+#if __has_include(<crypt.h>)
 # include <crypt.h>
 #endif
 
 #include <sys/time.h>
 #include <time.h>
 
-#ifdef HAVE_MEMSET_S
-# define memzero(ptr, size) memset_s((ptr), 0, (size))
-#elif defined HAVE_EXPLICIT_BZERO	/* !HAVE_MEMSET_S */
-# define memzero(ptr, size) explicit_bzero((ptr), (size))
-#else					/* !HAVE_MEMSET_S && HAVE_EXPLICIT_BZERO */
-static inline void memzero(void *ptr, size_t size)
-{
-	volatile unsigned char * volatile p = ptr;
-	while (size--) {
-		*p++ = '\0';
-	}
-}
-#endif					/* !HAVE_MEMSET_S && !HAVE_EXPLICIT_BZERO */
-
-#define strzero(s) memzero(s, strlen(s))	/* warning: evaluates twice */
-
 #include <dirent.h>
 
-/*
- * Possible cases:
- * - /usr/include/shadow.h exists and includes the shadow group stuff.
- * - /usr/include/shadow.h exists, but we use our own gshadow.h.
- */
 #include <shadow.h>
-#if defined(SHADOWGRP) && !defined(GSHADOW)
+#if defined(SHADOWGRP)
 #include "gshadow_.h"
 #endif
 
@@ -123,7 +65,6 @@ static inline void memzero(void *ptr, size_t size)
 #endif
 #endif
 
-#ifdef USE_SYSLOG
 #include <syslog.h>
 
 #ifndef LOG_WARN
@@ -170,14 +111,6 @@ static inline void memzero(void *ptr, size_t size)
 #define SYSLOG(x) syslog x
 #endif				/* !ENABLE_NLS */
 
-#else				/* !USE_SYSLOG */
-
-#define SYSLOG(x)		/* empty */
-#define openlog(a,b,c)		/* empty */
-#define closelog()		/* empty */
-
-#endif				/* !USE_SYSLOG */
-
 /* The default syslog settings can now be changed here,
    in just one place.  */
 
@@ -192,62 +125,24 @@ static inline void memzero(void *ptr, size_t size)
 
 #define OPENLOG(progname) openlog(progname, SYSLOG_OPTIONS, SYSLOG_FACILITY)
 
-#ifndef F_OK
-# define F_OK 0
-# define X_OK 1
-# define W_OK 2
-# define R_OK 4
-#endif
-
-#ifndef SEEK_SET
-# define SEEK_SET 0
-# define SEEK_CUR 1
-# define SEEK_END 2
-#endif
-
-#if HAVE_TERMIOS_H
-# include <termios.h>
-# define STTY(fd, termio) tcsetattr(fd, TCSANOW, termio)
-# define GTTY(fd, termio) tcgetattr(fd, termio)
-# define TERMIO struct termios
-# define USE_TERMIOS
-#else				/* assumed HAVE_TERMIO_H */
-# include <sys/ioctl.h>
-# include <termio.h>
-# define STTY(fd, termio) ioctl(fd, TCSETA, termio)
-# define GTTY(fd, termio) ioctl(fd, TCGETA, termio)
-# define TEMRIO struct termio
-# define USE_TERMIO
-#endif
+#include <termios.h>
+#define STTY(fd, termio) tcsetattr(fd, TCSANOW, termio)
+#define GTTY(fd, termio) tcgetattr(fd, termio)
+#define TERMIO struct termios
 
 /*
  * Password aging constants
  *
  * DAY - seconds / day
  * WEEK - seconds / week
- * SCALE - seconds / aging unit
  */
 
 /* Solaris defines this in shadow.h */
 #ifndef DAY
-#define DAY (24L*3600L)
+#define DAY  ((time_t) 24 * 3600)
 #endif
 
 #define WEEK (7*DAY)
-
-#ifdef ITI_AGING
-#define SCALE 1
-#else
-#define SCALE DAY
-#endif
-
-/* Copy string pointed by B to array A with size checking.  It was originally
-   in lmain.c but is _very_ useful elsewhere.  Some setuid root programs with
-   very sloppy coding used to assume that BUFSIZ will always be enough...  */
-
-					/* danger - side effects */
-#define STRFCPY(A,B) \
-	(strncpy((A), (B), sizeof(A) - 1), (A)[sizeof(A) - 1] = '\0')
 
 #ifndef PASSWD_FILE
 #define PASSWD_FILE "/etc/passwd"
@@ -261,22 +156,18 @@ static inline void memzero(void *ptr, size_t size)
 #define SHADOW_FILE "/etc/shadow"
 #endif
 
+#ifndef SUBUID_FILE
+#define SUBUID_FILE "/etc/subuid"
+#endif
+
+#ifndef SUBGID_FILE
+#define SUBGID_FILE "/etc/subgid"
+#endif
+
 #ifdef SHADOWGRP
 #ifndef SGROUP_FILE
 #define SGROUP_FILE "/etc/gshadow"
 #endif
-#endif
-
-#ifndef NULL
-#define NULL ((void *) 0)
-#endif
-
-#ifdef sun			/* hacks for compiling on SunOS */
-# ifndef SOLARIS
-extern int fputs ();
-extern char *strdup ();
-extern char *strerror ();
-# endif
 #endif
 
 /*
@@ -288,43 +179,14 @@ extern char *strerror ();
 #define SHADOW_PASSWD_STRING "x"
 #endif
 
-#define SHADOW_SP_FLAG_UNSET ((unsigned long int)-1)
+#define SHADOW_SP_FLAG_UNSET ((unsigned long)-1)
 
 #ifdef WITH_AUDIT
-#ifdef __u8			/* in case we use pam < 0.80 */
+/* in case we use pam < 0.80 */
 #undef __u8
-#endif
-#ifdef __u32
 #undef __u32
-#endif
 
 #include <libaudit.h>
-#endif
-
-/* To be used for verified unused parameters */
-#if defined(__GNUC__) && !defined(__STRICT_ANSI__)
-# define unused __attribute__((unused))
-# define format_attr(type, index, check) __attribute__((format (type, index, check)))
-#else
-# define unused
-# define format_attr(type, index, check)
-#endif
-
-/* Maximum length of usernames */
-#ifdef HAVE_UTMPX_H
-# include <utmpx.h>
-# define USER_NAME_MAX_LENGTH (sizeof (((struct utmpx *)NULL)->ut_user))
-#else
-# include <utmp.h>
-# ifdef HAVE_STRUCT_UTMP_UT_USER
-#  define USER_NAME_MAX_LENGTH (sizeof (((struct utmp *)NULL)->ut_user))
-# else
-#  ifdef HAVE_STRUCT_UTMP_UT_NAME
-#   define USER_NAME_MAX_LENGTH (sizeof (((struct utmp *)NULL)->ut_name))
-#  else
-#   define USER_NAME_MAX_LENGTH 32
-#  endif
-# endif
 #endif
 
 /* Maximum length of passwd entry */
@@ -334,6 +196,16 @@ extern char *strerror ();
 #  define shadow_getenv(name) secure_getenv(name)
 # else
 #  define shadow_getenv(name) getenv(name)
+#endif
+
+/*
+ * Maximum password length
+ *
+ * Consider that there is also limit in PAM (PAM_MAX_RESP_SIZE)
+ * currently set to 512.
+ */
+#if !defined(PASS_MAX)
+#define PASS_MAX  BUFSIZ - 1
 #endif
 
 #endif				/* _DEFINES_H_ */

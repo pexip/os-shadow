@@ -40,17 +40,21 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <strings.h>
 #include <time.h>
 #include <unistd.h>
 #include <getopt.h>
+
 #include "defines.h"
 #include "getdef.h"
+#include "nscd.h"
 #include "prototypes.h"
 #include "pwio.h"
-#include "shadowio.h"
-#include "nscd.h"
 #include "sssd.h"
+#include "shadowio.h"
 #include "shadowlog.h"
+#include "string/strcmp/streq.h"
+
 
 /*
  * exit status values
@@ -66,7 +70,7 @@
 /*
  * Global variables
  */
-const char *Prog;
+static const char Prog[] = "pwconv";
 
 static bool spw_locked = false;
 static bool pw_locked = false;
@@ -153,7 +157,6 @@ int main (int argc, char **argv)
 	const struct spwd *sp;
 	struct spwd spent;
 
-	Prog = Basename (argv[0]);
 	log_set_progname(Prog);
 	log_set_logfd(stderr);
 
@@ -163,7 +166,7 @@ int main (int argc, char **argv)
 
 	process_root_flag ("-R", argc, argv);
 
-	OPENLOG ("pwconv");
+	OPENLOG (Prog);
 
 	process_flags (argc, argv);
 
@@ -230,14 +233,14 @@ int main (int argc, char **argv)
 		sp = spw_locate (pw->pw_name);
 		if (NULL != sp) {
 			/* do we need to update this entry? */
-			if (strcmp (pw->pw_passwd, SHADOW_PASSWD_STRING) == 0) {
+			if (streq(pw->pw_passwd, SHADOW_PASSWD_STRING)) {
 				continue;
 			}
 			/* update existing shadow entry */
 			spent = *sp;
 		} else {
 			/* add new shadow entry */
-			memset (&spent, 0, sizeof spent);
+			bzero(&spent, sizeof spent);
 			spent.sp_namp   = pw->pw_name;
 			spent.sp_min    = getdef_num ("PASS_MIN_DAYS", -1);
 			spent.sp_max    = getdef_num ("PASS_MAX_DAYS", -1);
@@ -247,7 +250,7 @@ int main (int argc, char **argv)
 			spent.sp_flag   = SHADOW_SP_FLAG_UNSET;
 		}
 		spent.sp_pwdp = pw->pw_passwd;
-		spent.sp_lstchg = (long) gettime () / SCALE;
+		spent.sp_lstchg = gettime () / DAY;
 		if (0 == spent.sp_lstchg) {
 			/* Better disable aging than requiring a password
 			 * change */

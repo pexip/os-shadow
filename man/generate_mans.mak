@@ -1,3 +1,8 @@
+if HAVE_VENDORDIR
+VENDORDIR_COND=with_vendordir
+else
+VENDORDIR_COND=without_vendordir
+endif
 if USE_PAM
 PAM_COND=pam
 else
@@ -20,10 +25,32 @@ else
 SHA_CRYPT_COND=no_sha_crypt
 endif
 
+if USE_BCRYPT
+BCRYPT_COND=bcrypt
+else
+BCRYPT_COND=no_bcrypt
+endif
+
+if USE_YESCRYPT
+YESCRYPT_COND=yescrypt
+else
+YESCRYPT_COND=no_yescrypt
+endif
+
 if ENABLE_SUBIDS
 SUBIDS_COND=subids
 else
 SUBIDS_COND=no_subids
+endif
+
+if ENABLE_LASTLOG
+if !USE_PAM
+LASTLOG_COND=lastlog
+else
+LASTLOG_COND=no_lastlog
+endif
+else
+LASTLOG_COND=no_lastlog
 endif
 
 if ENABLE_REGENERATE_MAN
@@ -35,11 +62,13 @@ if ENABLE_REGENERATE_MAN
 	fi
 
 man1/% man3/% man5/% man8/%: %.xml-config Makefile config.xml
-	$(XSLTPROC) --stringparam profile.condition "$(PAM_COND);$(SHADOWGRP_COND);$(TCB_COND);$(SHA_CRYPT_COND);$(SUBIDS_COND)" \
+	$(XSLTPROC) --stringparam profile.condition "$(PAM_COND);$(SHADOWGRP_COND);$(TCB_COND);$(SHA_CRYPT_COND);$(BCRYPT_COND);$(YESCRYPT_COND);$(SUBIDS_COND);$(VENDORDIR_COND);$(LASTLOG_COND)" \
 	            --param "man.authors.section.enabled" "0" \
 	            --stringparam "man.output.base.dir" "" \
+	            --stringparam vendordir "$(VENDORDIR)" \
 	            --param "man.output.in.separate.dir" "1" \
-	            -nonet http://docbook.sourceforge.net/release/xsl/current/manpages/profile-docbook.xsl $<
+	            --path "$(srcdir)/login.defs.d" \
+	            -nonet $(top_srcdir)/man/shadow-man.xsl $<
 
 clean-local:
 	rm -rf man1 man3 man5 man8

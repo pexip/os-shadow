@@ -22,12 +22,19 @@
 #ifdef HAVE_LL_HOST
 #include <net/if.h>
 #endif
+
+#include "atoi/str2i/str2u.h"
 #include "defines.h"
 #include "prototypes.h"
 #include "getdef.h"
 /*@-exitarg@*/
 #include "exitcodes.h"
 #include "shadowlog.h"
+#include "sizeof.h"
+#include "string/memset/memzero.h"
+#include "string/strftime.h"
+
+
 
 /*
  * Needed for MkLinux DR1/2/2.1 - J.
@@ -39,7 +46,7 @@
 /*
  * Global variables
  */
-const char *Prog;		/* Program name */
+static const char Prog[] = "lastlog";	/* Program name */
 static FILE *lastlogfile;	/* lastlog file stream */
 static unsigned long umin;	/* if uflg and has_umin, only display users with uid >= umin */
 static bool has_umin = false;
@@ -50,15 +57,18 @@ static time_t inverse_seconds;	/* that number of days in seconds */
 static struct stat statbuf;	/* fstat buffer for file size */
 
 
-static bool uflg = false;	/* print only an user of range of users */
+static bool uflg = false;	/* print only a user of range of users */
 static bool tflg = false;	/* print is restricted to most recent days */
 static bool bflg = false;	/* print excludes most recent days */
 static bool Cflg = false;	/* clear record for user */
 static bool Sflg = false;	/* set record for user */
+static bool aflg = false;	/* print only users that have logged in */
 
-#define	NOW	(time ((time_t *) 0))
+#define	NOW	time(NULL)
 
-static /*@noreturn@*/void usage (int status)
+NORETURN
+static void
+usage (int status)
 {
 	FILE *usageout = (E_SUCCESS != status) ? stderr : stdout;
 	(void) fprintf (usageout,
@@ -67,12 +77,13 @@ static /*@noreturn@*/void usage (int status)
 	                  "Options:\n"),
 	                Prog);
 	(void) fputs (_("  -b, --before DAYS             print only lastlog records older than DAYS\n"), usageout);
-	(void) fputs (_("  -C, --clear                   clear lastlog record of an user (usable only with -u)\n"), usageout);
+	(void) fputs (_("  -C, --clear                   clear lastlog record of a user (usable only with -u)\n"), usageout);
 	(void) fputs (_("  -h, --help                    display this help message and exit\n"), usageout);
 	(void) fputs (_("  -R, --root CHROOT_DIR         directory to chroot into\n"), usageout);
 	(void) fputs (_("  -S, --set                     set lastlog record to current time (usable only with -u)\n"), usageout);
 	(void) fputs (_("  -t, --time DAYS               print only lastlog records more recent than DAYS\n"), usageout);
 	(void) fputs (_("  -u, --user LOGIN              print lastlog record of the specified LOGIN\n"), usageout);
+	(void) fputs (_("  -a, --active                  print lastlog excluding '**Never logged in**' users"), usageout);
 	(void) fputs ("\n", usageout);
 	exit (status);
 }
@@ -106,7 +117,7 @@ static void print_one (/*@null@*/const struct passwd *pw)
 
 
 	offset = (off_t) pw->pw_uid * sizeof (ll);
-	if (offset + sizeof (ll) <= statbuf.st_size) {
+	if (offset + ssizeof(ll) <= statbuf.st_size) {
 		/* fseeko errors are not really relevant for us. */
 		int err = fseeko (lastlogfile, offset, SEEK_SET);
 		assert (0 == err);
@@ -114,10 +125,10 @@ static void print_one (/*@null@*/const struct passwd *pw)
 		 * entered for this user, which should be able to get the
 		 * empty entry in this case.
 		 */
-		if (fread ((char *) &ll, sizeof (ll), 1, lastlogfile) != 1) {
+		if (fread (&ll, sizeof (ll), 1, lastlogfile) != 1) {
 			fprintf (stderr,
 			         _("%s: Failed to get the entry for UID %lu\n"),
-			         Prog, (unsigned long int)pw->pw_uid);
+			         Prog, (unsigned long)pw->pw_uid);
 			exit (EXIT_FAILURE);
 		}
 	} else {
@@ -141,7 +152,7 @@ static void print_one (/*@null@*/const struct passwd *pw)
 	/* Print the header only once */
 	if (!once) {
 #ifdef HAVE_LL_HOST
-		printf (_("Username         Port     From%*sLatest\n"), maxIPv6Addrlen-3, " ");
+		printf (_("Username         Port     From%*sLatest\n"), maxIPv6Addrlen-4, " ");
 #else
 		puts (_("Username                Port     Latest"));
 #endif
@@ -153,10 +164,13 @@ static void print_one (/*@null@*/const struct passwd *pw)
 	if (tm == NULL) {
 		cp = "(unknown)";
 	} else {
-		strftime (ptime, sizeof (ptime), "%a %b %e %H:%M:%S %z %Y", tm);
+		STRFTIME(ptime, "%a %b %e %H:%M:%S %z %Y", tm);
 		cp = ptime;
 	}
 	if (ll.ll_time == (time_t) 0) {
+		/* If aflg is used,i.e aflag=true omit the 'Never logged in' lines */
+		if (aflg)
+			return;
 		cp = _("**Never logged in**\0");
 	}
 
@@ -182,7 +196,7 @@ static void print (void)
 	}
 
 	if (uflg && has_umin && has_umax && (umin == umax)) {
-		print_one (getpwuid ((uid_t)umin));
+		print_one (getpwuid (umin));
 	} else {
 		setpwent ();
 		while ( (pwent = getpwent ()) != NULL ) {
@@ -225,21 +239,21 @@ static void update_one (/*@null@*/const struct passwd *pw)
 #ifdef WITH_AUDIT
 		audit_logger (AUDIT_ACCT_UNLOCK, Prog,
 			"clearing-lastlog",
-			pw->pw_name, (unsigned int) pw->pw_uid, SHADOW_AUDIT_SUCCESS);
+			pw->pw_name, pw->pw_uid, SHADOW_AUDIT_SUCCESS);
 #endif
 	}
 #ifdef WITH_AUDIT
 	else {
 		audit_logger (AUDIT_ACCT_UNLOCK, Prog,
 			"refreshing-lastlog",
-			pw->pw_name, (unsigned int) pw->pw_uid, SHADOW_AUDIT_SUCCESS);
+			pw->pw_name, pw->pw_uid, SHADOW_AUDIT_SUCCESS);
 	}
 #endif
 
 	if (fwrite (&ll, sizeof(ll), 1, lastlogfile) != 1) {
 			fprintf (stderr,
 			         _("%s: Failed to update the entry for UID %lu\n"),
-			         Prog, (unsigned long int)pw->pw_uid);
+			         Prog, (unsigned long)pw->pw_uid);
 			exit (EXIT_FAILURE);
 	}
 }
@@ -261,7 +275,7 @@ static void update (void)
 	}
 
 	if (has_umin && has_umax && (umin == umax)) {
-		update_one (getpwuid ((uid_t)umin));
+		update_one (getpwuid (umin));
 	} else {
 		setpwent ();
 		while ( (pwent = getpwent ()) != NULL ) {
@@ -288,7 +302,6 @@ int main (int argc, char **argv)
 	 * Get the program name. The program name is used as a prefix to
 	 * most error messages.
 	 */
-	Prog = Basename (argv[0]);
 	log_set_progname(Prog);
 	log_set_logfd(stderr);
 
@@ -312,16 +325,17 @@ int main (int argc, char **argv)
 			{"set",    no_argument,       NULL, 'S'},
 			{"time",   required_argument, NULL, 't'},
 			{"user",   required_argument, NULL, 'u'},
+			{"active", no_argument,       NULL, 'a'},
 			{NULL, 0, NULL, '\0'}
 		};
 
-		while ((c = getopt_long (argc, argv, "b:ChR:St:u:", longopts,
+		while ((c = getopt_long (argc, argv, "b:ChR:St:u:a", longopts,
 		                         NULL)) != -1) {
 			switch (c) {
 			case 'b':
 			{
 				unsigned long inverse_days;
-				if (getulong (optarg, &inverse_days) == 0) {
+				if (str2ul(&inverse_days, optarg) == -1) {
 					fprintf (stderr,
 					         _("%s: invalid numeric argument '%s'\n"),
 					         Prog, optarg);
@@ -349,7 +363,7 @@ int main (int argc, char **argv)
 			case 't':
 			{
 				unsigned long days;
-				if (getulong (optarg, &days) == 0) {
+				if (str2ul(&days, optarg) == -1) {
 					fprintf (stderr,
 					         _("%s: invalid numeric argument '%s'\n"),
 					         Prog, optarg);
@@ -373,20 +387,25 @@ int main (int argc, char **argv)
 				/* local, no need for xgetpwnam */
 				pwent = getpwnam (optarg);
 				if (NULL != pwent) {
-					umin = (unsigned long) pwent->pw_uid;
+					umin = pwent->pw_uid;
 					has_umin = true;
 					umax = umin;
 					has_umax = true;
 				} else {
-					if (getrange (optarg,
-					              &umin, &has_umin,
-					              &umax, &has_umax) == 0) {
+					if (getrange(optarg,
+					             &umin, &has_umin,
+					             &umax, &has_umax) == -1) {
 						fprintf (stderr,
 						         _("%s: Unknown user or range: %s\n"),
 						         Prog, optarg);
 						exit (EXIT_FAILURE);
 					}
 				}
+				break;
+			}
+			case 'a':
+			{
+				aflg = true;
 				break;
 			}
 			default:

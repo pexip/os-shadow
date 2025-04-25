@@ -2,12 +2,12 @@
 .\"     Title: gshadow
 .\"    Author: Nicolas Fran\(,cois <nicolas.francois@centraliens.net>
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 08/11/2022
+.\"      Date: 19/03/2025
 .\"    Manual: File Formats and Configuration Files
-.\"    Source: shadow-utils 4.13
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: Italian
 .\"
-.TH "GSHADOW" "5" "08/11/2022" "shadow\-utils 4\&.13" "File Formats and Configuration"
+.TH "GSHADOW" "5" "19/03/2025" "shadow\-utils 4\&.17\&.4" "File Formats and Configuration"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -38,12 +38,12 @@ Questo file non deve essere leggibile dagli utenti normali se si vuole mantenere
 .PP
 Ogni riga di questo file contiene questi campi separati da due punti:
 .PP
-\fBnome del gruppo\fR
+\fBgroup name\fR
 .RS 4
-Deve essere un nome di gruppo valido, che esista nel sistema\&.
+It must be a valid group name, which exists on the system\&.
 .RE
 .PP
-\fBpassword cifrata\fR
+\fBencrypted password\fR
 .RS 4
 Refer to
 \fBcrypt\fR(3)
@@ -63,7 +63,7 @@ This password supersedes any password specified in
 /etc/group\&.
 .RE
 .PP
-\fBamministratori\fR
+\fBadministrators\fR
 .RS 4
 Deve essere una lista di nomi utente separati da virgole\&.
 .sp
@@ -72,7 +72,7 @@ Gli amministratori possono cambiare la password o i membri del gruppo\&.
 Gli amministratori hanno anche gli stessi permessi dei membri (vedere sotto),
 .RE
 .PP
-\fBmembri\fR
+\fBmembers\fR
 .RS 4
 Deve essere una lista di nomi utente separati da virgole\&.
 .sp

@@ -2,12 +2,12 @@
 .\"     Title: groupmod
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 08.11.2022
-.\"    Manual: Befehle zur Systemverwaltung
-.\"    Source: shadow-utils 4.13
+.\"      Date: 19.03.2025
+.\"    Manual: System Management Commands
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: German
 .\"
-.TH "GROUPMOD" "8" "08.11.2022" "shadow\-utils 4\&.13" "Befehle zur Systemverwaltung"
+.TH "GROUPMOD" "8" "19.03.2025" "shadow\-utils 4\&.17\&.4" "System Management Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -28,10 +28,10 @@
 .\" * MAIN CONTENT STARTS HERE *
 .\" -----------------------------------------------------------------
 .SH "NAME"
-groupmod \- \(:andert die Eigenschaften einer Gruppe auf dem System
+groupmod \- \(:andert eine Gruppendefinition auf dem System
 .SH "\(:UBERSICHT"
 .HP \w'\fBgroupmod\fR\ 'u
-\fBgroupmod\fR [\fIOptionen\fR] \fIGRUPPE\fR
+\fBgroupmod\fR [\fIoptions\fR] \fIGROUP\fR
 .SH "BESCHREIBUNG"
 .PP
 The
@@ -45,7 +45,7 @@ The options which apply to the
 \fBgroupmod\fR
 command are:
 .PP
-\fB\-a\fR, \fB\-\-append\fR\ \&\fIGID\fR
+\fB\-a\fR, \fB\-\-append\fR
 .RS 4
 If group members are specified with \-U, append them to the existing member list, rather than replacing it\&.
 .RE
@@ -63,7 +63,7 @@ must be a non\-negative decimal integer\&. This value must be unique, unless the
 \fB\-o\fR
 option is used\&.
 .sp
-Benutzer, welche die Gruppe als Hauptgruppe verwenden, werden aktualisiert, um die Gruppe als Hauptgruppe zu behalten\&.
+Bei Benutzern, f\(:ur die die Gruppe die prim\(:are Gruppe darstellt, wird der Eintrag aktualisiert, damit die Zuordnung zu dieser Gruppe erhalten bleibt\&.
 .sp
 Any files that have the old group ID and must continue to belong to
 \fIGROUP\fR, must have their group ID changed manually\&.
@@ -79,7 +79,7 @@ from
 .PP
 \fB\-h\fR, \fB\-\-help\fR
 .RS 4
-zeigt die Hilfe an und beendet das Programm
+zeigt die Hilfe an und beendet das Programm\&.
 .RE
 .PP
 \fB\-n\fR, \fB\-\-new\-name\fR\ \&\fINEW_GROUP\fR
@@ -131,11 +131,11 @@ directory\&. This option does not chroot and is intended for preparing a cross\-
 .PP
 \fB\-U\fR, \fB\-\-users\fR
 .RS 4
-A list of usernames to add as members of the group\&.
+A comma\-separated list of usernames to add as members of the group\&.
 .sp
 The default behavior (if the
-\fB\-g\fR,
-\fB\-N\fR, and
+\fB\-g\fR
+and
 \fB\-U\fR
 options are not specified) is defined by the
 \fBUSERGROUPS_ENAB\fR
@@ -156,12 +156,12 @@ Informationen zu den Gruppenkonten
 .PP
 /etc/gshadow
 .RS 4
-sichere Informationen zu den Gruppenkonten
+gesch\(:utzte Informationen zu den Gruppenkonten
 .RE
 .PP
 /etc/login\&.defs
 .RS 4
-Konfiguration der Shadow\-Passwort\-Werkzeugsammlung
+konfiguriert die Shadow\-Hilfsprogramme\&.
 .RE
 .PP
 /etc/passwd

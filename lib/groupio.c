@@ -15,11 +15,15 @@
 #include <assert.h>
 #include <stdio.h>
 
-#include "prototypes.h"
-#include "defines.h"
+#include "alloc/calloc.h"
+#include "alloc/malloc.h"
 #include "commonio.h"
+#include "defines.h"
 #include "getdef.h"
 #include "groupio.h"
+#include "prototypes.h"
+#include "string/strcmp/streq.h"
+
 
 static /*@null@*/struct commonio_entry *merge_group_entries (
 	/*@null@*/ /*@returned@*/struct commonio_entry *gr1,
@@ -34,7 +38,8 @@ static /*@null@*/ /*@only@*/void *group_dup (const void *ent)
 	return __gr_dup (gr);
 }
 
-static void group_free (/*@out@*/ /*@only@*/void *ent)
+static void
+group_free(/*@only@*/void *ent)
 {
 	struct group *gr = ent;
 
@@ -50,7 +55,7 @@ static const char *group_getname (const void *ent)
 
 static void *group_parse (const char *line)
 {
-	return (void *) sgetgrent (line);
+	return sgetgrent (line);
 }
 
 static int group_put (const void *ent, FILE * file)
@@ -159,7 +164,7 @@ int gr_open (int mode)
 
 int gr_update (const struct group *gr)
 {
-	return commonio_update (&group_db, (const void *) gr);
+	return commonio_update (&group_db, gr);
 }
 
 int gr_remove (const char *name)
@@ -209,17 +214,25 @@ void __gr_del_entry (const struct commonio_entry *ent)
 
 static int gr_cmp (const void *p1, const void *p2)
 {
+	const struct commonio_entry *const *ce1;
+	const struct commonio_entry *const *ce2;
+	const struct group *g1, *g2;
 	gid_t u1, u2;
 
-	if ((*(struct commonio_entry **) p1)->eptr == NULL) {
+	ce1 = p1;
+	g1 = (*ce1)->eptr;
+	if (g1 == NULL) {
 		return 1;
 	}
-	if ((*(struct commonio_entry **) p2)->eptr == NULL) {
+
+	ce2 = p2;
+	g2 = (*ce2)->eptr;
+	if (g2 == NULL) {
 		return -1;
 	}
 
-	u1 = ((struct group *) (*(struct commonio_entry **) p1)->eptr)->gr_gid;
-	u2 = ((struct group *) (*(struct commonio_entry **) p2)->eptr)->gr_gid;
+	u1 = g1->gr_gid;
+	u2 = g2->gr_gid;
 
 	if (u1 < u2) {
 		return -1;
@@ -247,12 +260,12 @@ static int group_open_hook (void)
 
 	for (gr1 = group_db.head; NULL != gr1; gr1 = gr1->next) {
 		for (gr2 = gr1->next; NULL != gr2; gr2 = gr2->next) {
-			struct group *g1 = (struct group *)gr1->eptr;
-			struct group *g2 = (struct group *)gr2->eptr;
+			struct group *g1 = gr1->eptr;
+			struct group *g2 = gr2->eptr;
 			if (NULL != g1 &&
 			    NULL != g2 &&
-			    0 == strcmp (g1->gr_name, g2->gr_name) &&
-			    0 == strcmp (g1->gr_passwd, g2->gr_passwd) &&
+			    streq(g1->gr_name, g2->gr_name) &&
+			    streq(g1->gr_passwd, g2->gr_passwd) &&
 			    g1->gr_gid == g2->gr_gid) {
 				/* Both group entries refer to the same
 				 * group. It is a split group. Merge the
@@ -291,32 +304,28 @@ static /*@null@*/struct commonio_entry *merge_group_entries (
 	/*@null@*/ /*@returned@*/struct commonio_entry *gr1,
 	/*@null@*/struct commonio_entry *gr2)
 {
-	struct group *gptr1;
-	struct group *gptr2;
-	char **new_members;
-	size_t members = 0;
-	char *new_line;
-	size_t new_line_len, i;
+	char          *new_line;
+	char          **new_members;
+	size_t        i;
+	size_t        members = 0;
+	struct group  *gptr1;
+	struct group  *gptr2;
+
 	if (NULL == gr2 || NULL == gr1) {
 		errno = EINVAL;
 		return NULL;
 	}
 
-	gptr1 = (struct group *)gr1->eptr;
-	gptr2 = (struct group *)gr2->eptr;
+	gptr1 = gr1->eptr;
+	gptr2 = gr2->eptr;
 	if (NULL == gptr2 || NULL == gptr1) {
 		errno = EINVAL;
 		return NULL;
 	}
 
 	/* Concatenate the 2 lines */
-	new_line_len = strlen (gr1->line) + strlen (gr2->line) +1;
-	new_line = (char *)malloc (new_line_len + 1);
-	if (NULL == new_line) {
-		errno = ENOMEM;
+	if (asprintf(&new_line, "%s\n%s", gr1->line, gr2->line) == -1)
 		return NULL;
-	}
-	snprintf(new_line, new_line_len + 1, "%s\n%s", gr1->line, gr2->line);
 
 	/* Concatenate the 2 list of members */
 	for (i=0; NULL != gptr1->gr_mem[i]; i++);
@@ -324,7 +333,7 @@ static /*@null@*/struct commonio_entry *merge_group_entries (
 	for (i=0; NULL != gptr2->gr_mem[i]; i++) {
 		char **pmember = gptr1->gr_mem;
 		while (NULL != *pmember) {
-			if (0 == strcmp(*pmember, gptr2->gr_mem[i])) {
+			if (streq(*pmember, gptr2->gr_mem[i])) {
 				break;
 			}
 			pmember++;
@@ -333,10 +342,9 @@ static /*@null@*/struct commonio_entry *merge_group_entries (
 			members++;
 		}
 	}
-	new_members = (char **)calloc ( (members+1), sizeof(char*) );
+	new_members = CALLOC (members + 1, char *);
 	if (NULL == new_members) {
-		free (new_line);
-		errno = ENOMEM;
+		free(new_line);
 		return NULL;
 	}
 	for (i=0; NULL != gptr1->gr_mem[i]; i++) {
@@ -348,7 +356,7 @@ static /*@null@*/struct commonio_entry *merge_group_entries (
 	for (i=0; NULL != gptr2->gr_mem[i]; i++) {
 		char **pmember = new_members;
 		while (NULL != *pmember) {
-			if (0 == strcmp(*pmember, gptr2->gr_mem[i])) {
+			if (streq(*pmember, gptr2->gr_mem[i])) {
 				break;
 			}
 			pmember++;
@@ -377,7 +385,7 @@ static int split_groups (unsigned int max_members)
 	struct commonio_entry *gr;
 
 	for (gr = group_db.head; NULL != gr; gr = gr->next) {
-		struct group *gptr = (struct group *)gr->eptr;
+		struct group *gptr = gr->eptr;
 		struct commonio_entry *new;
 		struct group *new_gptr;
 		unsigned int members = 0;
@@ -395,9 +403,8 @@ static int split_groups (unsigned int max_members)
 			continue;
 		}
 
-		new = (struct commonio_entry *) malloc (sizeof *new);
+		new = MALLOC(1, struct commonio_entry);
 		if (NULL == new) {
-			errno = ENOMEM;
 			return 0;
 		}
 		new->eptr = group_dup(gr->eptr);
@@ -406,7 +413,7 @@ static int split_groups (unsigned int max_members)
 			errno = ENOMEM;
 			return 0;
 		}
-		new_gptr = (struct group *)new->eptr;
+		new_gptr = new->eptr;
 		new->line = NULL;
 		new->changed = true;
 

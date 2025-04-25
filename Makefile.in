@@ -108,7 +108,7 @@ am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
  configure.lineno config.status.lineno
 mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = config.h
-CONFIG_CLEAN_FILES = man/po/Makefile shadow.spec
+CONFIG_CLEAN_FILES = man/po/Makefile
 CONFIG_CLEAN_VPATH_FILES =
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
@@ -163,12 +163,11 @@ am__define_uniq_tagged_files = \
   unique=`for i in $$list; do \
     if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
   done | $(am__uniquify_input)`
-DIST_SUBDIRS = libmisc lib libsubid src po contrib doc etc man
+DIST_SUBDIRS = lib libsubid src po contrib doc etc tests/unit man
 am__DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/config.h.in \
-	$(srcdir)/shadow.spec.in $(top_srcdir)/man/po/Makefile.in \
-	ABOUT-NLS AUTHORS.md COPYING ChangeLog NEWS README TODO \
-	compile config.guess config.rpath config.sub install-sh \
-	ltmain.sh missing
+	$(top_srcdir)/man/po/Makefile.in ABOUT-NLS AUTHORS.md COPYING \
+	ChangeLog NEWS README compile config.guess config.rpath \
+	config.sub install-sh ltmain.sh missing
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 distdir = $(PACKAGE)-$(VERSION)
 top_distdir = $(distdir)
@@ -224,6 +223,8 @@ AWK = @AWK@
 CC = @CC@
 CCDEPMODE = @CCDEPMODE@
 CFLAGS = @CFLAGS@
+CMOCKA_CFLAGS = @CMOCKA_CFLAGS@
+CMOCKA_LIBS = @CMOCKA_LIBS@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CSCOPE = @CSCOPE@
@@ -257,9 +258,15 @@ INTL_MACOSX_LIBS = @INTL_MACOSX_LIBS@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
 LIBACL = @LIBACL@
+LIBADD_DL = @LIBADD_DL@
+LIBADD_DLD_LINK = @LIBADD_DLD_LINK@
+LIBADD_DLOPEN = @LIBADD_DLOPEN@
+LIBADD_SHL_LOAD = @LIBADD_SHL_LOAD@
 LIBATTR = @LIBATTR@
 LIBAUDIT = @LIBAUDIT@
-LIBCRACK = @LIBCRACK@
+LIBBSD = @LIBBSD@
+LIBBSD_CFLAGS = @LIBBSD_CFLAGS@
+LIBBSD_LIBS = @LIBBSD_LIBS@
 LIBCRYPT = @LIBCRYPT@
 LIBECONF = @LIBECONF@
 LIBICONV = @LIBICONV@
@@ -275,6 +282,7 @@ LIBSUBID_ABI = @LIBSUBID_ABI@
 LIBSUBID_ABI_MAJOR = @LIBSUBID_ABI_MAJOR@
 LIBSUBID_ABI_MICRO = @LIBSUBID_ABI_MICRO@
 LIBSUBID_ABI_MINOR = @LIBSUBID_ABI_MINOR@
+LIBSYSTEMD = @LIBSYSTEMD@
 LIBTCB = @LIBTCB@
 LIBTOOL = @LIBTOOL@
 LIPO = @LIPO@
@@ -283,6 +291,8 @@ LN_S = @LN_S@
 LTLIBICONV = @LTLIBICONV@
 LTLIBINTL = @LTLIBINTL@
 LTLIBOBJS = @LTLIBOBJS@
+LT_DLLOADERS = @LT_DLLOADERS@
+LT_DLPREOPEN = @LT_DLPREOPEN@
 LT_SYS_LIBRARY_PATH = @LT_SYS_LIBRARY_PATH@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
@@ -305,6 +315,9 @@ PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
+PKG_CONFIG = @PKG_CONFIG@
+PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
+PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
 POSUB = @POSUB@
 RANLIB = @RANLIB@
 SED = @SED@
@@ -376,9 +389,10 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-EXTRA_DIST = NEWS README TODO shadow.spec.in
-SUBDIRS = libmisc lib $(am__append_1) src po contrib doc etc \
+SUBDIRS = lib $(am__append_1) src po contrib doc etc tests/unit \
 	$(am__append_2)
+CLEANFILES = man/8.out man/po/remove-potcdate.* man/*/login.defs.d man/*/*.mo
+EXTRA_DIST = NEWS README tests/
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 
@@ -432,8 +446,6 @@ $(srcdir)/config.h.in: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
 distclean-hdr:
 	-rm -f config.h stamp-h1
 man/po/Makefile: $(top_builddir)/config.status $(top_srcdir)/man/po/Makefile.in
-	cd $(top_builddir) && $(SHELL) ./config.status $@
-shadow.spec: $(top_builddir)/config.status $(srcdir)/shadow.spec.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 
 mostlyclean-libtool:
@@ -610,6 +622,9 @@ distdir-am: $(DISTFILES)
 	      || exit 1; \
 	  fi; \
 	done
+	$(MAKE) $(AM_MAKEFLAGS) \
+	  top_distdir="$(top_distdir)" distdir="$(distdir)" \
+	  dist-hook
 	-test -n "$(am__skip_mode_fix)" \
 	|| find "$(distdir)" -type d ! -perm -755 \
 		-exec chmod u+rwx,go+rx {} \; -o \
@@ -773,6 +788,7 @@ install-strip:
 mostlyclean-generic:
 
 clean-generic:
+	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
 
 distclean-generic:
 	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
@@ -856,8 +872,8 @@ uninstall-am:
 .PHONY: $(am__recursive_targets) CTAGS GTAGS TAGS all all-am \
 	am--refresh check check-am clean clean-cscope clean-generic \
 	clean-libtool cscope cscopelist-am ctags ctags-am dist \
-	dist-all dist-bzip2 dist-gzip dist-lzip dist-shar dist-tarZ \
-	dist-xz dist-zip dist-zstd distcheck distclean \
+	dist-all dist-bzip2 dist-gzip dist-hook dist-lzip dist-shar \
+	dist-tarZ dist-xz dist-zip dist-zstd distcheck distclean \
 	distclean-generic distclean-hdr distclean-libtool \
 	distclean-tags distcleancheck distdir distuninstallcheck dvi \
 	dvi-am html html-am info info-am install install-am \
@@ -872,6 +888,16 @@ uninstall-am:
 
 .PRECIOUS: Makefile
 
+
+dist-hook:
+	chmod -R u+w $(distdir)/tests
+	chmod u+w $(distdir)
+	mv $(distdir)/tests/unit $(distdir)/realunittest
+	mv $(distdir)/tests/tests $(distdir)/realtests
+	rm -rf $(distdir)/tests
+	mv $(distdir)/realtests $(distdir)/tests
+	rm -rf $(distdir)/tests/unit $(distdir)/tests/Makefile*
+	mv $(distdir)/realunittest $(distdir)/tests/unit
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

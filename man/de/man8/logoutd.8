@@ -2,12 +2,12 @@
 .\"     Title: logoutd
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 08.11.2022
-.\"    Manual: Befehle zur Systemverwaltung
-.\"    Source: shadow-utils 4.13
+.\"      Date: 19.03.2025
+.\"    Manual: System Management Commands
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: German
 .\"
-.TH "LOGOUTD" "8" "08.11.2022" "shadow\-utils 4\&.13" "Befehle zur Systemverwaltung"
+.TH "LOGOUTD" "8" "19.03.2025" "shadow\-utils 4\&.17\&.4" "System Management Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -28,7 +28,7 @@
 .\" * MAIN CONTENT STARTS HERE *
 .\" -----------------------------------------------------------------
 .SH "NAME"
-logoutd \- richtet Beschr\(:ankung von Anmeldezeiten ein
+logoutd \- setzt die zeitlichen Einschr\(:ankungen f\(:ur Anmeldungen durch
 .SH "\(:UBERSICHT"
 .HP \w'\fBlogoutd\fR\ 'u
 \fBlogoutd\fR
@@ -48,10 +48,10 @@ is terminated\&.
 .PP
 /etc/porttime
 .RS 4
-Datei, die den Port\-Zugriff enth\(:alt\&.
+Datei, die Zugriffe auf Ports regelt
 .RE
 .PP
 /var/run/utmp
 .RS 4
-Liste der aktuellen angemeldeten Sitzungen
+Liste aktueller Anmeldungen
 .RE

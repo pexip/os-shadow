@@ -87,8 +87,9 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-@USE_PAM_FALSE@am__append_1 = $(man_nopam)
-@USE_PAM_TRUE@am__append_2 = $(man_nopam)
+@ENABLE_LASTLOG_TRUE@am__append_1 = man8/lastlog.8
+@USE_PAM_FALSE@am__append_2 = $(man_nopam)
+@USE_PAM_TRUE@am__append_3 = $(man_nopam)
 subdir = man/sv
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/gettext.m4 \
@@ -176,6 +177,8 @@ AWK = @AWK@
 CC = @CC@
 CCDEPMODE = @CCDEPMODE@
 CFLAGS = @CFLAGS@
+CMOCKA_CFLAGS = @CMOCKA_CFLAGS@
+CMOCKA_LIBS = @CMOCKA_LIBS@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CSCOPE = @CSCOPE@
@@ -209,9 +212,15 @@ INTL_MACOSX_LIBS = @INTL_MACOSX_LIBS@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
 LIBACL = @LIBACL@
+LIBADD_DL = @LIBADD_DL@
+LIBADD_DLD_LINK = @LIBADD_DLD_LINK@
+LIBADD_DLOPEN = @LIBADD_DLOPEN@
+LIBADD_SHL_LOAD = @LIBADD_SHL_LOAD@
 LIBATTR = @LIBATTR@
 LIBAUDIT = @LIBAUDIT@
-LIBCRACK = @LIBCRACK@
+LIBBSD = @LIBBSD@
+LIBBSD_CFLAGS = @LIBBSD_CFLAGS@
+LIBBSD_LIBS = @LIBBSD_LIBS@
 LIBCRYPT = @LIBCRYPT@
 LIBECONF = @LIBECONF@
 LIBICONV = @LIBICONV@
@@ -227,6 +236,7 @@ LIBSUBID_ABI = @LIBSUBID_ABI@
 LIBSUBID_ABI_MAJOR = @LIBSUBID_ABI_MAJOR@
 LIBSUBID_ABI_MICRO = @LIBSUBID_ABI_MICRO@
 LIBSUBID_ABI_MINOR = @LIBSUBID_ABI_MINOR@
+LIBSYSTEMD = @LIBSYSTEMD@
 LIBTCB = @LIBTCB@
 LIBTOOL = @LIBTOOL@
 LIPO = @LIPO@
@@ -235,6 +245,8 @@ LN_S = @LN_S@
 LTLIBICONV = @LTLIBICONV@
 LTLIBINTL = @LTLIBINTL@
 LTLIBOBJS = @LTLIBOBJS@
+LT_DLLOADERS = @LT_DLLOADERS@
+LT_DLPREOPEN = @LT_DLPREOPEN@
 LT_SYS_LIBRARY_PATH = @LT_SYS_LIBRARY_PATH@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
@@ -257,6 +269,9 @@ PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
+PKG_CONFIG = @PKG_CONFIG@
+PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
+PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
 POSUB = @POSUB@
 RANLIB = @RANLIB@
 SED = @SED@
@@ -332,17 +347,19 @@ top_srcdir = @top_srcdir@
 # 2012.01.28 - activate manpages with more than 50% translated messages
 man_MANS = man1/chage.1 man1/chsh.1 man1/expiry.1 man5/faillog.5 \
 	man8/faillog.8 man3/getspnam.3 man8/groupadd.8 man8/groupdel.8 \
-	man8/groupmems.8 man8/groupmod.8 man1/groups.1 man8/grpck.8 \
-	man5/gshadow.5 man8/lastlog.8 man8/logoutd.8 man1/newgrp.1 \
-	man8/nologin.8 man1/passwd.1 man5/passwd.5 man8/pwck.8 \
-	man1/sg.1 man3/shadow.3 man5/suauth.5 man8/userdel.8 \
-	man8/vigr.8 man8/vipw.8 $(am__append_1)
+	man8/groupmems.8 man8/groupmod.8 man8/grpck.8 man5/gshadow.5 \
+	man8/logoutd.8 man1/newgrp.1 man8/nologin.8 man1/passwd.1 \
+	man5/passwd.5 man8/pwck.8 man1/sg.1 man3/shadow.3 \
+	man5/suauth.5 man8/userdel.8 man8/vigr.8 man8/vipw.8 \
+	$(am__append_1) $(am__append_2)
 man_nopam = \
 	man5/limits.5 \
 	man5/porttime.5
 
-EXTRA_DIST = $(man_MANS) man1/id.1 $(am__append_2)
+EXTRA_DIST = $(man_MANS) $(am__append_3)
 LANG = $(notdir $(CURDIR))
+@ENABLE_REGENERATE_MAN_TRUE@@HAVE_VENDORDIR_FALSE@VENDORDIR_COND = without_vendordir
+@ENABLE_REGENERATE_MAN_TRUE@@HAVE_VENDORDIR_TRUE@VENDORDIR_COND = with_vendordir
 @ENABLE_REGENERATE_MAN_TRUE@@USE_PAM_FALSE@PAM_COND = no_pam
 @ENABLE_REGENERATE_MAN_TRUE@@USE_PAM_TRUE@PAM_COND = pam
 @ENABLE_REGENERATE_MAN_TRUE@@SHADOWGRP_FALSE@SHADOWGRP_COND = no_gshadow
@@ -351,8 +368,15 @@ LANG = $(notdir $(CURDIR))
 @ENABLE_REGENERATE_MAN_TRUE@@WITH_TCB_TRUE@TCB_COND = tcb
 @ENABLE_REGENERATE_MAN_TRUE@@USE_SHA_CRYPT_FALSE@SHA_CRYPT_COND = no_sha_crypt
 @ENABLE_REGENERATE_MAN_TRUE@@USE_SHA_CRYPT_TRUE@SHA_CRYPT_COND = sha_crypt
+@ENABLE_REGENERATE_MAN_TRUE@@USE_BCRYPT_FALSE@BCRYPT_COND = no_bcrypt
+@ENABLE_REGENERATE_MAN_TRUE@@USE_BCRYPT_TRUE@BCRYPT_COND = bcrypt
+@ENABLE_REGENERATE_MAN_TRUE@@USE_YESCRYPT_FALSE@YESCRYPT_COND = no_yescrypt
+@ENABLE_REGENERATE_MAN_TRUE@@USE_YESCRYPT_TRUE@YESCRYPT_COND = yescrypt
 @ENABLE_REGENERATE_MAN_TRUE@@ENABLE_SUBIDS_FALSE@SUBIDS_COND = no_subids
 @ENABLE_REGENERATE_MAN_TRUE@@ENABLE_SUBIDS_TRUE@SUBIDS_COND = subids
+@ENABLE_LASTLOG_FALSE@@ENABLE_REGENERATE_MAN_TRUE@LASTLOG_COND = no_lastlog
+@ENABLE_LASTLOG_TRUE@@ENABLE_REGENERATE_MAN_TRUE@@USE_PAM_FALSE@LASTLOG_COND = lastlog
+@ENABLE_LASTLOG_TRUE@@ENABLE_REGENERATE_MAN_TRUE@@USE_PAM_TRUE@LASTLOG_COND = no_lastlog
 CLEANFILES = messages.mo login.defs.d $(EXTRA_DIST) $(addsuffix .xml,$(EXTRA_DIST)) config.xml
 all: all-am
 
@@ -736,10 +760,10 @@ uninstall-man: uninstall-man1 uninstall-man3 uninstall-man5 \
 @ENABLE_REGENERATE_MAN_TRUE@	cp ../config.xml $@
 
 @ENABLE_REGENERATE_MAN_TRUE@messages.mo: ../po/$(LANG).po
-@ENABLE_REGENERATE_MAN_TRUE@	msgfmt ../po/$(LANG).po -o messages.mo
+@ENABLE_REGENERATE_MAN_TRUE@	msgfmt $< -o messages.mo
 
 @ENABLE_REGENERATE_MAN_TRUE@login.defs.d:
-@ENABLE_REGENERATE_MAN_TRUE@	ln -sf ../login.defs.d login.defs.d
+@ENABLE_REGENERATE_MAN_TRUE@	ln -sf $(srcdir)/../login.defs.d login.defs.d
 
 @ENABLE_REGENERATE_MAN_TRUE@%.xml: ../%.xml messages.mo login.defs.d
 @ENABLE_REGENERATE_MAN_TRUE@	if grep -q SHADOW-CONFIG-HERE $< ; then \
@@ -747,7 +771,7 @@ uninstall-man: uninstall-man1 uninstall-man3 uninstall-man5 \
 @ENABLE_REGENERATE_MAN_TRUE@	else \
 @ENABLE_REGENERATE_MAN_TRUE@	    sed -e 's/^\(<!DOCTYPE .*docbookx.dtd"\)>/\1 [<!ENTITY % config SYSTEM "config.xml">%config;]>/' $< > $@; \
 @ENABLE_REGENERATE_MAN_TRUE@	fi
-@ENABLE_REGENERATE_MAN_TRUE@	itstool -d -l $(LANG) -m messages.mo -o . $@
+@ENABLE_REGENERATE_MAN_TRUE@	itstool -i $(srcdir)/../its.rules -d -l $(LANG) -m messages.mo -o . $@
 @ENABLE_REGENERATE_MAN_TRUE@	sed -i 's:\(^<refentry .*\)>:\1 lang="$(LANG)">:' $@
 
 @ENABLE_REGENERATE_MAN_TRUE@%.xml-config: %.xml
@@ -758,11 +782,13 @@ uninstall-man: uninstall-man1 uninstall-man3 uninstall-man5 \
 @ENABLE_REGENERATE_MAN_TRUE@	fi
 
 @ENABLE_REGENERATE_MAN_TRUE@man1/% man3/% man5/% man8/%: %.xml-config Makefile config.xml
-@ENABLE_REGENERATE_MAN_TRUE@	$(XSLTPROC) --stringparam profile.condition "$(PAM_COND);$(SHADOWGRP_COND);$(TCB_COND);$(SHA_CRYPT_COND);$(SUBIDS_COND)" \
+@ENABLE_REGENERATE_MAN_TRUE@	$(XSLTPROC) --stringparam profile.condition "$(PAM_COND);$(SHADOWGRP_COND);$(TCB_COND);$(SHA_CRYPT_COND);$(BCRYPT_COND);$(YESCRYPT_COND);$(SUBIDS_COND);$(VENDORDIR_COND);$(LASTLOG_COND)" \
 @ENABLE_REGENERATE_MAN_TRUE@	            --param "man.authors.section.enabled" "0" \
 @ENABLE_REGENERATE_MAN_TRUE@	            --stringparam "man.output.base.dir" "" \
+@ENABLE_REGENERATE_MAN_TRUE@	            --stringparam vendordir "$(VENDORDIR)" \
 @ENABLE_REGENERATE_MAN_TRUE@	            --param "man.output.in.separate.dir" "1" \
-@ENABLE_REGENERATE_MAN_TRUE@	            -nonet http://docbook.sourceforge.net/release/xsl/current/manpages/profile-docbook.xsl $<
+@ENABLE_REGENERATE_MAN_TRUE@	            --path "$(srcdir)/login.defs.d" \
+@ENABLE_REGENERATE_MAN_TRUE@	            -nonet $(top_srcdir)/man/shadow-man.xsl $<
 
 @ENABLE_REGENERATE_MAN_TRUE@clean-local:
 @ENABLE_REGENERATE_MAN_TRUE@	rm -rf man1 man3 man5 man8

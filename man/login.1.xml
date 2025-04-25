@@ -215,14 +215,6 @@
 	  <para>Preserve environment.</para>
 	</listitem>
       </varlistentry>
-      <varlistentry>
-	<term>
-	  <option>-r</option>
-	</term>
-	<listitem>
-	  <para>Perform autologin protocol for rlogin.</para>
-	</listitem>
-      </varlistentry>
     </variablelist>
 
     <para>
@@ -277,7 +269,7 @@
       &CONSOLE;
       &CONSOLE_GROUPS;
       &DEFAULT_HOME;
-      <phrase condition="no_pam">&ENV_HZ;</phrase>
+      &ENV_HZ;
       <phrase>&ENV_PATH;</phrase>
       <phrase>&ENV_SUPATH;</phrase>
       &ENV_TZ;

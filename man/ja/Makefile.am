@@ -13,11 +13,9 @@ man_MANS = \
 	man8/groupadd.8 \
 	man8/groupdel.8 \
 	man8/groupmod.8 \
-	man1/groups.1 \
 	man8/grpck.8 \
 	man8/grpconv.8 \
 	man8/grpunconv.8 \
-	man8/lastlog.8 \
 	man1/login.1 \
 	man5/login.defs.5 \
 	man8/logoutd.8 \
@@ -38,6 +36,10 @@ man_MANS = \
 	man8/vigr.8 \
 	man8/vipw.8
 
+if ENABLE_LASTLOG
+man_MANS += man8/lastlog.8
+endif
+
 man_nopam = \
 	man5/limits.5 \
 	man5/login.access.5 \
@@ -49,7 +51,6 @@ endif
 
 EXTRA_DIST = \
 	$(man_MANS) \
-	man1/id.1 \
 	man3/shadow.3 \
 	man8/sulogin.8
 

@@ -16,6 +16,10 @@
 #include <signal.h>
 #include <stdio.h>
 #include <sys/ioctl.h>
+#include <sys/types.h>
+
+#include "agetpass.h"
+#include "attr.h"
 #include "defines.h"
 #include "getdef.h"
 #include "prototypes.h"
@@ -23,114 +27,79 @@
 /*@-exitarg@*/
 #include "exitcodes.h"
 #include "shadowlog.h"
+#include "string/strcmp/streq.h"
+#include "string/strdup/xstrdup.h"
+
 
 /*
  * Global variables
  */
-const char *Prog;
+static const char Prog[] = "sulogin";
 
-static char name[BUFSIZ];
-static char pass[BUFSIZ];
-
-static struct passwd pwent;
 
 extern char **newenvp;
-extern size_t newenvc;
-
-extern char **environ;
 
 #ifndef	ALARM
 #define	ALARM	60
 #endif
 
-/* local function prototypes */
-static void catch_signals (int);
 
-static void catch_signals (unused int sig)
+static void catch_signals (int);
+static int pw_entry(const char *name, struct passwd *pwent);
+
+
+static void catch_signals (MAYBE_UNUSED int sig)
 {
 	_exit (1);
 }
 
-/*
- * syslogd is usually not running at the time when sulogin is typically
- * called, cluttering the screen with unnecessary messages. Suggested by
- * Ivan Nejgebauer <ian@unsux.ns.ac.yu>.  --marekm
- */
-#undef USE_SYSLOG
 
- /*ARGSUSED*/ int main (int argc, char **argv)
+int
+main(int argc, char *argv[])
 {
+	int            err = 0;
+	char           **envp = environ;
+	TERMIO         termio;
+	struct passwd  pwent = {};
+	bool           done;
 #ifndef USE_PAM
-	const char *env;
-#endif				/* !USE_PAM */
-	char **envp = environ;
-	TERMIO termio;
-	int err = 0;
-
-#ifdef	USE_TERMIO
-	ioctl (0, TCGETA, &termio);
-	termio.c_iflag |= (ICRNL | IXON);
-	termio.c_oflag |= (OPOST | ONLCR);
-	termio.c_cflag |= (CREAD);
-	termio.c_lflag |= (ISIG | ICANON | ECHO | ECHOE | ECHOK);
-	ioctl (0, TCSETAF, &termio);
+	const char     *env;
 #endif
-#ifdef	USE_TERMIOS
+
+
 	tcgetattr (0, &termio);
 	termio.c_iflag |= (ICRNL | IXON);
 	termio.c_oflag |= (CREAD);
 	termio.c_lflag |= (ECHO | ECHOE | ECHOK | ICANON | ISIG);
 	tcsetattr (0, TCSANOW, &termio);
-#endif
 
-	Prog = Basename (argv[0]);
 	log_set_progname(Prog);
 	log_set_logfd(stderr);
 	(void) setlocale (LC_ALL, "");
 	(void) bindtextdomain (PACKAGE, LOCALEDIR);
 	(void) textdomain (PACKAGE);
 
-#ifdef	USE_SYSLOG
-	OPENLOG ("sulogin");
-#endif
-	initenv ();
+	initenv();
 	if (argc > 1) {
-		close (0);
-		close (1);
-		close (2);
+		close(0);
+		close(1);
+		close(2);
 
-		if (open (argv[1], O_RDWR) >= 0) {
-			dup (0);
-			dup (0);
-		} else {
-#ifdef	USE_SYSLOG
-			SYSLOG (LOG_WARN, "cannot open %s\n", argv[1]);
-			closelog ();
-#endif
-			exit (1);
-		}
+		if (open(argv[1], O_RDWR) == -1)
+			exit(1);
+		dup(0);
+		dup(0);
 	}
 	if (access (PASSWD_FILE, F_OK) == -1) {	/* must be a password file! */
 		(void) puts (_("No password file"));
-#ifdef	USE_SYSLOG
-		SYSLOG (LOG_WARN, "No password file\n");
-		closelog ();
-#endif
 		exit (1);
 	}
 #if !defined(DEBUG) && defined(SULOGIN_ONLY_INIT)
 	if (getppid () != 1) {	/* parent must be INIT */
-#ifdef	USE_SYSLOG
-		SYSLOG (LOG_WARN, "Pid == %d, not 1\n", getppid ());
-		closelog ();
-#endif
 		exit (1);
 	}
 #endif
 	if ((isatty (0) == 0) || (isatty (1) == 0) || (isatty (2) == 0)) {
-#ifdef	USE_SYSLOG
-		closelog ();
-#endif
 		exit (1);	/* must be a terminal */
 	}
 	/* If we were init, we need to start a new session */
@@ -156,24 +125,17 @@ static void catch_signals (unused int sig)
 	}
 #endif				/* !USE_PAM */
 
-	(void) strcpy (name, "root");	/* KLUDGE!!! */
-
 	(void) signal (SIGALRM, catch_signals);	/* exit if the timer expires */
 	(void) alarm (ALARM);		/* only wait so long ... */
 
-	while (true) {		/* repeatedly get login/password pairs */
-		char *cp;
-		pw_entry (name, &pwent);	/* get entry from password file */
-		if (pwent.pw_name == (char *) 0) {
+	do {			/* repeatedly get login/password pairs */
+		char *pass;
+		if (pw_entry("root", &pwent) == -1) {	/* get entry from password file */
 			/*
 			 * Fail secure
 			 */
-			(void) puts (_("No password entry for 'root'"));
-#ifdef	USE_SYSLOG
-			SYSLOG (LOG_WARN, "No password entry for 'root'\n");
-			closelog ();
-#endif
-			exit (1);
+			(void) puts(_("No password entry for 'root'"));
+			exit(1);
 		}
 
 		/*
@@ -182,7 +144,7 @@ static void catch_signals (unused int sig)
 		 */
 
 		/* get a password for root */
-		cp = getpass (_(
+		pass = agetpass (_(
 "\n"
 "Type control-d to proceed with normal startup,\n"
 "(or give root password for system maintenance):"));
@@ -192,46 +154,65 @@ static void catch_signals (unused int sig)
 		 * it will work with standard getpass() (no NULL on EOF).
 		 * --marekm
 		 */
-		if ((NULL == cp) || ('\0' == *cp)) {
-#ifdef	USE_SYSLOG
-			SYSLOG (LOG_INFO, "Normal startup\n");
-			closelog ();
-#endif
+		if ((NULL == pass) || streq(pass, "")) {
+			erase_pass (pass);
 			(void) puts ("");
 #ifdef	TELINIT
-			execl (PATH_TELINIT, "telinit", RUNLEVEL, (char *) 0);
+			execl (PATH_TELINIT, "telinit", RUNLEVEL, (char *) NULL);
 #endif
 			exit (0);
-		} else {
-			STRFCPY (pass, cp);
-			strzero (cp);
-		}
-		if (valid (pass, &pwent)) {	/* check encrypted passwords ... */
-			break;	/* ... encrypted passwords matched */
 		}
 
-#ifdef	USE_SYSLOG
-		SYSLOG (LOG_WARN, "Incorrect root password\n");
-#endif
-		sleep (2);
-		(void) puts (_("Login incorrect"));
-	}
-	memzero (pass, sizeof pass);
+		done = valid(pass, &pwent);
+		erase_pass (pass);
+
+		if (!done) {	/* check encrypted passwords ... */
+			/* ... encrypted passwords did not match */
+			sleep (2);
+			(void) puts (_("Login incorrect"));
+		}
+	} while (!done);
 	(void) alarm (0);
 	(void) signal (SIGALRM, SIG_DFL);
 	environ = newenvp;	/* make new environment active */
 
 	(void) puts (_("Entering System Maintenance Mode"));
-#ifdef	USE_SYSLOG
-	SYSLOG (LOG_INFO, "System Maintenance Mode\n");
-#endif
 
-#ifdef	USE_SYSLOG
-	closelog ();
-#endif
 	/* exec the shell finally. */
-	err = shell (pwent.pw_shell, (char *) 0, environ);
+	err = shell (pwent.pw_shell, NULL, environ);
 
 	return ((err == ENOENT) ? E_CMD_NOTFOUND : E_CMD_NOEXEC);
 }
 
+
+static int
+pw_entry(const char *name, struct passwd *pwent)
+{
+	struct spwd    *spwd;
+	struct passwd  *passwd;
+
+	if (!(passwd = getpwnam(name)))  /* local, no need for xgetpwnam */
+		return -1;
+
+	free(pwent->pw_name);
+	pwent->pw_name = xstrdup(passwd->pw_name);
+	pwent->pw_uid = passwd->pw_uid;
+	pwent->pw_gid = passwd->pw_gid;
+	free(pwent->pw_gecos);
+	pwent->pw_gecos = xstrdup(passwd->pw_gecos);
+	free(pwent->pw_dir);
+	pwent->pw_dir = xstrdup(passwd->pw_dir);
+	free(pwent->pw_shell);
+	pwent->pw_shell = xstrdup(passwd->pw_shell);
+#if !defined(AUTOSHADOW)
+	/* local, no need for xgetspnam */
+	if ((spwd = getspnam(name))) {
+		free(pwent->pw_passwd);
+		pwent->pw_passwd = xstrdup(spwd->sp_pwdp);
+		return 0;
+	}
+#endif
+	free(pwent->pw_passwd);
+	pwent->pw_passwd = xstrdup(passwd->pw_passwd);
+	return 0;
+}

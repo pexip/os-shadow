@@ -2,12 +2,12 @@
 .\"     Title: usermod
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 08.11.2022
-.\"    Manual: Befehle zur Systemverwaltung
-.\"    Source: shadow-utils 4.13
+.\"      Date: 19.03.2025
+.\"    Manual: System Management Commands
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: German
 .\"
-.TH "USERMOD" "8" "08.11.2022" "shadow\-utils 4\&.13" "Befehle zur Systemverwaltung"
+.TH "USERMOD" "8" "19.03.2025" "shadow\-utils 4\&.17\&.4" "System Management Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -31,7 +31,7 @@
 usermod \- ver\(:andert ein Benutzerkonto
 .SH "\(:UBERSICHT"
 .HP \w'\fBusermod\fR\ 'u
-\fBusermod\fR [\fIOptionen\fR] \fIANMELDENAME\fR
+\fBusermod\fR [\fIoptions\fR] \fILOGIN\fR
 .SH "BESCHREIBUNG"
 .PP
 The
@@ -52,7 +52,7 @@ option\&.
 .PP
 \fB\-b\fR, \fB\-\-badname\fR
 .RS 4
-Allow names that do not conform to standards\&.
+erlaube Namen, die nicht den Standards entsprechen\&.
 .RE
 .PP
 \fB\-c\fR, \fB\-\-comment\fR\ \&\fICOMMENT\fR
@@ -65,7 +65,7 @@ utility\&.
 .PP
 \fB\-d\fR, \fB\-\-home\fR\ \&\fIHOME_DIR\fR
 .RS 4
-das neue Home\-Verzeichnis des Benutzers
+\(:andert das pers\(:onliche Verzeichnis des Benutzers
 .sp
 If the
 \fB\-m\fR
@@ -103,9 +103,9 @@ entry will be created if there were none\&.
 .RS 4
 The name or numerical ID of the user\*(Aqs new primary group\&. The group must exist\&.
 .sp
-Jede Datei im Home\-Verzeichnis des Benutzers, die der alten Hauptgruppe des Benutzers geh\(:orte, wird dieser neuen Gruppe geh\(:oren\&.
+Im pers\(:onlichen Verzeichnis des Benutzers werden alle Dateien, die der alten prim\(:aren Gruppe zugeordnet waren, auf diese Gruppe \(:ubertragen\&.
 .sp
-Die Gruppenzugeh\(:origkeit von Dateien au\(sserhalb des Home\-Verzeichnisses des Benutzers muss per Hand angepasst werden\&.
+Die Gruppenzugeh\(:origkeit von Dateien au\(sserhalb des pers\(:onlichen Verzeichnisses des Benutzers muss per Hand angepasst werden\&.
 .sp
 The change of the group ownership of files inside of the user\*(Aqs home directory is also not done if the home dir owner uid is different from the current or new user id\&. This is a safety measure for special home directories such as
 /\&.
@@ -212,9 +212,9 @@ This value must be unique, unless the
 \fB\-o\fR
 option is used\&. The value must be non\-negative\&.
 .sp
-F\(:ur die Mailbox des Benutzers und alle Dateien, die ihm geh\(:oren und sich in seinem Home\-Verzeichnis befinden, wird die ID des Eigent\(:umers automatisch angepasst\&.
+F\(:ur das Postfach des Benutzers und alle Dateien, die ihm geh\(:oren und sich in seinem pers\(:onlichen Verzeichnis befinden, wird die Eigent\(:umerkennung automatisch angepasst\&.
 .sp
-Der Eigent\(:umer von Dateien au\(sserhalb des Home\-Verzeichnisses des Benutzers muss per Hand angepasst werden\&.
+Der Eigent\(:umer von Dateien au\(sserhalb des pers\(:onlichen Verzeichnisses des Benutzers muss per Hand angepasst werden\&.
 .sp
 The change of the user ownership of files inside of the user\*(Aqs home directory is also not done if the home dir owner uid is different from the current or new user id\&. This is a safety measure for special home directories such as
 /\&.
@@ -246,7 +246,7 @@ value from
 .PP
 \fB\-v\fR, \fB\-\-add\-subuids\fR\ \&\fIFIRST\fR\-\fILAST\fR
 .RS 4
-Add a range of subordinate uids to the user\*(Aqs account\&.
+f\(:ugt dem Konto des Benutzers einen Bereich untergeordneter Benutzerkennungen zu\&.
 .sp
 This option may be specified multiple times to add multiple ranges to a user\*(Aqs account\&.
 .sp
@@ -259,7 +259,7 @@ from /etc/login\&.defs\&.
 .PP
 \fB\-V\fR, \fB\-\-del\-subuids\fR\ \&\fIFIRST\fR\-\fILAST\fR
 .RS 4
-Remove a range of subordinate uids from the user\*(Aqs account\&.
+entfernt aus dem Benutzerkonto einen Bereich untergeordneter Benutzerkennungen\&.
 .sp
 This option may be specified multiple times to remove multiple ranges to a user\*(Aqs account\&. When both
 \fB\-\-del\-subuids\fR
@@ -276,7 +276,7 @@ from /etc/login\&.defs\&.
 .PP
 \fB\-w\fR, \fB\-\-add\-subgids\fR\ \&\fIFIRST\fR\-\fILAST\fR
 .RS 4
-Add a range of subordinate gids to the user\*(Aqs account\&.
+f\(:ugt dem Benutzerkonto einen Bereich untergeordneter Gruppenkennungen zu\&.
 .sp
 This option may be specified multiple times to add multiple ranges to a user\*(Aqs account\&.
 .sp
@@ -289,7 +289,7 @@ from /etc/login\&.defs\&.
 .PP
 \fB\-W\fR, \fB\-\-del\-subgids\fR\ \&\fIFIRST\fR\-\fILAST\fR
 .RS 4
-Remove a range of subordinate gids from the user\*(Aqs account\&.
+entfernt einen Bereich untergeordneter Gruppenkennungen aus dem Benutzerkonto\&.
 .sp
 This option may be specified multiple times to remove multiple ranges to a user\*(Aqs account\&. When both
 \fB\-\-del\-subgids\fR
@@ -309,6 +309,18 @@ from /etc/login\&.defs\&.
 defines the SELinux user to be mapped with
 \fILOGIN\fR\&. An empty string ("") will remove the respective entry (if any)\&. Note that the shadow system doesn\*(Aqt store the selinux\-user, it uses semanage(8) for that\&.
 .RE
+.PP
+\fB\-\-selinux\-range\fR\ \&\fISERANGE\fR
+.RS 4
+defines the SELinux MLS range for the new account\&. Note that the shadow system doesn\*(Aqt store the selinux\-range, it uses
+\fBsemanage\fR(8)
+for that\&.
+.sp
+This option is only valid if the
+\fB\-Z\fR
+(or
+\fB\-\-selinux\-user\fR) option is specified\&.
+.RE
 .SH "WARNUNGEN"
 .PP
 You must make certain that the named user is not executing any processes when this command is being executed if the user\*(Aqs numerical user ID, the user\*(Aqs name, or the user\*(Aqs home directory is being changed\&.
@@ -321,7 +333,7 @@ files or
 \fBat\fR
 jobs manually\&.
 .PP
-Sie m\(:ussen alle \(:Anderung in Bezug auf NIS auf dem NIS\-Server vornehmen\&.
+Sie m\(:ussen alle \(:Anderungen, an welchen NIS beteiligt ist, auf dem NIS\-Server vornehmen\&.
 .SH "KONFIGURATION"
 .PP
 The following configuration variables in
@@ -336,7 +348,7 @@ Group account information
 .PP
 /etc/gshadow
 .RS 4
-Secure group account informatio\&.
+Secure group account information
 .RE
 .PP
 /etc/login\&.defs

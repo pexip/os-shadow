@@ -2,12 +2,12 @@
 .\"     Title: login
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 08/11/2022
-.\"    Manual: Команди користувача
-.\"    Source: shadow-utils 4.13
+.\"      Date: 19/03/2025
+.\"    Manual: User Commands
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: Ukrainian
 .\"
-.TH "login" "1" "08/11/2022" "shadow\-utils 4\&.13" "Команди користувача"
+.TH "login" "1" "19/03/2025" "shadow\-utils 4\&.17\&.4" "User Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -31,74 +31,78 @@
 login \- розпочати сеанс у системі
 .SH "КОРОТКИЙ ОГЛЯД"
 .HP \w'\fBlogin\fR\ 'u
-\fBlogin\fR [\-p] [\-h\ \fIhost\fR] [\fIкористувач\fR] [\fIСЕРЕДОВИЩЕ=ЗМІННА\fR...]
+\fBlogin\fR [\-p] [\-h\ \fIhost\fR] [\fIusername\fR] [\fIENV=VAR\fR...]
 .HP \w'\fBlogin\fR\ 'u
-\fBlogin\fR [\-p] [\-h\ \fIhost\fR] \-f \fIкористувач\fR
+\fBlogin\fR [\-p] [\-h\ \fIhost\fR] \-f \fIusername\fR
 .HP \w'\fBlogin\fR\ 'u
 \fBlogin\fR [\-p] \-r\ \fIhost\fR
 .SH "ОПИС"
 .PP
-Програму
+The
 \fBlogin\fR
-призначено для встановлення нового сеансу роботи з системою\&. Зазвичай, її виклик відбувається автоматично у відповідь на запит
+program is used to establish a new session with the system\&. It is normally invoked automatically by responding to the
 \fIlogin:\fR
-у терміналі користувача\&.
+prompt on the user\*(Aqs terminal\&.
 \fBlogin\fR
-може бути спеціалізованою для оболонки і непридатною до виклику у форматі підлеглого процесу\&. Якщо програму викликано з оболонки,
+may be special to the shell and may not be invoked as a sub\-process\&. When called from a shell,
 \fBlogin\fR
-має бути виконано як
-\fBexec login\fR, що спричинить вихід користувача з поточної оболонки (і, таким чином, запобігатиме поверненню користувача, який увійшов до системи, до сеансу того, хто віддав команду)\&. Спроба виконати
+should be executed as
+\fBexec login\fR
+which will cause the user to exit from the current shell (and thus will prevent the new logged in user to return to the session of the caller)\&. Attempting to execute
 \fBlogin\fR
-з будь\-якої командної оболонки, окрім оболонки входу, призведе до виведення повідомлення про помилку\&.
+from any shell but the login shell will produce an error message\&.
 .PP
-Після цього, користувачеві, якщо це потрібно, буде запропоновано ввести пароль\&. Відтворення пароля на екрані буде вимкнено, щоб запобігти розкриттю пароля\&. Кількість спроб буде суттєво обмежено\&. При перевищенні граничної кількості спроб ввести пароль
+The user is then prompted for a password, where appropriate\&. Echoing is disabled to prevent revealing the password\&. Only a small number of password failures are permitted before
 \fBlogin\fR
-завершить роботу і перерве зв\*(Aqязок для обміну даними\&.
+exits and the communications link is severed\&.
 .PP
-Якщо для вашого облікового запису було увімкнено застарівання паролів, програма може попросити вас ввести новий пароль, перш ніж продовжити роботу\&. Вам доведеться ввести старий і новий пароль, перш ніж продовжити роботу\&. Будь ласка, зверніться до підручника з
-\fBpasswd\fR(1), щоб дізнатися більше\&.
+If password aging has been enabled for your account, you may be prompted for a new password before proceeding\&. You will be forced to provide your old password and the new password before continuing\&. Please refer to
+\fBpasswd\fR(1)
+for more information\&.
 .PP
-Після успішного входу до системи вас буде проінформовано про усі повідомлення системи та наявність пошти\&. Ви можете вимкнути виведення даних до файла повідомлень системи,
-/etc/motd, створенням файла нульового розміру
+After a successful login, you will be informed of any system messages and the presence of mail\&. You may turn off the printing of the system message file,
+/etc/motd, by creating a zero\-length file
 \&.hushlogin
-у вашому каталозі для входу\&. Повідомленням про пошту буде одне з таких повідомлень: \(Fo\fIВи отримали нову пошту\&.\fR\(Fc, \(Fo\fIДля вас є пошта\&.\fR\(Fc або \(Fo\fIПошти немає\&.\fR\(Fc, відповідно до стану вашої поштової скриньки\&.
+in your login directory\&. The mail message will be one of "\fIYou have new mail\&.\fR", "\fIYou have mail\&.\fR", or "\fINo Mail\&.\fR" according to the condition of your mailbox\&.
 .PP
-Ваші ідентифікатори користувача і групи буде встановлено відповідно до значень у файлі
-/etc/passwd\&. Значення
+Your user and group ID will be set according to their values in the
+/etc/passwd
+file\&. The value for
 \fB$HOME\fR,
 \fB$SHELL\fR,
 \fB$PATH\fR,
-\fB$LOGNAME\fR
-і
+\fB$LOGNAME\fR, and
 \fB$MAIL\fR
-буде встановлено відповідно до відповідних полів у записі пароля\&. Значення ulimit, umask і nice також може бути встановлено відповідно до записів у полі GECOS\&.
+are set according to the appropriate fields in the password entry\&. Ulimit, umask and nice values may also be set according to entries in the GECOS field\&.
 .PP
-У деяких встановлених системах змінну середовища
+On some installations, the environmental variable
 \fB$TERM\fR
-буде ініціалізовано значенням типу термінала у вашому рядку tty, як це вказано у
+will be initialized to the terminal type on your tty line, as specified in
 /etc/ttytype\&.
 .PP
 Також може бути виконано скрипт ініціалізації для вашого інтерпретатора командного рядка\&. Будь ласка, зверніться до відповідного розділу підручника, щоб дізнатися більше про цю функціональну можливість\&.
 .PP
 Вхід до підсистеми буде позначено наявністю \(Fo*\(Fc як першого символу оболонки входу\&. Заданий домашній каталог буде використано як кореневий каталог нової файлової системи, до якої користувач насправді увійшов\&.
 .PP
-Програма
+The
 \fBlogin\fR
-НЕ відповідає за вилучення записів користувачів з файла utmp\&. За чищення видимого власника сеансу термінала відповідають
+program is NOT responsible for removing users from the utmp file\&. It is the responsibility of
 \fBgetty\fR(8)
-і
-\fBinit\fR(8)\&. Якщо ви користуєтеся
+and
+\fBinit\fR(8)
+to clean up apparent ownership of a terminal session\&. If you use
 \fBlogin\fR
-з запиту командної оболонки без
-\fBexec\fR, використаний вами обліковий запис користувача продовжуватиме \(Foпрацювати\(Fc у системі, навіть після того, як ви вийдете з \(Foпідлеглого сеансу\(Fc\&.
+from the shell prompt without
+\fBexec\fR, the user you use will continue to appear to be logged in even after you log out of the "subsession"\&.
 .SH "ПАРАМЕТРИ"
 .PP
 \fB\-f\fR
 .RS 4
 Не виконувати розпізнавання, користувача попередньо розпізнано\&.
 .sp
-Зауваження: у цьому випадку обов\*(Aqязковим є
-\fIкористувач\fR\&.
+Note: In that case,
+\fIusername\fR
+is mandatory\&.
 .RE
 .PP
 \fB\-h\fR
@@ -111,45 +115,40 @@ login \- розпочати сеанс у системі
 Зберегти середовище\&.
 .RE
 .PP
-\fB\-r\fR
-.RS 4
-Виконати протокол автоматичного входу для rlogin\&.
-.RE
-.PP
-Параметри
+The
 \fB\-r\fR,
 \fB\-h\fR
-і
+and
 \fB\-f\fR
-використовують, лише якщо
+options are only used when
 \fBlogin\fR
-викликано від імені користувача root\&.
+is invoked by root\&.
 .SH "ЗАСТЕРЕЖЕННЯ"
 .PP
-У цієї версії
+This version of
 \fBlogin\fR
-багато параметрів збирання\&. У певній збірці може бути використано лише частину з них\&.
+has many compilation options, only some of which may be in use at any particular site\&.
 .PP
 Розташування файлів є різним у різних конфігураціях системи\&.
 .PP
-Програма
+The
 \fBlogin\fR
-НЕ відповідає за вилучення записів користувачів з файла utmp\&. За чищення видимого власника сеансу термінала відповідають
+program is NOT responsible for removing users from the utmp file\&. It is the responsibility of
 \fBgetty\fR(8)
-і
-\fBinit\fR(8)\&. Якщо ви користуєтеся
+and
+\fBinit\fR(8)
+to clean up apparent ownership of a terminal session\&. If you use
 \fBlogin\fR
-з запиту командної оболонки без
-\fBexec\fR, використаний вами обліковий запис користувача продовжуватиме \(Foпрацювати\(Fc у системі, навіть після того, як ви вийдете з \(Foпідлеглого сеансу\(Fc\&.
+from the shell prompt without
+\fBexec\fR, the user you use will continue to appear to be logged in even after you log out of the "subsession"\&.
 .PP
-Як і з будь\-якою програмою, вигляд
-\fBlogin\fR
-може бути підроблено\&. Якщо до комп\*(Aqютера мають фізичний доступ сторонні користувачі, зловмисник може скористатися цим для отримання пароля наступного за ним користувача комп\*(Aqютера\&. У Linux користувачі можуть скористатися механізмом SAK для ініціалізації надійного шляху і запобігання атакам цього типу\&.
+As with any program,
+\fBlogin\fR\*(Aqs appearance can be faked\&. If non\-trusted users have physical access to a machine, an attacker could use this to obtain the password of the next person coming to sit in front of the machine\&. Under Linux, the SAK mechanism can be used by users to initiate a trusted path and prevent this kind of attack\&.
 .SH "НАЛАШТУВАННЯ"
 .PP
-Вказані нижче змінні налаштувань у
+The following configuration variables in
 /etc/login\&.defs
-змінюють поведінку цього інструмента:
+change the behavior of this tool:
 .SH "ФАЙЛИ"
 .PP
 /var/run/utmp

@@ -2,12 +2,12 @@
 .\"     Title: shadow
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 08/11/2022
+.\"      Date: 19/03/2025
 .\"    Manual: File Formats and Configuration Files
-.\"    Source: shadow-utils 4.13
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: French
 .\"
-.TH "SHADOW" "5" "08/11/2022" "shadow\-utils 4\&.13" "File Formats and Configuration"
+.TH "SHADOW" "5" "19/03/2025" "shadow\-utils 4\&.17\&.4" "File Formats and Configuration"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -38,12 +38,12 @@ Ce fichier ne doit pas \(^etre accessible en lecture par les utilisateurs normau
 .PP
 Each line of this file contains 9 fields, separated by colons (\(Fo\ \&:\ \&\(Fc), in the following order:
 .PP
-\fBnom de connexion de l\*(Aqutilisateur (\(Fo\ \&login\ \&\(Fc)\fR
+\fBlogin name\fR
 .RS 4
-Ce doit \(^etre un nom de compte valable, qui existe sur le syst\(`eme\&.
+It must be a valid account name, which exists on the system\&.
 .RE
 .PP
-\fBmot de passe chiffr\('e\fR
+\fBencrypted password\fR
 .RS 4
 This field may be empty, in which case no passwords are required to authenticate as the specified login name\&. However, some applications which read the
 /etc/shadow
@@ -59,7 +59,7 @@ If the password field contains some string that is not a valid result of
 \fBcrypt\fR(3), for instance ! or *, the user will not be able to use a unix password to log in (but the user may log in the system by other means)\&.
 .RE
 .PP
-\fBdate du dernier changement de mot de passe\fR
+\fBdate of last password change\fR
 .RS 4
 The date of the last password change, expressed as the number of days since Jan 1, 1970 00:00 UTC\&.
 .sp
@@ -68,14 +68,14 @@ La valeur 0 a une signification particuli\(`ere\ \&: l\*(Aqutilisateur devra cha
 Un champ vide indique que les fonctionnalit\('es de vieillissement de mot de passe sont d\('esactiv\('ees\&.
 .RE
 .PP
-\fB\(^age minimum du mot de passe\fR
+\fBminimum password age\fR
 .RS 4
 L\*(Aq\(^age minimum du mot de passe est la dur\('ee (en jour) que l\*(Aqutilisateur devra attendre avant de pouvoir le changer de nouveau\&.
 .sp
 An empty field and value 0 mean that there is no minimum password age\&.
 .RE
 .PP
-\fB\(^age maximum du mot de passe\fR
+\fBmaximum password age\fR
 .RS 4
 L\*(Aq\(^age maximum du mot de passe est la dur\('ee (en jour) apr\(`es laquelle l\*(Aqutilisateur devra changer son mot de passe\&.
 .sp
@@ -86,14 +86,14 @@ Un champ vide signifie qu\*(Aqil n\*(Aqy a pour le mot de passe aucune limite d\
 Si l\*(Aq\(^age maximum du mot de passe est plus petit que l\*(Aq\(^age minimum du mot de passe, l\*(Aqutilisateur ne pourra pas changer son mot de passe\&.
 .RE
 .PP
-\fBp\('eriode d\*(Aqavertissement d\*(Aqexpiration du mot de passe\fR
+\fBpassword warning period\fR
 .RS 4
 La dur\('ee (en jour) pendant laquelle l\*(Aqutilisateur sera averti avant que le mot de passe n\*(Aqexpire (voir l\*(Aq\(^age maximum du mot de passe ci\-dessus)\&.
 .sp
 Un champ vide ou une valeur de 0 signifie qu\*(Aqil n\*(Aqy aura pas de p\('eriode d\*(Aqavertissement d\*(Aqexpiration du mot de passe\&.
 .RE
 .PP
-\fBp\('eriode d\*(Aqinactivit\('e du mot de passe\fR
+\fBpassword inactivity period\fR
 .RS 4
 La dur\('ee (en jour) pendant laquelle le mot de passe sera quand m\(^eme accept\('e apr\(`es son expiration (voir l\*(Aq\(^age maximum du mot de passe ci\-dessus)\&. L\*(Aqutilisateur devra mettre \(`a jour son mot de passe \(`a la prochaine connexion\&.
 .sp
@@ -102,7 +102,7 @@ After expiration of the password and this expiration period is elapsed, no login
 Un champ vide signifie qu\*(Aqaucune p\('eriode d\*(Aqinactivit\('e n\*(Aqest impos\('ee\&.
 .RE
 .PP
-\fBdate de fin de validit\('e du compte\fR
+\fBaccount expiration date\fR
 .RS 4
 The date of expiration of the account, expressed as the number of days since Jan 1, 1970 00:00 UTC\&.
 .sp
@@ -113,7 +113,7 @@ Un champ vide signifie que le compte n\*(Aqexpirera jamais\&.
 La valeur 0 ne doit pas \(^etre utilis\('ee puisqu\*(Aqelle peut \(^etre interpr\('et\('ee soit comme un compte sans expiration, soit comme ayant expir\('e le 1er\ \&janvier\ \&1970\&.
 .RE
 .PP
-\fBchamp r\('eserv\('e\fR
+\fBreserved field\fR
 .RS 4
 Ce champ est r\('eserv\('e pour une utilisation future\&.
 .RE

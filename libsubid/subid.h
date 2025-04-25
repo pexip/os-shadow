@@ -4,8 +4,8 @@
 
 #ifndef SUBID_RANGE_DEFINED
 #define SUBID_RANGE_DEFINED 1
-#define SUBID_ABI_VERSION 4.0.0
-#define SUBID_ABI_MAJOR 4
+#define SUBID_ABI_VERSION 5.0.0
+#define SUBID_ABI_MAJOR 5
 #define SUBID_ABI_MINOR 0
 #define SUBID_ABI_MICRO 0
 
@@ -54,6 +54,19 @@ extern "C" {
  * Returns false if an error occurred.
  */
 bool subid_init(const char *progname, FILE *logfd);
+
+/*
+ * subid_free: free memory allocated in any subid_* function
+ *
+ * @ptr: Pointer to a memory block to release.
+ *
+ * Some functions like @subid_get_uid_ranges allocate memory internally. As
+ * soon as a result is no longer needed, it should be freed with this routine.
+ * Initially, default function `free()` was used. Thus for backward
+ * compatibility this function falls back to `free()` if a plugin does not
+ * explicitly specify routine to free allocated memory.
+ */
+void subid_free(void *ptr);
 
 /*
  * subid_get_uid_ranges: return a list of UID ranges for a user

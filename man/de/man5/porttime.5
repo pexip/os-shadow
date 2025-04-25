@@ -2,12 +2,12 @@
 .\"     Title: porttime
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 08.11.2022
+.\"      Date: 19.03.2025
 .\"    Manual: File Formats and Configuration Files
-.\"    Source: shadow-utils 4.13
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: German
 .\"
-.TH "PORTTIME" "5" "08.11.2022" "shadow\-utils 4\&.13" "File Formats and Configuration"
+.TH "PORTTIME" "5" "19.03.2025" "shadow\-utils 4\&.17\&.4" "File Formats and Configuration"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -28,13 +28,13 @@
 .\" * MAIN CONTENT STARTS HERE *
 .\" -----------------------------------------------------------------
 .SH "NAME"
-porttime \- Datei f\(:ur zeitlich begrenzten Zugang zu Ports
+porttime \- Datei mit zeitlichen Zugangsbegrenzungen f\(:ur Ports
 .SH "BESCHREIBUNG"
 .PP
 \fIporttime\fR
 contains a list of tty devices, user names, and permitted login times\&.
 .PP
-Jeder Eintrag besteht aus drei Feldern, die durch Doppelpunkte getrennt sind\&. Das erste Feld enth\(:alt eine Liste von tty\-Ger\(:aten, die durch Kommata getrennt sind, oder einen Stern, was bedeutet, dass dieser Eintrag auf alle tty\-Ger\(:ate zutrifft\&. Das zweite Feld enth\(:alt eine Liste von Benutzernamen, die durch Kommata getrennt sind, oder einen Stern, was bedeutet, dass dieser Eintrag auf alle Benutzernamen zutrifft\&. Das dritte Feld ist eine Liste von Anmeldezeiten, die durch Kommata getrennt sind\&.
+Jeder Eintrag besteht aus drei Feldern, die durch Doppelpunkte getrennt sind\&. Das erste Feld enth\(:alt eine Liste von TTY\-Ger\(:aten, die durch Kommas getrennt sind, oder einen Stern, was bedeutet, dass dieser Eintrag auf alle TTY\-Ger\(:ate zutrifft\&. Das zweite Feld enth\(:alt eine durch Kommas getrennte Liste von Benutzernamen oder einen Stern, was bedeutet, dass dieser Eintrag auf alle Benutzernamen zutrifft\&. Das dritte Feld ist eine Liste zul\(:assiger Zugangszeiten, die durch Kommas getrennt sind\&.
 .PP
 Each access time entry consists of zero or more days of the week, abbreviated
 \fISu\fR,
@@ -89,7 +89,7 @@ on any port during non\-working hours\&.
 .PP
 /etc/porttime
 .RS 4
-Datei, die den Port\-Zugriff enth\(:alt\&.
+Datei, die Zugriffe auf Ports regelt
 .RE
 .SH "SIEHE AUCH"
 .PP

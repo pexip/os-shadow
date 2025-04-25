@@ -10,7 +10,7 @@
 /*
  * prototypes.h
  *
- * prototypes of libmisc functions, and private lib functions.
+ * prototypes of some lib functions, and private lib functions.
  *
  * $Id$
  *
@@ -21,29 +21,29 @@
 
 #include <config.h>
 
+#include <sys/socket.h>
 #include <sys/stat.h>
-#ifdef USE_UTMPX
-#include <utmpx.h>
-#else
-#include <utmp.h>
-#endif
 #include <sys/types.h>
 #include <pwd.h>
 #include <grp.h>
 #include <shadow.h>
+#ifdef ENABLE_LASTLOG
 #include <lastlog.h>
+#endif /* ENABLE_LASTLOG */
 
+#include "attr.h"
 #include "defines.h"
 #include "commonio.h"
 
 /* addgrps.c */
-#if defined (HAVE_SETGROUPS) && ! defined (USE_PAM)
+#if !defined(USE_PAM)
 extern int add_groups (const char *);
 #endif
 
 /* age.c */
 extern void agecheck (/*@null@*/const struct spwd *);
 extern int expire (const struct passwd *, /*@null@*/const struct spwd *);
+
 /* isexpired.c */
 extern int isexpired (const struct passwd *, /*@null@*/const struct spwd *);
 
@@ -92,11 +92,11 @@ void cleanup_report_del_group_gshadow (void *group_name);
 void cleanup_report_mod_passwd (void *cleanup_info);
 void cleanup_report_mod_group (void *cleanup_info);
 void cleanup_report_mod_gshadow (void *cleanup_info);
-void cleanup_unlock_group (/*@null@*/void *unused);
+void cleanup_unlock_group (/*@null@*/void *MAYBE_UNUSED);
 #ifdef SHADOWGRP
-void cleanup_unlock_gshadow (/*@null@*/void *unused);
+void cleanup_unlock_gshadow (/*@null@*/void *MAYBE_UNUSED);
 #endif
-void cleanup_unlock_passwd (/*@null@*/void *unused);
+void cleanup_unlock_passwd (/*@null@*/void *MAYBE_UNUSED);
 
 /* console.c */
 extern bool console (const char *);
@@ -108,20 +108,17 @@ extern int copy_tree (const char *src_root, const char *dst_root,
                       uid_t old_uid, uid_t new_uid,
                       gid_t old_gid, gid_t new_gid);
 
-/* date_to_str.c */
-extern void date_to_str (size_t size, char buf[size], long date);
-
 /* encrypt.c */
 extern /*@exposed@*//*@null@*/char *pw_encrypt (const char *, const char *);
-
-/* entry.c */
-extern void pw_entry (const char *, struct passwd *);
 
 /* env.c */
 extern void addenv (const char *, /*@null@*/const char *);
 extern void initenv (void);
 extern void set_env (int, char *const *);
 extern void sanitize_env (void);
+
+/* fd.c */
+extern void check_fds (void);
 
 /* fields.c */
 extern void change_field (char *, size_t, const char *);
@@ -145,18 +142,12 @@ extern int find_new_sub_gids (gid_t *range_start, unsigned long *range_count);
 extern int find_new_sub_uids (uid_t *range_start, unsigned long *range_count);
 #endif				/* ENABLE_SUBIDS */
 
-
-/* get_gid.c */
-extern int get_gid (const char *gidstr, gid_t *gid);
-
 /* getgr_nam_gid.c */
 extern /*@only@*//*@null@*/struct group *getgr_nam_gid (/*@null@*/const char *grname);
 
-/* getlong.c */
-extern int getlong (const char *numstr, /*@out@*/long int *result);
-
 /* get_pid.c */
-extern int get_pid (const char *pidstr, pid_t *pid);
+extern int get_pidfd_from_fd(const char *pidfdstr);
+extern int open_pidfd(const char *pidstr);
 
 /* getrange */
 extern int getrange (const char *range,
@@ -166,14 +157,9 @@ extern int getrange (const char *range,
 /* gettime.c */
 extern time_t gettime (void);
 
-/* get_uid.c */
-extern int get_uid (const char *uidstr, uid_t *uid);
-
-/* getulong.c */
-extern int getulong (const char *numstr, /*@out@*/unsigned long int *result);
-
 /* fputsx.c */
-extern /*@null@*/char *fgetsx (/*@returned@*/ /*@out@*/char *, int, FILE *);
+ATTR_ACCESS(write_only, 1, 2)
+extern /*@null@*/char *fgetsx(/*@returned@*/char *restrict, int, FILE *restrict);
 extern int fputsx (const char *, FILE *);
 
 /* groupio.c */
@@ -185,8 +171,7 @@ extern void __gr_set_changed (void);
 /* groupmem.c */
 extern /*@null@*/ /*@only@*/struct group *__gr_dup (const struct group *grent);
 extern void gr_free_members (struct group *grent);
-extern void gr_free (/*@out@*/ /*@only@*/struct group *grent);
-extern bool gr_append_member (struct group *grp, char *member);
+extern void gr_free(/*@only@*/struct group *grent);
 
 /* hushed.c */
 extern bool hushed (const char *username);
@@ -204,6 +189,9 @@ extern void audit_logger (int type, const char *pgname, const char *op,
                           const char *name, unsigned int id,
                           shadow_audit_result result);
 void audit_logger_message (const char *message, shadow_audit_result result);
+void audit_logger_with_group(int type, const char *op, const char *name,
+    id_t id, const char *grp_type, const char *grp,
+    shadow_audit_result result);
 #endif
 
 /* limits.c */
@@ -212,30 +200,32 @@ extern void setup_limits (const struct passwd *);
 #endif
 
 /* list.c */
-extern /*@only@*/ /*@out@*/char **add_list (/*@returned@*/ /*@only@*/char **, const char *);
-extern /*@only@*/ /*@out@*/char **del_list (/*@returned@*/ /*@only@*/char **, const char *);
-extern /*@only@*/ /*@out@*/char **dup_list (char *const *);
+extern /*@only@*/char **add_list (/*@returned@*/ /*@only@*/char **, const char *);
+extern /*@only@*/char **del_list (/*@returned@*/ /*@only@*/char **, const char *);
+extern /*@only@*/char **dup_list (char *const *);
 extern bool is_on_list (char *const *list, const char *member);
 extern /*@only@*/char **comma_to_list (const char *);
 
+#ifdef ENABLE_LASTLOG
 /* log.c */
 extern void dolastlog (
 	struct lastlog *ll,
 	const struct passwd *pw,
 	/*@unique@*/const char *line,
 	/*@unique@*/const char *host);
+#endif /* ENABLE_LASTLOG */
 
 /* login_nopam.c */
 extern int login_access (const char *user, const char *from);
 
 /* loginprompt.c */
-extern void login_prompt (const char *, char *, int);
+extern void login_prompt (char *, int);
 
 /* mail.c */
 extern void mailcheck (void);
 
 /* motd.c */
-extern void motd (void);
+extern int motd(void);
 
 /* myname.c */
 extern /*@null@*//*@only@*/struct passwd *get_my_pwent (void);
@@ -289,6 +279,19 @@ struct subid_nss_ops {
 	 */
 	enum subid_status (*find_subid_owners)(unsigned long id, enum subid_type id_type, uid_t **uids, int *count);
 
+	/*
+	 * nss_free: free a memory block allocated by a subid plugin.
+	 *
+	 * @ptr - a pointer to a memory block to deallocate
+	 *
+	 * Some routines of subid_nss_ops allocate memory which should be freed by
+	 * caller after use. In order to deallocate that memory block, one should
+	 * use this routine to release that memory. By default, this function
+	 * pointer is set to free(3) for backward compatibility. However, it is
+	 * strongly recommended to define this routine explicitly.
+	 */
+	void (*free)(void *ptr);
+
 	/* The dlsym handle to close */
 	void *handle;
 };
@@ -304,9 +307,7 @@ extern int do_pam_passwd_non_interactive (const char *pam_service,
 #endif				/* USE_PAM */
 
 /* obscure.c */
-#ifndef USE_PAM
 extern bool obscure (const char *, const char *, const struct passwd *);
-#endif
 
 /* pam_pass.c */
 #ifdef USE_PAM
@@ -322,6 +323,10 @@ extern struct group *prefix_getgrnam(const char *name);
 extern struct group *prefix_getgrgid(gid_t gid);
 extern struct passwd *prefix_getpwuid(uid_t uid);
 extern struct passwd *prefix_getpwnam(const char* name);
+#if HAVE_FGETPWENT_R
+extern int prefix_getpwnam_r(const char* name, struct passwd* pwd,
+                             char* buf, size_t buflen, struct passwd** result);
+#endif
 extern struct spwd *prefix_getspnam(const char* name);
 extern struct group *prefix_getgr_nam_gid(const char *grname);
 extern void prefix_setpwent(void);
@@ -332,9 +337,7 @@ extern struct group* prefix_getgrent(void);
 extern void prefix_endgrent(void);
 
 /* pwd2spwd.c */
-#ifndef USE_PAM
 extern struct spwd *pwd_to_spwd (const struct passwd *);
-#endif
 
 /* pwdcheck.c */
 #ifndef USE_PAM
@@ -351,14 +354,15 @@ extern /*@dependent@*/ /*@null@*/struct commonio_entry *__pw_get_head (void);
 
 /* pwmem.c */
 extern /*@null@*/ /*@only@*/struct passwd *__pw_dup (const struct passwd *pwent);
-extern void pw_free (/*@out@*/ /*@only@*/struct passwd *pwent);
+extern void pw_free(/*@only@*/struct passwd *pwent);
+
+/* csrand.c */
+unsigned long csrand (void);
+unsigned long csrand_uniform (unsigned long n);
+unsigned long csrand_interval (unsigned long min, unsigned long max);
 
 /* remove_tree.c */
 extern int remove_tree (const char *root, bool remove_root);
-
-/* rlogin.c */
-extern int do_rlogin (const char *remote_host, char *name, size_t namelen,
-                      char *term, size_t termlen);
 
 /* root_flag.c */
 extern void process_root_flag (const char* short_opt, int argc, char **argv);
@@ -376,14 +380,14 @@ extern int check_selinux_permit (const char *perm_name);
 
 /* semanage.c */
 #ifdef WITH_SELINUX
-extern int set_seuser(const char *login_name, const char *seuser_name);
+extern int set_seuser(const char *login_name, const char *seuser_name, const char *serange);
 extern int del_seuser(const char *login_name);
 #endif
 
 /* setugid.c */
 extern int setup_groups (const struct passwd *info);
 extern int change_uid (const struct passwd *info);
-#if (defined HAVE_INITGROUPS) && (! defined USE_PAM)
+#if !defined(USE_PAM)
 extern int setup_uid_gid (const struct passwd *info, bool is_console);
 #else
 extern int setup_uid_gid (const struct passwd *info);
@@ -409,7 +413,7 @@ extern struct spwd *sgetspent (const char *string);
 /* sgroupio.c */
 extern void __sgr_del_entry (const struct commonio_entry *ent);
 extern /*@null@*/ /*@only@*/struct sgrp *__sgr_dup (const struct sgrp *sgent);
-extern void sgr_free (/*@out@*/ /*@only@*/struct sgrp *sgent);
+extern void sgr_free(/*@only@*/struct sgrp *sgent);
 extern /*@dependent@*/ /*@null@*/struct commonio_entry *__sgr_get_head (void);
 extern void __sgr_set_changed (void);
 
@@ -419,14 +423,15 @@ extern void __spw_del_entry (const struct commonio_entry *ent);
 
 /* shadowmem.c */
 extern /*@null@*/ /*@only@*/struct spwd *__spw_dup (const struct spwd *spent);
-extern void spw_free (/*@out@*/ /*@only@*/struct spwd *spent);
+extern void spw_free(/*@only@*/struct spwd *spent);
 
 /* shell.c */
 extern int shell (const char *file, /*@null@*/const char *arg, char *const envp[]);
 
 /* spawn.c */
-extern int run_command (const char *cmd, const char *argv[],
-                        /*@null@*/const char *envp[], /*@out@*/int *status);
+ATTR_ACCESS(write_only, 4)
+extern int run_command(const char *cmd, const char *argv[],
+                       /*@null@*/const char *envp[], int *restrict status);
 
 /* strtoday.c */
 extern long strtoday (const char *);
@@ -459,33 +464,68 @@ extern int set_filesize_limit (int blocks);
 /* user_busy.c */
 extern int user_busy (const char *name, uid_t uid);
 
-/* utmp.c */
-#ifndef USE_UTMPX
-extern /*@null@*/struct utmp *get_current_utmp (void);
-extern struct utmp *prepare_utmp (const char *name,
-                                  const char *line,
-                                  const char *host,
-                                  /*@null@*/const struct utmp *ut);
-extern int setutmp (struct utmp *ut);
-#else
-extern /*@null@*/struct utmpx *get_current_utmp (void);
-extern struct utmpx *prepare_utmpx (const char *name,
-                                    const char *line,
-                                    const char *host,
-                                    /*@null@*/const struct utmpx *ut);
-extern int setutmpx (struct utmpx *utx);
-#endif				/* USE_UTMPX */
+/*
+ * Session management: utmp.c or logind.c
+ */
+
+/**
+ * @brief Get host for the current session
+ *
+ * @param[out] out Host name
+ *
+ * @return 0 or a positive integer if the host was obtained properly,
+ *         another value on error.
+ */
+extern int get_session_host (char **out);
+#ifndef ENABLE_LOGIND
+/**
+ * @brief Update or create an utmp entry in utmp, wtmp, utmpw, or wtmpx
+ *
+ * @param[in] user username
+ * @param[in] tty tty
+ * @param[in] host hostname
+ *
+ * @return 0 if utmp was updated properly,
+ *         1 on error.
+ */
+extern int update_utmp (const char *user,
+                        const char *tty,
+                        const char *host);
+/**
+ * @brief Update the cumulative failure log
+ *
+ * @param[in] failent_user username
+ * @param[in] tty tty
+ * @param[in] host hostname
+ *
+ */
+extern void record_failure(const char *failent_user,
+                           const char *tty,
+                           const char *hostname);
+#endif /* ENABLE_LOGIND */
+
+/**
+ * @brief Number of active user sessions
+ *
+ * @param[in] name username
+ * @param[in] limit maximum number of active sessions
+ *
+ * @return number of active sessions.
+ *
+ */
+extern unsigned long active_sessions_count(const char *name,
+                                           unsigned long limit);
 
 /* valid.c */
 extern bool valid (const char *, const struct passwd *);
 
-/* xmalloc.c */
-extern /*@maynotreturn@*/ /*@only@*//*@out@*//*@notnull@*/void *xmalloc (size_t size)
-  /*@ensures MaxSet(result) == (size - 1); @*/;
-extern /*@maynotreturn@*/ /*@only@*//*@notnull@*/char *xstrdup (const char *);
+/* write_full.c */
+extern int write_full(int fd, const void *buf, size_t count);
 
 /* xgetpwnam.c */
 extern /*@null@*/ /*@only@*/struct passwd *xgetpwnam (const char *);
+/* xprefix_getpwnam.c */
+extern /*@null@*/ /*@only@*/struct passwd *xprefix_getpwnam (const char *);
 /* xgetpwuid.c */
 extern /*@null@*/ /*@only@*/struct passwd *xgetpwuid (uid_t);
 /* xgetgrnam.c */

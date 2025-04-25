@@ -6,16 +6,17 @@
  */
 
 #include <config.h>
+
 #include <security/pam_appl.h>
-#ifdef HAVE_SECURITY_PAM_MISC_H
+#if __has_include(<security/pam_misc.h>)
 # include <security/pam_misc.h>
 #endif
-#ifdef HAVE_SECURITY_OPENPAM_H
+#if __has_include(<security/openpam.h>)
 # include <security/openpam.h>
 #endif
 
 
-static struct pam_conv conv = {
+static const struct pam_conv conv = {
 	SHADOW_PAM_CONVERSATION,
 	NULL
 };

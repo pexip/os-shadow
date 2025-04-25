@@ -2,12 +2,12 @@
 .\"     Title: userdel
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 08/11/2022
-.\"    Manual: Comandi per la gestione del sistema
-.\"    Source: shadow-utils 4.13
+.\"      Date: 19/03/2025
+.\"    Manual: System Management Commands
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: Italian
 .\"
-.TH "USERDEL" "8" "08/11/2022" "shadow\-utils 4\&.13" "Comandi per la gestione del si"
+.TH "USERDEL" "8" "19/03/2025" "shadow\-utils 4\&.17\&.4" "System Management Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -31,7 +31,7 @@
 userdel \- rimuove l\*(Aqaccount di un utente ed i file relativi
 .SH "SINOSSI"
 .HP \w'\fBuserdel\fR\ 'u
-\fBuserdel\fR [opzioni] \fILOGIN\fR
+\fBuserdel\fR [options] \fILOGIN\fR
 .SH "DESCRIZIONE"
 .PP
 The
@@ -46,15 +46,7 @@ command are:
 .PP
 \fB\-f\fR, \fB\-\-force\fR
 .RS 4
-This option forces the removal of the user account, even if the user is still logged in\&. It also forces
-\fBuserdel\fR
-to remove the user\*(Aqs home directory and mail spool, even if another user uses the same home directory or if the mail spool is not owned by the specified user\&. If
-\fBUSERGROUPS_ENAB\fR
-is defined to
-\fIyes\fR
-in
-/etc/login\&.defs
-and if a group exists with the same name as the deleted user, then this group will be removed, even if it is still the primary group of another user\&.
+This option forces the removal of the user account and any other requested actions, skipping any safety checks\&.
 .sp
 \fINote:\fR
 This option is dangerous and may leave your system in an inconsistent state\&.

@@ -2,12 +2,12 @@
 .\"     Title: suauth
 .\"    Author: Marek Micha\(/lkiewicz
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 08/11/2022
-.\"    Manual: Формати файлів і файли налаштувань
-.\"    Source: shadow-utils 4.13
+.\"      Date: 19/03/2025
+.\"    Manual: File Formats and Configuration Files
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: Ukrainian
 .\"
-.TH "suauth" "5" "08/11/2022" "shadow\-utils 4\&.13" "Формати файлів і файли налашту"
+.TH "suauth" "5" "19/03/2025" "shadow\-utils 4\&.17\&.4" "File Formats and Configuration"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -34,9 +34,9 @@ suauth \- докладний файл керування su
 \fB/etc/suauth\fR
 .SH "ОПИС"
 .PP
-Файл
+The file
 /etc/suauth
-буде використано під час кожного виклику su\&. Він може змінити поведінку команди su на основі таких даних:
+is referenced whenever the su command is called\&. It can change the behaviour of the su command, based upon:
 .sp
 .if n \{\
 .RS 4
@@ -62,16 +62,20 @@ suauth \- докладний файл керування su
 .RE
 .\}
 .PP
-Де \(Foідентифікатор\-призначення\(Fc є словом
-\fIALL\fR, списком відокремлених \(Fo,\(Fc імен користувачів або словами
-\fIALL EXCEPT\fR, після яких вказано список відокремлених \(Fo,\(Fc імен користувачів\&.
+Where to\-id is either the word
+\fIALL\fR, a list of usernames delimited by "," or the words
+\fIALL EXCEPT\fR
+followed by a list of usernames delimited by ","\&.
 .PP
-Форматування запису \(Foпохідний\-ідентифікатор\(Fc є таким самим, що і для запису \(Foідентифікатор\-призначення\(Fc, окрім розпізнавання додаткового слова
-\fIGROUP\fR\&. Можна також без проблем користуватися
-\fIALL EXCEPT GROUP\fR\&. Після
+from\-id is formatted the same as to\-id except the extra word
 \fIGROUP\fR
-можна вказати назви однієї або декількох груп, відокремлених \(Fo,\(Fc\&. Ідентифікатора основної групи відповідної групи недостатньо, потрібен запис у
-\fB/etc/group\fR(5)\&.
+is recognized\&.
+\fIALL EXCEPT GROUP\fR
+is perfectly valid too\&. Following
+\fIGROUP\fR
+appears one or more group names, delimited by ","\&. It is not sufficient to have primary group id of the relevant group, an entry in
+\fB/etc/group\fR(5)
+is necessary\&.
 .PP
 Дією може бути лише один із наведених нижче підтримуваних у поточній версії варіантів\&.
 .PP
@@ -130,9 +134,9 @@ terry:birddog:NOPASS birddog:terry:NOPASS
 Може бути доволі багато проблем\&. Зокрема, обробник файла не пробачає синтаксичних помилок, не дає додавати пробіли у довільні місця (окрім початку і кінця рядків) і має специфічні правила щодо розмежування записів\&.
 .SH "ДІАГНОСТИКА"
 .PP
-Про помилку при обробці файла буде повідомлено за допомогою
+An error parsing the file is reported using
 \fBsyslogd\fR(8)
-у формі рівня ERR для можливості AUTH\&.
+as level ERR on facility AUTH\&.
 .SH "ДИВ\&. ТАКОЖ"
 .PP
 \fBsu\fR(1)\&.

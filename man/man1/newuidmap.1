@@ -2,12 +2,12 @@
 .\"     Title: newuidmap
 .\"    Author: Eric Biederman
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 11/08/2022
+.\"      Date: 03/19/2025
 .\"    Manual: User Commands
-.\"    Source: shadow-utils 4.13
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: English
 .\"
-.TH "NEWUIDMAP" "1" "11/08/2022" "shadow\-utils 4\&.13" "User Commands"
+.TH "NEWUIDMAP" "1" "03/19/2025" "shadow\-utils 4\&.17\&.4" "User Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -74,6 +74,16 @@ before setting
 /proc/[pid]/uid_map\&.
 .PP
 Note that newuidmap may be used only once for a given process\&.
+.PP
+Instead of an integer process id, the first argument may be specified as
+\fIfd:N\fR, where the integer N is the file descriptor number for the calling process\*(Aqs opened file descriptor for the directory
+/proc/[pid]\&. In this case,
+\fBnewuidmap\fR
+will use
+openat(2)
+to open the
+uid_map
+file under that directory, avoiding a TOCTTOU in case the process exits and the pid is immediately reused\&.
 .SH "OPTIONS"
 .PP
 There currently are no options to the

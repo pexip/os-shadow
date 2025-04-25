@@ -16,18 +16,21 @@
 #include "defines.h"
 #include <shadow.h>
 #include <stdio.h>
+
+#include "alloc/calloc.h"
 #include "shadowio.h"
+#include "string/memset/memzero.h"
+
 
 /*@null@*/ /*@only@*/struct spwd *__spw_dup (const struct spwd *spent)
 {
 	struct spwd *sp;
 
-	sp = (struct spwd *) malloc (sizeof *sp);
+	sp = CALLOC (1, struct spwd);
 	if (NULL == sp) {
 		return NULL;
 	}
 	/* The libc might define other fields. They won't be copied. */
-	memset (sp, 0, sizeof *sp);
 	sp->sp_lstchg = spent->sp_lstchg;
 	sp->sp_min    = spent->sp_min;
 	sp->sp_max    = spent->sp_max;
@@ -54,14 +57,14 @@
 	return sp;
 }
 
-void spw_free (/*@out@*/ /*@only@*/struct spwd *spent)
+void
+spw_free(/*@only@*/struct spwd *spent)
 {
 	if (spent != NULL) {
 		free (spent->sp_namp);
-		if (NULL != spent->sp_pwdp) {
-			strzero (spent->sp_pwdp);
-			free (spent->sp_pwdp);
-		}
+		if (NULL != spent->sp_pwdp)
+			free(strzero(spent->sp_pwdp));
+
 		free (spent);
 	}
 }

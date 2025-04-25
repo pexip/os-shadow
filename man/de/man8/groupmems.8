@@ -2,12 +2,12 @@
 .\"     Title: groupmems
 .\"    Author: George Kraft, IV
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 08.11.2022
-.\"    Manual: Befehle zur Systemverwaltung
-.\"    Source: shadow-utils 4.13
+.\"      Date: 19.03.2025
+.\"    Manual: System Management Commands
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: German
 .\"
-.TH "GROUPMEMS" "8" "08.11.2022" "shadow\-utils 4\&.13" "Befehle zur Systemverwaltung"
+.TH "GROUPMEMS" "8" "19.03.2025" "shadow\-utils 4\&.17\&.4" "System Management Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -28,7 +28,7 @@
 .\" * MAIN CONTENT STARTS HERE *
 .\" -----------------------------------------------------------------
 .SH "NAME"
-groupmems \- verwaltet die Mitglieder der Hauptgruppe eines Benutzers
+groupmems \- verwaltet die Mitglieder der prim\(:aren Gruppe des Benutzers
 .SH "\(:UBERSICHT"
 .HP \w'\fBgroupmems\fR\ 'u
 \fBgroupmems\fR \-a\ \fIuser_name\fR | \-d\ \fIuser_name\fR | [\-g\ \fIgroup_name\fR] | \-l | \-p 
@@ -51,7 +51,7 @@ command are:
 .PP
 \fB\-a\fR, \fB\-\-add\fR\ \&\fIuser_name\fR
 .RS 4
-Add a user to the group membership list\&.
+f\(:ugt einen Benutzer der Mitgliederliste der Gruppe hinzu\&.
 .sp
 If the
 /etc/gshadow
@@ -62,7 +62,7 @@ file, a new entry will be created\&.
 .PP
 \fB\-d\fR, \fB\-\-delete\fR\ \&\fIuser_name\fR
 .RS 4
-L\(:oscht einen Benutzer aus der Mitgliederliste der Gruppe\&.
+l\(:oscht einen Benutzer aus der Mitgliederliste der Gruppe\&.
 .sp
 If the
 /etc/gshadow
@@ -77,22 +77,22 @@ file, a new entry will be created\&.
 .PP
 \fB\-g\fR, \fB\-\-group\fR\ \&\fIgroup_name\fR
 .RS 4
-Root kann eine Gruppen bestimmen, deren Mitgliederliste er bearbeiten will\&.
+gibt die Gruppe an, wenn eine Mitgliederliste durch den Systemadministrator bearbeitet wird\&.
 .RE
 .PP
 \fB\-h\fR, \fB\-\-help\fR
 .RS 4
-zeigt die Hilfe an und beendet das Programm
+zeigt die Hilfe an und beendet das Programm\&.
 .RE
 .PP
 \fB\-l\fR, \fB\-\-list\fR
 .RS 4
-gibt die Mitgliederliste aus
+gibt die Mitgliederliste aus\&.
 .RE
 .PP
 \fB\-p\fR, \fB\-\-purge\fR
 .RS 4
-l\(:oscht alle Benutzer aus der Mitgliederliste der Gruppe
+l\(:oscht alle Benutzer aus der Mitgliederliste der Gruppe\&.
 .sp
 If the
 /etc/gshadow
@@ -130,7 +130,7 @@ utility to manage their own group membership list\&.
 .nf
 	$ groupadd \-r groups
 	$ chmod 2710 groupmems
-	$ chown root\&.groups groupmems
+	$ chown root:groups groupmems
 	$ groupmems \-g groups \-a gk4
     
 .fi
@@ -151,7 +151,7 @@ Informationen zu den Gruppenkonten
 .PP
 /etc/gshadow
 .RS 4
-verschl\(:usselte Informationen zu den Gruppenkonten
+gesch\(:utzte Informationen zu den Gruppenkonten
 .RE
 .SH "SIEHE AUCH"
 .PP

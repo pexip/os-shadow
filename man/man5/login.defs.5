@@ -2,12 +2,12 @@
 .\"     Title: login.defs
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 11/08/2022
+.\"      Date: 03/19/2025
 .\"    Manual: File Formats and Configuration Files
-.\"    Source: shadow-utils 4.13
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: English
 .\"
-.TH "LOGIN\&.DEFS" "5" "11/08/2022" "shadow\-utils 4\&.13" "File Formats and Configuration"
+.TH "LOGIN\&.DEFS" "5" "03/19/2025" "shadow\-utils 4\&.17\&.4" "File Formats and Configuration"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -417,7 +417,7 @@ The minimum number of days allowed between password changes\&. Any password chan
 .PP
 \fBPASS_WARN_AGE\fR (number)
 .RS 4
-The number of days warning given before a password expires\&. A zero means warning is given only upon the day of expiration, a negative value means no warning is given\&. If not specified, no warning will be provided\&.
+The number of days warning given before a password expires\&. A zero means warning is given only upon the day of expiration, a value of \-1 means no warning is given\&. If not specified, no warning will be provided\&.
 .RE
 .PP
 \fBPASS_MAX_DAYS\fR,
@@ -458,7 +458,7 @@ is set to
 or
 \fISHA512\fR, this defines the number of SHA rounds used by the encryption algorithm by default (when the number of rounds is not specified on the command line)\&.
 .sp
-With a lot of rounds, it is more difficult to brute forcing the password\&. But note also that more CPU resources will be needed to authenticate users\&.
+With a lot of rounds, it is more difficult to brute force the password\&. But note also that more CPU resources will be needed to authenticate users\&.
 .sp
 If not specified, the libc will choose the default number of rounds (5000), which is orders of magnitude too low for modern hardware\&.
 .sp
@@ -588,18 +588,18 @@ Enable "syslog" logging of
 activity \- in addition to sulog file logging\&.
 .RE
 .PP
-\fBTTYGROUP\fR (string), \fBTTYPERM\fR (string)
+\fBTTYGROUP\fR (string), \fBTTYPERM\fR (number)
 .RS 4
 The terminal permissions: the login tty will be owned by the
 \fBTTYGROUP\fR
 group, and the permissions will be set to
 \fBTTYPERM\fR\&.
 .sp
-By default, the ownership of the terminal is set to the user\*(Aqs primary group and the permissions are set to
-\fI0600\fR\&.
-.sp
 \fBTTYGROUP\fR
 can be either the name of a group or a numeric group identifier\&.
+.sp
+If TTYGROUP is not defined, then the group ownership of the terminal is set to the user\*(Aqs primary group\&. If TTYPERM is not defined, then the permissions are set to
+\fI0600\fR\&.
 .sp
 If you have a
 \fBwrite\fR
@@ -844,8 +844,7 @@ USERGROUPS_ENAB
 .PP
 sulogin
 .RS 4
-ENV_HZ
-ENV_TZ
+ENV_HZ ENV_TZ
 .RE
 .PP
 useradd

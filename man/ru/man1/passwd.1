@@ -2,12 +2,12 @@
 .\"     Title: passwd
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 11/08/2022
-.\"    Manual: Пользовательские команды
-.\"    Source: shadow-utils 4.13
+.\"      Date: 03/19/2025
+.\"    Manual: User Commands
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: Russian
 .\"
-.TH "passwd" "1" "11/08/2022" "shadow\-utils 4\&.13" "Пользовательские команды"
+.TH "passwd" "1" "03/19/2025" "shadow\-utils 4\&.17\&.4" "User Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -31,7 +31,7 @@
 passwd \- изменяет пароль пользователя
 .SH "СИНТАКСИС"
 .HP \w'\fBpasswd\fR\ 'u
-\fBpasswd\fR [\fIпараметры\fR] [\fIУЧЁТНАЯ_ЗАПИСЬ\fR]
+\fBpasswd\fR [\fIoptions\fR] [\fILOGIN\fR]
 .SH "ОПИСАНИЕ"
 .PP
 The
@@ -49,44 +49,9 @@ refuses to change the password and exits\&.
 .PP
 Затем пользователю предложат дважды ввести новый пароль\&. Значение второго ввода сравнивается с первым и для изменения пароли из обеих попыток должны совпасть\&.
 .PP
-Затем пароль тестируется на сложность подбора\&. Согласно общим принципам, пароли должны быть длиной от 6 до 8 символов и включать один или более символов каждого типа:
-.sp
-.RS 4
-.ie n \{\
-\h'-04'\(bu\h'+03'\c
-.\}
-.el \{\
-.sp -1
-.IP \(bu 2.3
-.\}
-строчные буквы
-.RE
-.sp
-.RS 4
-.ie n \{\
-\h'-04'\(bu\h'+03'\c
-.\}
-.el \{\
-.sp -1
-.IP \(bu 2.3
-.\}
-цифры от 0 до 9
-.RE
-.sp
-.RS 4
-.ie n \{\
-\h'-04'\(bu\h'+03'\c
-.\}
-.el \{\
-.sp -1
-.IP \(bu 2.3
-.\}
-знаки пунктуации
-.RE
-.PP
-Care must be taken not to include the system default erase or kill characters\&.
+Then, the password is tested for complexity\&.
 \fBpasswd\fR
-will reject any password which is not suitably complex\&.
+will reject any password which is not suitably complex\&. Care must be taken not to include the system default erase or kill characters\&.
 .SS "Выбор пароля"
 .PP
 The security of a password depends upon the strength of the encryption algorithm and the size of the key space\&. The legacy
@@ -96,7 +61,9 @@ System encryption method is based on the NBS DES algorithm\&. More recent method
 .PP
 При обеспечении безопасности пароля выбирают нечто среднее между сложным паролем и сложностью работы с ним\&. По этой причине, вы не должны использовать пароль, который является словом из словаря или который придётся записать из\-за его сложности\&. Также, пароль не должен быть названием чего\-либо, номером вашей лицензии, днём рождения и домашним адресом\&. Обо всём этом легко догадаться, что приведёт к нарушению безопасности системы\&.
 .PP
-You can find advice on how to choose a strong password on http://en\&.wikipedia\&.org/wiki/Password_strength
+As a general guideline, passwords should be long and random\&. It\*(Aqs fine to use simple character sets, such as passwords consisting only of lowercase letters, if that helps memorizing longer passwords\&. For a password consisting only of lowercase English letters randomly chosen, and a length of 32, there are 26^32 (approximately 2^150) different possible combinations\&. Being an exponential equation, it\*(Aqs apparent that the exponent (the length) is more important than the base (the size of the character set)\&.
+.PP
+You can find advice on how to choose a strong password on https://en\&.wikipedia\&.org/wiki/Password_strength
 .SH "ПАРАМЕТРЫ"
 .PP
 The options which apply to the
@@ -143,7 +110,7 @@ days, the user may no longer sign on to the account\&.
 .sp
 Note that this does not disable the account\&. The user may still be able to login using another authentication token (e\&.g\&. an SSH key)\&. To disable the account, administrators should use
 \fBusermod \-\-expiredate 1\fR
-(this set the account\*(Aqs expire date to Jan 2, 1970)\&.
+(this sets the account\*(Aqs expire date to Jan 2, 1970)\&.
 .sp
 Посетитель с заблокированным паролем не может изменить свой пароль\&.
 .RE
@@ -175,6 +142,12 @@ directory and use the configuration files from the
 directory\&. Only absolute paths are supported\&.
 .RE
 .PP
+\fB\-P\fR, \fB\-\-prefix\fR\ \&\fIPREFIX_DIR\fR
+.RS 4
+Apply changes to configuration files under the root filesystem found under the directory
+\fIPREFIX_DIR\fR\&. This option does not chroot and is intended for preparing a cross\-compilation target\&. Some limitations: NIS and LDAP users/groups are not verified\&. No PAM support\&. No SELINUX support\&.
+.RE
+.PP
 \fB\-S\fR, \fB\-\-status\fR
 .RS 4
 Показать состояние учётной записи\&. Информация о состоянии содержит 7 полей\&. Первое поле содержит имя учётной записи\&. Второе поле указывает, заблокирован ли пароль учётной записи (L), она без пароля (NP) или у неё есть рабочий пароль (P)\&. Третье поле хранит дату последнего изменения пароля\&. В следующих четырёх полях хранятся минимальный срок, максимальный срок, период выдачи предупреждения и период неактивности пароля\&. Эти сроки измеряются в днях\&.
@@ -204,6 +177,11 @@ Passing the number
 as
 \fIMAX_DAYS\fR
 will remove checking a password\*(Aqs validity\&.
+.RE
+.PP
+\fB\-s\fR, \fB\-\-stdin\fR
+.RS 4
+This option is used to indicate that passwd should read the new password from standard input, which can be a pipe\&.
 .RE
 .SH "ПРЕДОСТЕРЕЖЕНИЯ"
 .PP
@@ -277,7 +255,10 @@ invalid argument to option
 .SH "СМОТРИТЕ ТАКЖЕ"
 .PP
 \fBchpasswd\fR(8),
+\fBmakepasswd\fR(1),
 \fBpasswd\fR(5),
 \fBshadow\fR(5),
 \fBlogin.defs\fR(5),
 \fBusermod\fR(8)\&.
+.PP
+The following web page comically (yet correctly) compares the strength of two different methods for choosing a password: "https://xkcd\&.com/936/"

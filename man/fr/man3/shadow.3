@@ -2,12 +2,12 @@
 .\"     Title: shadow
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 08/11/2022
-.\"    Manual: Appels de biblioth\(`eque
-.\"    Source: shadow-utils 4.13
+.\"      Date: 19/03/2025
+.\"    Manual: Library Calls
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: French
 .\"
-.TH "SHADOW" "3" "08/11/2022" "shadow\-utils 4\&.13" "Appels de biblioth\(`eque"
+.TH "SHADOW" "3" "19/03/2025" "shadow\-utils 4\&.17\&.4" "Library Calls"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -36,7 +36,7 @@ shadow, getspnam \- routines d\*(Aqutilisation des mots de passe cach\('es
 \fIstruct spwd *getspent();\fR
 .PP
 \fIstruct spwd *getspnam(char\fR
-\fI*nom\fR\fI);\fR
+\fI*name\fR\fI);\fR
 .PP
 \fIvoid setspent();\fR
 .PP
@@ -50,7 +50,7 @@ shadow, getspnam \- routines d\*(Aqutilisation des mots de passe cach\('es
 .PP
 \fIint putspent(struct spwd\fR
 \fI*p,\fR
-\fIFICHIER\fR
+\fIFILE\fR
 \fI*fp\fR\fI);\fR
 .PP
 \fIint lckpwdf();\fR

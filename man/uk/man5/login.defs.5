@@ -2,12 +2,12 @@
 .\"     Title: login.defs
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 08/11/2022
-.\"    Manual: Формати файлів і файли налаштувань
-.\"    Source: shadow-utils 4.13
+.\"      Date: 19/03/2025
+.\"    Manual: File Formats and Configuration Files
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: Ukrainian
 .\"
-.TH "login\&.defs" "5" "08/11/2022" "shadow\-utils 4\&.13" "Формати файлів і файли налашту"
+.TH "login\&.defs" "5" "19/03/2025" "shadow\-utils 4\&.17\&.4" "File Formats and Configuration"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -31,27 +31,28 @@
 login.defs \- Налаштування комплексу для роботи з прихованими паролями
 .SH "ОПИС"
 .PP
-Файл
+The
 /etc/login\&.defs
-визначає специфічні для системи налаштування для комплексу керування паролями shadow\&. Цей файл є необхідним\&. Якщо цього файла не завадить працездатності системи, але, ймовірно, призведе до небажаних наслідків\&.
+file defines the site\-specific configuration for the shadow password suite\&. This file is required\&. Absence of this file will not prevent system operation, but will probably result in undesirable operation\&.
 .PP
 Цей файл є придатним до читання текстовим файлом, кожен з рядків якого описує один параметр налаштувань\&. Рядки складаються з назви налаштування та значення, які відокремлено пробілом\&. Порожні рядки і рядки коментарів буде проігноровано\&. Коментарі позначають символом \(Fo#\(Fc, цей символ має бути першим непробільним символом рядка\&.
 .PP
-Значення параметрів мають належати до чотирьох типів: рядки, булеві значення, числа та числа з подвійною точністю\&. Рядок складається з будь\-яких друкованих символів\&. Булеве значення має бути одним з двох:
-\fIтак\fR
-або
-\fIno\fR\&. Невизначеному булевому параметру або булевому параметру, значенням якого не є одне з цих двох значень, буде надано значення
-\fIno\fR\&. Числа (звичайні і з подвійною точністю) можуть бути десятковими, вісімковими (їхні записи починаються з
-\fI0\fR) або шістнадцятковими (їхні записи починаються з
-\fI0x\fR)\&. Максимальне значення звичайного числового параметра або числового параметра з подвійною точністю визначається характеристиками системи\&.
+Parameter values may be of four types: strings, booleans, numbers, and long numbers\&. A string is comprised of any printable characters\&. A boolean should be either the value
+\fIyes\fR
+or
+\fIno\fR\&. An undefined boolean parameter or one with a value other than these will be given a
+\fIno\fR
+value\&. Numbers (both regular and long) may be either decimal values, octal values (precede the value with
+\fI0\fR) or hexadecimal values (precede the value with
+\fI0x\fR)\&. The maximum value of the regular and long numeric parameters is machine\-dependent\&.
 .PP
 У ваше розпорядження надано такі пункти налаштувань:
 .PP
 \fBPASS_MAX_DAYS\fR,
 \fBPASS_MIN_DAYS\fR
-і
+and
 \fBPASS_WARN_AGE\fR
-буде використано лише у момент створення облікового запису\&. Будь\-які зміни у цих параметрах не вплинуть на наявні облікові записи\&.
+are only used at the time of account creation\&. Any changes to these settings won\*(Aqt affect existing accounts\&.
 .SH "ПЕРЕХРЕСНІ ПОСИЛАННЯ"
 .PP
 Наведені нижче посилання показують, які програми комплексу для роботи з паролями shadow використовують відповідні параметри\&.
@@ -191,8 +192,7 @@ USERGROUPS_ENAB
 .PP
 sulogin
 .RS 4
-ENV_HZ
-ENV_TZ
+ENV_HZ ENV_TZ
 .RE
 .PP
 useradd

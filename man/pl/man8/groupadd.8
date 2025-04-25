@@ -2,12 +2,12 @@
 .\"     Title: groupadd
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 11/08/2022
-.\"    Manual: Polecenia Zarządzania Systemem
-.\"    Source: shadow-utils 4.13
+.\"      Date: 03/19/2025
+.\"    Manual: System Management Commands
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: Polish
 .\"
-.TH "GROUPADD" "8" "11/08/2022" "shadow\-utils 4\&.13" "Polecenia Zarządzania Systemem"
+.TH "GROUPADD" "8" "03/19/2025" "shadow\-utils 4\&.17\&.4" "System Management Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -31,7 +31,7 @@
 groupadd \- utw\('orz nową grupę
 .SH "STRESZCZENIE"
 .HP \w'\fBgroupadd\fR\ 'u
-\fBgroupadd\fR [\fIOPCJE\fR] \fINEWGROUP\fR
+\fBgroupadd\fR [\fIOPTIONS\fR] \fINEWGROUP\fR
 .SH "OPIS"
 .PP
 The
@@ -146,7 +146,7 @@ Apply changes to configuration files under the root filesystem found under the d
 .PP
 \fB\-U\fR, \fB\-\-users\fR
 .RS 4
-A list of usernames to add as members of the group\&.
+A comma\-separated list of usernames to add as members of the group\&.
 .sp
 The default behavior (if the
 \fB\-g\fR,

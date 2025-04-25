@@ -2,12 +2,12 @@
 .\"     Title: gshadow
 .\"    Author: Nicolas Fran\(,cois <nicolas.francois@centraliens.net>
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 08/11/2022
-.\"    Manual: Формати файлів і файли налаштувань
-.\"    Source: shadow-utils 4.13
+.\"      Date: 19/03/2025
+.\"    Manual: File Formats and Configuration Files
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: Ukrainian
 .\"
-.TH "gshadow" "5" "08/11/2022" "shadow\-utils 4\&.13" "Формати файлів і файли налашту"
+.TH "gshadow" "5" "19/03/2025" "shadow\-utils 4\&.17\&.4" "File Formats and Configuration"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -32,37 +32,38 @@ gshadow \- файл зашифрованих груп
 .SH "ОПИС"
 .PP
 /etc/gshadow
-містить зашифровані відомості щодо облікових записів груп\&.
+contains the shadowed information for group accounts\&.
 .PP
 Цей файл має бути недоступним для читання звичайними користувачами, якщо ви хочете підтримувати захист паролів\&.
 .PP
 У кожному рядку цього файла містяться такі відокремлені двокрапками поля:
 .PP
-\fBназва групи\fR
+\fBgroup name\fR
 .RS 4
-Це має бути коректна назва групи, яка існує у системі\&.
+It must be a valid group name, which exists on the system\&.
 .RE
 .PP
-\fBшифрований пароль\fR
+\fBencrypted password\fR
 .RS 4
-Зверніться до
-\fBcrypt\fR(3), щоб дізнатися більше про те, як буде оброблено цей рядок\&.
+Refer to
+\fBcrypt\fR(3)
+for details on how this string is interpreted\&.
 .sp
-Якщо у полі пароля міститься якийсь рядок, який не є коректним результатом виконання
-\fBcrypt\fR(3), наприклад, ! або *, користувачі не зможуть скористатися паролем unix для доступу до групи (але учасники групи пароля не потребуватимуть)\&.
+If the password field contains some string that is not a valid result of
+\fBcrypt\fR(3), for instance ! or *, users will not be able to use a unix password to access the group (but group members do not need the password)\&.
 .sp
-Пароль використовуватиметься, коли користувач, який не є учасником групи, захоче отримати права доступу до цієї групи (див\&.
+The password is used when a user who is not a member of the group wants to gain the permissions of this group (see
 \fBnewgrp\fR(1))\&.
 .sp
 Це поле може бути порожнім\&. Якщо поле є порожнім, лише учасники групи зможуть отримувати права доступу групи\&.
 .sp
 Поле пароля, яке починається зі знаку оклику, означає, що пароль заблоковано\&. Решта символів у рядку є вмістом поля пароля до того, як пароль було заблоковано\&.
 .sp
-Цей пароль має пріоритет над будь\-яким паролем, який вказано у
+This password supersedes any password specified in
 /etc/group\&.
 .RE
 .PP
-\fBадміністратори\fR
+\fBadministrators\fR
 .RS 4
 Це має бути список відокремлених комами імен користувачів\&.
 .sp
@@ -71,13 +72,13 @@ gshadow \- файл зашифрованих груп
 Також адміністратори мають ті самі права доступу, що і учасники (див\&. нижче)\&.
 .RE
 .PP
-\fBучасники\fR
+\fBmembers\fR
 .RS 4
 Це має бути список відокремлених комами імен користувачів\&.
 .sp
 Учасники можуть отримувати доступ до групи без надсилання запиту щодо пароля\&.
 .sp
-Вам слід використовувати той самий список користувачів, що і у
+You should use the same list of users as in
 /etc/group\&.
 .RE
 .SH "ФАЙЛИ"
@@ -94,7 +95,7 @@ gshadow \- файл зашифрованих груп
 .SH "ДИВ\&. ТАКОЖ"
 .PP
 \fBgpasswd\fR(5),
-\fBгрупа\fR(5),
+\fBgroup\fR(5),
 \fBgrpck\fR(8),
 \fBgrpconv\fR(8),
 \fBnewgrp\fR(1)\&.

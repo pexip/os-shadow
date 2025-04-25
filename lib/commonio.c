@@ -11,24 +11,34 @@
 
 #ident "$Id$"
 
-#include "defines.h"
 #include <assert.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <limits.h>
+#include <signal.h>
+#include <stdio.h>
+#include <string.h>
 #include <sys/stat.h>
 #include <stdlib.h>
-#include <limits.h>
 #include <utime.h>
-#include <fcntl.h>
-#include <errno.h>
-#include <stdio.h>
-#include <signal.h>
+
+#include "alloc/malloc.h"
+#include "alloc/reallocf.h"
+#include "atoi/getnum.h"
+#include "commonio.h"
+#include "defines.h"
 #include "nscd.h"
-#include "sssd.h"
 #ifdef WITH_TCB
 #include <tcb.h>
 #endif				/* WITH_TCB */
 #include "prototypes.h"
-#include "commonio.h"
 #include "shadowlog_internal.h"
+#include "sssd.h"
+#include "string/memset/memzero.h"
+#include "string/sprintf/snprintf.h"
+#include "string/strcmp/streq.h"
+#include "string/strtok/stpsep.h"
+
 
 /* local function prototypes */
 static int lrename (const char *, const char *);
@@ -64,17 +74,10 @@ int lrename (const char *old, const char *new)
 {
 	int res;
 	char *r = NULL;
-
-#ifndef __GLIBC__
-	char resolved_path[PATH_MAX];
-#endif				/* !__GLIBC__ */
 	struct stat sb;
+
 	if (lstat (new, &sb) == 0 && S_ISLNK (sb.st_mode)) {
-#ifdef __GLIBC__ /* now a POSIX.1-2008 feature */
 		r = realpath (new, NULL);
-#else				/* !__GLIBC__ */
-		r = realpath (new, resolved_path);
-#endif				/* !__GLIBC__ */
 		if (NULL == r) {
 			perror ("realpath in lrename()");
 		} else {
@@ -84,9 +87,7 @@ int lrename (const char *old, const char *new)
 
 	res = rename (old, new);
 
-#ifdef __GLIBC__
 	free (r);
-#endif				/* __GLIBC__ */
 
 	return res;
 }
@@ -106,9 +107,9 @@ static int check_link_count (const char *file, bool log)
 
 	if (sb.st_nlink != 2) {
 		if (log) {
-			(void) fprintf (shadow_logfd,
-			                "%s: %s: lock file already used (nlink: %u)\n",
-			                shadow_progname, file, sb.st_nlink);
+			fprintf(shadow_logfd,
+			        "%s: %s: lock file already used (nlink: %ju)\n",
+			        shadow_progname, file, (uintmax_t) sb.st_nlink);
 		}
 		return 0;
 	}
@@ -119,11 +120,11 @@ static int check_link_count (const char *file, bool log)
 
 static int do_lock_file (const char *file, const char *lock, bool log)
 {
-	int fd;
-	pid_t pid;
-	ssize_t len;
-	int retval;
-	char buf[32];
+	int      fd;
+	int      retval;
+	char     buf[32];
+	pid_t    pid;
+	ssize_t  len;
 
 	fd = open (file, O_CREAT | O_TRUNC | O_WRONLY, 0600);
 	if (-1 == fd) {
@@ -136,9 +137,9 @@ static int do_lock_file (const char *file, const char *lock, bool log)
 	}
 
 	pid = getpid ();
-	snprintf (buf, sizeof buf, "%lu", (unsigned long) pid);
+	SNPRINTF(buf, "%lu", (unsigned long) pid);
 	len = (ssize_t) strlen (buf) + 1;
-	if (write (fd, buf, (size_t) len) != len) {
+	if (write_full(fd, buf, len) == -1) {
 		if (log) {
 			(void) fprintf (shadow_logfd,
 			                "%s: %s file write error: %s\n",
@@ -189,8 +190,8 @@ static int do_lock_file (const char *file, const char *lock, bool log)
 		errno = EINVAL;
 		return 0;
 	}
-	buf[len] = '\0';
-	if (get_pid (buf, &pid) == 0) {
+	stpcpy(&buf[len], "");
+	if (get_pid(buf, &pid) == -1) {
 		if (log) {
 			(void) fprintf (shadow_logfd,
 			                "%s: existing lock file %s with an invalid PID '%s'\n",
@@ -251,25 +252,13 @@ static /*@null@*/ /*@dependent@*/FILE *fopen_set_perms (
 		return NULL;
 	}
 
-#ifdef HAVE_FCHOWN
 	if (fchown (fileno (fp), sb->st_uid, sb->st_gid) != 0) {
 		goto fail;
 	}
-#else				/* !HAVE_FCHOWN */
-	if (chown (name, sb->st_mode) != 0) {
-		goto fail;
-	}
-#endif				/* !HAVE_FCHOWN */
-
-#ifdef HAVE_FCHMOD
 	if (fchmod (fileno (fp), sb->st_mode & 0664) != 0) {
 		goto fail;
 	}
-#else				/* !HAVE_FCHMOD */
-	if (chmod (name, sb->st_mode & 0664) != 0) {
-		goto fail;
-	}
-#endif				/* !HAVE_FCHMOD */
+
 	return fp;
 
       fail:
@@ -349,7 +338,7 @@ static void free_linked_list (struct commonio_db *db)
 
 int commonio_setname (struct commonio_db *db, const char *name)
 {
-	snprintf (db->filename, sizeof (db->filename), "%s", name);
+	SNPRINTF(db->filename, "%s", name);
 	db->setname = true;
 	return 1;
 }
@@ -363,33 +352,25 @@ bool commonio_present (const struct commonio_db *db)
 
 int commonio_lock_nowait (struct commonio_db *db, bool log)
 {
-	char* file = NULL;
-	char* lock = NULL;
-	size_t lock_file_len;
-	size_t file_len;
-	int err = 0;
+	int   err = 0;
+	char  *file = NULL;
+	char  *lock = NULL;
 
 	if (db->locked) {
 		return 1;
 	}
-	file_len = strlen(db->filename) + 11;/* %lu max size */
-	lock_file_len = strlen(db->filename) + 6; /* sizeof ".lock" */
-	file = (char*)malloc(file_len);
-	if (file == NULL) {
+
+	if (asprintf(&file, "%s.%ju", db->filename, (uintmax_t) getpid()) == -1)
 		goto cleanup_ENOMEM;
-	}
-	lock = (char*)malloc(lock_file_len);
-	if (lock == NULL) {
+	if (asprintf(&lock, "%s.lock", db->filename) == -1)
 		goto cleanup_ENOMEM;
-	}
-	snprintf (file, file_len, "%s.%lu",
-	          db->filename, (unsigned long) getpid ());
-	snprintf (lock, lock_file_len, "%s.lock", db->filename);
+
 	if (do_lock_file (file, lock, log) != 0) {
 		db->locked = true;
 		lock_count++;
 		err = 1;
 	}
+
 cleanup_ENOMEM:
 	free(file);
 	free(lock);
@@ -483,7 +464,7 @@ static void dec_lock_count (void)
 
 int commonio_unlock (struct commonio_db *db)
 {
-	char lock[1024];
+	char  lock[1029];
 
 	if (db->isopen) {
 		db->readonly = true;
@@ -500,7 +481,7 @@ int commonio_unlock (struct commonio_db *db)
 		 * then call ulckpwdf() (if used) on last unlock.
 		 */
 		db->locked = false;
-		snprintf (lock, sizeof lock, "%s.lock", db->filename);
+		SNPRINTF(lock, "%s.lock", db->filename);
 		unlink (lock);
 		dec_lock_count ();
 		return 1;
@@ -588,9 +569,7 @@ static void add_one_entry_nis (struct commonio_db *db,
 int commonio_open (struct commonio_db *db, int mode)
 {
 	char *buf;
-	char *cp;
 	char *line;
-	struct commonio_entry *p;
 	void *eptr = NULL;
 	int flags = mode;
 	size_t buflen;
@@ -618,7 +597,7 @@ int commonio_open (struct commonio_db *db, int mode)
 
 	fd = open (db->filename,
 	             (db->readonly ? O_RDONLY : O_RDWR)
-	           | O_NOCTTY | O_NONBLOCK | O_NOFOLLOW);
+	           | O_NOCTTY | O_NONBLOCK | O_NOFOLLOW | O_CLOEXEC);
 	saved_errno = errno;
 	db->fp = NULL;
 	if (fd >= 0) {
@@ -649,26 +628,23 @@ int commonio_open (struct commonio_db *db, int mode)
 		return 0;
 	}
 
-	/* Do not inherit fd in spawned processes (e.g. nscd) */
-	fcntl (fileno (db->fp), F_SETFD, FD_CLOEXEC);
-
 	buflen = BUFLEN;
-	buf = (char *) malloc (buflen);
-	if (NULL == buf) {
-		goto cleanup_ENOMEM;
-	}
+	buf = MALLOC(buflen, char);
+	if (NULL == buf)
+		goto cleanup_errno;
 
-	while (db->ops->fgets (buf, (int) buflen, db->fp) == buf) {
-		while (   ((cp = strrchr (buf, '\n')) == NULL)
+	while (db->ops->fgets (buf, buflen, db->fp) == buf) {
+		struct commonio_entry  *p;
+
+		while (   (strrchr (buf, '\n') == NULL)
 		       && (feof (db->fp) == 0)) {
 			size_t len;
 
 			buflen += BUFLEN;
-			cp = (char *) realloc (buf, buflen);
-			if (NULL == cp) {
-				goto cleanup_buf;
-			}
-			buf = cp;
+			buf = REALLOCF(buf, buflen, char);
+			if (NULL == buf)
+				goto cleanup_errno;
+
 			len = strlen (buf);
 			if (db->ops->fgets (buf + len,
 			                    (int) (buflen - len),
@@ -676,10 +652,7 @@ int commonio_open (struct commonio_db *db, int mode)
 				goto cleanup_buf;
 			}
 		}
-		cp = strrchr (buf, '\n');
-		if (NULL != cp) {
-			*cp = '\0';
-		}
+		stpsep(buf, "\n");
 
 		line = strdup (buf);
 		if (NULL == line) {
@@ -698,7 +671,7 @@ int commonio_open (struct commonio_db *db, int mode)
 			}
 		}
 
-		p = (struct commonio_entry *) malloc (sizeof *p);
+		p = MALLOC(1, struct commonio_entry);
 		if (NULL == p) {
 			goto cleanup_entry;
 		}
@@ -731,7 +704,6 @@ int commonio_open (struct commonio_db *db, int mode)
 	free (line);
       cleanup_buf:
 	free (buf);
-      cleanup_ENOMEM:
 	errno = ENOMEM;
       cleanup_errno:
 	saved_errno = errno;
@@ -775,7 +747,7 @@ commonio_sort (struct commonio_db *db, int (*cmp) (const void *, const void *))
 		return 0;
 	}
 
-	entries = malloc (n * sizeof (struct commonio_entry *));
+	entries = MALLOC(n, struct commonio_entry *);
 	if (entries == NULL) {
 		return -1;
 	}
@@ -850,10 +822,8 @@ int commonio_sort_wrt (struct commonio_db *shadow,
 			if (NULL == spw_ptr->eptr) {
 				continue;
 			}
-			if (strcmp (name, shadow->ops->getname (spw_ptr->eptr))
-			    == 0) {
+			if (streq(name, shadow->ops->getname(spw_ptr->eptr)))
 				break;
-			}
 		}
 		if (NULL == spw_ptr) {
 			continue;
@@ -912,9 +882,9 @@ static int write_all (const struct commonio_db *db)
 
 int commonio_close (struct commonio_db *db)
 {
-	char buf[1024];
-	int errors = 0;
-	struct stat sb;
+	bool         errors = false;
+	char         buf[1024];
+	struct stat  sb;
 
 	if (!db->isopen) {
 		errno = EINVAL;
@@ -945,30 +915,34 @@ int commonio_close (struct commonio_db *db)
 		/*
 		 * Create backup file.
 		 */
-		snprintf (buf, sizeof buf, "%s-", db->filename);
-
-#ifdef WITH_SELINUX
-		if (set_selinux_file_context (db->filename, S_IFREG) != 0) {
-			errors++;
-		}
-#endif
-		if (create_backup (buf, db->fp) != 0) {
-			errors++;
-		}
-
-		if (fclose (db->fp) != 0) {
-			errors++;
-		}
-
-#ifdef WITH_SELINUX
-		if (reset_selinux_file_context () != 0) {
-			errors++;
-		}
-#endif
-		if (errors != 0) {
+		if (SNPRINTF(buf, "%s-", db->filename) == -1) {
+			(void) fclose (db->fp);
 			db->fp = NULL;
 			goto fail;
 		}
+
+#ifdef WITH_SELINUX
+		if (set_selinux_file_context (db->filename, S_IFREG) != 0) {
+			errors = true;
+		}
+#endif
+		if (create_backup (buf, db->fp) != 0) {
+			errors = true;
+		}
+
+		if (fclose (db->fp) != 0) {
+			errors = true;
+		}
+
+		db->fp = NULL;
+
+#ifdef WITH_SELINUX
+		if (reset_selinux_file_context () != 0) {
+			errors = true;
+		}
+#endif
+		if (errors)
+			goto fail;
 	} else {
 		/*
 		 * Default permissions for new [g]shadow files.
@@ -978,11 +952,12 @@ int commonio_close (struct commonio_db *db)
 		sb.st_gid = db->st_gid;
 	}
 
-	snprintf (buf, sizeof buf, "%s+", db->filename);
+	if (SNPRINTF(buf, "%s+", db->filename) == -1)
+		goto fail;
 
 #ifdef WITH_SELINUX
 	if (set_selinux_file_context (db->filename, S_IFREG) != 0) {
-		errors++;
+		errors = true;
 	}
 #endif
 
@@ -992,26 +967,24 @@ int commonio_close (struct commonio_db *db)
 	}
 
 	if (write_all (db) != 0) {
-		errors++;
+		errors = true;
 	}
 
 	if (fflush (db->fp) != 0) {
-		errors++;
+		errors = true;
 	}
-#ifdef HAVE_FSYNC
+
 	if (fsync (fileno (db->fp)) != 0) {
-		errors++;
+		errors = true;
 	}
-#else				/* !HAVE_FSYNC */
-	sync ();
-#endif				/* !HAVE_FSYNC */
+
 	if (fclose (db->fp) != 0) {
-		errors++;
+		errors = true;
 	}
 
 	db->fp = NULL;
 
-	if (errors != 0) {
+	if (errors) {
 		unlink (buf);
 		goto fail;
 	}
@@ -1029,11 +1002,11 @@ int commonio_close (struct commonio_db *db)
 	nscd_need_reload = true;
 	goto success;
       fail:
-	errors++;
+	errors = true;
       success:
 
 	free_linked_list (db);
-	return errors == 0;
+	return !errors;
 }
 
 static /*@dependent@*/ /*@null@*/struct commonio_entry *next_entry_by_name (
@@ -1051,7 +1024,7 @@ static /*@dependent@*/ /*@null@*/struct commonio_entry *next_entry_by_name (
 	for (p = pos; NULL != p; p = p->next) {
 		ep = p->eptr;
 		if (   (NULL != ep)
-		    && (strcmp (db->ops->getname (ep), name) == 0)) {
+		    && streq(db->ops->getname(ep), name)) {
 			break;
 		}
 	}
@@ -1096,7 +1069,7 @@ int commonio_update (struct commonio_db *db, const void *eptr)
 		return 1;
 	}
 	/* not found, new entry */
-	p = (struct commonio_entry *) malloc (sizeof *p);
+	p = MALLOC(1, struct commonio_entry);
 	if (NULL == p) {
 		db->ops->free (nentry);
 		errno = ENOMEM;
@@ -1133,7 +1106,7 @@ int commonio_append (struct commonio_db *db, const void *eptr)
 		return 0;
 	}
 	/* new entry */
-	p = (struct commonio_entry *) malloc (sizeof *p);
+	p = MALLOC(1, struct commonio_entry);
 	if (NULL == p) {
 		db->ops->free (nentry);
 		errno = ENOMEM;
@@ -1200,6 +1173,8 @@ int commonio_remove (struct commonio_db *db, const char *name)
 		db->ops->free (p->eptr);
 	}
 
+	free(p);
+
 	return 1;
 }
 
@@ -1255,7 +1230,7 @@ int commonio_rewind (struct commonio_db *db)
 
 	if (!db->isopen) {
 		errno = EINVAL;
-		return 0;
+		return NULL;
 	}
 	if (NULL == db->cursor) {
 		db->cursor = db->head;

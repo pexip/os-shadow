@@ -11,17 +11,32 @@
 
 #ident "$Id$"
 
-#include "prototypes.h"
-#include "defines.h"
-#include <stdio.h>
-#include <stdlib.h>
 #include <ctype.h>
 #include <errno.h>
+#include <stddef.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 #ifdef USE_ECONF
 #include <libeconf.h>
 #endif
+
+#include "atoi/a2i/a2s.h"
+#include "atoi/a2i/a2u.h"
+#include "atoi/str2i/str2u.h"
+#include "defines.h"
 #include "getdef.h"
+#include "prototypes.h"
 #include "shadowlog_internal.h"
+#include "string/sprintf/xasprintf.h"
+#include "string/strcmp/strcaseeq.h"
+#include "string/strcmp/streq.h"
+#include "string/strspn/stpspn.h"
+#include "string/strspn/stprspn.h"
+#include "string/strtok/stpsep.h"
+
+
 /*
  * A configuration item definition.
  */
@@ -33,7 +48,6 @@ struct itemdef {
 #define PAMDEFS					\
 	{"CHFN_AUTH", NULL},			\
 	{"CHSH_AUTH", NULL},			\
-	{"CRACKLIB_DICTPATH", NULL},		\
 	{"ENV_HZ", NULL},			\
 	{"ENVIRON_FILE", NULL},			\
 	{"ENV_TZ", NULL},			\
@@ -132,10 +146,8 @@ static struct itemdef def_table[] = {
 #ifndef USE_PAM
 	PAMDEFS
 #endif
-#ifdef USE_SYSLOG
 	{"SYSLOG_SG_ENAB", NULL},
 	{"SYSLOG_SU_ENAB", NULL},
-#endif
 #ifdef WITH_TCB
 	{"TCB_AUTH_GROUP", NULL},
 	{"TCB_SYMLINKS", NULL},
@@ -147,7 +159,6 @@ static struct itemdef def_table[] = {
 	{NULL, NULL}
 };
 
-#define NUMKNOWNDEFS	(sizeof(knowndef_table)/sizeof(knowndef_table[0]))
 static struct itemdef knowndef_table[] = {
 #ifdef USE_PAM
 	PAMDEFS
@@ -173,7 +184,7 @@ static const char* def_fname = LOGINDEFS;	/* login config defs file       */
 static bool def_loaded = false;		/* are defs already loaded?     */
 
 /* local function prototypes */
-static /*@observer@*/ /*@null@*/struct itemdef *def_find (const char *);
+static /*@observer@*/ /*@null@*/struct itemdef *def_find (const char *, const char *);
 static void def_load (void);
 
 
@@ -192,8 +203,8 @@ static void def_load (void);
 		def_load ();
 	}
 
-	d = def_find (item);
-	return ((NULL == d)? (const char *) NULL : d->value);
+	d = def_find (item, NULL);
+	return (NULL == d) ? NULL : d->value;
 }
 
 
@@ -211,12 +222,12 @@ bool getdef_bool (const char *item)
 		def_load ();
 	}
 
-	d = def_find (item);
+	d = def_find (item, NULL);
 	if ((NULL == d) || (NULL == d->value)) {
 		return false;
 	}
 
-	return (strcasecmp (d->value, "yes") == 0);
+	return strcaseeq(d->value, "yes");
 }
 
 
@@ -228,30 +239,29 @@ bool getdef_bool (const char *item)
  * values are handled.
  */
 
-int getdef_num (const char *item, int dflt)
+int
+getdef_num(const char *item, int dflt)
 {
-	struct itemdef *d;
-	long val;
+	int             val;
+	struct itemdef  *d;
 
 	if (!def_loaded) {
 		def_load ();
 	}
 
-	d = def_find (item);
+	d = def_find (item, NULL);
 	if ((NULL == d) || (NULL == d->value)) {
 		return dflt;
 	}
 
-	if (   (getlong (d->value, &val) == 0)
-	    || (val > INT_MAX)
-	    || (val < INT_MIN)) {
+	if (a2si(&val, d->value, NULL, 0, -1, INT_MAX) == -1) {
 		fprintf (shadow_logfd,
 		         _("configuration error - cannot parse %s value: '%s'"),
 		         item, d->value);
 		return dflt;
 	}
 
-	return (int) val;
+	return val;
 }
 
 
@@ -263,30 +273,29 @@ int getdef_num (const char *item, int dflt)
  * values are handled.
  */
 
-unsigned int getdef_unum (const char *item, unsigned int dflt)
+unsigned int
+getdef_unum(const char *item, unsigned int dflt)
 {
-	struct itemdef *d;
-	long val;
+	unsigned int    val;
+	struct itemdef  *d;
 
 	if (!def_loaded) {
 		def_load ();
 	}
 
-	d = def_find (item);
+	d = def_find (item, NULL);
 	if ((NULL == d) || (NULL == d->value)) {
 		return dflt;
 	}
 
-	if (   (getlong (d->value, &val) == 0)
-	    || (val < 0)
-	    || (val > INT_MAX)) {
+	if (a2ui(&val, d->value, NULL, 0, 0, UINT_MAX) == -1) {
 		fprintf (shadow_logfd,
 		         _("configuration error - cannot parse %s value: '%s'"),
 		         item, d->value);
 		return dflt;
 	}
 
-	return (unsigned int) val;
+	return val;
 }
 
 
@@ -307,12 +316,12 @@ long getdef_long (const char *item, long dflt)
 		def_load ();
 	}
 
-	d = def_find (item);
+	d = def_find (item, NULL);
 	if ((NULL == d) || (NULL == d->value)) {
 		return dflt;
 	}
 
-	if (getlong (d->value, &val) == 0) {
+	if (a2sl(&val, d->value, NULL, 0, -1, LONG_MAX) == -1) {
 		fprintf (shadow_logfd,
 		         _("configuration error - cannot parse %s value: '%s'"),
 		         item, d->value);
@@ -339,12 +348,12 @@ unsigned long getdef_ulong (const char *item, unsigned long dflt)
 		def_load ();
 	}
 
-	d = def_find (item);
+	d = def_find (item, NULL);
 	if ((NULL == d) || (NULL == d->value)) {
 		return dflt;
 	}
 
-	if (getulong (d->value, &val) == 0) {
+	if (str2ul(&val, d->value) == -1) {
 		fprintf (shadow_logfd,
 		         _("configuration error - cannot parse %s value: '%s'"),
 		         item, d->value);
@@ -359,7 +368,7 @@ unsigned long getdef_ulong (const char *item, unsigned long dflt)
  * (also used when loading the initial defaults)
  */
 
-int putdef_str (const char *name, const char *value)
+int putdef_str (const char *name, const char *value, const char *srcfile)
 {
 	struct itemdef *d;
 	char *cp;
@@ -372,10 +381,9 @@ int putdef_str (const char *name, const char *value)
 	 * Locate the slot to save the value.  If this parameter
 	 * is unknown then "def_find" will print an err message.
 	 */
-	d = def_find (name);
-	if (NULL == d) {
+	d = def_find (name, srcfile);
+	if (NULL == d)
 		return -1;
-	}
 
 	/*
 	 * Save off the value.
@@ -399,9 +407,12 @@ int putdef_str (const char *name, const char *value)
  *
  * Search through a table of configurable items to locate the
  * specified configuration option.
+ *
+ * If srcfile is not NULL, and the item is not found, then report an error saying
+ * the unknown item was used in this file.
  */
 
-static /*@observer@*/ /*@null@*/struct itemdef *def_find (const char *name)
+static /*@observer@*/ /*@null@*/struct itemdef *def_find (const char *name, const char *srcfile)
 {
 	struct itemdef *ptr;
 
@@ -410,7 +421,7 @@ static /*@observer@*/ /*@null@*/struct itemdef *def_find (const char *name)
 	 */
 
 	for (ptr = def_table; NULL != ptr->name; ptr++) {
-		if (strcmp (ptr->name, name) == 0) {
+		if (streq(ptr->name, name)) {
 			return ptr;
 		}
 	}
@@ -420,17 +431,18 @@ static /*@observer@*/ /*@null@*/struct itemdef *def_find (const char *name)
 	 */
 
 	for (ptr = knowndef_table; NULL != ptr->name; ptr++) {
-		if (strcmp (ptr->name, name) == 0) {
+		if (streq(ptr->name, name)) {
 			goto out;
 		}
 	}
 	fprintf (shadow_logfd,
 	         _("configuration error - unknown item '%s' (notify administrator)\n"),
 	         name);
-	SYSLOG ((LOG_CRIT, "unknown configuration item `%s'", name));
+	if (srcfile != NULL)
+		SYSLOG ((LOG_CRIT, "shadow: unknown configuration item '%s' in '%s'", name, srcfile));
 
 out:
-	return (struct itemdef *) NULL;
+	return NULL;
 }
 
 /*
@@ -442,21 +454,12 @@ out:
 void setdef_config_file (const char* file)
 {
 #ifdef USE_ECONF
-	size_t len;
-	char* cp;
+	char  *cp;
 
-	len = strlen(file) + strlen(sysconfdir) + 2;
-	cp = malloc(len);
-	if (cp == NULL)
-		exit (13);
-	snprintf(cp, len, "%s/%s", file, sysconfdir);
+	xasprintf(&cp, "%s/%s", file, sysconfdir);
 	sysconfdir = cp;
 #ifdef VENDORDIR
-	len = strlen(file) + strlen(vendordir) + 2;
-	cp = malloc(len);
-	if (cp == NULL)
-		exit (13);
-	snprintf(cp, len, "%s/%s", file, vendordir);
+	xasprintf(&cp, "%s/%s", file, vendordir);
 	vendordir = cp;
 #endif
 #else
@@ -470,26 +473,19 @@ void setdef_config_file (const char* file)
  * Loads the user-configured options from the default configuration file
  */
 
+#ifdef USE_ECONF
 static void def_load (void)
 {
-#ifdef USE_ECONF
 	econf_file *defs_file = NULL;
 	econf_err error;
 	char **keys;
 	size_t key_number;
-#else
-	int i;
-	FILE *fp;
-	char buf[1024], *name, *value, *s;
-#endif
 
 	/*
 	 * Set the initialized flag.
 	 * (do it early to prevent recursion in putdef_str())
 	 */
 	def_loaded = true;
-
-#ifdef USE_ECONF
 
 	error = econf_readDirs (&defs_file, vendordir, sysconfdir, "login", "defs", " \t", "#");
 	if (error) {
@@ -510,7 +506,12 @@ static void def_load (void)
 	for (size_t i = 0; i < key_number; i++) {
 		char *value;
 
-		econf_getStringValue(defs_file, NULL, keys[i], &value);
+		error = econf_getStringValue(defs_file, NULL, keys[i], &value);
+		if (error) {
+			SYSLOG ((LOG_CRIT, "failed reading key %zu from econf [%s]",
+				i, econf_errString(error)));
+			exit (EXIT_FAILURE);
+		}
 
 		/*
 		 * Store the value in def_table.
@@ -519,12 +520,26 @@ static void def_load (void)
 		 * The error was already reported to the user and to
 		 * syslog. The tools will just use their default values.
 		 */
-		(void)putdef_str (keys[i], value);
+		(void)putdef_str (keys[i], value, econf_getPath(defs_file));
+
+		free(value);
 	}
 
 	econf_free (keys);
 	econf_free (defs_file);
-#else
+}
+#else /* USE_ECONF */
+static void def_load (void)
+{
+	FILE *fp;
+	char buf[1024], *name, *value, *s;
+
+	/*
+	 * Set the initialized flag.
+	 * (do it early to prevent recursion in putdef_str())
+	 */
+	def_loaded = true;
+
 	/*
 	 * Open the configuration definitions file.
 	 */
@@ -542,33 +557,26 @@ static void def_load (void)
 	/*
 	 * Go through all of the lines in the file.
 	 */
-	while (fgets (buf, (int) sizeof (buf), fp) != NULL) {
+	while (fgets (buf, sizeof (buf), fp) != NULL) {
 
 		/*
 		 * Trim trailing whitespace.
 		 */
-		for (i = (int) strlen (buf) - 1; i >= 0; --i) {
-			if (!isspace (buf[i])) {
-				break;
-			}
-		}
-		i++;
-		buf[i] = '\0';
+		stpcpy(stprspn(buf, " \t\n"), "");
 
 		/*
 		 * Break the line into two fields.
 		 */
-		name = buf + strspn (buf, " \t");	/* first nonwhite */
-		if (*name == '\0' || *name == '#')
+		name = stpspn(buf, " \t");	/* first nonwhite */
+		if (streq(name, "") || *name == '#')
 			continue;	/* comment or empty */
 
-		s = name + strcspn (name, " \t");	/* end of field */
-		if (*s == '\0')
+		s = stpsep(name, " \t");  /* next field */
+		if (s == NULL)
 			continue;	/* only 1 field?? */
 
-		*s++ = '\0';
-		value = s + strspn (s, " \"\t");	/* next nonwhite */
-		*(value + strcspn (value, "\"")) = '\0';
+		value = stpspn(s, " \"\t");	/* next nonwhite */
+		stpsep(value, "\"");
 
 		/*
 		 * Store the value in def_table.
@@ -577,7 +585,7 @@ static void def_load (void)
 		 * The error was already reported to the user and to
 		 * syslog. The tools will just use their default values.
 		 */
-		(void)putdef_str (name, value);
+		(void)putdef_str (name, value, def_fname);
 	}
 
 	if (ferror (fp) != 0) {
@@ -588,8 +596,8 @@ static void def_load (void)
 	}
 
 	(void) fclose (fp);
-#endif
 }
+#endif /* USE_ECONF */
 
 
 #ifdef CKDEFS
@@ -602,7 +610,7 @@ int main (int argc, char **argv)
 	def_load ();
 
 	for (i = 0; i < NUMDEFS; ++i) {
-		d = def_find (def_table[i].name);
+		d = def_find (def_table[i].name, NULL);
 		if (NULL == d) {
 			printf ("error - lookup '%s' failed\n",
 			        def_table[i].name);

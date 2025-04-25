@@ -2,12 +2,12 @@
 .\"     Title: shadow
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 08/11/2022
-.\"    Manual: Виклики бібліотеки
-.\"    Source: shadow-utils 4.13
+.\"      Date: 19/03/2025
+.\"    Manual: Library Calls
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: Ukrainian
 .\"
-.TH "shadow" "3" "08/11/2022" "shadow\-utils 4\&.13" "Виклики бібліотеки"
+.TH "shadow" "3" "19/03/2025" "shadow\-utils 4\&.17\&.4" "Library Calls"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -50,7 +50,7 @@ shadow, getspnam \- підпрограми для файла зашифрова�
 .PP
 \fIint putspent(struct spwd\fR
 \fI*p,\fR
-\fIФАЙЛ\fR
+\fIFILE\fR
 \fI*fp\fR\fI);\fR
 .PP
 \fIint lckpwdf();\fR
@@ -59,9 +59,10 @@ shadow, getspnam \- підпрограми для файла зашифрова�
 .SH "ОПИС"
 .PP
 \fIshadow\fR
-керує вмістом файла прихованих паролів,
-/etc/shadow\&. Структура файла
-\fI#include\fR:
+manipulates the contents of the shadow password file,
+/etc/shadow\&. The structure in the
+\fI#include\fR
+file is:
 .sp
 .if n \{\
 .RS 4
@@ -177,45 +178,47 @@ sp_flag \- зарезервовано для використання у май�
 .PP
 \fIgetspent\fR,
 \fIgetspname\fR,
-\fIfgetspent\fR
-і
+\fIfgetspent\fR, and
 \fIsgetspent\fR
-усі повертають вказівник на
+each return a pointer to a
 \fIstruct spwd\fR\&.
 \fIgetspent\fR
-повертає наступний запис з файла, а
+returns the next entry from the file, and
 \fIfgetspent\fR
-повертає наступний запис з заданого потоку даних, яким має бути файл у належному форматі\&.
+returns the next entry from the given stream, which is assumed to be a file of the proper format\&.
 \fIsgetspent\fR
-повертає вказівник на
-\fIstruct spwd\fR, використовуючи вхідні дані з наданого рядок\&.
+returns a pointer to a
+\fIstruct spwd\fR
+using the provided string as input\&.
 \fIgetspnam\fR
-шукає з поточної позиції у файлів запис, що відповідає рядку
+searches from the current position in the file for an entry matching
 \fIname\fR\&.
 .PP
 \fIsetspent\fR
-і
+and
 \fIendspent\fR
-можна скористатися для того, щоб відкрити або закрити, відповідно, доступ до файла прихованих паролів\&.
+may be used to begin and end, respectively, access to the shadow password file\&.
 .PP
-Підпрограмами
+The
 \fIlckpwdf\fR
-і
+and
 \fIulckpwdf\fR
-слід користуватися для забезпечення виключного доступу до файла
-/etc/shadow\&.
+routines should be used to insure exclusive access to the
+/etc/shadow
+file\&.
 \fIlckpwdf\fR
-намагається отримати блокування за допомогою
+attempts to acquire a lock using
 \fIpw_lock\fR
-протягом періоду до 15 секунд\&. Підпрограма продовжує спроби отримати друге блокування
+for up to 15 seconds\&. It continues by attempting to acquire a second lock using
 \fIspw_lock\fR
-за решту початкових 15 секунд\&. Якщо протягом загального періоду у 15 секунд спроби завершаться невдачею,
+for the remainder of the initial 15 seconds\&. Should either attempt fail after a total of 15 seconds,
 \fIlckpwdf\fR
-повертає \-1\&. Якщо вдасться отримати обидва блокування, буде повернуто 0\&.
+returns \-1\&. When both locks are acquired 0 is returned\&.
 .SH "ДІАГНОСТИКА"
 .PP
-Підпрограми повертають NULL, якщо не залишилося доступних записів або якщо станеться помилка під час обробки даних\&. Підпрограми, які повертають значення типу
-\fIint\fR, повертають 0, якщо підпрограму виконано успішно, і \-1, якщо виконання підпрограми завершилося помилкою\&.
+Routines return NULL if no more entries are available or if an error occurs during processing\&. Routines which have
+\fIint\fR
+as the return value return 0 for success and \-1 for failure\&.
 .SH "ЗАСТЕРЕЖЕННЯ"
 .PP
 Цими підпрограмами може користуватися лише надкористувач, оскільки доступ до файла прихованих паролів обмежено\&.

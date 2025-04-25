@@ -14,13 +14,16 @@
 #include <fcntl.h>
 #include <getopt.h>
 #include <pwd.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+
 #ifdef ACCT_TOOLS_SETUID
 #ifdef USE_PAM
 #include "pam_defs.h"
 #endif				/* USE_PAM */
 #endif				/* ACCT_TOOLS_SETUID */
+#include "atoi/str2i/str2s.h"
 #include "defines.h"
 #include "nscd.h"
 #include "sssd.h"
@@ -32,11 +35,14 @@
 /*@-exitarg@*/
 #include "exitcodes.h"
 #include "shadowlog.h"
+#include "string/strcmp/streq.h"
+#include "string/strtok/stpsep.h"
+
 
 /*
  * Global variables
  */
-const char *Prog;
+static const char Prog[] = "chgpasswd";
 static bool eflg   = false;
 static bool md5flg = false;
 #if defined(USE_SHA_CRYPT) || defined(USE_BCRYPT) || defined(USE_YESCRYPT)
@@ -62,8 +68,8 @@ static bool sgr_locked = false;
 static bool gr_locked = false;
 
 /* local function prototypes */
-static void fail_exit (int code);
-static /*@noreturn@*/void usage (int status);
+NORETURN static void fail_exit (int code);
+NORETURN static void usage (int status);
 static void process_flags (int argc, char **argv);
 static void check_flags (void);
 static void check_perms (void);
@@ -99,7 +105,9 @@ static void fail_exit (int code)
 /*
  * usage - display usage message and exit
  */
-static /*@noreturn@*/void usage (int status)
+NORETURN
+static void
+usage (int status)
 {
 	FILE *usageout = (E_SUCCESS != status) ? stderr : stdout;
 	(void) fprintf (usageout,
@@ -184,21 +192,28 @@ static void process_flags (int argc, char **argv)
 		case 's':
 			sflg = true;
                         bad_s = 0;
+
+			if (!crypt_method) {
+				fprintf (stderr,
+				         _("%s: no crypt method defined\n"),
+				         Prog);
+				usage (E_USAGE);
+			}
 #if defined(USE_SHA_CRYPT)
-			if (  (   ((0 == strcmp (crypt_method, "SHA256")) || (0 == strcmp (crypt_method, "SHA512")))
-			       && (0 == getlong(optarg, &sha_rounds)))) {
+			if (  (   (streq(crypt_method, "SHA256") || streq(crypt_method, "SHA512"))
+			       && (-1 == str2sl(&sha_rounds, optarg)))) {
                             bad_s = 1;
                         }
 #endif				/* USE_SHA_CRYPT */
 #if defined(USE_BCRYPT)
-                        if ((   (0 == strcmp (crypt_method, "BCRYPT"))
-			       && (0 == getlong(optarg, &bcrypt_rounds)))) {
+                        if ((   streq(crypt_method, "BCRYPT")
+			       && (-1 == str2sl(&bcrypt_rounds, optarg)))) {
                             bad_s = 1;
                         }
 #endif				/* USE_BCRYPT */
 #if defined(USE_YESCRYPT)
-                        if ((   (0 == strcmp (crypt_method, "YESCRYPT"))
-			       && (0 == getlong(optarg, &yescrypt_cost)))) {
+                        if ((   streq(crypt_method, "YESCRYPT")
+			       && (-1 == str2sl(&yescrypt_cost, optarg)))) {
                             bad_s = 1;
                         }
 #endif				/* USE_YESCRYPT */
@@ -246,18 +261,18 @@ static void check_flags (void)
 	}
 
 	if (cflg) {
-		if (   (0 != strcmp (crypt_method, "DES"))
-		    && (0 != strcmp (crypt_method, "MD5"))
-		    && (0 != strcmp (crypt_method, "NONE"))
+		if (   !streq(crypt_method, "DES")
+		    && !streq(crypt_method, "MD5")
+		    && !streq(crypt_method, "NONE")
 #ifdef USE_SHA_CRYPT
-		    && (0 != strcmp (crypt_method, "SHA256"))
-		    && (0 != strcmp (crypt_method, "SHA512"))
+		    && !streq(crypt_method, "SHA256")
+		    && !streq(crypt_method, "SHA512")
 #endif				/* USE_SHA_CRYPT */
 #ifdef USE_BCRYPT
-		    && (0 != strcmp (crypt_method, "BCRYPT"))
+		    && !streq(crypt_method, "BCRYPT")
 #endif				/* USE_BCRYPT */
 #ifdef USE_YESCRYPT
-		    && (0 != strcmp (crypt_method, "YESCRYPT"))
+		    && !streq(crypt_method, "YESCRYPT")
 #endif				/* USE_YESCRYPT */
 		    ) {
 			fprintf (stderr,
@@ -294,7 +309,7 @@ static void check_perms (void)
 		exit (1);
 	}
 
-	retval = pam_start ("chgpasswd", pampw->pw_name, &conv, &pamh);
+	retval = pam_start (Prog, pampw->pw_name, &conv, &pamh);
 
 	if (PAM_SUCCESS == retval) {
 		retval = pam_authenticate (pamh, 0);
@@ -411,10 +426,9 @@ int main (int argc, char **argv)
 
 	const struct group *gr;
 	struct group newgr;
-	int errors = 0;
-	int line = 0;
+	bool errors = false;
+	intmax_t line = 0;
 
-	Prog = Basename (argv[0]);
 	log_set_progname(Prog);
 	log_set_logfd(stderr);
 
@@ -422,11 +436,17 @@ int main (int argc, char **argv)
 	(void) bindtextdomain (PACKAGE, LOCALEDIR);
 	(void) textdomain (PACKAGE);
 
+#ifdef WITH_SELINUX
+	if (check_selinux_permit ("passwd") != 0) {
+		return (E_NOPERM);
+	}
+#endif				/* WITH_SELINUX */
+
 	process_root_flag ("-R", argc, argv);
 
 	process_flags (argc, argv);
 
-	OPENLOG ("chgpasswd");
+	OPENLOG (Prog);
 
 	check_perms ();
 
@@ -441,15 +461,12 @@ int main (int argc, char **argv)
 	 * group entry for each group will be looked up in the appropriate
 	 * file (gshadow or group) and the password changed.
 	 */
-	while (fgets (buf, (int) sizeof buf, stdin) != (char *) 0) {
+	while (fgets (buf, (int) sizeof buf, stdin) != NULL) {
 		line++;
-		cp = strrchr (buf, '\n');
-		if (NULL != cp) {
-			*cp = '\0';
-		} else {
-			fprintf (stderr, _("%s: line %d: line too long\n"),
+		if (stpsep(buf, "\n") == NULL) {
+			fprintf (stderr, _("%s: line %jd: line too long\n"),
 			         Prog, line);
-			errors++;
+			errors = true;
 			continue;
 		}
 
@@ -463,21 +480,18 @@ int main (int argc, char **argv)
 		 */
 
 		name = buf;
-		cp = strchr (name, ':');
-		if (NULL != cp) {
-			*cp = '\0';
-			cp++;
-		} else {
+		cp = stpsep(name, ":");
+		if (cp == NULL) {
 			fprintf (stderr,
-			         _("%s: line %d: missing new password\n"),
+			         _("%s: line %jd: missing new password\n"),
 			         Prog, line);
-			errors++;
+			errors = true;
 			continue;
 		}
 		newpwd = cp;
 		if (   (!eflg)
 		    && (   (NULL == crypt_method)
-		        || (0 != strcmp (crypt_method, "NONE")))) {
+		        || !streq(crypt_method, "NONE"))) {
 			void *arg = NULL;
 			const char *salt;
 			if (md5flg) {
@@ -486,18 +500,18 @@ int main (int argc, char **argv)
 #if defined(USE_SHA_CRYPT) || defined(USE_BCRYPT) || defined(USE_YESCRYPT)
 			if (sflg) {
 #if defined(USE_SHA_CRYPT)
-				if (   (0 == strcmp (crypt_method, "SHA256"))
-					|| (0 == strcmp (crypt_method, "SHA512"))) {
+				if (   streq(crypt_method, "SHA256")
+					|| streq(crypt_method, "SHA512")) {
 					arg = &sha_rounds;
 				}
 #endif				/* USE_SHA_CRYPT */
 #if defined(USE_BCRYPT)
-				if (0 == strcmp (crypt_method, "BCRYPT")) {
+				if (streq(crypt_method, "BCRYPT")) {
 					arg = &bcrypt_rounds;
 				}
 #endif				/* USE_BCRYPT */
 #if defined(USE_YESCRYPT)
-				if (0 == strcmp (crypt_method, "YESCRYPT")) {
+				if (streq(crypt_method, "YESCRYPT")) {
 					arg = &yescrypt_cost;
 				}
 #endif				/* USE_YESCRYPT */
@@ -520,9 +534,9 @@ int main (int argc, char **argv)
 		gr = gr_locate (name);
 		if (NULL == gr) {
 			fprintf (stderr,
-			         _("%s: line %d: group '%s' does not exist\n"), Prog,
+			         _("%s: line %jd: group '%s' does not exist\n"), Prog,
 			         line, name);
-			errors++;
+			errors = true;
 			continue;
 		}
 #ifdef SHADOWGRP
@@ -536,14 +550,14 @@ int main (int argc, char **argv)
 			sg = sgr_locate (name);
 
 			if (   (NULL == sg)
-			    && (strcmp (gr->gr_passwd,
-			                SHADOW_PASSWD_STRING) == 0)) {
+			    && streq(gr->gr_passwd, SHADOW_PASSWD_STRING))
+			{
 				static char *empty = NULL;
 				/* If the password is set to 'x' in
 				 * group, but there are no entries in
 				 * gshadow, create one.
 				 */
-				newsg.sg_name   = name;
+				newsg.sg_namp   = name;
 				/* newsg.sg_passwd = NULL; will be set later */
 				newsg.sg_adm    = &empty;
 				newsg.sg_mem    = dup_list (gr->gr_mem);
@@ -564,7 +578,7 @@ int main (int argc, char **argv)
 			newsg.sg_passwd = cp;
 		}
 		if (   (NULL == sg)
-		    || (strcmp (gr->gr_passwd, SHADOW_PASSWD_STRING) != 0))
+		    || !streq(gr->gr_passwd, SHADOW_PASSWD_STRING))
 #endif
 		{
 			newgr = *gr;
@@ -580,21 +594,21 @@ int main (int argc, char **argv)
 		if (NULL != sg) {
 			if (sgr_update (&newsg) == 0) {
 				fprintf (stderr,
-				         _("%s: line %d: failed to prepare the new %s entry '%s'\n"),
-				         Prog, line, sgr_dbname (), newsg.sg_name);
-				errors++;
+				         _("%s: line %jd: failed to prepare the new %s entry '%s'\n"),
+				         Prog, line, sgr_dbname (), newsg.sg_namp);
+				errors = true;
 				continue;
 			}
 		}
 		if (   (NULL == sg)
-		    || (strcmp (gr->gr_passwd, SHADOW_PASSWD_STRING) != 0))
+		    || !streq(gr->gr_passwd, SHADOW_PASSWD_STRING))
 #endif
 		{
 			if (gr_update (&newgr) == 0) {
 				fprintf (stderr,
-				         _("%s: line %d: failed to prepare the new %s entry '%s'\n"),
+				         _("%s: line %jd: failed to prepare the new %s entry '%s'\n"),
 				         Prog, line, gr_dbname (), newgr.gr_name);
-				errors++;
+				errors = true;
 				continue;
 			}
 		}
@@ -607,7 +621,7 @@ int main (int argc, char **argv)
 	 * changes to be written out all at once, and then unlocked
 	 * afterwards.
 	 */
-	if (0 != errors) {
+	if (errors) {
 		fprintf (stderr,
 		         _("%s: error detected, changes ignored\n"), Prog);
 		fail_exit (1);

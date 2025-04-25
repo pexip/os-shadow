@@ -2,12 +2,12 @@
 .\"     Title: chsh
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 08.11.2022
-.\"    Manual: Dienstprogramme f\(:ur Benutzer
-.\"    Source: shadow-utils 4.13
+.\"      Date: 19.03.2025
+.\"    Manual: User Commands
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: German
 .\"
-.TH "CHSH" "1" "08.11.2022" "shadow\-utils 4\&.13" "Dienstprogramme f\(:ur Benutzer"
+.TH "CHSH" "1" "19.03.2025" "shadow\-utils 4\&.17\&.4" "User Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -31,7 +31,7 @@
 chsh \- \(:andert die Anmelde\-Shell
 .SH "\(:UBERSICHT"
 .HP \w'\fBchsh\fR\ 'u
-\fBchsh\fR [\fIOptionen\fR] [\fIANMELDENAME\fR]
+\fBchsh\fR [\fIoptions\fR] [\fILOGIN\fR]
 .SH "BESCHREIBUNG"
 .PP
 The
@@ -45,7 +45,7 @@ command are:
 .PP
 \fB\-h\fR, \fB\-\-help\fR
 .RS 4
-zeigt die Hilfe an und beendet das Programm
+zeigt die Hilfe an und beendet das Programm\&.
 .RE
 .PP
 \fB\-R\fR, \fB\-\-root\fR\ \&\fICHROOT_DIR\fR
@@ -59,7 +59,11 @@ directory\&. Only absolute paths are supported\&.
 .PP
 \fB\-s\fR, \fB\-\-shell\fR\ \&\fISHELL\fR
 .RS 4
-The name of the user\*(Aqs new login shell\&. Setting this field to blank causes the system to select the default login shell\&.
+\(:andert die Anmelde\-Shell des Benutzers\&. Mit dem Leerstring als
+\fISHELL\fR
+wird dieser in die Datei
+/etc/passwd
+\(:ubernommen und dem Benutzer nach der Anmeldung die Standard\-Shell des Systems zur Verf\(:ugung gestellt\&.
 .RE
 .PP
 If the
@@ -73,6 +77,12 @@ marks\&.
 .PP
 The only restriction placed on the login shell is that the command name must be listed in
 /etc/shells, unless the invoker is the superuser, and then any value may be added\&. An account with a restricted login shell may not change her login shell\&. For this reason, placing
+/bin/rsh
+in
+/etc/shells
+is discouraged since accidentally changing to a restricted shell would prevent the user from ever changing her login shell back to its original value\&.
+.PP
+For this reason, placing
 /bin/rsh
 in
 /etc/shells
@@ -91,12 +101,12 @@ Informationen zu den Benutzerkonten
 .PP
 /etc/shells
 .RS 4
-Liste der m\(:oglichen Anmelde\-Shells
+Liste g\(:ultiger Anmelde\-Shells
 .RE
 .PP
 /etc/login\&.defs
 .RS 4
-Konfiguration der Shadow\-Passwort\-Werkzeugsammlung
+konfiguriert die Shadow\-Hilfsprogramme\&.
 .RE
 .SH "SIEHE AUCH"
 .PP

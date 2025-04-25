@@ -70,7 +70,7 @@
     <variablelist remap='IP'>
       <varlistentry>
 	<term>
-	  <option>-a</option>, <option>--append</option>&nbsp;<replaceable>GID</replaceable>
+	  <option>-a</option>, <option>--append</option>
 	</term>
 	<listitem>
       <para>If group members are specified with -U, append them to the existing
@@ -195,13 +195,13 @@
 	</term>
 	<listitem>
 	  <para>
-	    A list of usernames to add as members of the group.
+	    A comma-separated list of usernames to add as members of the group.
 	  </para>
 	  <para>
-	    The default behavior (if the <option>-g</option>,
-	    <option>-N</option>, and <option>-U</option> options are not
-	    specified) is defined by the <option>USERGROUPS_ENAB</option>
-	    variable in <filename>/etc/login.defs</filename>.
+	    The default behavior (if the <option>-g</option> and
+	    <option>-U</option> options are not specified) is defined by the
+	    <option>USERGROUPS_ENAB</option> variable in
+	    <filename>/etc/login.defs</filename>.
 	  </para>
 	</listitem>
       </varlistentry>

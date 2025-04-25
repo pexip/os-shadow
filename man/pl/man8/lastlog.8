@@ -2,12 +2,12 @@
 .\"     Title: lastlog
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 11/08/2022
-.\"    Manual: Polecenia Zarządzania Systemem
-.\"    Source: shadow-utils 4.13
+.\"      Date: 03/19/2025
+.\"    Manual: System Management Commands
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: Polish
 .\"
-.TH "LASTLOG" "8" "11/08/2022" "shadow\-utils 4\&.13" "Polecenia Zarządzania Systemem"
+.TH "LASTLOG" "8" "03/19/2025" "shadow\-utils 4\&.17\&.4" "System Management Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -31,7 +31,7 @@
 lastlog \- wyświetla informacje o ostanim logowaniu dla wybranego lub wszystkich użytkowanik\('ow
 .SH "STRESZCZENIE"
 .HP \w'\fBlastlog\fR\ 'u
-\fBlastlog\fR [\fIopcje\fR]
+\fBlastlog\fR [\fIoptions\fR]
 .SH "OPIS"
 .PP
 \fBlastlog\fR
@@ -100,6 +100,11 @@ of users\&. This
 of users can be specified with a min and max values (\fIUID_MIN\-UID_MAX\fR), a max value (\fI\-UID_MAX\fR), or a min value (\fIUID_MIN\-\fR)\&.
 .RE
 .PP
+\fB\-a\fR
+.RS 4
+Print the lastlog records of the users that have logged in at least once\&. Excludes records for users with \*(Aq**Never logged in**\*(Aq\&.
+.RE
+.PP
 If the user has never logged in the message
 \fI** Never logged in**\fR
 will be displayed instead of the port and time\&.
@@ -128,5 +133,5 @@ Baza danych ostatnich logowań użytkownik\('ow\&.
 Duże luki w numeracji UID powodują, że program będzie pracowa\(/l d\(/lużej, nie wyświetlając wynik\('ow (np\&. jeśli w bazie lastlog nie ma wpis\('ow dla o UID pomiedzy 170, a 800, to program będzie sprawia\(/l wrażenie zawieszonego w trakcie przetwarzania wpis\('ow dla użytkowanik\('o\(/l o UID 171\-799)\&.
 .PP
 Having high UIDs can create problems when handling the
-<term> /var/log/lastlog</term>
+/var/log/lastlog
 with external tools\&. Although the actual file is sparse and does not use too much space, certain applications are not designed to identify sparse files by default and may require a specific option to handle them\&.
