@@ -24,7 +24,7 @@ Vcs-Git: https://salsa.debian.org/debian/shadow.git -b master
 Vcs-Browser: https://salsa.debian.org/debian/shadow
 Homepage: https://github.com/shadow-maint/shadow
 Rules-Requires-Root: binary-targets
-XS-Pexip-Upstream: http://deb.debian.org/debian/ bookworm
+XS-Pexip-Upstream: http://deb.debian.org/debian/ trixie
 
 Package: passwd
 Architecture: any
