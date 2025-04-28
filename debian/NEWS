@@ -1,3 +1,27 @@
+shadow (1:4.17.0~rc1-1) unstable; urgency=medium
+
+  Username checking now once again follows the upstream rules, for
+  an ecosystem-wide ruleset and security.
+
+ -- Chris Hofstaedtler <zeha@debian.org>  Sun, 22 Dec 2024 20:12:35 +0100
+
+shadow (1:4.16.0-5) unstable; urgency=medium
+
+  /var/log/faillog and the programs to read it are no longer part since
+  1:4.15.2-2.
+  The file isn't cleaned up automatically, which should be done manually,
+  unless it is still needed for special reasons.
+
+ -- Chris Hofstaedtler <zeha@debian.org>  Sat, 16 Nov 2024 15:48:35 +0100
+
+shadow (1:4.13+dfsg1-2) unstable; urgency=medium
+
+  The previous entry falsely states that PREVENT_NO_AUTH in /etc/login.defs
+  affects authentication.  The historical default of letting all users with
+  empty password field in without authentication is still in effect.
+
+ -- Balint Reczey <balint@balintreczey.hu>  Mon, 25 Sep 2023 17:04:09 +0200
+
 shadow (1:4.11.1+dfsg1-0exp1) experimental; urgency=medium
 
   Login now prevents an empty password field to be interpreted as

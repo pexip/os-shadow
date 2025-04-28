@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: shadow 4.13\n"
+"Project-Id-Version: shadow 4.17.4\n"
 "Report-Msgid-Bugs-To: pkg-shadow-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2022-11-08 10:37-0600\n"
+"POT-Creation-Date: 2025-03-19 14:03-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,222 +19,7 @@ msgstr ""
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
 #, c-format
-msgid ""
-"Multiple entries named '%s' in %s. Please fix this with pwck or grpck.\n"
-msgstr ""
-
-#, c-format
-msgid "crypt method not supported by libcrypt? (%s)\n"
-msgstr ""
-
-#, c-format
-msgid "configuration error - cannot parse %s value: '%s'"
-msgstr ""
-
-msgid "Could not allocate space for config info.\n"
-msgstr ""
-
-#, c-format
-msgid "configuration error - unknown item '%s' (notify administrator)\n"
-msgstr ""
-
-#, c-format
-msgid "%s: nscd did not terminate normally (signal %d)\n"
-msgstr ""
-
-#, c-format
-msgid "%s: nscd exited with status %d\n"
-msgstr ""
-
-msgid "Password: "
-msgstr ""
-
-#, c-format
-msgid "%s's Password: "
-msgstr ""
-
-msgid "Cannot open audit interface.\n"
-msgstr ""
-
-#, c-format
-msgid "%s: can not get previous SELinux process context: %s\n"
-msgstr ""
-
-#, c-format
-msgid "[libsemanage]: %s\n"
-msgstr ""
-
-#, c-format
-msgid "Cannot create SELinux management handle\n"
-msgstr ""
-
-#, c-format
-msgid "SELinux policy not managed\n"
-msgstr ""
-
-#, c-format
-msgid "Cannot read SELinux policy store\n"
-msgstr ""
-
-#, c-format
-msgid "Cannot establish SELinux management connection\n"
-msgstr ""
-
-#, c-format
-msgid "Cannot begin SELinux transaction\n"
-msgstr ""
-
-#, c-format
-msgid "Could not query seuser for %s\n"
-msgstr ""
-
-#, c-format
-msgid "Could not set serange for %s\n"
-msgstr ""
-
-#, c-format
-msgid "Could not set sename for %s\n"
-msgstr ""
-
-#, c-format
-msgid "Could not modify login mapping for %s\n"
-msgstr ""
-
-#, c-format
-msgid "Cannot create SELinux login mapping for %s\n"
-msgstr ""
-
-#, c-format
-msgid "Could not set name for %s\n"
-msgstr ""
-
-#, c-format
-msgid "Could not set SELinux user for %s\n"
-msgstr ""
-
-#, c-format
-msgid "Could not add login mapping for %s\n"
-msgstr ""
-
-#, c-format
-msgid "Cannot init SELinux management\n"
-msgstr ""
-
-#, c-format
-msgid "Cannot create SELinux user key\n"
-msgstr ""
-
-#, c-format
-msgid "Cannot verify the SELinux user\n"
-msgstr ""
-
-#, c-format
-msgid "Cannot modify SELinux user mapping\n"
-msgstr ""
-
-#, c-format
-msgid "Cannot add SELinux user mapping\n"
-msgstr ""
-
-#, c-format
-msgid "Cannot commit SELinux transaction\n"
-msgstr ""
-
-#, c-format
-msgid "Login mapping for %s is not defined, OK if default mapping was used\n"
-msgstr ""
-
-#, c-format
-msgid "Login mapping for %s is defined in policy, cannot be deleted\n"
-msgstr ""
-
-#, c-format
-msgid "Could not delete login mapping for %s"
-msgstr ""
-
-#, c-format
-msgid "%s: out of memory\n"
-msgstr ""
-
-#, c-format
-msgid "%s: Cannot stat %s: %s\n"
-msgstr ""
-
-#, c-format
-msgid "%s: %s is neither a directory, nor a symlink.\n"
-msgstr ""
-
-#, c-format
-msgid "%s: Cannot read symbolic link %s: %s\n"
-msgstr ""
-
-#, c-format
-msgid "%s: Suspiciously long symlink: %s\n"
-msgstr ""
-
-#, c-format
-msgid "%s: Cannot create directory %s: %s\n"
-msgstr ""
-
-#, c-format
-msgid "%s: Cannot change owner of %s: %s\n"
-msgstr ""
-
-#, c-format
-msgid "%s: Cannot change mode of %s: %s\n"
-msgstr ""
-
-#, c-format
-msgid "%s: unlink: %s: %s\n"
-msgstr ""
-
-#, c-format
-msgid "%s: Cannot remove directory %s: %s\n"
-msgstr ""
-
-#, c-format
-msgid "%s: Cannot rename %s to %s: %s\n"
-msgstr ""
-
-#, c-format
-msgid "%s: Cannot remove %s: %s\n"
-msgstr ""
-
-#, c-format
-msgid "%s: Cannot create symbolic link %s: %s\n"
-msgstr ""
-
-#, c-format
-msgid "%s: Cannot change owners of %s: %s\n"
-msgstr ""
-
-#, c-format
-msgid "%s: Cannot lstat %s: %s\n"
-msgstr ""
-
-#, c-format
-msgid "%s: Warning, user %s has no tcb shadow file.\n"
-msgstr ""
-
-#, c-format
-msgid ""
-"%s: Emergency: %s's tcb shadow is not a regular file with st_nlink=1.\n"
-"The account is left locked.\n"
-msgstr ""
-
-#, c-format
-msgid "%s: mkdir: %s: %s\n"
-msgstr ""
-
-#, c-format
-msgid "%s: Cannot open %s: %s\n"
-msgstr ""
-
-#, c-format
 msgid "Warning: unknown group %s\n"
-msgstr ""
-
-msgid "Warning: too many groups\n"
 msgstr ""
 
 msgid "Your password has expired."
@@ -277,13 +62,19 @@ msgid "%s: failed to unlock %s\n"
 msgstr ""
 
 #, c-format
+msgid ""
+"Multiple entries named '%s' in %s. Please fix this with pwck or grpck.\n"
+msgstr ""
+
+#, c-format
 msgid "%s: "
 msgstr ""
 
 msgid ": "
 msgstr ""
 
-msgid "Environment overflow\n"
+#, c-format
+msgid "crypt method not supported by libcrypt? (%s)\n"
 msgstr ""
 
 #, c-format
@@ -379,7 +170,14 @@ msgid "%s: Can't get unique UID (no more available UIDs)\n"
 msgstr ""
 
 #, c-format
-msgid "%s: Not enough arguments to form %u mappings\n"
+msgid "configuration error - cannot parse %s value: '%s'"
+msgstr ""
+
+msgid "Could not allocate space for config info.\n"
+msgstr ""
+
+#, c-format
+msgid "configuration error - unknown item '%s' (notify administrator)\n"
 msgstr ""
 
 #, c-format
@@ -407,7 +205,7 @@ msgid "%s: Could not set caps\n"
 msgstr ""
 
 #, c-format
-msgid "%s: snprintf failed!\n"
+msgid "%s: stpeprintf failed!\n"
 msgstr ""
 
 #, c-format
@@ -418,7 +216,17 @@ msgstr ""
 msgid "%s: write to %s failed: %s\n"
 msgstr ""
 
+#, c-format
+msgid "%s: closing %s failed: %s\n"
+msgstr ""
+
 msgid "Too many logins.\n"
+msgstr ""
+
+#, c-format
+msgid ""
+"\n"
+"%s login: "
 msgstr ""
 
 msgid "You have new mail."
@@ -428,6 +236,14 @@ msgid "No mail."
 msgstr ""
 
 msgid "You have mail."
+msgstr ""
+
+#, c-format
+msgid "%s: nscd did not terminate normally (signal %d)\n"
+msgstr ""
+
+#, c-format
+msgid "%s: nscd exited with status %d\n"
 msgstr ""
 
 msgid "no change"
@@ -440,9 +256,6 @@ msgid "case changes only"
 msgstr ""
 
 msgid "too similar"
-msgstr ""
-
-msgid "too simple"
 msgstr ""
 
 msgid "rotated"
@@ -487,6 +300,13 @@ msgid ""
 "%s\n"
 msgstr ""
 
+msgid "Password: "
+msgstr ""
+
+#, c-format
+msgid "%s's Password: "
+msgstr ""
+
 #, c-format
 msgid "Incorrect password for %s.\n"
 msgstr ""
@@ -512,15 +332,11 @@ msgid "%s: cannot access chroot directory %s: %s\n"
 msgstr ""
 
 #, c-format
-msgid "%s: cannot chdir to chroot directory %s: %s\n"
-msgstr ""
-
-#, c-format
 msgid "%s: unable to chroot to directory %s: %s\n"
 msgstr ""
 
 #, c-format
-msgid "Unable to obtain random bytes.\n"
+msgid "%s: cannot chdir in chroot directory %s: %s\n"
 msgstr ""
 
 #, c-format
@@ -536,6 +352,105 @@ msgid ""
 "method.\n"
 msgstr ""
 
+msgid "Cannot open audit interface.\n"
+msgstr ""
+
+#, c-format
+msgid "%s: can not get previous SELinux process context: %s\n"
+msgstr ""
+
+#, c-format
+msgid "[libsemanage]: %s\n"
+msgstr ""
+
+#, c-format
+msgid "Cannot create SELinux management handle\n"
+msgstr ""
+
+#, c-format
+msgid "SELinux policy not managed\n"
+msgstr ""
+
+#, c-format
+msgid "Cannot read SELinux policy store\n"
+msgstr ""
+
+#, c-format
+msgid "Cannot establish SELinux management connection\n"
+msgstr ""
+
+#, c-format
+msgid "Cannot begin SELinux transaction\n"
+msgstr ""
+
+#, c-format
+msgid "Could not query seuser for %s\n"
+msgstr ""
+
+#, c-format
+msgid "Could not set serange for %s to %s\n"
+msgstr ""
+
+#, c-format
+msgid "Could not set sename for %s\n"
+msgstr ""
+
+#, c-format
+msgid "Could not modify login mapping for %s\n"
+msgstr ""
+
+#, c-format
+msgid "Cannot create SELinux login mapping for %s\n"
+msgstr ""
+
+#, c-format
+msgid "Could not set name for %s\n"
+msgstr ""
+
+#, c-format
+msgid "Could not set SELinux user for %s\n"
+msgstr ""
+
+#, c-format
+msgid "Could not add login mapping for %s\n"
+msgstr ""
+
+#, c-format
+msgid "Cannot init SELinux management\n"
+msgstr ""
+
+#, c-format
+msgid "Cannot create SELinux user key\n"
+msgstr ""
+
+#, c-format
+msgid "Cannot verify the SELinux user\n"
+msgstr ""
+
+#, c-format
+msgid "Cannot modify SELinux user mapping\n"
+msgstr ""
+
+#, c-format
+msgid "Cannot add SELinux user mapping\n"
+msgstr ""
+
+#, c-format
+msgid "Cannot commit SELinux transaction\n"
+msgstr ""
+
+#, c-format
+msgid "Login mapping for %s is not defined, OK if default mapping was used\n"
+msgstr ""
+
+#, c-format
+msgid "Login mapping for %s is defined in policy, cannot be deleted\n"
+msgstr ""
+
+#, c-format
+msgid "Could not delete login mapping for %s"
+msgstr ""
+
 #, c-format
 msgid "Unable to cd to '%s'\n"
 msgstr ""
@@ -548,11 +463,89 @@ msgid "Cannot execute %s"
 msgstr ""
 
 #, c-format
+msgid "Maximum subsystem depth reached\n"
+msgstr ""
+
+#, c-format
 msgid "Invalid root directory '%s'\n"
 msgstr ""
 
 #, c-format
 msgid "Can't change root directory to '%s'\n"
+msgstr ""
+
+#, c-format
+msgid "%s: out of memory\n"
+msgstr ""
+
+#, c-format
+msgid "%s: Cannot stat %s: %s\n"
+msgstr ""
+
+#, c-format
+msgid "%s: %s is neither a directory, nor a symlink.\n"
+msgstr ""
+
+#, c-format
+msgid "%s: Cannot read symbolic link %s: %s\n"
+msgstr ""
+
+#, c-format
+msgid "%s: Cannot create directory %s: %s\n"
+msgstr ""
+
+#, c-format
+msgid "%s: Cannot change owner of %s: %s\n"
+msgstr ""
+
+#, c-format
+msgid "%s: Cannot change mode of %s: %s\n"
+msgstr ""
+
+#, c-format
+msgid "%s: unlink: %s: %s\n"
+msgstr ""
+
+#, c-format
+msgid "%s: Cannot remove directory %s: %s\n"
+msgstr ""
+
+#, c-format
+msgid "%s: Cannot rename %s to %s: %s\n"
+msgstr ""
+
+#, c-format
+msgid "%s: Cannot remove %s: %s\n"
+msgstr ""
+
+#, c-format
+msgid "%s: Cannot create symbolic link %s: %s\n"
+msgstr ""
+
+#, c-format
+msgid "%s: Cannot change owners of %s: %s\n"
+msgstr ""
+
+#, c-format
+msgid "%s: Cannot lstat %s: %s\n"
+msgstr ""
+
+#, c-format
+msgid "%s: Warning, user %s has no tcb shadow file.\n"
+msgstr ""
+
+#, c-format
+msgid ""
+"%s: Emergency: %s's tcb shadow is not a regular file with st_nlink=1.\n"
+"The account is left locked.\n"
+msgstr ""
+
+#, c-format
+msgid "%s: mkdir: %s: %s\n"
+msgstr ""
+
+#, c-format
+msgid "%s: Cannot open %s: %s\n"
 msgstr ""
 
 #, c-format
@@ -612,6 +605,9 @@ msgstr ""
 msgid "  -R, --root CHROOT_DIR         directory to chroot into\n"
 msgstr ""
 
+msgid "  -P, --prefix PREFIX_DIR       directory prefix\n"
+msgstr ""
+
 msgid ""
 "  -W, --warndays WARN_DAYS      set expiration warning days to WARN_DAYS\n"
 msgstr ""
@@ -637,10 +633,13 @@ msgstr ""
 msgid "Account Expiration Date (YYYY-MM-DD)"
 msgstr ""
 
-msgid "Last password change\t\t\t\t\t: "
+msgid "never"
 msgstr ""
 
-msgid "never"
+msgid "future"
+msgstr ""
+
+msgid "Last password change\t\t\t\t\t: "
 msgstr ""
 
 msgid "password must be changed"
@@ -681,14 +680,6 @@ msgstr ""
 
 #, c-format
 msgid "%s: Permission denied.\n"
-msgstr ""
-
-#, c-format
-msgid "%s: Cannot determine your user name.\n"
-msgstr ""
-
-#, c-format
-msgid "%s: PAM: %s\n"
 msgstr ""
 
 #, c-format
@@ -771,6 +762,14 @@ msgstr ""
 msgid "%s: fields too long\n"
 msgstr ""
 
+#, c-format
+msgid "%s: Cannot determine your user name.\n"
+msgstr ""
+
+#, c-format
+msgid "%s: PAM: %s\n"
+msgstr ""
+
 msgid "Cannot change ID to root.\n"
 msgstr ""
 
@@ -807,15 +806,11 @@ msgid "%s: '%s' contains illegal characters\n"
 msgstr ""
 
 #, c-format
+msgid "%s: Provided user name is not a valid name\n"
+msgstr ""
+
+#, c-format
 msgid "%s: user '%s' does not exist\n"
-msgstr ""
-
-#, c-format
-msgid "%s: cannot change user '%s' on NIS client.\n"
-msgstr ""
-
-#, c-format
-msgid "%s: '%s' is the NIS master for this client.\n"
 msgstr ""
 
 #, c-format
@@ -847,6 +842,10 @@ msgid ""
 msgstr ""
 
 #, c-format
+msgid "%s: no crypt method defined\n"
+msgstr ""
+
+#, c-format
 msgid "%s: %s flag is only allowed with the %s flag\n"
 msgstr ""
 
@@ -859,11 +858,11 @@ msgid "%s: unsupported crypt method: %s\n"
 msgstr ""
 
 #, c-format
-msgid "%s: line %d: line too long\n"
+msgid "%s: line %jd: line too long\n"
 msgstr ""
 
 #, c-format
-msgid "%s: line %d: missing new password\n"
+msgid "%s: line %jd: missing new password\n"
 msgstr ""
 
 #, c-format
@@ -871,11 +870,11 @@ msgid "%s: failed to crypt password with salt '%s': %s\n"
 msgstr ""
 
 #, c-format
-msgid "%s: line %d: group '%s' does not exist\n"
+msgid "%s: line %jd: group '%s' does not exist\n"
 msgstr ""
 
 #, c-format
-msgid "%s: line %d: failed to prepare the new %s entry '%s'\n"
+msgid "%s: line %jd: failed to prepare the new %s entry '%s'\n"
 msgstr ""
 
 #, c-format
@@ -883,17 +882,25 @@ msgid "%s: error detected, changes ignored\n"
 msgstr ""
 
 #, c-format
-msgid "%s: (line %d, user %s) password not changed\n"
+msgid "%s: (line %jd, user %s) password not changed\n"
 msgstr ""
 
 #, c-format
-msgid "%s: line %d: user '%s' does not exist\n"
+msgid "%s: line %jd: user '%s' does not exist\n"
 msgstr ""
 
 msgid "  -s, --shell SHELL             new login shell for the user account\n"
 msgstr ""
 
 msgid "Login Shell"
+msgstr ""
+
+#, c-format
+msgid "Cannot parse shell files: %s"
+msgstr ""
+
+#, c-format
+msgid "Cannot evaluate entries in shell files: %s"
 msgstr ""
 
 #, c-format
@@ -906,6 +913,10 @@ msgstr ""
 
 #, c-format
 msgid "%s: Invalid entry: %s\n"
+msgstr ""
+
+#, c-format
+msgid "%s: Warning: %s is an invalid shell\n"
 msgstr ""
 
 #, c-format
@@ -1116,9 +1127,6 @@ msgstr ""
 msgid "  -r, --system                  create a system account\n"
 msgstr ""
 
-msgid "  -P, --prefix PREFIX_DI        directory prefix\n"
-msgstr ""
-
 msgid "  -U, --users USERS             list of user members of this group\n"
 msgstr ""
 
@@ -1128,6 +1136,10 @@ msgstr ""
 
 #, c-format
 msgid "%s: '%s' is not a valid group name\n"
+msgstr ""
+
+#, c-format
+msgid "%s: cannot open %s: %s\n"
 msgstr ""
 
 #, c-format
@@ -1170,14 +1182,6 @@ msgstr ""
 
 #, c-format
 msgid "%s: group '%s' does not exist\n"
-msgstr ""
-
-#, c-format
-msgid "%s: group '%s' is a NIS group\n"
-msgstr ""
-
-#, c-format
-msgid "%s: %s is the NIS master\n"
 msgstr ""
 
 #, c-format
@@ -1253,14 +1257,6 @@ msgstr ""
 
 #, c-format
 msgid "%s: invalid group name '%s'\n"
-msgstr ""
-
-#, c-format
-msgid "%s: group %s is a NIS group\n"
-msgstr ""
-
-#, c-format
-msgid "%s: unknown user %s\n"
 msgstr ""
 
 #, c-format
@@ -1362,18 +1358,12 @@ msgstr ""
 msgid "%s: cannot delete %s\n"
 msgstr ""
 
-msgid "Usage: id [-a]\n"
-msgstr ""
-
-msgid " groups="
-msgstr ""
-
 msgid ""
 "  -b, --before DAYS             print only lastlog records older than DAYS\n"
 msgstr ""
 
 msgid ""
-"  -C, --clear                   clear lastlog record of an user (usable only "
+"  -C, --clear                   clear lastlog record of a user (usable only "
 "with -u)\n"
 msgstr ""
 
@@ -1389,6 +1379,11 @@ msgstr ""
 
 msgid ""
 "  -u, --user LOGIN              print lastlog record of the specified LOGIN\n"
+msgstr ""
+
+msgid ""
+"  -a, --active                  print lastlog excluding '**Never logged "
+"in**' users"
 msgstr ""
 
 #, c-format
@@ -1438,10 +1433,6 @@ msgid "       %s [-p] [-h host] [-f name]\n"
 msgstr ""
 
 #, c-format
-msgid "       %s [-p] -r host\n"
-msgstr ""
-
-#, c-format
 msgid "configuration error - cannot parse %s value: '%d'"
 msgstr ""
 
@@ -1460,9 +1451,6 @@ msgstr ""
 
 #, c-format
 msgid "%s: Cannot possibly work without effective root\n"
-msgstr ""
-
-msgid "No utmp entry.  You must exec \"login\" from the lowest level \"sh\""
 msgstr ""
 
 #, c-format
@@ -1494,12 +1482,6 @@ msgstr ""
 
 #, c-format
 msgid "Cannot find user (%s)\n"
-msgstr ""
-
-#, c-format
-msgid ""
-"\n"
-"%s login: "
 msgstr ""
 
 #, c-format
@@ -1535,7 +1517,8 @@ msgstr ""
 
 #, c-format
 msgid ""
-"usage: %s <pid> <gid> <lowergid> <count> [ <gid> <lowergid> <count> ] ... \n"
+"usage: %s [<pid|fd:<pidfd>] <gid> <lowergid> <count> [ <gid> <lowergid> "
+"<count> ] ... \n"
 msgstr ""
 
 #, c-format
@@ -1559,17 +1542,13 @@ msgid "%s: failed to setgroups %s policy: %s\n"
 msgstr ""
 
 #, c-format
-msgid "%s: Could not open proc directory for target %u\n"
-msgstr ""
-
-#, c-format
-msgid "%s: Could not stat directory for target %u\n"
+msgid "%s: Could not stat directory for process\n"
 msgstr ""
 
 #, c-format
 msgid ""
-"%s: Target %u is owned by a different user: uid:%lu pw_uid:%lu st_uid:%lu, "
-"gid:%lu pw_gid:%lu st_gid:%lu\n"
+"%s: Target process is owned by a different user: uid:%lu pw_uid:%lu st_uid:"
+"%lu, gid:%lu pw_gid:%lu st_gid:%lu\n"
 msgstr ""
 
 msgid "Usage: newgrp [-] [group]\n"
@@ -1590,10 +1569,11 @@ msgid "%s: failure forking: %s\n"
 msgstr ""
 
 #, c-format
-msgid "%s: GID '%lu' does not exist\n"
+msgid "%s: provided group is not a valid group name\n"
 msgstr ""
 
-msgid "too many groups\n"
+#, c-format
+msgid "%s: GID '%lu' does not exist\n"
 msgstr ""
 
 #, c-format
@@ -1602,13 +1582,12 @@ msgstr ""
 
 #, c-format
 msgid ""
-"usage: %s <pid> <uid> <loweruid> <count> [ <uid> <loweruid> <count> ] ... \n"
+"usage: %s [<pid>|fd:<pidfd>] <uid> <loweruid> <count> [ <uid> <loweruid> "
+"<count> ] ... \n"
 msgstr ""
 
 #, c-format
-msgid ""
-"%s: Target process %u is owned by a different user: uid:%lu pw_uid:%lu "
-"st_uid:%lu, gid:%lu pw_gid:%lu st_gid:%lu\n"
+msgid "%s: Could not stat directory for target process\n"
 msgstr ""
 
 msgid "  -b, --badname                 allow bad names\n"
@@ -1630,7 +1609,15 @@ msgid "%s: invalid user name '%s': use --badname to ignore\n"
 msgstr ""
 
 #, c-format
-msgid "%s: line %d: invalid line\n"
+msgid "%s: invalid user name '%s'\n"
+msgstr ""
+
+#, c-format
+msgid "%s: Provide '--crypt-method' before number of rounds\n"
+msgstr ""
+
+#, c-format
+msgid "%s: line %jd: invalid line\n"
 msgstr ""
 
 #, c-format
@@ -1638,43 +1625,47 @@ msgid "%s: cannot update the entry of user %s (not in the passwd database)\n"
 msgstr ""
 
 #, c-format
-msgid "%s: line %d: can't create user\n"
+msgid "%s: line %jd: can't create user\n"
 msgstr ""
 
 #, c-format
-msgid "%s: line %d: can't create group\n"
+msgid "%s: line %jd: can't create group\n"
 msgstr ""
 
 #, c-format
-msgid "%s: line %d: user '%s' does not exist in %s\n"
+msgid "%s: line %jd: user '%s' does not exist in %s\n"
 msgstr ""
 
 #, c-format
-msgid "%s: line %d: can't update password\n"
+msgid "%s: line %jd: %s\n"
 msgstr ""
 
 #, c-format
-msgid "%s: line %d: homedir must be an absolute path\n"
+msgid "%s: line %jd: can't update password\n"
 msgstr ""
 
 #, c-format
-msgid "%s: line %d: mkdir %s failed: %s\n"
+msgid "%s: line %jd: homedir must be an absolute path\n"
 msgstr ""
 
 #, c-format
-msgid "%s: line %d: chown %s failed: %s\n"
+msgid "%s: line %jd: mkdir %s failed: %s\n"
 msgstr ""
 
 #, c-format
-msgid "%s: line %d: can't update entry\n"
+msgid "%s: line %jd: chown %s failed: %s\n"
 msgstr ""
 
 #, c-format
-msgid "%s: failed to prepare new %s entry\n"
+msgid "%s: line %jd: can't update entry\n"
 msgstr ""
 
 #, c-format
 msgid "%s: can't find subordinate user range\n"
+msgstr ""
+
+#, c-format
+msgid "%s: failed to prepare new %s entry\n"
 msgstr ""
 
 #, c-format
@@ -1735,6 +1726,9 @@ msgid ""
 "                                change to MAX_DAYS\n"
 msgstr ""
 
+msgid "  -s, --stdin                   read new token from stdin\n"
+msgstr ""
+
 msgid "Old password: "
 msgstr ""
 
@@ -1748,6 +1742,9 @@ msgstr ""
 msgid ""
 "Enter the new password (minimum of %d, maximum of %d characters)\n"
 "Please use a combination of upper and lower case letters and numbers.\n"
+msgstr ""
+
+msgid "Password is too long.\n"
 msgstr ""
 
 msgid "New password: "
@@ -1785,6 +1782,10 @@ msgstr ""
 
 #, c-format
 msgid "%s: repository %s not supported\n"
+msgstr ""
+
+#, c-format
+msgid "%s: only root can use --stdin/-s option\n"
 msgstr ""
 
 #, c-format
@@ -1836,6 +1837,10 @@ msgstr ""
 
 #, c-format
 msgid "invalid user name '%s': use --badname to ignore\n"
+msgstr ""
+
+#, c-format
+msgid "invalid user name '%s'\n"
 msgstr ""
 
 #, c-format
@@ -1929,11 +1934,9 @@ msgstr ""
 msgid "Session terminated, terminating shell..."
 msgstr ""
 
-#, c-format
 msgid " ...killed.\n"
 msgstr ""
 
-#, c-format
 msgid " ...waiting for child to terminate.\n"
 msgstr ""
 
@@ -1993,6 +1996,10 @@ msgid "No passwd entry for user '%s'\n"
 msgstr ""
 
 #, c-format
+msgid "Overlong user name '%s'\n"
+msgstr ""
+
+#, c-format
 msgid "%s: must be run from a terminal\n"
 msgstr ""
 
@@ -2031,7 +2038,13 @@ msgid "%s: %s was created, but could not be removed\n"
 msgstr ""
 
 #, c-format
-msgid "%s: the %s configuration in %s will be ignored\n"
+msgid "%s: the %s= configuration in %s will be ignored\n"
+msgstr ""
+
+#, c-format
+msgid ""
+"%s: the '%s=' configuration in %s has an invalid group, ignoring the bad "
+"group\n"
 msgstr ""
 
 #, c-format
@@ -2040,10 +2053,6 @@ msgstr ""
 
 #, c-format
 msgid "%s: cannot create directory for defaults file\n"
-msgstr ""
-
-#, c-format
-msgid "%s: cannot create new defaults file\n"
 msgstr ""
 
 #, c-format
@@ -2060,10 +2069,6 @@ msgstr ""
 
 #, c-format
 msgid "%s: rename: %s: %s\n"
-msgstr ""
-
-#, c-format
-msgid "%s: group '%s' is a NIS group.\n"
 msgstr ""
 
 #, c-format
@@ -2173,6 +2178,11 @@ msgstr ""
 msgid ""
 "  -Z, --selinux-user SEUSER     use a specific SEUSER for the SELinux user "
 "mapping\n"
+msgstr ""
+
+msgid ""
+"      --selinux-range SERANGE   use a specific MLS range for the SELinux "
+"user mapping\n"
 msgstr ""
 
 #, c-format
@@ -2301,6 +2311,12 @@ msgstr ""
 msgid "Setting mailbox file permissions"
 msgstr ""
 
+msgid "Synchronize mailbox file"
+msgstr ""
+
+msgid "Closing mailbox file"
+msgstr ""
+
 #, c-format
 msgid "%s warning: %s's uid %d is greater than SYS_UID_MAX %d\n"
 msgstr ""
@@ -2414,10 +2430,6 @@ msgid "%s: Cannot remove tcb files for %s: %s\n"
 msgstr ""
 
 #, c-format
-msgid "%s: user %s is a NIS user\n"
-msgstr ""
-
-#, c-format
 msgid "%s: %s home directory (%s) not found\n"
 msgstr ""
 
@@ -2514,6 +2526,10 @@ msgid ""
 "account\n"
 msgstr ""
 
+msgid ""
+"      --selinux-range SERANGE   new SELinux MLS range for the user account\n"
+msgstr ""
+
 #, c-format
 msgid ""
 "%s: unlocking the user's password would result in a passwordless account.\n"
@@ -2597,7 +2613,15 @@ msgid "%s: failed to copy the lastlog entry of user %lu to user %lu: %s\n"
 msgstr ""
 
 #, c-format
+msgid "%s: failed to copy the lastlog entry of user %ju to user %ju: %s\n"
+msgstr ""
+
+#, c-format
 msgid "%s: failed to copy the faillog entry of user %lu to user %lu: %s\n"
+msgstr ""
+
+#, c-format
+msgid "%s: failed to copy the faillog entry of user %ju to user %ju: %s\n"
 msgstr ""
 
 #, c-format
@@ -2611,19 +2635,19 @@ msgid "failed to rename mailbox"
 msgstr ""
 
 #, c-format
-msgid "%s: failed to remove uid range %lu-%lu from '%s'\n"
+msgid "%s: failed to remove uid range %ju-%ju from '%s'\n"
 msgstr ""
 
 #, c-format
-msgid "%s: failed to add uid range %lu-%lu to '%s'\n"
+msgid "%s: failed to add uid range %ju-%ju to '%s'\n"
 msgstr ""
 
 #, c-format
-msgid "%s: failed to remove gid range %lu-%lu from '%s'\n"
+msgid "%s: failed to remove gid range %ju-%ju from '%s'\n"
 msgstr ""
 
 #, c-format
-msgid "%s: failed to add gid range %lu-%lu to '%s'\n"
+msgid "%s: failed to add gid range %ju-%ju to '%s'\n"
 msgstr ""
 
 #, c-format
@@ -2695,7 +2719,7 @@ msgstr ""
 msgid "failed to stat edited file"
 msgstr ""
 
-msgid "failed to allocate memory"
+msgid "asprintf(3) failed"
 msgstr ""
 
 msgid "failed to create backup file"

@@ -2,12 +2,12 @@
 .\"     Title: nologin
 .\"    Author: Nicolas Fran\(,cois <nicolas.francois@centraliens.net>
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 08/11/2022
-.\"    Manual: Команди керування системою
-.\"    Source: shadow-utils 4.13
+.\"      Date: 19/03/2025
+.\"    Manual: System Management Commands
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: Ukrainian
 .\"
-.TH "nologin" "8" "08/11/2022" "shadow\-utils 4\&.13" "Команди керування системою"
+.TH "nologin" "8" "19/03/2025" "shadow\-utils 4\&.17\&.4" "System Management Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -34,21 +34,22 @@ nologin \- увічливо відмовити у вході до системи
 \fBnologin\fR
 .SH "ОПИС"
 .PP
-Команда
+The
 \fBnologin\fR
-виводить повідомлення про те, що обліковий запис є недоступним, і завершує роботу із ненульовим станом\&. Команду призначено на заміну поля командної оболонки для облікових записів, які було вимкнено\&.
+command displays a message that an account is not available and exits non\-zero\&. It is intended as a replacement shell field for accounts that have been disabled\&.
 .PP
-Щоб взагалі вимкнути можливість входу, ознайомтеся із документацією до
+To disable all logins, investigate
 \fBnologin\fR(5)\&.
 .PP
-Якщо встановлено значення
-\fBSSH_ORIGINAL_COMMAND\fR, дані буде записано до журналу\&.
+If
+\fBSSH_ORIGINAL_COMMAND\fR
+is populated it will be logged\&.
 .SH "ДИВ\&. ТАКОЖ"
 .PP
 \fBlogin\fR(1),
 \fBnologin\fR(5)\&.
 .SH "ІСТОРІЯ"
 .PP
-Команда
+The
 \fBnologin\fR
-з\*(Aqявилася у BSD 4\&.4\&.
+command appeared in BSD 4\&.4\&.

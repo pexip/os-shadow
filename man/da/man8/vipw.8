@@ -2,12 +2,12 @@
 .\"     Title: vipw
 .\"    Author: Marek Micha\(/lkiewicz
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 08/11/2022
-.\"    Manual: Kommandoer for systemh\(oandtering
-.\"    Source: shadow-utils 4.13
+.\"      Date: 19/03/2025
+.\"    Manual: System Management Commands
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: Danish
 .\"
-.TH "VIPW" "8" "08/11/2022" "shadow\-utils 4\&.13" "Kommandoer for systemh\(oandterin"
+.TH "VIPW" "8" "19/03/2025" "shadow\-utils 4\&.17\&.4" "System Management Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -31,16 +31,16 @@
 vipw, vigr \- rediger adgangskoden, gruppe, shadow\-adgangskode\- eller shadow\-gruppe\-fil
 .SH "SYNOPSIS"
 .HP \w'\fBvipw\fR\ 'u
-\fBvipw\fR [\fItilvalg\fR]
+\fBvipw\fR [\fIoptions\fR]
 .HP \w'\fBvigr\fR\ 'u
-\fBvigr\fR [\fItilvalg\fR]
+\fBvigr\fR [\fIoptions\fR]
 .SH "BESKRIVELSE"
 .PP
 The
 \fBvipw\fR
 and
 \fBvigr\fR
-commands edits the files
+commands edit the files
 /etc/passwd
 and
 /etc/group, respectively\&. With the
@@ -95,12 +95,12 @@ Rediger shadow\- eller gshadow\-database\&.
 .RE
 .SH "MILJ\(/O"
 .PP
-\fBVISUEL\fR
+\fBVISUAL\fR
 .RS 4
 Redigeringsprogram der skal bruges\&.
 .RE
 .PP
-\fBREDIGERINGSPROGRAM\fR
+\fBEDITOR\fR
 .RS 4
 Editor to be used if
 \fBVISUAL\fR

@@ -2,12 +2,12 @@
 .\"     Title: groupadd
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 08.11.2022
-.\"    Manual: Befehle zur Systemverwaltung
-.\"    Source: shadow-utils 4.13
+.\"      Date: 19.03.2025
+.\"    Manual: System Management Commands
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: German
 .\"
-.TH "GROUPADD" "8" "08.11.2022" "shadow\-utils 4\&.13" "Befehle zur Systemverwaltung"
+.TH "GROUPADD" "8" "19.03.2025" "shadow\-utils 4\&.17\&.4" "System Management Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -31,7 +31,7 @@
 groupadd \- erstellt eine neue Gruppe
 .SH "\(:UBERSICHT"
 .HP \w'\fBgroupadd\fR\ 'u
-\fBgroupadd\fR [\fIOPTIONEN\fR] \fINEWGROUP\fR
+\fBgroupadd\fR [\fIOPTIONS\fR] \fINEWGROUP\fR
 .SH "BESCHREIBUNG"
 .PP
 The
@@ -74,7 +74,7 @@ description\&.
 .PP
 \fB\-h\fR, \fB\-\-help\fR
 .RS 4
-zeigt die Hilfe an und beendet das Programm
+zeigt die Hilfe an und beendet das Programm\&.
 .RE
 .PP
 \fB\-K\fR, \fB\-\-key\fR\ \&\fIKEY\fR=\fIVALUE\fR
@@ -120,7 +120,7 @@ Sie sollten sicherstellen, dass das Passwort den Passwortrichtlinien des Systems
 .PP
 \fB\-r\fR, \fB\-\-system\fR
 .RS 4
-erstellt eine neue Systemgruppe
+erstelle eine neue Systemgruppe\&.
 .sp
 The numeric identifiers of new system groups are chosen in the
 \fBSYS_GID_MIN\fR\-\fBSYS_GID_MAX\fR
@@ -146,7 +146,7 @@ Apply changes to configuration files under the root filesystem found under the d
 .PP
 \fB\-U\fR, \fB\-\-users\fR
 .RS 4
-A list of usernames to add as members of the group\&.
+A comma\-separated list of usernames to add as members of the group\&.
 .sp
 The default behavior (if the
 \fB\-g\fR,
@@ -171,16 +171,16 @@ Informationen zu den Gruppenkonten
 .PP
 /etc/gshadow
 .RS 4
-sichere Informationen zu den Gruppenkonten
+gesch\(:utzte Informationen zu den Gruppenkonten
 .RE
 .PP
 /etc/login\&.defs
 .RS 4
-Konfiguration der Shadow\-Passwort\-Werkzeugsammlung
+konfiguriert die Shadow\-Hilfsprogramme\&.
 .RE
 .SH "WARNUNGEN"
 .PP
-Sie k\(:onnen einen Benutzer nicht einer NIS\- oder LDAP\-Gruppe hinzuf\(:ugen\&. Dies m\(:ussen Sie auf dem entsprechenden Server durchf\(:uhren\&.
+NIS\- oder LDAP\-Gruppe k\(:onnen nicht erzeugt werden\&. Dies m\(:ussen Sie auf dem entsprechenden Server durchf\(:uhren\&.
 .PP
 If the groupname already exists in an external group database such as NIS or LDAP,
 \fBgroupadd\fR

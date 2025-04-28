@@ -2,12 +2,12 @@
 .\"     Title: limits
 .\"    Author: Luca Berra
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 11/08/2022
+.\"      Date: 03/19/2025
 .\"    Manual: File Formats and Configuration Files
-.\"    Source: shadow-utils 4.13
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: Russian
 .\"
-.TH "limits" "5" "11/08/2022" "shadow\-utils 4\&.13" "File Formats and Configuration"
+.TH "limits" "5" "03/19/2025" "shadow\-utils 4\&.17\&.4" "File Formats and Configuration"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -41,11 +41,11 @@ config\&.h) describes the resource limits you wish to impose\&. It should be own
 .PP
 Каждая строка описывает ограничение для одного пользователя имеет вид:
 .PP
-\fIuser СТРОКА_ОГРАНИЧЕНИЙ\fR
+\fIuser LIMITS_STRING\fR
 .PP
 или в виде:
 .PP
-\fI@group СТРОКА_ОГРАНИЧЕНИЙ\fR
+\fI@group LIMITS_STRING\fR
 .PP
 The
 \fILIMITS_STRING\fR

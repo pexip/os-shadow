@@ -1,0 +1,89 @@
+From: Serge Hallyn <serge@hallyn.com>
+Date: Thu, 27 Jun 2024 01:23:05 +0200
+Subject: upstream testsuite: disable su tests
+
+Debian uses su from util-linux, pointless/impossible to test shadow's su
+here.
+---
+ tests/run_some | 68 ----------------------------------------------------------
+ 1 file changed, 68 deletions(-)
+
+diff --git a/tests/run_some b/tests/run_some
+index c58f59b..46317eb 100755
+--- a/tests/run_some
++++ b/tests/run_some
+@@ -79,74 +79,6 @@ echo "-: test failed"
+ find "${build_path}" -name "*.gcda" -delete
+ # ignore the result of the first test.  ~magic~
+ run_test ./su/01/su_user.test ignore_failure
+-run_test ./su/01/su_user.test
+-run_test ./su/01/su_root.test
+-find "${build_path}" -name "*.gcda" -exec chmod a+rw {} \;
+-run_test ./su/02/env_FOO-options_--login
+-run_test ./su/02/env_FOO-options_--login_bash
+-run_test ./su/02/env_FOO-options_--preserve-environment
+-run_test ./su/02/env_FOO-options_--preserve-environment_bash
+-run_test ./su/02/env_FOO-options_-
+-run_test ./su/02/env_FOO-options_-_bash
+-run_test ./su/02/env_FOO-options_-l-m
+-run_test ./su/02/env_FOO-options_-l-m_bash
+-run_test ./su/02/env_FOO-options_-l
+-run_test ./su/02/env_FOO-options_-l_bash
+-run_test ./su/02/env_FOO-options_-m_bash
+-run_test ./su/02/env_FOO-options_-m
+-run_test ./su/02/env_FOO-options_-p
+-run_test ./su/02/env_FOO-options_-p_bash
+-run_test ./su/02/env_FOO-options__bash
+-run_test ./su/02/env_FOO-options_
+-run_test ./su/02/env_FOO-options_-p-
+-run_test ./su/02/env_FOO-options_-p-_bash
+-run_test ./su/02/env_special-options_-l-p
+-run_test ./su/02/env_special-options_-l
+-run_test ./su/02/env_special-options_-l-p_bash
+-run_test ./su/02/env_special-options_-l_bash
+-run_test ./su/02/env_special-options_-p
+-run_test ./su/02/env_special-options_-p_bash
+-run_test ./su/02/env_special-options_
+-run_test ./su/02/env_special-options__bash
+-run_test ./su/02/env_special_root-options_-l-p
+-run_test ./su/02/env_special_root-options_-l-p_bash
+-run_test ./su/02/env_special_root-options_-l
+-run_test ./su/02/env_special_root-options_-l_bash
+-run_test ./su/02/env_special_root-options_-p
+-run_test ./su/02/env_special_root-options_-p_bash
+-run_test ./su/02/env_special_root-options_
+-run_test ./su/02/env_special_root-options__bash
+-run_test ./su/03/su_run_command01.test
+-run_test ./su/03/su_run_command02.test
+-run_test ./su/03/su_run_command03.test
+-run_test ./su/03/su_run_command04.test
+-run_test ./su/03/su_run_command05.test
+-run_test ./su/03/su_run_command06.test
+-run_test ./su/03/su_run_command07.test
+-run_test ./su/03/su_run_command08.test
+-run_test ./su/03/su_run_command09.test
+-run_test ./su/03/su_run_command10.test
+-run_test ./su/03/su_run_command11.test
+-run_test ./su/03/su_run_command12.test
+-run_test ./su/03/su_run_command13.test
+-run_test ./su/03/su_run_command14.test
+-run_test ./su/03/su_run_command15.test
+-run_test ./su/03/su_run_command16.test
+-run_test ./su/03/su_run_command17.test
+-run_test ./su/04/su_wrong_user.test
+-run_test ./su/04/su_user_wrong_passwd.test
+-run_test ./su/04/su_user_wrong_passwd_syslog.test
+-run_test ./su/05/su_user_wrong_passwd_syslog.test
+-run_test ./su/06/su_user_syslog.test
+-run_test ./su/07/su_user_syslog.test
+-run_test ./su/08/env_special-options_
+-run_test ./su/08/env_special_root-options_
+-run_test ./su/09/env_special-options_
+-run_test ./su/09/env_special_root-options_
+-run_test ./su/10_su_sulog_success/su.test
+-run_test ./su/11_su_sulog_failure/su.test
+-run_test ./su/12_su_child_failure/su.test
+-run_test ./su/13_su_child_success/su.test
+ run_test ./libsubid/01_list_ranges/list_ranges.test
+ run_test ./libsubid/02_get_subid_owners/get_subid_owners.test
+ run_test ./libsubid/03_add_remove/add_remove_subids.test

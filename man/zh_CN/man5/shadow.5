@@ -2,12 +2,12 @@
 .\"     Title: shadow
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 2022-11-08
+.\"      Date: 2025-03-19
 .\"    Manual: File Formats and Configuration Files
-.\"    Source: shadow-utils 4.13
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: Chinese Simplified
 .\"
-.TH "SHADOW" "5" "2022-11-08" "shadow\-utils 4\&.13" "File Formats and Configuration"
+.TH "SHADOW" "5" "2025-03-19" "shadow\-utils 4\&.17\&.4" "File Formats and Configuration"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -38,12 +38,12 @@ is a file which contains the password information for the system\*(Aqs accounts 
 .PP
 Each line of this file contains 9 fields, separated by colons (\(lq:\(rq), in the following order:
 .PP
-\fB登录名\fR
+\fBlogin name\fR
 .RS 4
-必须是有效的账户名，且已经存在于系统中。
+It must be a valid account name, which exists on the system\&.
 .RE
 .PP
-\fB加密了的密码\fR
+\fBencrypted password\fR
 .RS 4
 This field may be empty, in which case no passwords are required to authenticate as the specified login name\&. However, some applications which read the
 /etc/shadow
@@ -59,7 +59,7 @@ If the password field contains some string that is not a valid result of
 \fBcrypt\fR(3), for instance ! or *, the user will not be able to use a unix password to log in (but the user may log in the system by other means)\&.
 .RE
 .PP
-\fB最后一次更改密码的日期\fR
+\fBdate of last password change\fR
 .RS 4
 The date of the last password change, expressed as the number of days since Jan 1, 1970 00:00 UTC\&.
 .sp
@@ -68,14 +68,14 @@ The value 0 has a special meaning, which is that the user should change her pass
 空字段表示密码年龄功能被禁用。
 .RE
 .PP
-\fB密码的最小年龄\fR
+\fBminimum password age\fR
 .RS 4
 最小密码年龄是指，用户一次更改密码之后，要等多长时间才再次被允许更改密码。
 .sp
 An empty field and value 0 mean that there is no minimum password age\&.
 .RE
 .PP
-\fB最大密码年龄\fR
+\fBmaximum password age\fR
 .RS 4
 最大密码年龄是指，这写天之后，用户必须更改密码。
 .sp
@@ -86,14 +86,14 @@ An empty field and value 0 mean that there is no minimum password age\&.
 如果最大密码年龄小于最小密码年龄，用户将会不能更改密码。
 .RE
 .PP
-\fB密码警告时间段\fR
+\fBpassword warning period\fR
 .RS 4
 密码过期之前，提前警告用户的的天数(请参考上边的密码的最大年龄)。
 .sp
 空字段或者 0 表示没有密码警告期。
 .RE
 .PP
-\fB密码禁用期\fR
+\fBpassword inactivity period\fR
 .RS 4
 密码过期(查看上边的密码最大年龄)后，仍然接受此密码的天数(在此期间，用户应该在下次登录时修改密码)。
 .sp
@@ -102,7 +102,7 @@ After expiration of the password and this expiration period is elapsed, no login
 空字段表示没有强制密码过期。
 .RE
 .PP
-\fB账户过期日期\fR
+\fBaccount expiration date\fR
 .RS 4
 The date of expiration of the account, expressed as the number of days since Jan 1, 1970 00:00 UTC\&.
 .sp
@@ -113,7 +113,7 @@ Note that an account expiration differs from a password expiration\&. In case of
 应该避免使用 0，因为它既能理解成永不过期也能理解成在1970年1月1日过期。
 .RE
 .PP
-\fB保留字段\fR
+\fBreserved field\fR
 .RS 4
 此字段保留作将来使用。
 .RE

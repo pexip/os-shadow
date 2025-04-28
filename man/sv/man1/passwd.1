@@ -2,12 +2,12 @@
 .\"     Title: passwd
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 08-11-2022
-.\"    Manual: Anv\(:andarkommandon
-.\"    Source: shadow-utils 4.13
+.\"      Date: 19-03-2025
+.\"    Manual: User Commands
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: Swedish
 .\"
-.TH "PASSWD" "1" "08-11-2022" "shadow\-utils 4\&.13" "Anv\(:andarkommandon"
+.TH "PASSWD" "1" "19-03-2025" "shadow\-utils 4\&.17\&.4" "User Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -31,7 +31,7 @@
 passwd \- \(:andra anv\(:andarl\(:osenord
 .SH "SYNOPSIS"
 .HP \w'\fBpasswd\fR\ 'u
-\fBpasswd\fR [\fIflaggor\fR] [\fIINLOGGNINGSNAMN\fR]
+\fBpasswd\fR [\fIoptions\fR] [\fILOGIN\fR]
 .SH "BESKRIVNING"
 .PP
 The
@@ -49,44 +49,9 @@ refuses to change the password and exits\&.
 .PP
 Anv\(:andaren fr\(oagas sedan tv\(oa g\(oanger efter ett ers\(:attande l\(:osenord\&. Den andra inmatningen j\(:amf\(:ors mot den f\(:orsta och b\(oada m\(oaste st\(:amma \(:overens f\(:or att l\(:osenordet ska \(:andras\&.
 .PP
-Sedan testas l\(:osenordet f\(:or sin komplexitet\&. Som en allm\(:an riktlinje b\(:or l\(:osenord inneh\(oalla 6 till 8 tecken och inkluderas ett eller flera tecken fr\(oan var och en av f\(:oljande punkter:
-.sp
-.RS 4
-.ie n \{\
-\h'-04'\(bu\h'+03'\c
-.\}
-.el \{\
-.sp -1
-.IP \(bu 2.3
-.\}
-gemena bokst\(:aver ur alfabetet
-.RE
-.sp
-.RS 4
-.ie n \{\
-\h'-04'\(bu\h'+03'\c
-.\}
-.el \{\
-.sp -1
-.IP \(bu 2.3
-.\}
-siffrorna 0 till 9
-.RE
-.sp
-.RS 4
-.ie n \{\
-\h'-04'\(bu\h'+03'\c
-.\}
-.el \{\
-.sp -1
-.IP \(bu 2.3
-.\}
-skiljetecken
-.RE
-.PP
-Care must be taken not to include the system default erase or kill characters\&.
+Then, the password is tested for complexity\&.
 \fBpasswd\fR
-will reject any password which is not suitably complex\&.
+will reject any password which is not suitably complex\&. Care must be taken not to include the system default erase or kill characters\&.
 .SS "Tips f\(:or anv\(:andarl\(:osenord"
 .PP
 The security of a password depends upon the strength of the encryption algorithm and the size of the key space\&. The legacy
@@ -96,7 +61,9 @@ System encryption method is based on the NBS DES algorithm\&. More recent method
 .PP
 Problem i l\(:osenordss\(:akerheten brukar normalt komma fr\(oan slarvigt valda l\(:osenord eller hantering\&. Av denna anledning b\(:or du inte v\(:alja ett l\(:osenord som finns i en ordbok eller som m\(oaste skrivas ner\&. L\(:osenordet b\(:or heller inte vara ett korrekt namn, ditt personnummer, f\(:odelsedatum eller gatuadress\&. Dessa kan anv\(:andas som gissningar f\(:or att ta sig in i systemet\&.
 .PP
-You can find advice on how to choose a strong password on http://en\&.wikipedia\&.org/wiki/Password_strength
+As a general guideline, passwords should be long and random\&. It\*(Aqs fine to use simple character sets, such as passwords consisting only of lowercase letters, if that helps memorizing longer passwords\&. For a password consisting only of lowercase English letters randomly chosen, and a length of 32, there are 26^32 (approximately 2^150) different possible combinations\&. Being an exponential equation, it\*(Aqs apparent that the exponent (the length) is more important than the base (the size of the character set)\&.
+.PP
+You can find advice on how to choose a strong password on https://en\&.wikipedia\&.org/wiki/Password_strength
 .SH "FLAGGOR"
 .PP
 The options which apply to the
@@ -143,7 +110,7 @@ Lock the password of the named account\&. This option disables a password by cha
 .sp
 Note that this does not disable the account\&. The user may still be able to login using another authentication token (e\&.g\&. an SSH key)\&. To disable the account, administrators should use
 \fBusermod \-\-expiredate 1\fR
-(this set the account\*(Aqs expire date to Jan 2, 1970)\&.
+(this sets the account\*(Aqs expire date to Jan 2, 1970)\&.
 .sp
 Users with a locked password are not allowed to change their password\&.
 .RE
@@ -175,6 +142,12 @@ directory and use the configuration files from the
 directory\&. Only absolute paths are supported\&.
 .RE
 .PP
+\fB\-P\fR, \fB\-\-prefix\fR\ \&\fIPREFIX_DIR\fR
+.RS 4
+Apply changes to configuration files under the root filesystem found under the directory
+\fIPREFIX_DIR\fR\&. This option does not chroot and is intended for preparing a cross\-compilation target\&. Some limitations: NIS and LDAP users/groups are not verified\&. No PAM support\&. No SELINUX support\&.
+.RE
+.PP
 \fB\-S\fR, \fB\-\-status\fR
 .RS 4
 Display account status information\&. The status information consists of 7 fields\&. The first field is the user\*(Aqs login name\&. The second field indicates if the user account has a locked password (L), has no password (NP), or has a usable password (P)\&. The third field gives the date of the last password change\&. The next four fields are the minimum age, maximum age, warning period, and inactivity period for the password\&. These ages are expressed in days\&.
@@ -204,6 +177,11 @@ Passing the number
 as
 \fIMAX_DAYS\fR
 will remove checking a password\*(Aqs validity\&.
+.RE
+.PP
+\fB\-s\fR, \fB\-\-stdin\fR
+.RS 4
+This option is used to indicate that passwd should read the new password from standard input, which can be a pipe\&.
 .RE
 .SH "T\(:ANK P\(oA"
 .PP
@@ -277,7 +255,10 @@ invalid argument to option
 .SH "SE OCKS\(oA"
 .PP
 \fBchpasswd\fR(8),
+\fBmakepasswd\fR(1),
 \fBpasswd\fR(5),
 \fBshadow\fR(5),
 \fBlogin.defs\fR(5),
 \fBusermod\fR(8)\&.
+.PP
+The following web page comically (yet correctly) compares the strength of two different methods for choosing a password: "https://xkcd\&.com/936/"

@@ -17,24 +17,32 @@
 #include <stdio.h>
 #include <sys/types.h>
 #include <getopt.h>
+
+#include "chkname.h"
 #include "defines.h"
+/*@-exitarg@*/
+#include "exitcodes.h"
 #include "getdef.h"
 #include "nscd.h"
-#include "sssd.h"
 #ifdef USE_PAM
 #include "pam_defs.h"
 #endif
 #include "prototypes.h"
 #include "pwauth.h"
 #include "pwio.h"
-/*@-exitarg@*/
-#include "exitcodes.h"
 #include "shadowlog.h"
+#include "sssd.h"
+#include "string/sprintf/snprintf.h"
+#include "string/strcmp/streq.h"
+#include "string/strcpy/strtcpy.h"
+#include "string/strdup/xstrdup.h"
+#include "string/strtok/stpsep.h"
+
 
 /*
  * Global variables.
  */
-const char *Prog;
+static const char Prog[] = "chfn";
 static char fullnm[BUFSIZ];
 static char roomno[BUFSIZ];
 static char workph[BUFSIZ];
@@ -54,8 +62,8 @@ static bool pw_locked = false;
  */
 
 /* local function prototypes */
-static void fail_exit (int code);
-static /*@noreturn@*/void usage (int status);
+NORETURN static void fail_exit (int code);
+NORETURN static void usage (int status);
 static bool may_change_field (int);
 static void new_fields (void);
 static char *copy_field (char *, char *, char *);
@@ -86,7 +94,9 @@ static void fail_exit (int code)
 /*
  * usage - print command line syntax and exit
  */
-static /*@noreturn@*/void usage (int status)
+NORETURN
+static void
+usage (int status)
 {
 	FILE *usageout = (E_SUCCESS != status) ? stderr : stdout;
 	(void) fprintf (usageout,
@@ -143,9 +153,9 @@ static bool may_change_field (int field)
 	cp = getdef_str ("CHFN_RESTRICT");
 	if (NULL == cp) {
 		cp = "";
-	} else if (strcmp (cp, "yes") == 0) {
+	} else if (streq(cp, "yes")) {
 		cp = "rwh";
-	} else if (strcmp (cp, "no") == 0) {
+	} else if (streq(cp, "no")) {
 		cp = "frwh";
 	}
 
@@ -175,19 +185,19 @@ static void new_fields (void)
 	if (may_change_field ('r')) {
 		change_field (roomno, sizeof roomno, _("Room Number"));
 	} else {
-		printf (_("\t%s: %s\n"), _("Room Number"), fullnm);
+		printf (_("\t%s: %s\n"), _("Room Number"), roomno);
 	}
 
 	if (may_change_field ('w')) {
 		change_field (workph, sizeof workph, _("Work Phone"));
 	} else {
-		printf (_("\t%s: %s\n"), _("Work Phone"), fullnm);
+		printf (_("\t%s: %s\n"), _("Work Phone"), workph);
 	}
 
 	if (may_change_field ('h')) {
 		change_field (homeph, sizeof homeph, _("Home Phone"));
 	} else {
-		printf (_("\t%s: %s\n"), _("Home Phone"), fullnm);
+		printf (_("\t%s: %s\n"), _("Home Phone"), homeph);
 	}
 
 	if (amroot) {
@@ -207,32 +217,31 @@ static void new_fields (void)
  */
 static char *copy_field (char *in, char *out, char *extra)
 {
-	char *cp = NULL;
+	char  *next = NULL;
 
 	while (NULL != in) {
-		cp = strchr (in, ',');
-		if (NULL != cp) {
-			*cp++ = '\0';
-		}
+		const char  *f;
 
-		if (strchr (in, '=') == NULL) {
+		f = in;
+		next = stpsep(in, ",");
+
+		if (strchr(f, '=') == NULL)
 			break;
-		}
 
 		if (NULL != extra) {
-			if ('\0' != extra[0]) {
+			if (!streq(extra, "")) {
 				strcat (extra, ",");
 			}
 
-			strcat (extra, in);
+			strcat(extra, f);
 		}
-		in = cp;
+		in = next;
 	}
 	if ((NULL != in) && (NULL != out)) {
 		strcpy (out, in);
 	}
 
-	return cp;
+	return next;
 }
 
 /*
@@ -271,7 +280,7 @@ static void process_flags (int argc, char **argv)
 				exit (E_NOPERM);
 			}
 			fflg = true;
-			STRFCPY (fullnm, optarg);
+			STRTCPY(fullnm, optarg);
 			break;
 		case 'h':
 			if (!may_change_field ('h')) {
@@ -280,7 +289,7 @@ static void process_flags (int argc, char **argv)
 				exit (E_NOPERM);
 			}
 			hflg = true;
-			STRFCPY (homeph, optarg);
+			STRTCPY(homeph, optarg);
 			break;
 		case 'o':
 			if (!amroot) {
@@ -294,7 +303,7 @@ static void process_flags (int argc, char **argv)
 				         _("%s: fields too long\n"), Prog);
 				exit (E_NOPERM);
 			}
-			STRFCPY (slop, optarg);
+			STRTCPY(slop, optarg);
 			break;
 		case 'r':
 			if (!may_change_field ('r')) {
@@ -303,7 +312,7 @@ static void process_flags (int argc, char **argv)
 				exit (E_NOPERM);
 			}
 			rflg = true;
-			STRFCPY (roomno, optarg);
+			STRTCPY(roomno, optarg);
 			break;
 		case 'R': /* no-op, handled in process_root_flag () */
 			break;
@@ -317,7 +326,7 @@ static void process_flags (int argc, char **argv)
 				exit (E_NOPERM);
 			}
 			wflg = true;
-			STRFCPY (workph, optarg);
+			STRTCPY(workph, optarg);
 			break;
 		default:
 			usage (E_USAGE);
@@ -358,7 +367,7 @@ static void check_perms (const struct passwd *pw)
 	 * check if the change is allowed by SELinux policy.
 	 */
 	if ((pw->pw_uid != getuid ())
-	    && (check_selinux_permit ("chfn") != 0)) {
+	    && (check_selinux_permit (Prog) != 0)) {
 		fprintf (stderr, _("%s: Permission denied.\n"), Prog);
 		closelog ();
 		exit (E_NOPERM);
@@ -373,7 +382,7 @@ static void check_perms (const struct passwd *pw)
 	 * --marekm
 	 */
 	if (!amroot && getdef_bool ("CHFN_AUTH")) {
-		passwd_check (pw->pw_name, pw->pw_passwd, "chfn");
+		passwd_check (pw->pw_name, pw->pw_passwd, Prog);
 	}
 
 #else				/* !USE_PAM */
@@ -385,7 +394,7 @@ static void check_perms (const struct passwd *pw)
 		exit (E_NOPERM);
 	}
 
-	retval = pam_start ("chfn", pampw->pw_name, &conv, &pamh);
+	retval = pam_start (Prog, pampw->pw_name, &conv, &pamh);
 
 	if (PAM_SUCCESS == retval) {
 		retval = pam_authenticate (pamh, 0);
@@ -504,41 +513,42 @@ static void get_old_fields (const char *gecos)
 {
 	char *cp;		/* temporary character pointer       */
 	char old_gecos[BUFSIZ];	/* buffer for old GECOS fields       */
-	STRFCPY (old_gecos, gecos);
+
+	STRTCPY(old_gecos, gecos);
 
 	/*
 	 * Now get the full name. It is the first comma separated field in
 	 * the GECOS field.
 	 */
-	cp = copy_field (old_gecos, fflg ? (char *) 0 : fullnm, slop);
+	cp = copy_field (old_gecos, fflg ? NULL : fullnm, slop);
 
 	/*
 	 * Now get the room number. It is the next comma separated field,
 	 * if there is indeed one.
 	 */
 	if (NULL != cp) {
-		cp = copy_field (cp, rflg ? (char *) 0 : roomno, slop);
+		cp = copy_field (cp, rflg ? NULL : roomno, slop);
 	}
 
 	/*
 	 * Now get the work phone number. It is the third field.
 	 */
 	if (NULL != cp) {
-		cp = copy_field (cp, wflg ? (char *) 0 : workph, slop);
+		cp = copy_field (cp, wflg ? NULL : workph, slop);
 	}
 
 	/*
 	 * Now get the home phone number. It is the fourth field.
 	 */
 	if (NULL != cp) {
-		cp = copy_field (cp, hflg ? (char *) 0 : homeph, slop);
+		cp = copy_field (cp, hflg ? NULL : homeph, slop);
 	}
 
 	/*
 	 * Anything left over is "slop".
 	 */
 	if ((NULL != cp) && !oflg) {
-		if ('\0' != slop[0]) {
+		if (!streq(slop, "")) {
 			strcat (slop, ",");
 		}
 
@@ -608,19 +618,16 @@ static void check_fields (void)
  */
 int main (int argc, char **argv)
 {
-	const struct passwd *pw;	/* password file entry               */
-	char new_gecos[BUFSIZ];	/* buffer for new GECOS fields       */
-	char *user;
+	char                 new_gecos[BUFSIZ];
+	char                 *user;
+	const struct passwd  *pw;
 
-	/*
-	 * Get the program name. The program name is used as a
-	 * prefix to most error messages.
-	 */
-	Prog = Basename (argv[0]);
+	sanitize_env ();
+	check_fds ();
+
 	log_set_progname(Prog);
 	log_set_logfd(stderr);
 
-	sanitize_env ();
 	(void) setlocale (LC_ALL, "");
 	(void) bindtextdomain (PACKAGE, LOCALEDIR);
 	(void) textdomain (PACKAGE);
@@ -633,7 +640,7 @@ int main (int argc, char **argv)
 	 */
 	amroot = (getuid () == 0);
 
-	OPENLOG ("chfn");
+	OPENLOG (Prog);
 
 	/* parse the command line options */
 	process_flags (argc, argv);
@@ -643,6 +650,10 @@ int main (int argc, char **argv)
 	 * name, or the name getlogin() returns.
 	 */
 	if (optind < argc) {
+		if (!is_valid_user_name (argv[optind])) {
+			fprintf (stderr, _("%s: Provided user name is not a valid name\n"), Prog);
+			fail_exit (E_NOPERM);
+		}
 		user = argv[optind];
 		pw = xgetpwnam (user);
 		if (NULL == pw) {
@@ -662,29 +673,6 @@ int main (int argc, char **argv)
 		}
 		user = xstrdup (pw->pw_name);
 	}
-
-#ifdef	USE_NIS
-	/*
-	 * Now we make sure this is a LOCAL password entry for this user ...
-	 */
-	if (__ispwNIS ()) {
-		char *nis_domain;
-		char *nis_master;
-
-		fprintf (stderr,
-		         _("%s: cannot change user '%s' on NIS client.\n"),
-		         Prog, user);
-
-		if (!yp_get_default_domain (&nis_domain) &&
-		    !yp_master (nis_domain, "passwd.byname", &nis_master)) {
-			fprintf (stderr,
-			         _
-			         ("%s: '%s' is the NIS master for this client.\n"),
-			         Prog, nis_master);
-		}
-		fail_exit (E_NOPERM);
-	}
-#endif
 
 	/* Check that the caller is allowed to change the gecos of the
 	 * specified user */
@@ -717,9 +705,9 @@ int main (int argc, char **argv)
 		fprintf (stderr, _("%s: fields too long\n"), Prog);
 		fail_exit (E_NOPERM);
 	}
-	snprintf (new_gecos, sizeof new_gecos, "%s,%s,%s,%s%s%s",
-	          fullnm, roomno, workph, homeph,
-	          ('\0' != slop[0]) ? "," : "", slop);
+	SNPRINTF(new_gecos, "%s,%s,%s,%s%s%s",
+	         fullnm, roomno, workph, homeph,
+	         (!streq(slop, "")) ? "," : "", slop);
 
 	/* Rewrite the user's gecos in the passwd file */
 	update_gecos (user, new_gecos);

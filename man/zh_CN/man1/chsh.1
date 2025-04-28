@@ -2,12 +2,12 @@
 .\"     Title: chsh
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 2022-11-08
-.\"    Manual: 用户命令
-.\"    Source: shadow-utils 4.13
+.\"      Date: 2025-03-19
+.\"    Manual: User Commands
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: Chinese Simplified
 .\"
-.TH "CHSH" "1" "2022-11-08" "shadow\-utils 4\&.13" "用户命令"
+.TH "CHSH" "1" "2025-03-19" "shadow\-utils 4\&.17\&.4" "User Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -31,7 +31,7 @@
 chsh \- 更改登录 shell
 .SH "大纲"
 .HP \w'\fBchsh\fR\ 'u
-\fBchsh\fR [\fI选项\fR] [\fI登录\fR]
+\fBchsh\fR [\fIoptions\fR] [\fILOGIN\fR]
 .SH "描述"
 .PP
 The
@@ -73,6 +73,12 @@ marks\&.
 .PP
 The only restriction placed on the login shell is that the command name must be listed in
 /etc/shells, unless the invoker is the superuser, and then any value may be added\&. An account with a restricted login shell may not change her login shell\&. For this reason, placing
+/bin/rsh
+in
+/etc/shells
+is discouraged since accidentally changing to a restricted shell would prevent the user from ever changing her login shell back to its original value\&.
+.PP
+For this reason, placing
 /bin/rsh
 in
 /etc/shells

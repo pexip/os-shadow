@@ -1,3 +1,5 @@
+#include <config.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <dlfcn.h>
@@ -6,10 +8,17 @@
 #include <strings.h>
 #include <ctype.h>
 #include <stdatomic.h>
+
+#include "alloc/malloc.h"
 #include "prototypes.h"
 #include "../libsubid/subid.h"
 #include "shadowlog_internal.h"
 #include "shadowlog.h"
+#include "string/sprintf/snprintf.h"
+#include "string/strcmp/streq.h"
+#include "string/strspn/stpspn.h"
+#include "string/strtok/stpsep.h"
+
 
 #define NSSWITCH "/etc/nsswitch.conf"
 
@@ -39,11 +48,14 @@ static void nss_exit(void) {
 }
 
 // nsswitch_path is an argument only to support testing.
-void nss_init(const char *nsswitch_path) {
-	FILE *nssfp = NULL;
-	char *line = NULL, *p, *token, *saveptr;
-	size_t len = 0;
-	FILE *shadow_logfd = log_get_logfd();
+void
+nss_init(const char *nsswitch_path) {
+	char    *line = NULL, *p;
+	char    libname[64];
+	FILE    *nssfp = NULL;
+	FILE    *shadow_logfd = log_get_logfd();
+	void    *h;
+	size_t  len = 0;
 
 	if (atomic_flag_test_and_set(&nss_init_started)) {
 		// Another thread has started nss_init, wait for it to complete
@@ -59,82 +71,81 @@ void nss_init(const char *nsswitch_path) {
 	//   subid:	files
 	nssfp = fopen(nsswitch_path, "r");
 	if (!nssfp) {
+		if (errno != ENOENT)
+			fprintf(shadow_logfd, "Failed opening %s: %m\n", nsswitch_path);
+
 		atomic_store(&nss_init_completed, true);
 		return;
 	}
-	while ((getline(&line, &len, nssfp)) != -1) {
-		if (line[0] == '\0' || line[0] == '#')
+	p = NULL;
+	while (getline(&line, &len, nssfp) != -1) {
+		if (line[0] == '#')
 			continue;
 		if (strlen(line) < 8)
 			continue;
 		if (strncasecmp(line, "subid:", 6) != 0)
 			continue;
 		p = &line[6];
-		while ((*p) && isspace(*p))
-			p++;
-		if (!*p)
-			continue;
-		for (token = strtok_r(p, " \n\t", &saveptr);
-		     token;
-		     token = strtok_r(NULL, " \n\t", &saveptr)) {
-			char libname[65];
-			void *h;
-			if (strcmp(token, "files") == 0) {
-				subid_nss = NULL;
-				goto done;
-			}
-			if (strlen(token) > 50) {
-				fprintf(shadow_logfd, "Subid NSS module name too long (longer than 50 characters): %s\n", token);
-				fprintf(shadow_logfd, "Using files\n");
-				subid_nss = NULL;
-				goto done;
-			}
-			snprintf(libname, 64,  "libsubid_%s.so", token);
-			h = dlopen(libname, RTLD_LAZY);
-			if (!h) {
-				fprintf(shadow_logfd, "Error opening %s: %s\n", libname, dlerror());
-				fprintf(shadow_logfd, "Using files\n");
-				subid_nss = NULL;
-				goto done;
-			}
-			subid_nss = malloc(sizeof(*subid_nss));
-			if (!subid_nss) {
-				dlclose(h);
-				goto done;
-			}
-			subid_nss->has_range = dlsym(h, "shadow_subid_has_range");
-			if (!subid_nss->has_range) {
-				fprintf(shadow_logfd, "%s did not provide @has_range@\n", libname);
-				dlclose(h);
-				free(subid_nss);
-				subid_nss = NULL;
-				goto done;
-			}
-			subid_nss->list_owner_ranges = dlsym(h, "shadow_subid_list_owner_ranges");
-			if (!subid_nss->list_owner_ranges) {
-				fprintf(shadow_logfd, "%s did not provide @list_owner_ranges@\n", libname);
-				dlclose(h);
-				free(subid_nss);
-				subid_nss = NULL;
-				goto done;
-			}
-			subid_nss->find_subid_owners = dlsym(h, "shadow_subid_find_subid_owners");
-			if (!subid_nss->find_subid_owners) {
-				fprintf(shadow_logfd, "%s did not provide @find_subid_owners@\n", libname);
-				dlclose(h);
-				free(subid_nss);
-				subid_nss = NULL;
-				goto done;
-			}
-			subid_nss->handle = h;
-			goto done;
-		}
+		p = stpspn(p, " \t\n");
+		if (!streq(p, ""))
+			break;
+		p = NULL;
+	}
+	if (p == NULL) {
+		goto null_subid;
+	}
+	if (stpsep(p, " \t\n") == NULL) {
 		fprintf(shadow_logfd, "No usable subid NSS module found, using files\n");
 		// subid_nss has to be null here, but to ease reviews:
-		free(subid_nss);
-		subid_nss = NULL;
-		goto done;
+		goto null_subid;
 	}
+	if (streq(p, "files")) {
+		goto null_subid;
+	}
+	if (strlen(p) > 50) {
+		fprintf(shadow_logfd, "Subid NSS module name too long (longer than 50 characters): %s\n", p);
+		fprintf(shadow_logfd, "Using files\n");
+		goto null_subid;
+	}
+	SNPRINTF(libname, "libsubid_%s.so", p);
+	h = dlopen(libname, RTLD_LAZY);
+	if (!h) {
+		fprintf(shadow_logfd, "Error opening %s: %s\n", libname, dlerror());
+		fprintf(shadow_logfd, "Using files\n");
+		goto null_subid;
+	}
+	subid_nss = MALLOC(1, struct subid_nss_ops);
+	if (!subid_nss) {
+		goto close_lib;
+	}
+	subid_nss->has_range = dlsym(h, "shadow_subid_has_range");
+	if (!subid_nss->has_range) {
+		fprintf(shadow_logfd, "%s did not provide @has_range@\n", libname);
+		goto close_lib;
+	}
+	subid_nss->list_owner_ranges = dlsym(h, "shadow_subid_list_owner_ranges");
+	if (!subid_nss->list_owner_ranges) {
+		fprintf(shadow_logfd, "%s did not provide @list_owner_ranges@\n", libname);
+		goto close_lib;
+	}
+	subid_nss->find_subid_owners = dlsym(h, "shadow_subid_find_subid_owners");
+	if (!subid_nss->find_subid_owners) {
+		fprintf(shadow_logfd, "%s did not provide @find_subid_owners@\n", libname);
+		goto close_lib;
+	}
+	subid_nss->free = dlsym(h, "shadow_subid_free");
+	if (!subid_nss->free) {
+		fprintf(shadow_logfd, "%s did not provide @subid_free@\n", libname);
+		goto close_lib;
+	}
+	subid_nss->handle = h;
+	goto done;
+
+close_lib:
+	dlclose(h);
+	free(subid_nss);
+null_subid:
+	subid_nss = NULL;
 
 done:
 	atomic_store(&nss_init_completed, true);

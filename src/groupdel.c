@@ -32,10 +32,11 @@
 #include "sgroupio.h"
 #endif
 #include "shadowlog.h"
+#include "run_part.h"
 /*
  * Global variables
  */
-const char *Prog;
+static const char Prog[] = "groupdel";
 
 static char *group_name;
 static gid_t group_id = -1;
@@ -58,7 +59,7 @@ static bool is_shadow_grp;
 #define E_GRP_UPDATE	10	/* can't update group file */
 
 /* local function prototypes */
-static /*@noreturn@*/void usage (int status);
+NORETURN static void usage (int status);
 static void grp_update (void);
 static void close_files (void);
 static void open_files (void);
@@ -68,7 +69,9 @@ static void process_flags (int argc, char **argv);
 /*
  * usage - display usage message and exit
  */
-static /*@noreturn@*/void usage (int status)
+NORETURN
+static void
+usage (int status)
 {
 	FILE *usageout = (E_SUCCESS != status) ? stderr : stdout;
 	(void) fprintf (usageout,
@@ -81,6 +84,15 @@ static /*@noreturn@*/void usage (int status)
 	(void) fputs (_("  -P, --prefix PREFIX_DIR       prefix directory where are located the /etc/* files\n"), usageout);
 	(void) fputs (_("  -f, --force                   delete group even if it is the primary group of a user\n"), usageout);
 	(void) fputs ("\n", usageout);
+	exit (status);
+}
+
+static void fail_exit(int status)
+{
+#ifdef WITH_AUDIT
+	audit_logger(AUDIT_GRP_MGMT, Prog, "delete-group", group_name,
+                        AUDIT_NO_ID, SHADOW_AUDIT_FAILURE);
+#endif
 	exit (status);
 }
 
@@ -110,7 +122,7 @@ static void grp_update (void)
 		fprintf (stderr,
 		         _("%s: cannot remove entry '%s' from %s\n"),
 		         Prog, group_name, gr_dbname ());
-		exit (E_GRP_UPDATE);
+		fail_exit (E_GRP_UPDATE);
 	}
 
 #ifdef	SHADOWGRP
@@ -122,7 +134,7 @@ static void grp_update (void)
 			fprintf (stderr,
 			         _("%s: cannot remove entry '%s' from %s\n"),
 			         Prog, group_name, sgr_dbname ());
-			exit (E_GRP_UPDATE);
+			fail_exit (E_GRP_UPDATE);
 		}
 	}
 #endif				/* SHADOWGRP */
@@ -141,14 +153,13 @@ static void close_files (void)
 		fprintf (stderr,
 		         _("%s: failure while writing changes to %s\n"),
 		         Prog, gr_dbname ());
-		exit (E_GRP_UPDATE);
+		fail_exit (E_GRP_UPDATE);
 	}
 
 #ifdef WITH_AUDIT
 	audit_logger (AUDIT_DEL_GROUP, Prog,
-	              "removing group from /etc/group",
-	              group_name, (unsigned int) group_id,
-	              SHADOW_AUDIT_SUCCESS);
+	              "delete-group",
+	              group_name, group_id, SHADOW_AUDIT_SUCCESS);
 #endif
 	SYSLOG ((LOG_INFO,
 	         "group '%s' removed from %s",
@@ -166,14 +177,13 @@ static void close_files (void)
 			fprintf (stderr,
 			         _("%s: failure while writing changes to %s\n"),
 			         Prog, sgr_dbname ());
-			exit (E_GRP_UPDATE);
+			fail_exit (E_GRP_UPDATE);
 		}
 
 #ifdef WITH_AUDIT
-		audit_logger (AUDIT_DEL_GROUP, Prog,
-		              "removing group from /etc/gshadow",
-		              group_name, (unsigned int) group_id,
-		              SHADOW_AUDIT_SUCCESS);
+		audit_logger (AUDIT_GRP_MGMT, Prog,
+		              "delete-shadow-group",
+		              group_name, group_id, SHADOW_AUDIT_SUCCESS);
 #endif
 		SYSLOG ((LOG_INFO,
 		         "group '%s' removed from %s",
@@ -185,13 +195,6 @@ static void close_files (void)
 	}
 #endif				/* SHADOWGRP */
 
-	/* Report success at the system level */
-#ifdef WITH_AUDIT
-	audit_logger (AUDIT_DEL_GROUP, Prog,
-	              "",
-	              group_name, (unsigned int) group_id,
-	              SHADOW_AUDIT_SUCCESS);
-#endif
 	SYSLOG ((LOG_INFO, "group '%s' removed\n", group_name));
 	del_cleanup (cleanup_report_del_group);
 }
@@ -208,7 +211,7 @@ static void open_files (void)
 		fprintf (stderr,
 		         _("%s: cannot lock %s; try again later.\n"),
 		         Prog, gr_dbname ());
-		exit (E_GRP_UPDATE);
+		fail_exit (E_GRP_UPDATE);
 	}
 	add_cleanup (cleanup_unlock_group, NULL);
 #ifdef	SHADOWGRP
@@ -217,7 +220,7 @@ static void open_files (void)
 			fprintf (stderr,
 			         _("%s: cannot lock %s; try again later.\n"),
 			         Prog, sgr_dbname ());
-			exit (E_GRP_UPDATE);
+			fail_exit (E_GRP_UPDATE);
 		}
 		add_cleanup (cleanup_unlock_gshadow, NULL);
 	}
@@ -235,7 +238,7 @@ static void open_files (void)
 		         _("%s: cannot open %s\n"),
 		         Prog, gr_dbname ());
 		SYSLOG ((LOG_WARN, "cannot open %s", gr_dbname ()));
-		exit (E_GRP_UPDATE);
+		fail_exit (E_GRP_UPDATE);
 	}
 #ifdef	SHADOWGRP
 	if (is_shadow_grp) {
@@ -244,7 +247,7 @@ static void open_files (void)
 			         _("%s: cannot open %s\n"),
 			         Prog, sgr_dbname ());
 			SYSLOG ((LOG_WARN, "cannot open %s", sgr_dbname ()));
-			exit (E_GRP_UPDATE);
+			fail_exit (E_GRP_UPDATE);
 		}
 	}
 #endif				/* SHADOWGRP */
@@ -275,7 +278,7 @@ static void group_busy (gid_t gid)
 	 * If pwd isn't NULL, it stopped because the gid's matched.
 	 */
 
-	if (pwd == (struct passwd *) 0) {
+	if (pwd == NULL) {
 		return;
 	}
 
@@ -285,7 +288,7 @@ static void group_busy (gid_t gid)
 	fprintf (stderr,
 	         _("%s: cannot remove the primary group of user '%s'\n"),
 	         Prog, pwd->pw_name);
-	exit (E_GROUP_BUSY);
+	fail_exit (E_GROUP_BUSY);
 }
 
 /*
@@ -350,10 +353,6 @@ int main (int argc, char **argv)
 #endif				/* USE_PAM */
 #endif				/* ACCT_TOOLS_SETUID */
 
-	/*
-	 * Get my name so that I can use it to report errors.
-	 */
-	Prog = Basename (argv[0]);
 	log_set_progname(Prog);
 	log_set_logfd(stderr);
 
@@ -364,7 +363,7 @@ int main (int argc, char **argv)
 	process_root_flag ("-R", argc, argv);
 	prefix = process_prefix_flag ("-P", argc, argv);
 
-	OPENLOG ("groupdel");
+	OPENLOG (Prog);
 #ifdef WITH_AUDIT
 	audit_help_open ();
 #endif
@@ -373,7 +372,7 @@ int main (int argc, char **argv)
 		fprintf (stderr,
 		         _("%s: Cannot setup cleanup service.\n"),
 		         Prog);
-		exit (1);
+		fail_exit (1);
 	}
 
 	process_flags (argc, argv);
@@ -387,10 +386,10 @@ int main (int argc, char **argv)
 			fprintf (stderr,
 			         _("%s: Cannot determine your user name.\n"),
 			         Prog);
-			exit (1);
+			fail_exit (1);
 		}
 
-		retval = pam_start ("groupdel", pampw->pw_name, &conv, &pamh);
+		retval = pam_start (Prog, pampw->pw_name, &conv, &pamh);
 	}
 
 	if (PAM_SUCCESS == retval) {
@@ -408,7 +407,7 @@ int main (int argc, char **argv)
 		if (NULL != pamh) {
 			(void) pam_end (pamh, retval);
 		}
-		exit (1);
+		fail_exit (1);
 	}
 	(void) pam_end (pamh, retval);
 #endif				/* USE_PAM */
@@ -428,39 +427,22 @@ int main (int argc, char **argv)
 			fprintf (stderr,
 			         _("%s: group '%s' does not exist\n"),
 			         Prog, group_name);
-			exit (E_NOTFOUND);
+			fail_exit (E_NOTFOUND);
 		}
 
 		group_id = grp->gr_gid;
 	}
-
-#ifdef	USE_NIS
-	/*
-	 * Make sure this isn't a NIS group
-	 */
-	if (__isgrNIS ()) {
-		char *nis_domain;
-		char *nis_master;
-
-		fprintf (stderr,
-		         _("%s: group '%s' is a NIS group\n"),
-		         Prog, group_name);
-
-		if (!yp_get_default_domain (&nis_domain) &&
-		    !yp_master (nis_domain, "group.byname", &nis_master)) {
-			fprintf (stderr,
-			         _("%s: %s is the NIS master\n"),
-			         Prog, nis_master);
-		}
-		exit (E_NOTFOUND);
-	}
-#endif
 
 	/*
 	 * Make sure this isn't the primary group of anyone.
 	 */
 	if (check_group_busy) {
 		group_busy (group_id);
+	}
+
+	if (run_parts ("/etc/shadow-maint/groupdel-pre.d", group_name,
+			Prog)) {
+		exit(1);
 	}
 
 	/*
@@ -472,6 +454,11 @@ int main (int argc, char **argv)
 	grp_update ();
 
 	close_files ();
+
+	if (run_parts ("/etc/shadow-maint/groupdel-post.d", group_name,
+			Prog)) {
+		exit(1);
+	}
 
 	nscd_flush_cache ("group");
 	sssd_flush_cache (SSSD_DB_GROUP);

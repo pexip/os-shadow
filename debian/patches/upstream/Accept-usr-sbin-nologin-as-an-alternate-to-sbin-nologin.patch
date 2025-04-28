@@ -1,0 +1,36 @@
+From: Chris Hofstaedtler <zeha@debian.org>
+Date: Fri, 28 Mar 2025 12:12:13 +0100
+Subject: Accept /usr/sbin/nologin as an alternate to /sbin/nologin
+
+Noticed by adduser's autopkgtests, thanks: Marc Haber
+
+Link: https://github.com/shadow-maint/shadow/pull/1246
+---
+ src/useradd.c | 1 +
+ src/usermod.c | 1 +
+ 2 files changed, 2 insertions(+)
+
+diff --git a/src/useradd.c b/src/useradd.c
+index 7e9dbce..0653d1d 100644
+--- a/src/useradd.c
++++ b/src/useradd.c
+@@ -1380,6 +1380,7 @@ static void process_flags (int argc, char **argv)
+ 				if (!streq(optarg, "")
+ 				     && '*'  != optarg[0]
+ 				     && !streq(optarg, "/sbin/nologin")
++				     && !streq(optarg, "/usr/sbin/nologin")
+ 				     && (   stat(optarg, &st) != 0
+ 				         || S_ISDIR(st.st_mode)
+ 				         || access(optarg, X_OK) != 0)) {
+diff --git a/src/usermod.c b/src/usermod.c
+index 9030883..4156ce5 100644
+--- a/src/usermod.c
++++ b/src/usermod.c
+@@ -1179,6 +1179,7 @@ process_flags(int argc, char **argv)
+ 				if (!streq(optarg, "")
+ 				     && '*'  != optarg[0]
+ 				     && !streq(optarg, "/sbin/nologin")
++				     && !streq(optarg, "/usr/sbin/nologin")
+ 				     && (   stat(optarg, &st) != 0
+ 				         || S_ISDIR(st.st_mode)
+ 				         || access(optarg, X_OK) != 0)) {

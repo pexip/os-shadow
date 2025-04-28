@@ -2,12 +2,12 @@
 .\"     Title: gpasswd
 .\"    Author: Rafal Maszkowski
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 08.11.2022
-.\"    Manual: Dienstprogramme f\(:ur Benutzer
-.\"    Source: shadow-utils 4.13
+.\"      Date: 19.03.2025
+.\"    Manual: User Commands
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: German
 .\"
-.TH "GPASSWD" "1" "08.11.2022" "shadow\-utils 4\&.13" "Dienstprogramme f\(:ur Benutzer"
+.TH "GPASSWD" "1" "19.03.2025" "shadow\-utils 4\&.17\&.4" "User Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -31,7 +31,7 @@
 gpasswd \- administer /etc/group and /etc/gshadow
 .SH "\(:UBERSICHT"
 .HP \w'\fBgpasswd\fR\ 'u
-\fBgpasswd\fR [\fIOption\fR] \fIGruppe\fR
+\fBgpasswd\fR [\fIoption\fR] \fIgroup\fR
 .SH "BESCHREIBUNG"
 .PP
 The
@@ -58,7 +58,7 @@ If a password is set the members can still use
 without a password, and non\-members must supply the password\&.
 .SS "Hinweise zu Gruppenpassw\(:ortern"
 .PP
-Gruppenpassw\(:orter beinhalten ein Sicherheitsrisiko, da mehrere Personen das Passwort kennen\&. Dennoch k\(:onnen sie sinnvoll sein, um die Zusammenarbeit zwischen Benutzern zu erleichtern\&.
+Gruppenpassw\(:orter bergen ein Sicherheitsrisiko, da mehrere Personen das Passwort kennen\&. Dennoch sind Gruppen ein n\(:utzliches Mittel f\(:ur die Zusammenarbeit zwischen Benutzern\&.
 .SH "OPTIONEN"
 .PP
 Except for the
@@ -89,7 +89,7 @@ from the named
 .PP
 \fB\-h\fR, \fB\-\-help\fR
 .RS 4
-zeigt die Hilfe an und beendet das Programm
+zeigt die Hilfe an und beendet das Programm\&.
 .RE
 .PP
 \fB\-Q\fR, \fB\-\-root\fR\ \&\fICHROOT_DIR\fR
@@ -121,12 +121,12 @@ to join the named
 .PP
 \fB\-A\fR, \fB\-\-administrators\fR\ \&\fIuser\fR,\&.\&.\&.
 .RS 4
-Liste der Gruppenverwalter bestimmen
+definiert eine Liste von Benutzern als Gruppenverwalter
 .RE
 .PP
 \fB\-M\fR, \fB\-\-members\fR\ \&\fIuser\fR,\&.\&.\&.
 .RS 4
-Liste der Mitglieder der Gruppe bestimmen
+definiert eine Liste von Benutzern als Gruppenmitglieder
 .RE
 .SH "WARNUNGEN"
 .PP
@@ -148,7 +148,7 @@ Informationen zu den Gruppenkonten
 .PP
 /etc/gshadow
 .RS 4
-sichere Informationen zu den Gruppenkonten
+gesch\(:utzte Informationen zu den Gruppenkonten
 .RE
 .SH "SIEHE AUCH"
 .PP

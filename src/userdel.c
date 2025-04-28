@@ -19,6 +19,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
+
 #ifdef ACCT_TOOLS_SETUID
 #ifdef USE_PAM
 #include "pam_defs.h"
@@ -50,6 +51,10 @@
 #include "subordinateio.h"
 #endif				/* ENABLE_SUBIDS */
 #include "shadowlog.h"
+#include "string/sprintf/xasprintf.h"
+#include "string/strcmp/streq.h"
+#include "string/strdup/xstrdup.h"
+
 
 /*
  * exit status values
@@ -68,7 +73,7 @@
 /*
  * Global variables
  */
-const char *Prog;
+static const char Prog[] = "userdel";
 
 static char *user_name;
 static uid_t user_id;
@@ -114,7 +119,7 @@ static void user_cancel (const char *);
 static bool path_prefix (const char *, const char *);
 #endif				/* EXTRA_CHECK_HOME_DIR */
 static int is_owner (uid_t, const char *);
-static int remove_mailbox (void);
+static bool remove_mailbox (void);
 #ifdef WITH_TCB
 static int remove_tcbdir (const char *user_name, uid_t user_id);
 #endif				/* WITH_TCB */
@@ -202,9 +207,9 @@ static void update_groups (void)
 		 * Update the DBM group file with the new entry as well.
 		 */
 #ifdef WITH_AUDIT
-		audit_logger (AUDIT_DEL_USER, Prog,
-		              "deleting user from group",
-		              user_name, (unsigned int) user_id,
+		audit_logger_with_group (AUDIT_USER_MGMT,
+		              "deleting-user-from-group",
+		              user_name, user_id, "grp", ngrp->gr_name,
 		              SHADOW_AUDIT_SUCCESS);
 #endif				/* WITH_AUDIT */
 		SYSLOG ((LOG_INFO, "delete '%s' from group '%s'\n",
@@ -260,17 +265,17 @@ static void update_groups (void)
 		if (sgr_update (nsgrp) == 0) {
 			fprintf (stderr,
 			         _("%s: failed to prepare the new %s entry '%s'\n"),
-			         Prog, sgr_dbname (), nsgrp->sg_name);
+			         Prog, sgr_dbname (), nsgrp->sg_namp);
 			exit (E_GRP_UPDATE);
 		}
 #ifdef WITH_AUDIT
-		audit_logger (AUDIT_DEL_USER, Prog,
-		              "deleting user from shadow group",
-		              user_name, (unsigned int) user_id,
+		audit_logger_with_group (AUDIT_USER_MGMT,
+		              "deleting-user-from-shadow-group",
+		              user_name, user_id, nsgrp->sg_namp, "grp",
 		              SHADOW_AUDIT_SUCCESS);
 #endif				/* WITH_AUDIT */
 		SYSLOG ((LOG_INFO, "delete '%s' from shadow group '%s'\n",
-		         user_name, nsgrp->sg_name));
+		         user_name, nsgrp->sg_namp));
 	}
 #endif				/* SHADOWGRP */
 }
@@ -317,7 +322,7 @@ static void remove_usergroup (void)
 		 */
 		prefix_setpwent ();
 		while ((pwd = prefix_getpwent ()) != NULL) {
-			if (strcmp (pwd->pw_name, user_name) == 0) {
+			if (streq(pwd->pw_name, user_name)) {
 				continue;
 			}
 			if (pwd->pw_gid == grp->gr_gid) {
@@ -343,9 +348,9 @@ static void remove_usergroup (void)
 		}
 
 #ifdef WITH_AUDIT
-		audit_logger (AUDIT_DEL_GROUP, Prog,
-		              "deleting group",
-		              user_name, AUDIT_NO_ID,
+		audit_logger_with_group (AUDIT_DEL_GROUP,
+		              "delete-group",
+		              user_name, AUDIT_NO_ID, "grp", user_name,
 		              SHADOW_AUDIT_SUCCESS);
 #endif				/* WITH_AUDIT */
 		SYSLOG ((LOG_INFO,
@@ -361,9 +366,9 @@ static void remove_usergroup (void)
 				fail_exit (E_GRP_UPDATE);
 			}
 #ifdef WITH_AUDIT
-			audit_logger (AUDIT_DEL_GROUP, Prog,
-			              "deleting shadow group",
-			              user_name, AUDIT_NO_ID,
+			audit_logger_with_group (AUDIT_GRP_MGMT,
+			              "delete-shadow-group",
+			              user_name, AUDIT_NO_ID, "grp", user_name,
 			              SHADOW_AUDIT_SUCCESS);
 #endif				/* WITH_AUDIT */
 			SYSLOG ((LOG_INFO,
@@ -525,9 +530,8 @@ static void fail_exit (int code)
 
 #ifdef WITH_AUDIT
 	audit_logger (AUDIT_DEL_USER, Prog,
-	              "deleting user",
-	              user_name, (unsigned int) user_id,
-	              SHADOW_AUDIT_FAILURE);
+	              "delete-user",
+	              user_name, user_id, SHADOW_AUDIT_FAILURE);
 #endif				/* WITH_AUDIT */
 
 	exit (code);
@@ -545,24 +549,12 @@ static void open_files (void)
 		fprintf (stderr,
 		         _("%s: cannot lock %s; try again later.\n"),
 		         Prog, pw_dbname ());
-#ifdef WITH_AUDIT
-		audit_logger (AUDIT_DEL_USER, Prog,
-		              "locking password file",
-		              user_name, (unsigned int) user_id,
-		              SHADOW_AUDIT_FAILURE);
-#endif				/* WITH_AUDIT */
 		fail_exit (E_PW_UPDATE);
 	}
 	pw_locked = true;
 	if (pw_open (O_CREAT | O_RDWR) == 0) {
 		fprintf (stderr,
 		         _("%s: cannot open %s\n"), Prog, pw_dbname ());
-#ifdef WITH_AUDIT
-		audit_logger (AUDIT_DEL_USER, Prog,
-		              "opening password file",
-		              user_name, (unsigned int) user_id,
-		              SHADOW_AUDIT_FAILURE);
-#endif				/* WITH_AUDIT */
 		fail_exit (E_PW_UPDATE);
 	}
 	if (is_shadow_pwd) {
@@ -570,12 +562,6 @@ static void open_files (void)
 			fprintf (stderr,
 			         _("%s: cannot lock %s; try again later.\n"),
 			         Prog, spw_dbname ());
-#ifdef WITH_AUDIT
-			audit_logger (AUDIT_DEL_USER, Prog,
-			              "locking shadow password file",
-			              user_name, (unsigned int) user_id,
-			              SHADOW_AUDIT_FAILURE);
-#endif				/* WITH_AUDIT */
 			fail_exit (E_PW_UPDATE);
 		}
 		spw_locked = true;
@@ -583,12 +569,6 @@ static void open_files (void)
 			fprintf (stderr,
 			         _("%s: cannot open %s\n"),
 			         Prog, spw_dbname ());
-#ifdef WITH_AUDIT
-			audit_logger (AUDIT_DEL_USER, Prog,
-			              "opening shadow password file",
-			              user_name, (unsigned int) user_id,
-			              SHADOW_AUDIT_FAILURE);
-#endif				/* WITH_AUDIT */
 			fail_exit (E_PW_UPDATE);
 		}
 	}
@@ -596,23 +576,11 @@ static void open_files (void)
 		fprintf (stderr,
 		         _("%s: cannot lock %s; try again later.\n"),
 		         Prog, gr_dbname ());
-#ifdef WITH_AUDIT
-		audit_logger (AUDIT_DEL_USER, Prog,
-		              "locking group file",
-		              user_name, (unsigned int) user_id,
-		              SHADOW_AUDIT_FAILURE);
-#endif				/* WITH_AUDIT */
 		fail_exit (E_GRP_UPDATE);
 	}
 	gr_locked = true;
 	if (gr_open (O_CREAT | O_RDWR) == 0) {
 		fprintf (stderr, _("%s: cannot open %s\n"), Prog, gr_dbname ());
-#ifdef WITH_AUDIT
-		audit_logger (AUDIT_DEL_USER, Prog,
-		              "opening group file",
-		              user_name, (unsigned int) user_id,
-		              SHADOW_AUDIT_FAILURE);
-#endif				/* WITH_AUDIT */
 		fail_exit (E_GRP_UPDATE);
 	}
 #ifdef	SHADOWGRP
@@ -621,24 +589,12 @@ static void open_files (void)
 			fprintf (stderr,
 			         _("%s: cannot lock %s; try again later.\n"),
 			         Prog, sgr_dbname ());
-#ifdef WITH_AUDIT
-			audit_logger (AUDIT_DEL_USER, Prog,
-			              "locking shadow group file",
-			              user_name, (unsigned int) user_id,
-			              SHADOW_AUDIT_FAILURE);
-#endif				/* WITH_AUDIT */
 			fail_exit (E_GRP_UPDATE);
 		}
 		sgr_locked= true;
 		if (sgr_open (O_CREAT | O_RDWR) == 0) {
 			fprintf (stderr, _("%s: cannot open %s\n"),
 			         Prog, sgr_dbname ());
-#ifdef WITH_AUDIT
-			audit_logger (AUDIT_DEL_USER, Prog,
-			              "opening shadow group file",
-			              user_name, (unsigned int) user_id,
-			              SHADOW_AUDIT_FAILURE);
-#endif				/* WITH_AUDIT */
 			fail_exit (E_GRP_UPDATE);
 		}
 	}
@@ -649,24 +605,12 @@ static void open_files (void)
 			fprintf (stderr,
 				_("%s: cannot lock %s; try again later.\n"),
 				Prog, sub_uid_dbname ());
-#ifdef WITH_AUDIT
-			audit_logger (AUDIT_DEL_USER, Prog,
-				"locking subordinate user file",
-				user_name, (unsigned int) user_id,
-				SHADOW_AUDIT_FAILURE);
-#endif				/* WITH_AUDIT */
 			fail_exit (E_SUB_UID_UPDATE);
 		}
 		sub_uid_locked = true;
 		if (sub_uid_open (O_CREAT | O_RDWR) == 0) {
 			fprintf (stderr,
 				_("%s: cannot open %s\n"), Prog, sub_uid_dbname ());
-#ifdef WITH_AUDIT
-			audit_logger (AUDIT_DEL_USER, Prog,
-				"opening subordinate user file",
-				user_name, (unsigned int) user_id,
-				SHADOW_AUDIT_FAILURE);
-#endif				/* WITH_AUDIT */
 			fail_exit (E_SUB_UID_UPDATE);
 		}
 	}
@@ -675,24 +619,12 @@ static void open_files (void)
 			fprintf (stderr,
 				_("%s: cannot lock %s; try again later.\n"),
 				Prog, sub_gid_dbname ());
-#ifdef WITH_AUDIT
-			audit_logger (AUDIT_DEL_USER, Prog,
-				"locking subordinate group file",
-				user_name, (unsigned int) user_id,
-				SHADOW_AUDIT_FAILURE);
-#endif				/* WITH_AUDIT */
 			fail_exit (E_SUB_GID_UPDATE);
 		}
 		sub_gid_locked = true;
 		if (sub_gid_open (O_CREAT | O_RDWR) == 0) {
 			fprintf (stderr,
 				_("%s: cannot open %s\n"), Prog, sub_gid_dbname ());
-#ifdef WITH_AUDIT
-			audit_logger (AUDIT_DEL_USER, Prog,
-				"opening subordinate group file",
-				user_name, (unsigned int) user_id,
-				SHADOW_AUDIT_FAILURE);
-#endif				/* WITH_AUDIT */
 			fail_exit (E_SUB_GID_UPDATE);
 		}
 	}
@@ -737,9 +669,8 @@ static void update_user (void)
 #endif				/* ENABLE_SUBIDS */
 #ifdef WITH_AUDIT
 	audit_logger (AUDIT_DEL_USER, Prog,
-	              "deleting user entries",
-	              user_name, (unsigned int) user_id,
-	              SHADOW_AUDIT_SUCCESS);
+	              "delete-user",
+	              user_name, user_id, SHADOW_AUDIT_SUCCESS);
 #endif				/* WITH_AUDIT */
 	SYSLOG ((LOG_INFO, "delete user '%s'\n", user_name));
 }
@@ -763,7 +694,7 @@ static void user_cancel (const char *user)
 	}
 	argv[0] = cmd;
 	argv[1] = user;
-	argv[2] = (char *)0;
+	argv[2] = NULL;
 	(void) run_command (cmd, argv, NULL, &status);
 }
 
@@ -800,13 +731,12 @@ static int is_owner (uid_t uid, const char *path)
 	return (st.st_uid == uid) ? 1 : 0;
 }
 
-static int remove_mailbox (void)
+static bool remove_mailbox (void)
 {
-	const char *maildir;
-	char* mailfile;
-	int i;
-	int errors = 0;
-	size_t len;
+	int         i;
+	bool        errors = false;
+	char        *mailfile;
+	const char  *maildir;
 
 	maildir = getdef_str ("MAIL_DIR");
 #ifdef MAIL_SPOOL_DIR
@@ -818,18 +748,11 @@ static int remove_mailbox (void)
 		return 0;
 	}
 
-	len = strlen (prefix) + strlen (maildir) + strlen (user_name) + 2;
-	mailfile = xmalloc (len);
-
 	if (prefix[0]) {
-		(void) snprintf (mailfile, len, "%s/%s/%s",
-	    	             prefix, maildir, user_name);
+		xasprintf(&mailfile, "%s/%s/%s", prefix, maildir, user_name);
+	} else {
+		xasprintf(&mailfile, "%s/%s", maildir, user_name);
 	}
-	else {
-		(void) snprintf (mailfile, len, "%s/%s",
-	    	             maildir, user_name);
-	}
-	mailfile[len-1] = '\0';
 
 	if (access (mailfile, F_OK) != 0) {
 		if (ENOENT == errno) {
@@ -845,9 +768,8 @@ static int remove_mailbox (void)
 			SYSLOG ((LOG_ERR, "Cannot remove %s: %s", mailfile, strerror (errno)));
 #ifdef WITH_AUDIT
 			audit_logger (AUDIT_DEL_USER, Prog,
-			              "deleting mail file",
-			              user_name, (unsigned int) user_id,
-			              SHADOW_AUDIT_FAILURE);
+			              "delete-mail-file",
+			              user_name, user_id, SHADOW_AUDIT_FAILURE);
 #endif				/* WITH_AUDIT */
 			free(mailfile);
 			return -1;
@@ -862,20 +784,18 @@ static int remove_mailbox (void)
 			SYSLOG ((LOG_ERR, "Cannot remove %s: %s", mailfile, strerror (errno)));
 #ifdef WITH_AUDIT
 			audit_logger (AUDIT_DEL_USER, Prog,
-			              "deleting mail file",
-			              user_name, (unsigned int) user_id,
-			              SHADOW_AUDIT_FAILURE);
+			              "delete-mail-file",
+			              user_name, user_id, SHADOW_AUDIT_FAILURE);
 #endif				/* WITH_AUDIT */
-			errors = 1;
+			errors = true;
 			/* continue */
 		}
 #ifdef WITH_AUDIT
 		else
 		{
-			audit_logger (AUDIT_DEL_USER, Prog,
-			              "deleting mail file",
-			              user_name, (unsigned int) user_id,
-			              SHADOW_AUDIT_SUCCESS);
+			audit_logger (AUDIT_USER_MGMT, Prog,
+			              "delete-mail-file",
+			              user_name, user_id, SHADOW_AUDIT_SUCCESS);
 		}
 #endif				/* WITH_AUDIT */
 		free(mailfile);
@@ -891,9 +811,8 @@ static int remove_mailbox (void)
 		         mailfile, strerror (errno)));
 #ifdef WITH_AUDIT
 		audit_logger (AUDIT_DEL_USER, Prog,
-		              "deleting mail file",
-		              user_name, (unsigned int) user_id,
-		              SHADOW_AUDIT_FAILURE);
+		              "delete-mail-file",
+		              user_name, user_id, SHADOW_AUDIT_FAILURE);
 #endif				/* WITH_AUDIT */
 		free(mailfile);
 		return 1;
@@ -908,20 +827,18 @@ static int remove_mailbox (void)
 		SYSLOG ((LOG_ERR, "Cannot remove %s: %s", mailfile, strerror (errno)));
 #ifdef WITH_AUDIT
 		audit_logger (AUDIT_DEL_USER, Prog,
-		              "deleting mail file",
-		              user_name, (unsigned int) user_id,
-		              SHADOW_AUDIT_FAILURE);
+		              "delete-mail-file",
+		              user_name, user_id, SHADOW_AUDIT_FAILURE);
 #endif				/* WITH_AUDIT */
-		errors = 1;
+		errors = true;
 		/* continue */
 	}
 #ifdef WITH_AUDIT
 	else
 	{
-		audit_logger (AUDIT_DEL_USER, Prog,
-		              "deleting mail file",
-		              user_name, (unsigned int) user_id,
-		              SHADOW_AUDIT_SUCCESS);
+		audit_logger (AUDIT_USER_MGMT, Prog,
+		              "delete-mail-file",
+		              user_name, user_id, SHADOW_AUDIT_SUCCESS);
 	}
 #endif				/* WITH_AUDIT */
 	free(mailfile);
@@ -931,22 +848,19 @@ static int remove_mailbox (void)
 #ifdef WITH_TCB
 static int remove_tcbdir (const char *user_name, uid_t user_id)
 {
-	char *buf;
-	int ret = 0;
-	size_t buflen = (sizeof TCB_DIR) + strlen (user_name) + 2;
+	int   ret = 0;
+	char  *buf;
 
 	if (!getdef_bool ("USE_TCB")) {
 		return 0;
 	}
 
-	buf = malloc (buflen);
-	if (NULL == buf) {
-		fprintf (stderr, _("%s: Can't allocate memory, "
-		                   "tcb entry for %s not removed.\n"),
-		         Prog, user_name);
+	if (asprintf(&buf, TCB_DIR "/%s", user_name) == -1) {
+		fprintf(stderr,
+		        _("%s: Can't allocate memory, tcb entry for %s not removed.\n"),
+		        Prog, user_name);
 		return 1;
 	}
-	snprintf (buf, buflen, TCB_DIR "/%s", user_name);
 	if (shadowtcb_drop_priv () == SHADOWTCB_FAILURE) {
 		fprintf (stderr, _("%s: Cannot drop privileges: %s\n"),
 		         Prog, strerror (errno));
@@ -980,7 +894,7 @@ static int remove_tcbdir (const char *user_name, uid_t user_id)
  */
 int main (int argc, char **argv)
 {
-	int errors = 0; /* Error in the removal of the home directory */
+	bool errors = false; /* Error in the removal of the home directory */
 
 #ifdef ACCT_TOOLS_SETUID
 #ifdef USE_PAM
@@ -989,10 +903,6 @@ int main (int argc, char **argv)
 #endif				/* USE_PAM */
 #endif				/* ACCT_TOOLS_SETUID */
 
-	/*
-	 * Get my name so that I can use it to report errors.
-	 */
-	Prog = Basename (argv[0]);
 	log_set_progname(Prog);
 	log_set_logfd(stderr);
 	(void) setlocale (LC_ALL, "");
@@ -1002,7 +912,7 @@ int main (int argc, char **argv)
 	process_root_flag ("-R", argc, argv);
 	prefix = process_prefix_flag ("-P", argc, argv);
 
-	OPENLOG ("userdel");
+	OPENLOG (Prog);
 #ifdef WITH_AUDIT
 	audit_help_open ();
 #endif				/* WITH_AUDIT */
@@ -1086,7 +996,7 @@ int main (int argc, char **argv)
 			exit (E_PW_UPDATE);
 		}
 
-		retval = pam_start ("userdel", pampw->pw_name, &conv, &pamh);
+		retval = pam_start (Prog, pampw->pw_name, &conv, &pamh);
 	}
 
 	if (PAM_SUCCESS == retval) {
@@ -1138,7 +1048,7 @@ int main (int argc, char **argv)
 				 Prog, user_name);
 #ifdef WITH_AUDIT
 			audit_logger (AUDIT_DEL_USER, Prog,
-			              "deleting user not found",
+			              "deleting-user-not-found",
 			              user_name, AUDIT_NO_ID,
 			              SHADOW_AUDIT_FAILURE);
 #endif				/* WITH_AUDIT */
@@ -1148,15 +1058,9 @@ int main (int argc, char **argv)
 		user_gid = pwd->pw_gid;
 
 		if (prefix[0]) {
-
-			size_t len = strlen(prefix) + strlen(pwd->pw_dir) + 2;
-			int wlen;
-			user_home = xmalloc(len);
-			wlen = snprintf(user_home, len, "%s/%s", prefix, pwd->pw_dir);
-			assert (wlen == (int) len -1);
-		}
-		else {
-			user_home = xstrdup (pwd->pw_dir);
+			xasprintf(&user_home, "%s/%s", prefix, pwd->pw_dir);
+		} else {
+			user_home = xstrdup(pwd->pw_dir);
 		}
 		pw_close();
 	}
@@ -1165,36 +1069,16 @@ int main (int argc, char **argv)
 		exit (E_NOTFOUND);
 	}
 #endif				/* WITH_TCB */
-#ifdef	USE_NIS
-
-	/*
-	 * Now make sure it isn't an NIS user.
-	 */
-	if (__ispwNIS ()) {
-		char *nis_domain;
-		char *nis_master;
-
-		fprintf (stderr,
-		         _("%s: user %s is a NIS user\n"), Prog, user_name);
-		if (   !yp_get_default_domain (&nis_domain)
-		    && !yp_master (nis_domain, "passwd.byname", &nis_master)) {
-			fprintf (stderr,
-			         _("%s: %s is the NIS master\n"),
-			         Prog, nis_master);
-		}
-		exit (E_NOTFOUND);
-	}
-#endif				/* USE_NIS */
 	/*
 	 * Check to make certain the user isn't logged in.
 	 * Note: This is a best effort basis. The user may log in between,
 	 * a cron job may be started on her behalf, etc.
 	 */
-	if ((prefix[0] == '\0') && !Rflg && user_busy (user_name, user_id) != 0) {
+	if (streq(prefix, "") && !Rflg && user_busy(user_name, user_id) != 0) {
 		if (!fflg) {
 #ifdef WITH_AUDIT
 			audit_logger (AUDIT_DEL_USER, Prog,
-			              "deleting user logged in",
+			              "deleting-user-logged-in",
 			              user_name, AUDIT_NO_ID,
 			              SHADOW_AUDIT_FAILURE);
 #endif				/* WITH_AUDIT */
@@ -1211,7 +1095,9 @@ int main (int argc, char **argv)
 	update_groups ();
 
 	if (rflg) {
-		errors += remove_mailbox ();
+		if (remove_mailbox ()) {
+			errors = true;
+		}
 	}
 	if (rflg) {
 		int home_owned = is_owner (user_id, user_home);
@@ -1225,7 +1111,7 @@ int main (int argc, char **argv)
 			         _("%s: %s not owned by %s, not removing\n"),
 			         Prog, user_home, user_name);
 			rflg = 0;
-			errors++;
+			errors = true;
 			/* continue */
 		}
 	}
@@ -1243,7 +1129,7 @@ int main (int argc, char **argv)
 		 */
 		prefix_setpwent ();
 		while ((pwd = prefix_getpwent ())) {
-			if (strcmp (pwd->pw_name, user_name) == 0) {
+			if (streq(pwd->pw_name, user_name)) {
 				continue;
 			}
 			if (path_prefix (user_home, pwd->pw_dir)) {
@@ -1251,7 +1137,7 @@ int main (int argc, char **argv)
 				         _("%s: not removing directory %s (would remove home of user %s)\n"),
 				         Prog, user_home, pwd->pw_name);
 				rflg = false;
-				errors++;
+				errors = true;
 				/* continue */
 				break;
 			}
@@ -1264,7 +1150,7 @@ int main (int argc, char **argv)
 #ifdef WITH_BTRFS
 		int is_subvolume = btrfs_is_subvolume (user_home);
 		if (is_subvolume < 0) {
-		    errors++;
+		    errors = true;
 		    /* continue */
 		}
 		else if (is_subvolume > 0) {
@@ -1272,7 +1158,7 @@ int main (int argc, char **argv)
 				fprintf (stderr,
 				         _("%s: error removing subvolume %s\n"),
 				         Prog, user_home);
-				errors++;
+				errors = true;
 				/* continue */
 			}
 		}
@@ -1282,23 +1168,22 @@ int main (int argc, char **argv)
 			fprintf (stderr,
 			         _("%s: error removing directory %s\n"),
 			         Prog, user_home);
-			errors++;
+			errors = true;
 			/* continue */
 		}
 #ifdef WITH_AUDIT
 		else
 		{
-			audit_logger (AUDIT_DEL_USER, Prog,
-			              "deleting home directory",
-			              user_name, (unsigned int) user_id,
-			              SHADOW_AUDIT_SUCCESS);
+			audit_logger (AUDIT_USER_MGMT, Prog,
+			              "deleting-home-directory",
+			              user_name, user_id, SHADOW_AUDIT_SUCCESS);
 		}
 #endif				/* WITH_AUDIT */
 	}
 #ifdef WITH_AUDIT
-	if (0 != errors) {
+	if (errors) {
 		audit_logger (AUDIT_DEL_USER, Prog,
-		              "deleting home directory",
+		              "deleting-home-directory",
 		              user_name, AUDIT_NO_ID,
 		              SHADOW_AUDIT_FAILURE);
 	}
@@ -1311,10 +1196,9 @@ int main (int argc, char **argv)
 			         _("%s: warning: the user name %s to SELinux user mapping removal failed.\n"),
 			         Prog, user_name);
 #ifdef WITH_AUDIT
-			audit_logger (AUDIT_ADD_USER, Prog,
-			              "removing SELinux user mapping",
-			              user_name, (unsigned int) user_id,
-			              SHADOW_AUDIT_FAILURE);
+			audit_logger (AUDIT_ROLE_REMOVE, Prog,
+			              "delete-selinux-user-mapping",
+			              user_name, user_id, SHADOW_AUDIT_FAILURE);
 #endif				/* WITH_AUDIT */
 			fail_exit (E_SE_UPDATE);
 		}
@@ -1325,7 +1209,7 @@ int main (int argc, char **argv)
 	 * Cancel any crontabs or at jobs. Have to do this before we remove
 	 * the entry from /etc/passwd.
 	 */
-	if (prefix[0] == '\0')
+	if (streq(prefix, ""))
 		user_cancel (user_name);
 	close_files ();
 
@@ -1334,13 +1218,15 @@ int main (int argc, char **argv)
 	}
 
 #ifdef WITH_TCB
-	errors += remove_tcbdir (user_name, user_id);
+	if (remove_tcbdir (user_name, user_id)) {
+		errors = true;
+	}
 #endif				/* WITH_TCB */
 
 	nscd_flush_cache ("passwd");
 	nscd_flush_cache ("group");
 	sssd_flush_cache (SSSD_DB_PASSWD | SSSD_DB_GROUP);
 
-	return ((0 != errors) ? E_HOMEDIR : E_SUCCESS);
+	return (errors ? E_HOMEDIR : E_SUCCESS);
 }
 

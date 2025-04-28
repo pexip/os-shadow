@@ -45,21 +45,31 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #endif				/* !USE_PAM */
-#include "prototypes.h"
+
+#include "alloc/x/xmalloc.h"
+#include "attr.h"
+#include "cast.h"
 #include "defines.h"
-#include "pwauth.h"
+/*@-exitarg@*/
+#include "exitcodes.h"
 #include "getdef.h"
 #ifdef USE_PAM
 #include "pam_defs.h"
 #endif				/* USE_PAM */
-/*@-exitarg@*/
-#include "exitcodes.h"
+#include "pwauth.h"
+#include "prototypes.h"
 #include "shadowlog.h"
+#include "string/sprintf/snprintf.h"
+#include "string/sprintf/xasprintf.h"
+#include "string/strcmp/streq.h"
+#include "string/strcpy/strtcpy.h"
+#include "string/strdup/xstrdup.h"
+
 
 /*
  * Global variables
  */
-const char *Prog;
+static const char Prog[] = "su";
 static /*@observer@*/const char *caller_tty = NULL;	/* Name of tty SU is run from */
 static bool caller_is_root = false;
 static uid_t caller_uid;
@@ -95,8 +105,8 @@ static pid_t pid_child = 0;
  * External identifiers
  */
 
-extern char **newenvp; /* libmisc/env.c */
-extern size_t newenvc; /* libmisc/env.c */
+extern char **newenvp; /* lib/env.c */
+extern size_t newenvc; /* lib/env.c */
 
 /* local function prototypes */
 
@@ -104,21 +114,22 @@ static void execve_shell (const char *shellname,
                           char *args[],
                           char *const envp[]);
 #ifdef USE_PAM
-static void kill_child (int unused(s));
+static void kill_child (MAYBE_UNUSED int s);
 static void prepare_pam_close_session (void);
 #else				/* !USE_PAM */
 static void die (int);
 static bool iswheel (const char *);
 #endif				/* !USE_PAM */
 static bool restricted_shell (const char *shellname);
-static /*@noreturn@*/void su_failure (const char *tty, bool su_to_root);
+NORETURN static void su_failure (const char *tty, bool su_to_root);
 static /*@only@*/struct passwd * check_perms (void);
+static /*@only@*/struct passwd * do_check_perms (void);
 #ifdef USE_PAM
 static void check_perms_pam (const struct passwd *pw);
 #else				/* !USE_PAM */
 static void check_perms_nopam (const struct passwd *pw);
 #endif				/* !USE_PAM */
-static void save_caller_context (char **argv);
+static void save_caller_context(void);
 static void process_flags (int argc, char **argv);
 static void set_environment (struct passwd *pw);
 
@@ -157,13 +168,13 @@ static bool iswheel (const char *username)
 	return is_on_list (grp->gr_mem, username);
 }
 #else				/* USE_PAM */
-static void kill_child (int unused(s))
+static void kill_child (MAYBE_UNUSED int s)
 {
 	if (0 != pid_child) {
 		(void) kill (-pid_child, SIGKILL);
-		(void) write (STDERR_FILENO, kill_msg, strlen (kill_msg));
+		(void) write_full(STDERR_FILENO, kill_msg, strlen(kill_msg));
 	} else {
-		(void) write (STDERR_FILENO, wait_msg, strlen (wait_msg));
+		(void) write_full(STDERR_FILENO, wait_msg, strlen(wait_msg));
 	}
 	_exit (255);
 }
@@ -176,7 +187,7 @@ static bool restricted_shell (const char *shellname)
 
 	setusershell ();
 	while ((line = getusershell ()) != NULL) {
-		if (('#' != *line) && (strcmp (line, shellname) == 0)) {
+		if (('#' != *line) && streq(line, shellname)) {
 			endusershell ();
 			return false;
 		}
@@ -185,10 +196,11 @@ static bool restricted_shell (const char *shellname)
 	return true;
 }
 
-static /*@noreturn@*/void su_failure (const char *tty, bool su_to_root)
+NORETURN
+static void
+su_failure (const char *tty, bool su_to_root)
 {
 	sulog (tty, false, caller_name, name);	/* log failed attempt */
-#ifdef USE_SYSLOG
 	if (getdef_bool ("SYSLOG_SU_ENAB")) {
 		SYSLOG ((su_to_root ? LOG_NOTICE : LOG_INFO,
 		         "- %s %s:%s", tty,
@@ -196,7 +208,6 @@ static /*@noreturn@*/void su_failure (const char *tty, bool su_to_root)
 		         ('\0' != name[0]) ? name : "???"));
 	}
 	closelog ();
-#endif
 
 #ifdef WITH_AUDIT
 	audit_fd = audit_open ();
@@ -225,7 +236,7 @@ static void execve_shell (const char *shellname,
                           char *const envp[])
 {
 	int err;
-	(void) execve (shellname, (char **) args, envp);
+	(void) execve (shellname, args, envp);
 	err = errno;
 
 	if (access (shellname, R_OK|X_OK) == 0) {
@@ -238,7 +249,7 @@ static void execve_shell (const char *shellname,
 		while (NULL != args[n_args]) {
 			n_args++;
 		}
-		targs = (char **) xmalloc ((n_args + 3) * sizeof (args[0]));
+		targs = XMALLOC(n_args + 3, char *);
 		targs[0] = "sh";
 		targs[1] = "-";
 		targs[2] = xstrdup (shellname);
@@ -382,8 +393,8 @@ static void prepare_pam_close_session (void)
 		              stderr);
 		(void) kill (-pid_child, caught);
 
-		snprintf (kill_msg, sizeof kill_msg, _(" ...killed.\n"));
-		snprintf (wait_msg, sizeof wait_msg, _(" ...waiting for child to terminate.\n"));
+		SNPRINTF(kill_msg, _(" ...killed.\n"));
+		SNPRINTF(wait_msg, _(" ...waiting for child to terminate.\n"));
 
 		/* Any signals other than SIGCHLD and SIGALRM will no longer have any effect,
 		 * so it's time to block all of them. */
@@ -430,6 +441,7 @@ static void prepare_pam_close_session (void)
 /*
  * usage - print command line syntax and exit
  */
+NORETURN
 static void usage (int status)
 {
 	(void)
@@ -500,16 +512,17 @@ static void check_perms_nopam (const struct passwd *pw)
 		return;
 	}
 
-	if (strcmp (pw->pw_passwd, "") == 0) {
-		char *prevent_no_auth = getdef_str("PREVENT_NO_AUTH");
+	if (streq(pw->pw_passwd, "")) {
+		const char  *prevent_no_auth = getdef_str("PREVENT_NO_AUTH");
+
 		if (prevent_no_auth == NULL) {
 			prevent_no_auth = "superuser";
 		}
-		if (strcmp(prevent_no_auth, "yes") == 0) {
+		if (streq(prevent_no_auth, "yes")) {
 			fprintf(stderr, _("Password field is empty, this is forbidden for all accounts.\n"));
 			exit(1);
 		} else if ((pw->pw_uid == 0)
-				&& (strcmp(prevent_no_auth, "superuser") == 0)) {
+				&& streq(prevent_no_auth, "superuser")) {
 			fprintf(stderr, _("Password field is empty, this is forbidden for super-user.\n"));
 			exit(1);
 		}
@@ -543,7 +556,7 @@ static void check_perms_nopam (const struct passwd *pw)
 	}
 	spwd = getspnam (name); /* !USE_PAM, no need for xgetspnam */
 #ifdef SU_ACCESS
-	if (strcmp (pw->pw_passwd, SHADOW_PASSWD_STRING) == 0) {
+	if (streq(pw->pw_passwd, SHADOW_PASSWD_STRING)) {
 		if (NULL != spwd) {
 			password = spwd->sp_pwdp;
 		}
@@ -577,7 +590,7 @@ static void check_perms_nopam (const struct passwd *pw)
 	 * The first character of an administrator defined method is an '@'
 	 * character.
 	 */
-	if (pw_auth (password, name, PW_SU, (char *) 0) != 0) {
+	if (pw_auth(password, name) != 0) {
 		SYSLOG (((pw->pw_uid != 0)? LOG_NOTICE : LOG_WARN,
 		         "Authentication failed for %s", name));
 		fprintf(stderr, _("%s: Authentication failure\n"), Prog);
@@ -600,7 +613,7 @@ static void check_perms_nopam (const struct passwd *pw)
 	 * there is a "SU" entry in the /etc/porttime file denying access to
 	 * the account.
 	 */
-	if (!isttytime (name, "SU", time ((time_t *) 0))) {
+	if (!isttytime (name, "SU", time (NULL))) {
 		SYSLOG (((0 != pw->pw_uid) ? LOG_WARN : LOG_CRIT,
 		         "SU by %s to restricted account %s",
 		         caller_name, name));
@@ -615,14 +628,30 @@ static void check_perms_nopam (const struct passwd *pw)
 /*
  * check_perms - check permissions to switch to the user 'name'
  *
- *	In case of subsystem login, the user is first authenticated in the
- *	caller's root subsystem, and then in the user's target subsystem.
+ *	The user is authenticated in all subsystems iterately.
  */
 static /*@only@*/struct passwd * check_perms (void)
 {
+	struct passwd *pw = NULL;
+
+	while (pw == NULL)
+		pw = do_check_perms();
+	return pw;
+}
+
+/*
+ * do_check_perms - check permissions to switch to the user 'name'
+ *
+ *	The user is authenticated in current subsystem, if any. Returns
+ *	NULL if permissions have to be checked in next subsystem, in
+ *	which case the subsystem has already been entered.
+ */
+static /*@only@*/struct passwd * do_check_perms (void)
+{
 #ifdef USE_PAM
-	const char *tmp_name;
-	int ret;
+	int         ret;
+	const char  *tmp_name;
+	const void  *item;
 #endif				/* !USE_PAM */
 	/*
 	 * The password file entries for the user is gotten and the account
@@ -642,7 +671,7 @@ static /*@only@*/struct passwd * check_perms (void)
 #ifdef USE_PAM
 	check_perms_pam (pw);
 	/* PAM authentication can request a change of account */
-	ret = pam_get_item(pamh, PAM_USER, (const void **) &tmp_name);
+	ret = pam_get_item(pamh, PAM_USER, &item);
 	if (ret != PAM_SUCCESS) {
 		SYSLOG((LOG_ERR, "pam_get_item: internal PAM error\n"));
 		(void) fprintf (stderr,
@@ -651,12 +680,18 @@ static /*@only@*/struct passwd * check_perms (void)
 		(void) pam_end (pamh, ret);
 		su_failure (caller_tty, 0 == pw->pw_uid);
 	}
-	if (strcmp (name, tmp_name) != 0) {
+	tmp_name = item;
+	if (!streq(name, tmp_name)) {
 		SYSLOG ((LOG_INFO,
 		         "Change user from '%s' to '%s' as requested by PAM",
 		         name, tmp_name));
-		strncpy (name, tmp_name, sizeof(name) - 1);
-		name[sizeof(name) - 1] = '\0';
+		if (STRTCPY(name, tmp_name) == -1) {
+			fprintf (stderr, _("Overlong user name '%s'\n"),
+			         tmp_name);
+			SYSLOG ((LOG_NOTICE, "Overlong user name '%s'",
+			         tmp_name));
+			su_failure (caller_tty, true);
+		}
 		pw = xgetpwnam (name);
 		if (NULL == pw) {
 			(void) fprintf (stderr,
@@ -684,11 +719,12 @@ static /*@only@*/struct passwd * check_perms (void)
 		endpwent ();		/* close the old password databases */
 		endspent ();
 		pw_free (pw);
-		return check_perms ();	/* authenticate in the subsystem */
+		return NULL;	/* authenticate in the subsystem */
 	}
 
 	return pw;
 }
+
 
 /*
  * save_caller_context - save information from the call context
@@ -698,7 +734,8 @@ static /*@only@*/struct passwd * check_perms (void)
  *	the TTY (ttyp), and whether su was called from a console
  *	(is_console) for further processing and before they might change.
  */
-static void save_caller_context (char **argv)
+static void
+save_caller_context(void)
 {
 	struct passwd *pw = NULL;
 #ifndef USE_PAM
@@ -706,11 +743,6 @@ static void save_caller_context (char **argv)
 	const char *password = NULL;
 #endif				/* SU_ACCESS */
 #endif				/* !USE_PAM */
-	/*
-	 * Get the program name. The program name is used as a prefix to
-	 * most error messages.
-	 */
-	Prog = Basename (argv[0]);
 	log_set_progname(Prog);
 	log_set_logfd(stderr);
 
@@ -752,7 +784,7 @@ static void save_caller_context (char **argv)
 		         (unsigned long) caller_uid));
 		su_failure (caller_tty, true); /* unknown target UID*/
 	}
-	STRFCPY (caller_name, pw->pw_name);
+	STRTCPY(caller_name, pw->pw_name);
 
 #ifndef USE_PAM
 #ifdef SU_ACCESS
@@ -761,7 +793,7 @@ static void save_caller_context (char **argv)
 	 * -- chris
 	 */
 	password = pw->pw_passwd;
-	if (strcmp (pw->pw_passwd, SHADOW_PASSWD_STRING) == 0) {
+	if (streq(pw->pw_passwd, SHADOW_PASSWD_STRING)) {
 		const struct spwd *spwd = getspnam (caller_name);
 		if (NULL != spwd) {
 			password = spwd->sp_pwdp;
@@ -773,6 +805,7 @@ static void save_caller_context (char **argv)
 #endif				/* !USE_PAM */
 	pw_free (pw);
 }
+
 
 /*
  * process_flags - Process the command line arguments
@@ -808,7 +841,7 @@ static void process_flags (int argc, char **argv)
 		case 'm':
 		case 'p':
 			/* This will only have an effect if the target
-			 * user do not have a restricted shell, or if
+			 * user does not have a restricted shell, or if
 			 * su is called by root.
 			 */
 			change_environment = false;
@@ -821,15 +854,15 @@ static void process_flags (int argc, char **argv)
 		}
 	}
 
-	if ((optind < argc) && (strcmp (argv[optind], "-") == 0)) {
+	if ((optind < argc) && streq(argv[optind], "-")) {
 		fakelogin = true;
 		optind++;
 	}
 
 	if (optind < argc) {
-		STRFCPY (name, argv[optind++]);	/* use this login id */
+		STRTCPY(name, argv[optind++]);	/* use this login id */
 	}
-	if ('\0' == name[0]) {		/* use default user */
+	if (streq(name, "")) {		/* use default user */
 		struct passwd *root_pw = getpwnam ("root");
 		if ((NULL != root_pw) && (0 == root_pw->pw_uid)) {
 			(void) strcpy (name, "root");
@@ -980,20 +1013,22 @@ int main (int argc, char **argv)
 	int ret;
 #endif				/* USE_PAM */
 
+	check_fds ();
+
 	(void) setlocale (LC_ALL, "");
 	(void) bindtextdomain (PACKAGE, LOCALEDIR);
 	(void) textdomain (PACKAGE);
 
-	save_caller_context (argv);
+	save_caller_context();
 
-	OPENLOG ("su");
+	OPENLOG (Prog);
 
 	process_flags (argc, argv);
 
 	initenv ();
 
 #ifdef USE_PAM
-	ret = pam_start ("su", name, &conv, &pamh);
+	ret = pam_start (Prog, name, &conv, &pamh);
 	if (PAM_SUCCESS != ret) {
 		SYSLOG ((LOG_ERR, "pam_start: error %d", ret);
 		fprintf (stderr,
@@ -1002,9 +1037,9 @@ int main (int argc, char **argv)
 		exit (1);
 	}
 
-	ret = pam_set_item (pamh, PAM_TTY, (const void *) caller_tty);
+	ret = pam_set_item (pamh, PAM_TTY, caller_tty);
 	if (PAM_SUCCESS == ret) {
-		ret = pam_set_item (pamh, PAM_RUSER, (const void *) caller_name);
+		ret = pam_set_item (pamh, PAM_RUSER, caller_name);
 	}
 	if (PAM_SUCCESS != ret) {
 		SYSLOG ((LOG_ERR, "pam_set_item: %s",
@@ -1017,7 +1052,7 @@ int main (int argc, char **argv)
 
 	pw = check_perms ();
 
-	/* If the user do not want to change the environment,
+	/* If the user does not want to change the environment,
 	 * use the current SHELL.
 	 * (unless another shell is required by the command line)
 	 */
@@ -1045,18 +1080,16 @@ int main (int argc, char **argv)
 	/*
 	 * Set the default shell.
 	 */
-	if ((NULL == shellstr) || ('\0' == shellstr[0])) {
+	if ((NULL == shellstr) || streq(shellstr, "")) {
 		shellstr = SHELL;
 	}
 
 	sulog (caller_tty, true, caller_name, name);	/* save SU information */
-#ifdef USE_SYSLOG
 	if (getdef_bool ("SYSLOG_SU_ENAB")) {
 		SYSLOG ((LOG_INFO, "+ %s %s:%s", caller_tty,
-		         ('\0' != caller_name[0]) ? caller_name : "???",
-		         ('\0' != name[0]) ? name : "???"));
+		         (!streq(caller_name, "")) ? caller_name : "???",
+		         (!streq(name, "")) ? name : "???"));
 	}
-#endif
 
 #ifdef USE_PAM
 	/* set primary group id and supplementary groups */
@@ -1110,7 +1143,7 @@ int main (int argc, char **argv)
 				AUDIT_USER_ROLE_CHANGE,
 				NULL,    /* Prog. name */
 				"su",
-				('\0' != caller_name[0]) ? caller_name : "???",
+				(!streq(caller_name, "")) ? caller_name : "???",
 				AUDIT_NO_ID,
 				"localhost",
 				NULL,    /* addr */
@@ -1135,7 +1168,7 @@ int main (int argc, char **argv)
 		int fd = open ("/dev/tty", O_RDWR);
 
 		if (fd >= 0) {
-			err = ioctl (fd, TIOCNOTTY, (char *) 0);
+			err = ioctl (fd, TIOCNOTTY, (char *) NULL);
 			(void) close (fd);
 		} else if (ENXIO == errno) {
 			/* There are no controlling terminal already */
@@ -1171,16 +1204,14 @@ int main (int argc, char **argv)
 	 * case they will be provided to the new user's shell as arguments.
 	 */
 	if (fakelogin) {
-		char *arg0;
+		char  *arg0;
 
 		cp = getdef_str ("SU_NAME");
 		if (NULL == cp) {
 			cp = Basename (shellstr);
 		}
 
-		arg0 = xmalloc (strlen (cp) + 2);
-		arg0[0] = '-';
-		strcpy (arg0 + 1, cp);
+		xasprintf(&arg0, "-%s", cp);
 		cp = arg0;
 	} else {
 		cp = Basename (shellstr);
@@ -1199,7 +1230,7 @@ int main (int argc, char **argv)
 		 * Use the shell and create an argv
 		 * with the rest of the command line included.
 		 */
-		argv[-1] = cp;
+		argv[-1] = const_cast(char *, cp);
 		execve_shell (shellstr, &argv[-1], environ);
 		err = errno;
 		(void) fprintf (stderr,

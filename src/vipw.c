@@ -26,10 +26,11 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <utime.h>
+
 #include "defines.h"
+#include "getdef.h"
 #include "groupio.h"
 #include "nscd.h"
-#include "sssd.h"
 #include "prototypes.h"
 #include "pwio.h"
 #include "sgroupio.h"
@@ -41,6 +42,11 @@
 #include "tcbfuncs.h"
 #endif				/* WITH_TCB */
 #include "shadowlog.h"
+#include "sssd.h"
+#include "string/sprintf/snprintf.h"
+#include "string/sprintf/xasprintf.h"
+#include "string/strcmp/streq.h"
+
 
 #define MSG_WARN_EDIT_OTHER_FILE _( \
 	"You have modified %s.\n"\
@@ -50,7 +56,7 @@
 /*
  * Global variables
  */
-const char *Prog;
+static const char *Prog;
 
 static const char *filename, *fileeditname;
 static bool filelocked = false;
@@ -190,18 +196,17 @@ static void vipwexit (const char *msg, int syserr, int ret)
 static void
 vipwedit (const char *file, int (*file_lock) (void), int (*file_unlock) (void))
 {
-	const char *editor;
-	pid_t pid;
-	struct stat st1, st2;
-	int status;
-	FILE *f;
-	pid_t orig_pgrp, editor_pgrp = -1;
-	sigset_t mask, omask;
+	int          status;
+	char         *to_rename;
+	FILE         *f;
+	pid_t        pid, orig_pgrp, editor_pgrp = -1;
+	sigset_t     mask, omask;
+	const char   *editor;
+	struct stat  st1, st2;
 	/* FIXME: the following should have variable sizes */
-	char filebackup[1024], fileedit[1024];
-	char *to_rename;
+	char         filebackup[1024], fileedit[1024];
 
-	snprintf (filebackup, sizeof filebackup, "%s-", file);
+	SNPRINTF(filebackup, "%s-", file);
 #ifdef WITH_TCB
 	if (tcb_mode) {
 		if (   (mkdir (TCB_DIR "/" SHADOWTCB_SCRATCHDIR, 0700) != 0)
@@ -211,12 +216,12 @@ vipwedit (const char *file, int (*file_lock) (void), int (*file_unlock) (void))
 		if (shadowtcb_drop_priv () == SHADOWTCB_FAILURE) {
 			vipwexit (_("failed to drop privileges"), errno, 1);
 		}
-		snprintf (fileedit, sizeof fileedit,
-		          TCB_DIR "/" SHADOWTCB_SCRATCHDIR "/.vipw.shadow.%s",
-		          user);
+		SNPRINTF(fileedit,
+		         TCB_DIR "/" SHADOWTCB_SCRATCHDIR "/.vipw.shadow.%s",
+		         user);
 	} else {
 #endif				/* WITH_TCB */
-		snprintf (fileedit, sizeof fileedit, "%s.edit", file);
+		SNPRINTF(fileedit, "%s.edit", file);
 #ifdef WITH_TCB
 	}
 #endif				/* WITH_TCB */
@@ -292,7 +297,7 @@ vipwedit (const char *file, int (*file_lock) (void), int (*file_unlock) (void))
 	} else if (0 == pid) {
 		/* use the system() call to invoke the editor so that it accepts
 		   command line args in the EDITOR and VISUAL environment vars */
-		char *buf;
+		char  *buf;
 
 		/* Wait for parent to make us the foreground pgrp. */
 		if (orig_pgrp != -1) {
@@ -302,9 +307,8 @@ vipwedit (const char *file, int (*file_lock) (void), int (*file_unlock) (void))
 				continue;
 		}
 
-		buf = (char *) malloc (strlen (editor) + strlen (fileedit) + 2);
-		snprintf (buf, strlen (editor) + strlen (fileedit) + 2,
-		          "%s %s", editor, fileedit);
+		xasprintf(&buf, "%s %s", editor, fileedit);
+
 		status = system (buf);
 		if (-1 == status) {
 			fprintf (stderr, _("%s: %s: %s\n"), Prog, editor,
@@ -368,8 +372,14 @@ vipwedit (const char *file, int (*file_lock) (void), int (*file_unlock) (void))
 		}
 	}
 
-	if (orig_pgrp != -1)
+	if (orig_pgrp != -1) {
+		 /* Restore terminal pgrp after editing. */
+		if (tcsetpgrp(STDIN_FILENO, orig_pgrp) == -1) {
+			fprintf(stderr, "%s: %s: %s", Prog,
+			        "tcsetpgrp", strerror(errno));
+		}
 		sigprocmask(SIG_SETMASK, &omask, NULL);
+	}
 
 	if (-1 == pid) {
 		vipwexit (editor, 1, 1);
@@ -386,7 +396,7 @@ vipwedit (const char *file, int (*file_lock) (void), int (*file_unlock) (void))
 		vipwexit (fileedit, 1, 1);
 	}
 	if (st1.st_mtime == st2.st_mtime) {
-		vipwexit (0, 0, 0);
+		vipwexit(NULL, 0, 0);
 	}
 #ifdef WITH_SELINUX
 	/* unset the fscreatecon */
@@ -418,13 +428,11 @@ vipwedit (const char *file, int (*file_lock) (void), int (*file_unlock) (void))
 		if (stat (file, &st1) != 0) {
 			vipwexit (_("failed to stat edited file"), errno, 1);
 		}
-		to_rename = malloc (strlen (file) + 2);
-		if (NULL == to_rename) {
-			vipwexit (_("failed to allocate memory"), errno, 1);
-		}
-		snprintf (to_rename, strlen (file) + 2, "%s+", file);
+		if (asprintf(&to_rename, "%s+", file) == -1)
+			vipwexit (_("asprintf(3) failed"), errno, 1);
+
 		if (create_backup_file (f, to_rename, &st1) != 0) {
-			free (to_rename);
+			free(to_rename);
 			vipwexit (_("failed to create backup file"), errno, 1);
 		}
 		(void) fclose (f);
@@ -442,15 +450,15 @@ vipwedit (const char *file, int (*file_lock) (void), int (*file_unlock) (void))
 		         Prog, file, strerror (errno), to_rename);
 #ifdef WITH_TCB
 		if (tcb_mode) {
-			free (to_rename);
+			free(to_rename);
 		}
 #endif				/* WITH_TCB */
-		vipwexit (0, 0, 1);
+		vipwexit(NULL, 0, 1);
 	}
 
 #ifdef WITH_TCB
 	if (tcb_mode) {
-		free (to_rename);
+		free(to_rename);
 		if (shadowtcb_gain_priv () == SHADOWTCB_FAILURE) {
 			vipwexit (_("failed to gain privileges"), errno, 1);
 		}
@@ -467,10 +475,12 @@ vipwedit (const char *file, int (*file_lock) (void), int (*file_unlock) (void))
 
 int main (int argc, char **argv)
 {
-	bool editshadow = false;
-	bool do_vipw;
+	bool  editshadow = false;
+	bool  do_vigr;
 
-	Prog = Basename (argv[0]);
+	do_vigr = streq(Basename(argv[0]), "vigr");
+
+	Prog = do_vigr ? "vigr" : "vipw";
 	log_set_progname(Prog);
 	log_set_logfd(stderr);
 
@@ -480,9 +490,7 @@ int main (int argc, char **argv)
 
 	process_root_flag ("-R", argc, argv);
 
-	do_vipw = (strcmp (Prog, "vigr") != 0);
-
-	OPENLOG (do_vipw ? "vipw" : "vigr");
+	OPENLOG(Prog);
 
 	{
 		/*
@@ -510,13 +518,13 @@ int main (int argc, char **argv)
 		                         long_options, NULL)) != -1) {
 			switch (c) {
 			case 'g':
-				do_vipw = false;
+				do_vigr = true;
 				break;
 			case 'h':
 				usage (E_SUCCESS);
 				break;
 			case 'p':
-				do_vipw = true;
+				do_vigr = false;
 				break;
 			case 'q':
 				quiet = true;
@@ -541,7 +549,27 @@ int main (int argc, char **argv)
 		}
 	}
 
-	if (do_vipw) {
+	if (do_vigr) {
+#ifdef SHADOWGRP
+		if (editshadow) {
+			vipwedit (sgr_dbname (), sgr_lock, sgr_unlock);
+			printf (MSG_WARN_EDIT_OTHER_FILE,
+			        sgr_dbname (),
+			        gr_dbname (),
+			        "vigr");
+		} else {
+#endif				/* SHADOWGRP */
+			vipwedit (gr_dbname (), gr_lock, gr_unlock);
+#ifdef SHADOWGRP
+			if (sgr_file_present ()) {
+				printf (MSG_WARN_EDIT_OTHER_FILE,
+				        gr_dbname (),
+				        sgr_dbname (),
+				        "vigr -s");
+			}
+		}
+#endif				/* SHADOWGRP */
+	} else {
 		if (editshadow) {
 #ifdef WITH_TCB
 			if (getdef_bool ("USE_TCB") && (NULL != user)) {
@@ -568,26 +596,6 @@ int main (int argc, char **argv)
 				        "vipw -s");
 			}
 		}
-	} else {
-#ifdef SHADOWGRP
-		if (editshadow) {
-			vipwedit (sgr_dbname (), sgr_lock, sgr_unlock);
-			printf (MSG_WARN_EDIT_OTHER_FILE,
-			        sgr_dbname (),
-			        gr_dbname (),
-			        "vigr");
-		} else {
-#endif				/* SHADOWGRP */
-			vipwedit (gr_dbname (), gr_lock, gr_unlock);
-#ifdef SHADOWGRP
-			if (sgr_file_present ()) {
-				printf (MSG_WARN_EDIT_OTHER_FILE,
-				        gr_dbname (),
-				        sgr_dbname (),
-				        "vigr -s");
-			}
-		}
-#endif				/* SHADOWGRP */
 	}
 
 	nscd_flush_cache ("passwd");

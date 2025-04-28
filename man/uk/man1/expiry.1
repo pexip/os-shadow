@@ -2,12 +2,12 @@
 .\"     Title: expiry
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 08/11/2022
-.\"    Manual: Команди користувача
-.\"    Source: shadow-utils 4.13
+.\"      Date: 19/03/2025
+.\"    Manual: User Commands
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: Ukrainian
 .\"
-.TH "expiry" "1" "08/11/2022" "shadow\-utils 4\&.13" "Команди користувача"
+.TH "expiry" "1" "19/03/2025" "shadow\-utils 4\&.17\&.4" "User Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -31,16 +31,17 @@
 expiry \- перевірка і встановлення правил застарівання паролів
 .SH "КОРОТКИЙ ОГЛЯД"
 .HP \w'\fBexpiry\fR\ 'u
-\fBexpiry\fR \fIпараметр\fR
+\fBexpiry\fR \fIoption\fR
 .SH "ОПИС"
 .PP
-Команда
+The
 \fBexpiry\fR
-перевіряє (\fB\-c\fR) поточний пароль на застарівання і примушує до його зміни (\fB\-f\fR), якщо це потрібно\&. Команду можна викликати від імені звичайного користувача\&.
+command checks (\fB\-c\fR) the current password expiration and forces (\fB\-f\fR) changes when required\&. It is callable as a normal user command\&.
 .SH "ПАРАМЕТРИ"
 .PP
-Параметри, які застосовують до команди
-\fBexpiry\fR, є такими:
+The options which apply to the
+\fBexpiry\fR
+command are:
 .PP
 \fB\-c\fR, \fB\-\-check\fR
 .RS 4

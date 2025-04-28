@@ -2,12 +2,23 @@
 
 set -e
 
-echo "Adding an user works"
+echo "Adding a user works"
 useradd shadow-test-user
 grep '^shadow-test-user:x:' /etc/passwd
 grep '^shadow-test-user:!:' /etc/shadow
 
-echo "Removing an user works"
+# Regression test for #1096187. adduser uses this sequence.
+echo "Changing a users name and work phone number works"
+chfn "-f" "foo" "-r" "" shadow-test-user
+chfn -w "" shadow-test-user
+
+# Regression test for #1095430
+TZ=Asia/Tokyo usermod --expiredate 1970-01-02 shadow-test-user
+TZ=Asia/Tokyo LC_ALL=C chage -l shadow-test-user | grep 'Account expires'
+# We expect 1970-01-02, as passed.
+TZ=Asia/Tokyo LC_ALL=C chage -l shadow-test-user | grep -P '^Account expires.*Jan 02, 1970'
+
+echo "Removing a user works"
 userdel shadow-test-user
 ! grep 'shadow-test-user' /etc/passwd
 ! grep 'shadow-test-user' /etc/shadow

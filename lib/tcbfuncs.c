@@ -5,6 +5,8 @@
 
 #define _GNU_SOURCE
 
+#include <config.h>
+
 #include <errno.h>
 #include <fcntl.h>
 #include <grp.h>
@@ -15,15 +17,15 @@
 #include <tcb.h>
 #include <unistd.h>
 
-#include "config.h"
-
 #include "defines.h"
-#include "prototypes.h"
+#include "fs/readlink/readlinknul.h"
 #include "getdef.h"
-#include "shadowio.h"
+#include "prototypes.h"
 #include "tcbfuncs.h"
-
+#include "shadowio.h"
 #include "shadowlog_internal.h"
+#include "string/strcmp/streq.h"
+
 
 #define SHADOWTCB_HASH_BY 1000
 #define SHADOWTCB_LOCK_SUFFIX ".lock"
@@ -96,7 +98,6 @@ static /*@null@*/ char *shadowtcb_path_rel_existing (const char *name)
 	char *path, *rval;
 	struct stat st;
 	char link[8192];
-	ssize_t ret;
 
 	if (asprintf (&path, TCB_DIR "/%s", name) == -1) {
 		OUT_OF_MEMORY;
@@ -125,8 +126,7 @@ static /*@null@*/ char *shadowtcb_path_rel_existing (const char *name)
 		free (path);
 		return NULL;
 	}
-	ret = readlink (path, link, sizeof (link) - 1);
-	if (-1 == ret) {
+	if (READLINKNUL(path, link) == -1) {
 		fprintf (shadow_logfd,
 		         _("%s: Cannot read symbolic link %s: %s\n"),
 		         shadow_progname, path, strerror (errno));
@@ -134,14 +134,6 @@ static /*@null@*/ char *shadowtcb_path_rel_existing (const char *name)
 		return NULL;
 	}
 	free (path);
-	if ((size_t)ret >= sizeof(link) - 1) {
-		link[sizeof(link) - 1] = '\0';
-		fprintf (shadow_logfd,
-		         _("%s: Suspiciously long symlink: %s\n"),
-		         shadow_progname, link);
-		return NULL;
-	}
-	link[(size_t)ret] = '\0';
 	rval = strdup (link);
 	if (NULL == rval) {
 		OUT_OF_MEMORY;
@@ -200,7 +192,7 @@ static shadowtcb_status mkdir_leading (const char *name, uid_t uid)
 		goto out_free_path;
 	}
 	while ((ind = strchr (ptr, '/'))) {
-		*ind = '\0';
+		stpcpy(ind, "");
 		if (asprintf (&dir, TCB_DIR "/%s", path) == -1) {
 			OUT_OF_MEMORY;
 			return SHADOWTCB_FAILURE;
@@ -266,7 +258,7 @@ static shadowtcb_status rmdir_leading (char *path)
 	char *ind, *dir;
 	shadowtcb_status ret = SHADOWTCB_SUCCESS;
 	while ((ind = strrchr (path, '/'))) {
-		*ind = '\0';
+		stpcpy(ind, "");
 		if (asprintf (&dir, TCB_DIR "/%s", path) == -1) {
 			OUT_OF_MEMORY;
 			return SHADOWTCB_FAILURE;
@@ -317,7 +309,7 @@ static shadowtcb_status move_dir (const char *user_newname, uid_t user_newid)
 	if (NULL == real_new_dir) {
 		goto out_free;
 	}
-	if (strcmp (real_old_dir, real_new_dir) == 0) {
+	if (streq(real_old_dir, real_new_dir)) {
 		ret = SHADOWTCB_SUCCESS;
 		goto out_free;
 	}
@@ -350,7 +342,7 @@ static shadowtcb_status move_dir (const char *user_newname, uid_t user_newid)
 	if (NULL == real_new_dir_rel) {
 		goto out_free;
 	}
-	if (   (strcmp (real_new_dir, newdir) != 0)
+	if (   !streq(real_new_dir, newdir)
 	    && (symlink (real_new_dir_rel, newdir) != 0)) {
 		fprintf (shadow_logfd,
 		         _("%s: Cannot create symbolic link %s: %s\n"),
@@ -527,7 +519,7 @@ shadowtcb_status shadowtcb_create (const char *name, uid_t uid)
 	struct stat tcbdir_stat;
 	gid_t shadowgid, authgid;
 	struct group *gr;
-	int fd;
+	int fd = -1;
 	shadowtcb_status ret = SHADOWTCB_FAILURE;
 
 	if (!getdef_bool ("USE_TCB")) {
@@ -566,14 +558,13 @@ shadowtcb_status shadowtcb_create (const char *name, uid_t uid)
 		         shadow_progname, shadow, strerror (errno));
 		goto out_free;
 	}
-	close (fd);
-	if (chown (shadow, 0, authgid) != 0) {
+	if (fchown (fd, 0, authgid) != 0) {
 		fprintf (shadow_logfd,
 		         _("%s: Cannot change owner of %s: %s\n"),
 		         shadow_progname, shadow, strerror (errno));
 		goto out_free;
 	}
-	if (chmod (shadow, (mode_t) ((authgid == shadowgid) ? 0600 : 0640)) != 0) {
+	if (fchmod (fd, (mode_t) ((authgid == shadowgid) ? 0600 : 0640)) != 0) {
 		fprintf (shadow_logfd,
 		         _("%s: Cannot change mode of %s: %s\n"),
 		         shadow_progname, shadow, strerror (errno));
@@ -597,6 +588,8 @@ shadowtcb_status shadowtcb_create (const char *name, uid_t uid)
 	}
 	ret = SHADOWTCB_SUCCESS;
 out_free:
+	if (fd != -1)
+		close(fd);
 	free (dir);
 	free (shadow);
 	return ret;

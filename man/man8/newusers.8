@@ -2,12 +2,12 @@
 .\"     Title: newusers
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 11/08/2022
+.\"      Date: 03/19/2025
 .\"    Manual: System Management Commands
-.\"    Source: shadow-utils 4.13
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: English
 .\"
-.TH "NEWUSERS" "8" "11/08/2022" "shadow\-utils 4\&.13" "System Management Commands"
+.TH "NEWUSERS" "8" "03/19/2025" "shadow\-utils 4\&.17\&.4" "System Management Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -168,14 +168,13 @@ directory\&. Only absolute paths are supported\&.
 .RS 4
 Use the specified number of rounds to encrypt the passwords\&.
 .sp
-The value 0 means that the system will choose the default number of rounds for the crypt method (5000)\&.
+You can only use this option with crypt method:
+\fISHA256\fR \fISHA512\fR
 .sp
-A minimal value of 1000 and a maximal value of 999,999,999 will be enforced\&.
-.sp
-You can only use this option with the SHA256 or SHA512 crypt method\&.
-.sp
-By default, the number of rounds is defined by the SHA_CRYPT_MIN_ROUNDS and SHA_CRYPT_MAX_ROUNDS variables in
+By default, the number of rounds for SHA256 or SHA512 is defined by the SHA_CRYPT_MIN_ROUNDS and SHA_CRYPT_MAX_ROUNDS variables in
 /etc/login\&.defs\&.
+.sp
+A minimal value of 1000 and a maximal value of 999,999,999 will be enforced for SHA256 and SHA512\&. The default is 5000\&.
 .RE
 .SH "CAVEATS"
 .PP
@@ -272,7 +271,7 @@ The minimum number of days allowed between password changes\&. Any password chan
 .PP
 \fBPASS_WARN_AGE\fR (number)
 .RS 4
-The number of days warning given before a password expires\&. A zero means warning is given only upon the day of expiration, a negative value means no warning is given\&. If not specified, no warning will be provided\&.
+The number of days warning given before a password expires\&. A zero means warning is given only upon the day of expiration, a value of \-1 means no warning is given\&. If not specified, no warning will be provided\&.
 .RE
 .PP
 \fBSHA_CRYPT_MIN_ROUNDS\fR (number), \fBSHA_CRYPT_MAX_ROUNDS\fR (number)
@@ -284,7 +283,7 @@ is set to
 or
 \fISHA512\fR, this defines the number of SHA rounds used by the encryption algorithm by default (when the number of rounds is not specified on the command line)\&.
 .sp
-With a lot of rounds, it is more difficult to brute forcing the password\&. But note also that more CPU resources will be needed to authenticate users\&.
+With a lot of rounds, it is more difficult to brute force the password\&. But note also that more CPU resources will be needed to authenticate users\&.
 .sp
 If not specified, the libc will choose the default number of rounds (5000), which is orders of magnitude too low for modern hardware\&.
 .sp

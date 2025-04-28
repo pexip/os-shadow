@@ -1,0 +1,65 @@
+From: Shadow package maintainers <pkg-shadow-devel@lists.alioth.debian.org>
+Date: Sat, 22 Jun 2024 17:39:41 +0200
+Subject: Document the shadowconfig utility
+
+Status wrt upstream: The shadowconfig utility is Debian-specific.
+The man page is Debian-specific, but it used to be distributed by
+upstream.
+---
+ man/Makefile.am         |  1 +
+ man/man8/shadowconfig.8 | 34 ++++++++++++++++++++++++++++++++++
+ 2 files changed, 35 insertions(+)
+ create mode 100644 man/man8/shadowconfig.8
+
+diff --git a/man/Makefile.am b/man/Makefile.am
+index f34ed7a..2523e84 100644
+--- a/man/Makefile.am
++++ b/man/Makefile.am
+@@ -36,6 +36,7 @@ man_MANS = \
+ 	man8/pwck.8 \
+ 	man8/pwconv.8 \
+ 	man8/pwunconv.8 \
++	man8/shadowconfig.8 \
+ 	man1/sg.1 \
+ 	man3/shadow.3 \
+ 	man5/shadow.5 \
+diff --git a/man/man8/shadowconfig.8 b/man/man8/shadowconfig.8
+new file mode 100644
+index 0000000..a463a92
+--- /dev/null
++++ b/man/man8/shadowconfig.8
+@@ -0,0 +1,34 @@
++.TH shadowconfig 8 2025-02-17 "Debian shadow-utils"
++.SH Name
++shadowconfig \- turn shadow passwords on
++.
++.
++.SH Synopsis
++.SY shadowconfig on
++.YS
++.
++.
++.SH Description
++.I shadowconfig\ on
++will turn shadow passwords on.
++.
++.
++.SH Errors
++.B shadowconfig
++will print an error message and exit with a nonzero code
++if it finds anything awry.
++If that happens,
++you should correct the error and run it again.
++Turning shadow passwords on when they are already on
++is harmless.
++.
++.
++.SH Caveats
++Turning shadow passwords off using shadowconfig
++is not supported anymore.
++.
++.
++.SH See also
++Read
++.I /usr/share/doc/passwd/README.Debian
++for a brief introduction to shadow passwords and related features.

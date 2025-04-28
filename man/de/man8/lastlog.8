@@ -2,12 +2,12 @@
 .\"     Title: lastlog
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 08.11.2022
-.\"    Manual: Befehle zur Systemverwaltung
-.\"    Source: shadow-utils 4.13
+.\"      Date: 19.03.2025
+.\"    Manual: System Management Commands
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: German
 .\"
-.TH "LASTLOG" "8" "08.11.2022" "shadow\-utils 4\&.13" "Befehle zur Systemverwaltung"
+.TH "LASTLOG" "8" "19.03.2025" "shadow\-utils 4\&.17\&.4" "System Management Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -31,7 +31,7 @@
 lastlog \- berichtet die letzte Anmeldung f\(:ur alle oder einen bestimmten Benutzer
 .SH "\(:UBERSICHT"
 .HP \w'\fBlastlog\fR\ 'u
-\fBlastlog\fR [\fIOptionen\fR]
+\fBlastlog\fR [\fIoptions\fR]
 .SH "BESCHREIBUNG"
 .PP
 \fBlastlog\fR
@@ -64,7 +64,7 @@ Clear lastlog record of a user\&. This option can be used only together with
 .PP
 \fB\-h\fR, \fB\-\-help\fR
 .RS 4
-zeigt die Hilfe an und beendet das Programm
+zeigt die Hilfe an und beendet das Programm\&.
 .RE
 .PP
 \fB\-R\fR, \fB\-\-root\fR\ \&\fICHROOT_DIR\fR
@@ -91,7 +91,7 @@ Print the lastlog records more recent than
 .PP
 \fB\-u\fR, \fB\-\-user\fR\ \&\fILOGIN\fR|\fIRANGE\fR
 .RS 4
-gibt nur die Lastlog\-Eintr\(:age f\(:ur die angegebenen Benutzer aus
+gibt nur die Lastlog\-Eintr\(:age f\(:ur die angegebenen Benutzer aus\&.
 .sp
 The users can be specified by a login name, a numerical user ID, or a
 \fIRANGE\fR
@@ -100,11 +100,16 @@ of users\&. This
 of users can be specified with a min and max values (\fIUID_MIN\-UID_MAX\fR), a max value (\fI\-UID_MAX\fR), or a min value (\fIUID_MIN\-\fR)\&.
 .RE
 .PP
+\fB\-a\fR
+.RS 4
+Print the lastlog records of the users that have logged in at least once\&. Excludes records for users with \*(Aq**Never logged in**\*(Aq\&.
+.RE
+.PP
 If the user has never logged in the message
 \fI** Never logged in**\fR
 will be displayed instead of the port and time\&.
 .PP
-Es werden nur Eintr\(:age f\(:ur auf dem System vorhandene Benutzer angezeigt, selbst wenn Eintr\(:age \(:uber gel\(:oschte Benutzer noch vorhanden sind\&.
+Es werden nur Eintr\(:age f\(:ur derzeit angelegte Benutzer angezeigt, Weitere zu gel\(:oschten Benutzern geh\(:orende Eintr\(:age k\(:onnen vorhanden sein\&.
 .SH "ANMERKUNGEN"
 .PP
 The
@@ -125,8 +130,8 @@ Datenbank mit Zeiten der letzten Anmeldung der Benutzer
 .RE
 .SH "WARNUNGEN"
 .PP
-Gro\(sse L\(:ucken in den UID\-Zahlen haben zur Folge, dass das Lastlog\-Programm l\(:angere Zeit ohne Bildschirmausgabe l\(:auft\&. Wenn sich z\&.B\&. in der Datenbank von Lastlog kein Eintrag f\(:ur Benutzer mit der UID zwischen 170 und 800 befindet, wird es scheinen, als ob lastlog stehen geblieben ist, w\(:ahrend es die Eintr\(:age mit der UID 171 bis 799 verarbeitet\&.
+Gro\(sse L\(:ucken in den Benutzerkennungen haben zur Folge, dass das Lastlog\-Programm l\(:angere Zeit nichts auf den Bildschirm ausgibt\&. Wenn sich z\&.B\&. in der Lastlog\-Datenbank kein Eintrag f\(:ur Benutzer mit der Kennung zwischen 170 und 800 befindet, wird es, w\(:ahrend der Verarbeitung der Eintr\(:age zu den Kennungen 171 bis 799, scheinen, als sei lastlog stehen geblieben\&.
 .PP
 Having high UIDs can create problems when handling the
-<term> /var/log/lastlog</term>
+/var/log/lastlog
 with external tools\&. Although the actual file is sparse and does not use too much space, certain applications are not designed to identify sparse files by default and may require a specific option to handle them\&.

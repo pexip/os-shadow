@@ -2,12 +2,12 @@
 .\"     Title: chage
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 08.11.2022
-.\"    Manual: Dienstprogramme f\(:ur Benutzer
-.\"    Source: shadow-utils 4.13
+.\"      Date: 19.03.2025
+.\"    Manual: User Commands
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: German
 .\"
-.TH "CHAGE" "1" "08.11.2022" "shadow\-utils 4\&.13" "Dienstprogramme f\(:ur Benutzer"
+.TH "CHAGE" "1" "19.03.2025" "shadow\-utils 4\&.17\&.4" "User Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -28,10 +28,10 @@
 .\" * MAIN CONTENT STARTS HERE *
 .\" -----------------------------------------------------------------
 .SH "NAME"
-chage \- \(:andert die Information zum Passwortverfall
+chage \- \(:andert das Ablaufdatum des Passworts und damit verkn\(:upfte Fristen
 .SH "\(:UBERSICHT"
 .HP \w'\fBchage\fR\ 'u
-\fBchage\fR [\fIOptionen\fR] \fIANMELDENAME\fR
+\fBchage\fR [\fIoptions\fR] \fILOGIN\fR
 .SH "BESCHREIBUNG"
 .PP
 The
@@ -54,7 +54,7 @@ the user is forced to change his password on the next log on\&.
 .PP
 \fB\-E\fR, \fB\-\-expiredate\fR\ \&\fIEXPIRE_DATE\fR
 .RS 4
-Setzt das Datum oder die Anzahl der Tage seit dem 1\&. Januar 1970, ab dem auf das Benutzerkonto nicht mehr zugegriffen werden kann\&. Das Datum kann auch im Format JJJJ\-MM\-TT (oder in dem Format, das in Ihrer Region verbreitet ist) angegeben werden\&. Ein Benutzer, dessen Konto gesperrt ist, muss sich mit dem Systemadministrator in Verbindung setzen, ehe er sich wieder am System anmelden kann\&.
+setzt den Tag angegeben als Anzahl von Tagen nach dem 1\&. Januar 1970, ab dem das Benutzerkonto nicht mehr zug\(:anglich sein soll\&. Das Datum kann auch im Format JJJJ\-MM\-TT (oder in dem Format, das in Ihrer Region verbreitet ist) angegeben werden\&. Ein Benutzer, dessen Konto stillgelegt ist, muss sich mit dem Systemadministrator in Verbindung setzen, ehe er das System wieder verwenden kann\&.
 .sp
 For example the following can be used to set an account to expire in 180 days:
 .sp
@@ -78,12 +78,12 @@ will remove an account expiration date\&.
 .PP
 \fB\-h\fR, \fB\-\-help\fR
 .RS 4
-zeigt die Hilfe an und beendet das Programm
+zeigt die Hilfe an und beendet das Programm\&.
 .RE
 .PP
 \fB\-i\fR, \fB\-\-iso8601\fR
 .RS 4
-When printing dates, use YYYY\-MM\-DD format\&.
+Bei der Datumsausgabe das ISO\-Format JJJJ\-MM\-TT verwenden
 .RE
 .PP
 \fB\-I\fR, \fB\-\-inactive\fR\ \&\fIINACTIVE\fR
@@ -101,7 +101,7 @@ will remove an account\*(Aqs inactivity\&.
 .PP
 \fB\-l\fR, \fB\-\-list\fR
 .RS 4
-zeigt Informationen zur Kontoalterung an
+zeigt den Zugang zum Benutzerkonto betreffende Fristen an\&.
 .RE
 .PP
 \fB\-m\fR, \fB\-\-mindays\fR\ \&\fIMIN_DAYS\fR
@@ -134,6 +134,12 @@ Apply changes in the
 directory and use the configuration files from the
 \fICHROOT_DIR\fR
 directory\&. Only absolute paths are supported\&.
+.RE
+.PP
+\fB\-P\fR, \fB\-\-prefix\fR\ \&\fIPREFIX_DIR\fR
+.RS 4
+Apply changes to configuration files under the root filesystem found under the directory
+\fIPREFIX_DIR\fR\&. This option does not chroot and is intended for preparing a cross\-compilation target\&. Some limitations: NIS and LDAP users/groups are not verified\&. No SELINUX support\&.
 .RE
 .PP
 \fB\-W\fR, \fB\-\-warndays\fR\ \&\fIWARN_DAYS\fR
@@ -181,7 +187,7 @@ Informationen zu den Benutzerkonten
 .PP
 /etc/shadow
 .RS 4
-verschl\(:usselte Informationen zu den Benutzerkonten
+gesch\(:utzte Informationen zu den Benutzerkonten
 .RE
 .SH "R\(:UCKGABEWERTE"
 .PP

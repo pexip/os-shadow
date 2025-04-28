@@ -1,0 +1,104 @@
+From: Chris Hofstaedtler <zeha@debian.org>
+Date: Mon, 17 Feb 2025 18:17:15 +0100
+Subject: Warn when --badname (and variants) are given
+
+Upstream PR 1158 will remove them, probably in the forky timeframe.
+---
+ src/newusers.c | 5 ++++-
+ src/pwck.c     | 5 ++++-
+ src/useradd.c  | 5 ++++-
+ src/usermod.c  | 5 ++++-
+ 4 files changed, 16 insertions(+), 4 deletions(-)
+
+diff --git a/src/newusers.c b/src/newusers.c
+index e3685ef..16abd81 100644
+--- a/src/newusers.c
++++ b/src/newusers.c
+@@ -127,7 +127,7 @@ static void usage (int status)
+ 	                  "\n"
+ 	                  "Options:\n"),
+ 	                Prog);
+-	(void) fputs (_("  -b, --badname                 allow bad names\n"), usageout);
++	(void) fputs (_("  -b, --badname                 allow bad names (DEPRECATED)\n"), usageout);
+ #ifndef USE_PAM
+ 	(void) fprintf (usageout,
+ 	                _("  -c, --crypt-method METHOD     the crypt method (one of %s)\n"),
+@@ -660,6 +660,9 @@ static void process_flags (int argc, char **argv)
+ 		switch (c) {
+ 		case 'b':
+ 			allow_bad_names = true;
++			fprintf (stderr,
++					 _("%s: WARNING: -b and --badname are deprecated and will be removed\n"),
++					 Prog);
+ 			break;
+ #ifndef USE_PAM
+ 		case 'c':
+diff --git a/src/pwck.c b/src/pwck.c
+index b485a5a..e20be0f 100644
+--- a/src/pwck.c
++++ b/src/pwck.c
+@@ -133,7 +133,7 @@ usage (int status)
+ 		                  "Options:\n"),
+ 		                Prog);
+ 	}
+-	(void) fputs (_("  -b, --badname                 allow bad names\n"), usageout);
++	(void) fputs (_("  -b, --badname                 allow bad names (DEPRECATED)\n"), usageout);
+ 	(void) fputs (_("  -h, --help                    display this help message and exit\n"), usageout);
+ 	(void) fputs (_("  -q, --quiet                   report errors only\n"), usageout);
+ 	(void) fputs (_("  -r, --read-only               display errors and warnings\n"
+@@ -175,6 +175,9 @@ static void process_flags (int argc, char **argv)
+ 		switch (c) {
+ 		case 'b':
+ 			allow_bad_names = true;
++			fprintf (stderr,
++					 _("%s: WARNING: --badname is deprecated and will be removed\n"),
++					 Prog);
+ 			break;
+ 		case 'h':
+ 			usage (E_SUCCESS);
+diff --git a/src/useradd.c b/src/useradd.c
+index 25a5920..7e9dbce 100644
+--- a/src/useradd.c
++++ b/src/useradd.c
+@@ -879,7 +879,7 @@ static void usage (int status)
+ 	                  "\n"
+ 	                  "Options:\n"),
+ 	                Prog, Prog, Prog);
+-	(void) fputs (_("      --badname                 do not check for bad names\n"), usageout);
++	(void) fputs (_("      --badname                 do not check for bad names (DEPRECATED)\n"), usageout);
+ 	(void) fputs (_("  -b, --base-dir BASE_DIR       base directory for the home directory of the\n"
+ 	                "                                new account\n"), usageout);
+ #ifdef WITH_BTRFS
+@@ -1202,6 +1202,9 @@ static void process_flags (int argc, char **argv)
+ 				break;
+ 			case 201:
+ 				allow_bad_names = true;
++				fprintf (stderr,
++					     _("%s: WARNING: --badname is deprecated and will be removed\n"),
++					     Prog);
+ 				break;
+ 			case 'c':
+ 				if (!VALID (optarg)) {
+diff --git a/src/usermod.c b/src/usermod.c
+index 22113da..9030883 100644
+--- a/src/usermod.c
++++ b/src/usermod.c
+@@ -383,7 +383,7 @@ usage (int status)
+ 	(void) fputs (_("  -a, --append                  append the user to the supplemental GROUPS\n"
+ 	                "                                mentioned by the -G option without removing\n"
+ 	                "                                the user from other groups\n"), usageout);
+-	(void) fputs (_("  -b, --badname                 allow bad names\n"), usageout);
++	(void) fputs (_("  -b, --badname                 allow bad names (DEPRECATED)\n"), usageout);
+ 	(void) fputs (_("  -c, --comment COMMENT         new value of the GECOS field\n"), usageout);
+ 	(void) fputs (_("  -d, --home HOME_DIR           new home directory for the user account\n"), usageout);
+ 	(void) fputs (_("  -e, --expiredate EXPIRE_DATE  set account expiration date to EXPIRE_DATE\n"), usageout);
+@@ -1054,6 +1054,9 @@ process_flags(int argc, char **argv)
+ 				break;
+ 			case 'b':
+ 				allow_bad_names = true;
++				fprintf (stderr,
++					     _("%s: WARNING: -b, --badname and --badnames are deprecated and will be removed\n"),
++					     Prog);
+ 				break;
+ 			case 'c':
+ 				if (!VALID (optarg)) {

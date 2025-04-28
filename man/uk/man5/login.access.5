@@ -2,12 +2,12 @@
 .\"     Title: login.access
 .\"    Author: Marek Micha\(/lkiewicz
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 08/11/2022
-.\"    Manual: Формати файлів і файли налаштувань
-.\"    Source: shadow-utils 4.13
+.\"      Date: 19/03/2025
+.\"    Manual: File Formats and Configuration Files
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: Ukrainian
 .\"
-.TH "login\&.access" "5" "08/11/2022" "shadow\-utils 4\&.13" "Формати файлів і файли налашту"
+.TH "login\&.access" "5" "19/03/2025" "shadow\-utils 4\&.17\&.4" "File Formats and Configuration"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -31,29 +31,29 @@
 login.access \- таблиця керування доступом до входу до системи
 .SH "ОПИС"
 .PP
-У файлі
+The
 \fIlogin\&.access\fR
-задають комбінації (користувач, вузол) і/або (користувач, термінал), для яких вхід до системи буде прийнятним або забороненим\&.
+file specifies (user, host) combinations and/or (user, tty) combinations for which a login will be either accepted or refused\&.
 .PP
-Коли хтось входить до системи, система виконує сканування
+When someone logs in, the
 \fIlogin\&.access\fR
-на перший запис, який відповідає комбінації (користувач, вузол), або, у випадку позамережевих входів, перший запис, який відповідає комбінації (користувач, термінал)\&. Поле прав доступу у записі цієї таблиці визначає, буде вхід прийнято чи заборонено\&.
+is scanned for the first entry that matches the (user, host) combination, or, in case of non\-networked logins, the first entry that matches the (user, tty) combination\&. The permissions field of that table entry determines whether the login will be accepted or refused\&.
 .PP
 Кожен рядок таблиці керування доступом до входу до системи містить три поля, які відокремлено символом \(Fo:\(Fc:
 .PP
-\fIправа доступу\fR:\fIкористувачі\fR:\fIorigins\fR
+\fIpermission\fR:\fIusers\fR:\fIorigins\fR
 .PP
-Першим полем має бути символ \(Fo\fI+\fR\(Fc (доступ надано) або \(Fo\fI\-\fR\(Fc (доступ заборонено)\&. У другому полі має бути список одного або декількох назв облікових записів, назв груп або
+The first field should be a "\fI+\fR" (access granted) or "\fI\-\fR" (access denied) character\&. The second field should be a list of one or more login names, group names, or
 \fIALL\fR
-(універсальний відповідник)\&. У третьому полі має бути список одного або декількох терміналів (для немережевих входів), назв вузлів, назв доменів (починаються з \(Fo\&.\(Fc), адрес вузлів, мережевих чисел інтернету (завершуються \(Fo\&.\(Fc),
+(always matches)\&. The third field should be a list of one or more tty names (for non\-networked logins), host names, domain names (begin with "\&."), host addresses, internet network numbers (end with "\&."),
 \fIALL\fR
-(універсальний відповідник) або
+(always matches) or
 \fILOCAL\fR
-(відповідник будь\-якого рядка, який не містить символу \(Fo\&.\(Fc)\&. Якщо ви працюєте з NIS ви можете скористатися @netgroupname у взірцях вузла або користувача\&.
+(matches any string that does not contain a "\&." character)\&. If you run NIS you can use @netgroupname in host or user patterns\&.
 .PP
-Оператор
+The
 \fIEXCEPT\fR
-уможливлює написання дуже компактних правил\&.
+operator makes it possible to write very compact rules\&.
 .PP
 Пошук у файлі груп відбуватиметься, лише якщо ім\*(Aqя не збігатиметься із іменем користувача, що увійшов до системи\&. Відповідними вважатимуться лише ті групи, користувачів яких вказано явно: програма не шукатиме у значення ідентифікаторів основної групи користувача\&.
 .SH "ФАЙЛИ"

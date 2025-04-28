@@ -2,12 +2,12 @@
 .\"     Title: userdel
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 08.11.2022
-.\"    Manual: Befehle zur Systemverwaltung
-.\"    Source: shadow-utils 4.13
+.\"      Date: 19.03.2025
+.\"    Manual: System Management Commands
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: German
 .\"
-.TH "USERDEL" "8" "08.11.2022" "shadow\-utils 4\&.13" "Befehle zur Systemverwaltung"
+.TH "USERDEL" "8" "19.03.2025" "shadow\-utils 4\&.17\&.4" "System Management Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -31,7 +31,7 @@
 userdel \- l\(:oscht ein Benutzerkonto und die dazugeh\(:origen Dateien
 .SH "\(:UBERSICHT"
 .HP \w'\fBuserdel\fR\ 'u
-\fBuserdel\fR [Optionen] \fIANMELDENAME\fR
+\fBuserdel\fR [options] \fILOGIN\fR
 .SH "BESCHREIBUNG"
 .PP
 The
@@ -46,15 +46,7 @@ command are:
 .PP
 \fB\-f\fR, \fB\-\-force\fR
 .RS 4
-This option forces the removal of the user account, even if the user is still logged in\&. It also forces
-\fBuserdel\fR
-to remove the user\*(Aqs home directory and mail spool, even if another user uses the same home directory or if the mail spool is not owned by the specified user\&. If
-\fBUSERGROUPS_ENAB\fR
-is defined to
-\fIyes\fR
-in
-/etc/login\&.defs
-and if a group exists with the same name as the deleted user, then this group will be removed, even if it is still the primary group of another user\&.
+This option forces the removal of the user account and any other requested actions, skipping any safety checks\&.
 .sp
 \fINote:\fR
 This option is dangerous and may leave your system in an inconsistent state\&.
@@ -62,12 +54,12 @@ This option is dangerous and may leave your system in an inconsistent state\&.
 .PP
 \fB\-h\fR, \fB\-\-help\fR
 .RS 4
-zeigt die Hilfe an und beendet das Programm
+zeigt die Hilfe an und beendet das Programm\&.
 .RE
 .PP
 \fB\-r\fR, \fB\-\-remove\fR
 .RS 4
-Die Dateien im Home\-Verzeichnis des Benutzers werden zusammen mit dem Home\-Verzeichnis und dem Mailspool entfernt\&. Dateien, die sich nicht unterhalb des Home\-Verzeichnisses befinden, m\(:ussen per Hand gesucht und gel\(:oscht werden\&.
+entfernt das pers\(:onliche Verzeichnis des Benutzers mit den darin enthaltenen Dateiein und die Mail\-Warteschlange\&. Dateien in anderen Dateisystemen m\(:ussen per Hand gesucht und gel\(:oscht werden\&.
 .sp
 The mail spool is defined by the
 \fBMAIL_DIR\fR
@@ -96,7 +88,7 @@ directory\&. This option does not chroot and is intended for preparing a cross\-
 .PP
 \fB\-Z\fR, \fB\-\-selinux\-user\fR
 .RS 4
-entfernt die Zuordnung von SELinux\-Benutzern aus den Anmeldeinformationen des Benutzers
+entfernt jegliche Zuordnung zu SELinux\-Benutzern f\(:ur das Benutzerkonto\&.
 .RE
 .SH "KONFIGURATION"
 .PP
@@ -112,7 +104,7 @@ Informationen zu den Gruppenkonten
 .PP
 /etc/login\&.defs
 .RS 4
-Konfiguration der Shadow\-Passwort\-Werkzeugsammlung
+konfiguriert die Shadow\-Hilfsprogramme\&.
 .RE
 .PP
 /etc/passwd
@@ -122,7 +114,7 @@ Informationen zu den Benutzerkonten
 .PP
 /etc/shadow
 .RS 4
-verschl\(:usselte Informationen zu den Benutzerkonten
+gesch\(:utzte Informationen zu den Benutzerkonten
 .RE
 .PP
 /etc/shadow\-maint/userdel\-pre\&.d/*, /etc/shadow\-maint/userdel\-post\&.d/*
@@ -142,12 +134,12 @@ will execute after user deletion\&. If a script exits non\-zero then execution w
 .PP
 /etc/subgid
 .RS 4
-Per user subordinate group IDs\&.
+enth\(:alt untergeordnete Gruppenkennungen der einzelnen Benutzer\&.
 .RE
 .PP
 /etc/subuid
 .RS 4
-Per user subordinate user IDs\&.
+enth\(:alt untergeordnete Benutzerkennungen der einzelnen Benutzer\&.
 .RE
 .SH "R\(:UCKGABEWERTE"
 .PP
@@ -196,9 +188,9 @@ will not allow you to remove an account if there are running processes which bel
 \fB\-f\fR
 option can force the deletion of this account\&.
 .PP
-Sie sollten von Hand alle Systemdateien \(:uberpr\(:ufen, um sicherzustellen, dass keine Dateien vorhanden sind, die dem gel\(:oschten Benutzer geh\(:oren\&.
+Sie sollten von Hand alle Dateisysteme in Hinblick auf Dateien dieses Benutzers pr\(:ufen und sie gegebenenfalls l\(:oschen\&.
 .PP
-Sie sollten keine NIS\-Attribute auf einem NIS\-Client l\(:oschen\&. Dies muss auf dem NIS\-Server durchgef\(:uhrt werden\&.
+Sie d\(:urfen keine NIS\-Attribute auf einem NIS\-Client l\(:oschen\&. Dies muss auf dem NIS\-Server durchgef\(:uhrt werden\&.
 .PP
 If
 \fBUSERGROUPS_ENAB\fR

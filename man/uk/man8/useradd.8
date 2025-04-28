@@ -2,12 +2,12 @@
 .\"     Title: useradd
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 08/11/2022
-.\"    Manual: Команди керування системою
-.\"    Source: shadow-utils 4.13
+.\"      Date: 19/03/2025
+.\"    Manual: System Management Commands
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: Ukrainian
 .\"
-.TH "useradd" "8" "08/11/2022" "shadow\-utils 4\&.13" "Команди керування системою"
+.TH "useradd" "8" "19/03/2025" "shadow\-utils 4\&.17\&.4" "System Management Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -31,69 +31,73 @@
 useradd \- створення запису користувача або оновлення відомостей щодо типового нового користувача
 .SH "КОРОТКИЙ ОГЛЯД"
 .HP \w'\fBuseradd\fR\ 'u
-\fBuseradd\fR [\fIпараметри\fR] \fIЗАПИС\fR
+\fBuseradd\fR [\fIoptions\fR] \fILOGIN\fR
 .HP \w'\fBuseradd\fR\ 'u
 \fBuseradd\fR \-D
 .HP \w'\fBuseradd\fR\ 'u
-\fBuseradd\fR \-D [\fIпараметри\fR]
+\fBuseradd\fR \-D [\fIoptions\fR]
 .SH "ОПИС"
 .PP
-Якщо програму викликано без параметра
-\fB\-D\fR, команда
+When invoked without the
+\fB\-D\fR
+option, the
 \fBuseradd\fR
-створити обліковий запис користувача з використанням значень, які вказано у рядку команди, і значень, які є типовими для системи\&. Залежно від параметрів рядка команди, команда
+command creates a new user account using the values specified on the command line plus the default values from the system\&. Depending on command line options, the
 \fBuseradd\fR
-оновить файли системи і також може створити домашній каталог нового користувача і скопіювати туди початкові файли\&.
+command will update system files and may also create the new user\*(Aqs home directory and copy initial files\&.
 .PP
-Типово, для нового користувача також буде створено його власну групу (див\&.
+By default, a group will also be created for the new user (see
 \fB\-g\fR,
 \fB\-N\fR,
-\fB\-U\fR
-і
+\fB\-U\fR, and
 \fBUSERGROUPS_ENAB\fR)\&.
 .SH "ПАРАМЕТРИ"
 .PP
-Параметри, які застосовують до команди
-\fBuseradd\fR, є такими:
+The options which apply to the
+\fBuseradd\fR
+command are:
 .PP
 \fB\-\-badname\fR\ \&
 .RS 4
 Дозволити назви, які не відповідають стандартам\&.
 .RE
 .PP
-\fB\-b\fR, \fB\-\-base\-dir\fR \fIБАЗОВИЙ_КАТАЛОГ\fR
+\fB\-b\fR, \fB\-\-base\-dir\fR\ \&\fIBASE_DIR\fR
 .RS 4
-Типовий базовий каталог для системи, якщо не вказано
-\fB\-d\fR
-\fIДОМАШНІЙ_КАТАЛОГ\fR\&. Для визначення домашнього каталогу
-\fIБАЗОВИЙ_КАТАЛОГ\fR
-буде поєднано із назвою облікового запису\&.
+The default base directory for the system if
+\fB\-d\fR\ \&\fIHOME_DIR\fR
+is not specified\&.
+\fIBASE_DIR\fR
+is concatenated with the account name to define the home directory\&.
 .sp
-Якщо цей параметр не вказано,
+If this option is not specified,
 \fBuseradd\fR
-використає базовий каталог, який вказано змінною
+will use the base directory specified by the
 \fBHOME\fR
-у
-/etc/default/useradd, або типовий каталог
-/home\&.
+variable in
+/etc/default/useradd, or
+/home
+by default\&.
 .RE
 .PP
-\fB\-c\fR, \fB\-\-comment\fR \fIКОМЕНТАР\fR
+\fB\-c\fR, \fB\-\-comment\fR\ \&\fICOMMENT\fR
 .RS 4
 Будь\-який рядок тексту\&. Зазвичай, це короткий опис облікового запису\&. У поточній версії використано як поле для повного імені користувача\&.
 .RE
 .PP
-\fB\-d\fR, \fB\-\-home\-dir\fR \fIДОМАШНІЙ_КАТАЛОГ\fR
+\fB\-d\fR, \fB\-\-home\-dir\fR\ \&\fIHOME_DIR\fR
 .RS 4
-Новий запис користувача буде створено з використанням
-\fIДОМАШНІЙ_КАТАЛОГ\fR, як значення для каталогу входу до системи користувача\&. Типовим значенням є дописування імені
-\fIЗАПИС\fR
-до
-\fIБАЗОВИЙ_КАТАЛОГ\fR
-і використання результату як назви каталогу облікового запису\&. Якщо каталогу
-\fIДОМАШНІЙ_КАТАЛОГ\fR
-не існує, його буде створено, якщо не вказано параметр
-\fB\-M\fR\&.
+The new user will be created using
+\fIHOME_DIR\fR
+as the value for the user\*(Aqs login directory\&. The default is to append the
+\fILOGIN\fR
+name to
+\fIBASE_DIR\fR
+and use that as the login directory name\&. If the directory
+\fIHOME_DIR\fR
+does not exist, then it will be created unless the
+\fB\-M\fR
+option is specified\&.
 .RE
 .PP
 \fB\-D\fR, \fB\-\-defaults\fR
@@ -101,30 +105,30 @@ useradd \- створення запису користувача або оно�
 Див\&. нижче, підрозділ \(FoЗміна типових значень\(Fc\&.
 .RE
 .PP
-\fB\-e\fR, \fB\-\-expiredate\fR \fIДАТА_ЗАВЕРШЕННЯ_СТРОКУ_ДІЇ\fR
+\fB\-e\fR, \fB\-\-expiredate\fR\ \&\fIEXPIRE_DATE\fR
 .RS 4
-Дата, у яку буде вимкнено обліковий запис користувача\&. Дату вказують у форматі
-\fIРРРР\-ММ\-ДД\fR\&.
+The date on which the user account will be disabled\&. The date is specified in the format
+\fIYYYY\-MM\-DD\fR\&.
 .sp
-Якщо не вказано,
+If not specified,
 \fBuseradd\fR
-використає типову дату строку дії, який вказано змінною
+will use the default expiry date specified by the
 \fBEXPIRE\fR
-у
-/etc/default/useradd, або типовий порожній рядок (необмежений строк дії)\&.
+variable in
+/etc/default/useradd, or an empty string (no expiry) by default\&.
 .RE
 .PP
-\fB\-f\fR, \fB\-\-inactive\fR \fIНЕАКТИВНИЙ\fR
+\fB\-f\fR, \fB\-\-inactive\fR\ \&\fIINACTIVE\fR
 .RS 4
-Визначає кількість днів після перевищення паролем максимального віку, протягом яких система очікуватиме на заміну пароля користувачем\&. Значення зберігається у файлі паролів shadow\&. Вхідне значення 0 вимкне пароль, строк дії якого вичерпано, без затримки\&. Вхідне значення \-1 призведе до вилучення відповідного поля у файлі паролів shadow\&. Див\&.
-\fBshadow\fR(5), щоб дізнатися більше\&.
+defines the number of days after the password exceeded its maximum age where the user is expected to replace this password\&. The value is stored in the shadow password file\&. An input of 0 will disable an expired password with no delay\&. An input of \-1 will blank the respective field in the shadow password file\&. See
+\fBshadow\fR(5)for more information\&.
 .sp
-Якщо не вказано,
+If not specified,
 \fBuseradd\fR
-використає типовий період неактивності, який вказано змінною
-\fBНЕАКТИВНИЙ\fR
-у
-/etc/default/useradd, або типове значення \-1\&.
+will use the default inactivity period specified by the
+\fBINACTIVE\fR
+variable in
+/etc/default/useradd, or \-1 by default\&.
 .RE
 .PP
 \fB\-F\fR, \fB\-\-add\-subids\-for\-system\fR
@@ -138,7 +142,7 @@ even when creating a system account with
 option\&.
 .RE
 .PP
-\fB\-g\fR, \fB\-\-gid\fR \fIGROUP\fR
+\fB\-g\fR, \fB\-\-gid\fR\ \&\fIGROUP\fR
 .RS 4
 Назва або номер основної групи користувача\&. Відповідна група має існувати\&. Номер групи має вказувати на вже наявну групу\&.
 .sp
@@ -151,7 +155,7 @@ variable in
 \fIyes\fR
 (or
 \fB\-U/\-\-user\-group\fR
-is specified on the command line), a group will be created for the user, with the same name as her loginname\&. If the variable is set to
+is specified on the command line), a group will be created for the user, with the same name as the loginname\&. If the variable is set to
 \fIno\fR
 (or
 \fB\-N/\-\-no\-user\-group\fR
@@ -161,10 +165,15 @@ variable in
 /etc/default/useradd, or 1000 by default\&.
 .RE
 .PP
-\fB\-G\fR, \fB\-\-groups\fR \fIГРУПА1\fR[\fI,ГРУПА2,\&.\&.\&.\fR[\fI,ГРУПАN\fR]]]
+\fB\-G\fR, \fB\-\-groups\fR\ \&\fIGROUP1\fR[\fI,GROUP2,\&.\&.\&.\fR[\fI,GROUPN\fR]]]
 .RS 4
-Список додаткових груп, учасником яких також буде користувач\&. Групи у списку слід відокремлювати комою, без проміжного пробілу\&. Групи підлягатимуть тим самим обмеженням, що і група, яку задано параметром
-\fB\-g\fR\&. Типовою поведінкою є належність користувача лише до початкової групи\&.
+A list of supplementary groups which the user is also a member of\&. Each group is separated from the next by a comma, with no intervening whitespace\&. The groups are subject to the same restrictions as the group given with the
+\fB\-g\fR
+option\&. The default is for the user to belong only to the initial group\&. In addition to passing in the \-G flag, you can add the option
+\fBGROUPS\fR
+to the file
+/etc/default/useradd
+which in turn will add all users to those supplementary groups\&.
 .RE
 .PP
 \fB\-h\fR, \fB\-\-help\fR
@@ -172,45 +181,47 @@ variable in
 Показати довідкове повідомлення і завершити роботу\&.
 .RE
 .PP
-\fB\-k\fR, \fB\-\-skel\fR \fISKEL_DIR\fR
+\fB\-k\fR, \fB\-\-skel\fR\ \&\fISKEL_DIR\fR
 .RS 4
-Каркасний каталог, який містить файли і каталоги, які буде скопійовано до домашнього каталогу користувача, коли такий домашній каталог створюється командою
+The skeleton directory, which contains files and directories to be copied in the user\*(Aqs home directory, when the home directory is created by
 \fBuseradd\fR\&.
 .sp
-Цей параметр є чинним, лише якщо вказано параметр
+This option is only valid if the
 \fB\-m\fR
-(або
-\fB\-\-create\-home\fR)\&.
+(or
+\fB\-\-create\-home\fR) option is specified\&.
 .sp
-Якщо не вказано цей параметр, каталог каркасних даних буде визначено змінною
+If this option is not set, the skeleton directory is defined by the
 \fBSKEL\fR
-у
+variable in
 /etc/default/useradd
-або, типово,
+or, by default,
 /etc/skel\&.
+.sp
+Absolute symlinks that link back to the skel directory will have the
+/etc/skel
+prefix replaced with the user\*(Aqs home directory\&.
 .sp
 Якщо можна, буде скопійовано ACL і розширені атрибути\&.
 .RE
 .PP
-\fB\-K\fR, \fB\-\-key\fR \fIКЛЮЧ\fR=\fIЗНАЧЕННЯ\fR
+\fB\-K\fR, \fB\-\-key\fR\ \&\fIKEY\fR=\fIVALUE\fR
 .RS 4
-Має пріоритет на типовими значеннями з
+Overrides
 /etc/login\&.defs
-(\fBUID_MIN\fR,
+defaults (\fBUID_MIN\fR,
 \fBUID_MAX\fR,
 \fBUMASK\fR,
 \fBPASS_MAX_DAYS\fR
-та іншими)\&.
+and others)\&.
 .sp
-Приклад: можна скористатися
+Example:
+\fB\-K\fR\ \&\fIPASS_MAX_DAYS \fR=\fI\-1\fR
+can be used when creating an account to turn off password aging\&. Multiple
 \fB\-K\fR
-\fIPASS_MAX_DAYS\fR=\fI\-1\fR
-при створенні облікового запису для вимикання застарівання пароля\&. Може бути вказано декілька параметрів
-\fB\-K\fR\&. Приклад:
-\fB\-K\fR
-\fIUID_MIN\fR
-=\fI100\fR
-\fB\-K\fR
+options can be specified, e\&.g\&.:
+\fB\-K\fR\ \&\fIUID_MIN\fR
+=\fI100\fR\ \&\fB\-K\fR\ \&
 \fIUID_MAX\fR=\fI499\fR
 .RE
 .PP
@@ -220,21 +231,24 @@ variable in
 .sp
 Типово, записи користувачів у базах даних lastlog і faillog буде скинуто до початкових даних, щоб уникнути повторного використання записів, які лишилися від раніше вилучених користувачів\&.
 .sp
-Якщо не вказано цей параметр,
+If this option is not specified,
 \fBuseradd\fR
-також врахує значення змінної
+will also consult the variable
 \fBLOG_INIT\fR
-у
-/etc/default/useradd, якщо для неї встановлено значення no, запис користувача не буде додано до баз даних lastlog і faillog\&.
+in the
+/etc/default/useradd
+if set to no the user will not be added to the lastlog and faillog databases\&.
 .RE
 .PP
 \fB\-m\fR, \fB\-\-create\-home\fR
 .RS 4
-Створити домашній каталог користувача, якщо такого ще не існує\&. До такого домашнього каталогу буде скопійовано файли і каталоги з каркасного каталогу (який можна визначити за допомогою параметра
-\fB\-k\fR)\&.
+Create the user\*(Aqs home directory if it does not exist\&. The files and directories contained in the skeleton directory (which can be defined with the
+\fB\-k\fR
+option) will be copied to the home directory\&.
 .sp
-Типово, якщо цей параметр не вказано і не увімкнено
-\fBCREATE_HOME\fR, програма не створюватиме домашніх каталогів\&.
+By default, if this option is not specified and
+\fBCREATE_HOME\fR
+is not enabled, no home directories are created\&.
 .sp
 Каталог, де буде створено домашній каталог користувача, має існувати і мати належний контекст SELinux і права доступу\&. Якщо ці умови не буде виконано, програма не зможе створити домашній каталог користувача або створений каталог буде недоступним\&.
 .RE
@@ -249,20 +263,20 @@ Do not create the user\*(Aqs home directory, even if the system wide setting fro
 .PP
 \fB\-N\fR, \fB\-\-no\-user\-group\fR
 .RS 4
-Не створювати групи, назва якої збігається із назвою облікового запису користувача, а додати користувача до групи, яку вказано параметром
+Do not create a group with the same name as the user, but add the user to the group specified by the
 \fB\-g\fR
-або змінною
+option or by the
 \fBGROUP\fR
-у
+variable in
 /etc/default/useradd\&.
 .sp
-Типову поведінку (якщо не вказано параметрів
+The default behavior (if the
 \fB\-g\fR,
-\fB\-N\fR
-і
-\fB\-U\fR) буде визначено змінною
+\fB\-N\fR, and
+\fB\-U\fR
+options are not specified) is defined by the
 \fBUSERGROUPS_ENAB\fR
-у
+variable in
 /etc/login\&.defs\&.
 .RE
 .PP
@@ -270,20 +284,20 @@ Do not create the user\*(Aqs home directory, even if the system wide setting fro
 .RS 4
 Дозволяє створення облікового запису із наявним UID\&.
 .sp
-Цей параметр можна використовувати лише у поєднанні із параметром
-\fB\-u\fR\&. Оскільки профіль користувача слугує ключем для прив\*(Aqязки користувачів до прав доступу, прав власності на файли та інших аспектів загальносистемної поведінки, доступ до облікового запису із заданим UID матимуть декілька облікових записів для входу до системи\&.
+This option is only valid in combination with the
+\fB\-u\fR
+option\&. As a user identity serves as key to map between users on one hand and permissions, file ownerships and other aspects that determine the system\*(Aqs behavior on the other hand, more than one login name will access the account of the given UID\&.
 .RE
 .PP
-\fB\-p\fR, \fB\-\-password\fR \fIПАРОЛЬ\fR
+\fB\-p\fR, \fB\-\-password\fR\ \&\fIPASSWORD\fR
 .RS 4
-визначає початковий пароль до облікового запису\&. ПАРОЛЬ має бути зашифровано у форматі, який повертає
-\fBcrypt\fR(3)\&. У скрипті оболонки цей параметр надає змогу ефективно створювати записи користувачів у пакетному режимі\&.
+defines an initial password for the account\&. PASSWORD is expected to be encrypted, as returned by
+\fBcrypt \fR(3)\&. Within a shell script, this option allows to create efficiently batches of users\&.
 .sp
-Без цього параметра новий обліковий запис буде заблоковано; для нього також не буде визначено пароля, тобто у відповідному полі файла
-/etc/shadow\&. Це стан, у якому користувач не зможе отримати доступ до облікового запису або визначити пароль власноруч\&.
+Without this option, the new account will be locked and with no password defined, i\&.e\&. a single exclamation mark in the respective field of
+/etc/shadow\&. This is a state where the user won\*(Aqt be able to access the account or to define a password himself\&.
 .sp
-\fBЗауваження:\fR
-не рекомендуємо користуватися цим параметром у командному рядку, оскільки пароль (або шифрований пароль) буде видимим для користувачів, які мають доступ до списку процесів\&.
+\fBNote:\fRAvoid this option on the command line because the password (or encrypted password) will be visible by users listing the processes\&.
 .sp
 Вам слід переконатися, що пароль відповідає правилам складання паролів системи\&.
 .RE
@@ -292,21 +306,23 @@ Do not create the user\*(Aqs home directory, even if the system wide setting fro
 .RS 4
 Створити загальносистемний обліковий запис\&.
 .sp
-Записи загальносистемних користувачів буде створено без даних щодо застарівання у
-/etc/shadow, а їхні числові ідентифікатори буде вибрано у діапазоні
-\fBSYS_UID_MIN\fR\-\fBSYS_UID_MAX\fR, який визначено у
-/etc/login\&.defs, а не у
+System users will be created with no aging information in
+/etc/shadow, and their numeric identifiers are chosen in the
+\fBSYS_UID_MIN\fR\-\fBSYS_UID_MAX\fR
+range, defined in
+/etc/login\&.defs, instead of
 \fBUID_MIN\fR\-\fBUID_MAX\fR
-(та їхніх відповідників
+(and their
 \fBGID\fR
-для створення груп)\&.
+counterparts for the creation of groups)\&.
 .sp
-Зауважте, що
+Note that
 \fBuseradd\fR
-не створюватиме домашнього каталогу для такого користувача, незалежно від того, яким є типове значення параметра у
+will not create a home directory for such a user, regardless of the default setting in
 /etc/login\&.defs
-(\fBCREATE_HOME\fR)\&. вам слід вказати параметри
-\fB\-m\fR, якщо ви хочете, щоб для загальносистемного облікового запису було створено домашній каталог\&.
+(\fBCREATE_HOME\fR)\&. You have to specify the
+\fB\-m\fR
+options if you want a home directory for a system account to be created\&.
 .sp
 Note that this option will not update
 /etc/subuid
@@ -316,7 +332,7 @@ and
 options if you want to update the files for a system account to be created\&.
 .RE
 .PP
-\fB\-R\fR, \fB\-\-root\fR \fIКАТАЛОГ_CHROOT\fR
+\fB\-R\fR, \fB\-\-root\fR\ \&\fICHROOT_DIR\fR
 .RS 4
 Apply changes in the
 \fICHROOT_DIR\fR
@@ -325,13 +341,13 @@ directory and use the configuration files from the
 directory\&. Only absolute paths are supported\&.
 .RE
 .PP
-\fB\-P\fR, \fB\-\-prefix\fR \fIКАТАЛОГ_ПРЕФІКСА\fR
+\fB\-P\fR, \fB\-\-prefix\fR\ \&\fIPREFIX_DIR\fR
 .RS 4
-Застосувати зміни до файлів налаштувань у кореневій файловій системі з каталогу
-\fIКАТАЛОГ_ПРЕФІКСА\fR\&. Використання цього параметра не змінює кореневої теки\&. Параметр призначено лише для приготування цілі для компіляції коду для іншої операційної системи\&. Обмеження: не буде виконано перевірку користувачів/груп NIS і LDAP\&. При розпізнаванні у PAM буде використано файли основної системи\&. Підтримки SELINUX не передбачено\&.
+Apply changes to configuration files under the root filesystem found under the directory
+\fIPREFIX_DIR\fR\&. This option does not chroot and is intended for preparing a cross\-compilation target\&. Some limitations: NIS and LDAP users/groups are not verified\&. PAM authentication is using the host files\&. No SELINUX support\&.
 .RE
 .PP
-\fB\-s\fR, \fB\-\-shell\fR \fIОБОЛОНКА\fR
+\fB\-s\fR, \fB\-\-shell\fR\ \&\fISHELL\fR
 .RS 4
 sets the path to the user\*(Aqs login shell\&. Without this option, the system will use the
 \fBSHELL\fR
@@ -341,127 +357,144 @@ variable specified in
 remains empty\&.
 .RE
 .PP
-\fB\-u\fR, \fB\-\-uid\fR \fIUID\fR
+\fB\-u\fR, \fB\-\-uid\fR\ \&\fIUID\fR
 .RS 4
-Числове значення ідентифікатора користувача\&. Це значення має бути унікальним, якщо не використано параметр
-\fB\-o\fR\&. Значення має бути невід\*(Aqємним\&. Типово, буде використано найменше значення ідентифікатора, яке перевищує або дорівнює значенню
+The numerical value of the user\*(Aqs ID\&. This value must be unique, unless the
+\fB\-o\fR
+option is used\&. The value must be non\-negative\&. The default is to use the smallest ID value greater than or equal to
 \fBUID_MIN\fR
-і є більшим за значення для будь\-якого іншого користувача\&.
+and greater than every other user\&.
 .sp
-Див\&. також описи параметрів
+See also the
 \fB\-r\fR
-і
-\fBUID_MAX\fR\&.
+option and the
+\fBUID_MAX\fR
+description\&.
 .RE
 .PP
 \fB\-U\fR, \fB\-\-user\-group\fR
 .RS 4
 Створити групу, назва якої збігається із назвою облікового запису користувача, додати користувача до цієї групи\&.
 .sp
-Типову поведінку (якщо не вказано параметрів
+The default behavior (if the
 \fB\-g\fR,
-\fB\-N\fR
-і
-\fB\-U\fR) буде визначено змінною
+\fB\-N\fR, and
+\fB\-U\fR
+options are not specified) is defined by the
 \fBUSERGROUPS_ENAB\fR
-у
+variable in
 /etc/login\&.defs\&.
 .RE
 .PP
-\fB\-Z\fR, \fB\-\-selinux\-user\fR \fISEКОРИСТУВАЧ\fR
+\fB\-Z\fR, \fB\-\-selinux\-user\fR\ \&\fISEUSER\fR
 .RS 4
-Визначає користувача SELinux для нового облікового запису\&. Без цього параметра, SELinux використає типового користувача\&. Зауважте, що система shadow не зберігає користувача selinux \(em для цього вона використовує
-\fBsemanage\fR(8)\&.
+defines the SELinux user for the new account\&. Without this option, SELinux uses the default user\&. Note that the shadow system doesn\*(Aqt store the selinux\-user, it uses
+\fBsemanage\fR(8)
+for that\&.
+.RE
+.PP
+\fB\-\-selinux\-range\fR\ \&\fISERANGE\fR
+.RS 4
+defines the SELinux MLS range for the new account\&. Without this option, SELinux uses the default range\&. Note that the shadow system doesn\*(Aqt store the selinux\-range, it uses
+\fBsemanage\fR(8)
+for that\&.
+.sp
+This option is only valid if the
+\fB\-Z\fR
+(or
+\fB\-\-selinux\-user\fR) option is specified\&.
 .RE
 .SS "Зміна типових значень"
 .PP
-Якщо програму викликано лише з параметром
-\fB\-D\fR,
-\fBuseradd\fR
-виведе поточні типові значення\&. Якщо виклик відбувся з параметром
+When invoked with only the
 \fB\-D\fR
-та іншими параметрами,
+option,
 \fBuseradd\fR
-оновить типові значення для вказаних параметрів\&. Коректними параметрами для зміни типових значень є такі:
+will display the current default values\&. When invoked with
+\fB\-D\fR
+plus other options,
+\fBuseradd\fR
+will update the default values for the specified options\&. Valid default\-changing options are:
 .PP
-\fB\-b\fR, \fB\-\-base\-dir\fR \fIБАЗОВИЙ_КАТАЛОГ\fR
+\fB\-b\fR, \fB\-\-base\-dir\fR\ \&\fIBASE_DIR\fR
 .RS 4
-Встановлює префікс шляху для домашнього каталогу нового користувача\&. Назву облікового запису користувача буде дописано наприкінці
-\fIБАЗОВИЙ_КАТАЛОГ\fR
-для створення назви домашнього каталогу нового користувача, якщо під час створення облікового запису не було використано параметр
-\fB\-d\fR\&.
+sets the path prefix for a new user\*(Aqs home directory\&. The user\*(Aqs name will be affixed to the end of
+\fIBASE_DIR\fR
+to form the new user\*(Aqs home directory name, if the
+\fB\-d\fR
+option is not used when creating a new account\&.
 .sp
-Цей параметр встановлює значення змінної
+This option sets the
 \fBHOME\fR
-у
+variable in
 /etc/default/useradd\&.
 .RE
 .PP
-\fB\-e\fR, \fB\-\-expiredate\fR \fIДАТА_ЗАВЕРШЕННЯ_СТРОКУ_ДІЇ\fR
+\fB\-e\fR, \fB\-\-expiredate\fR\ \&\fIEXPIRE_DATE\fR
 .RS 4
 Встановлює дату вимикання новостворених облікових записів користувачів\&.
 .sp
-Цей параметр встановлює значення змінної
+This option sets the
 \fBEXPIRE\fR
-у
+variable in
 /etc/default/useradd\&.
 .RE
 .PP
-\fB\-f\fR, \fB\-\-inactive\fR \fIНЕАКТИВНИЙ\fR
+\fB\-f\fR, \fB\-\-inactive\fR\ \&\fIINACTIVE\fR
 .RS 4
-Визначає кількість днів після перевищення паролем максимального віку, протягом яких система очікуватиме на заміну пароля користувачем\&. Див\&.
-\fBshadow\fR(5), щоб дізнатися більше\&.
+defines the number of days after the password exceeded its maximum age where the user is expected to replace this password\&. See
+\fBshadow\fR(5)for more information\&.
 .sp
-Цей параметр встановлює значення змінної
-\fBНЕАКТИВНИЙ\fR
-у
+This option sets the
+\fBINACTIVE\fR
+variable in
 /etc/default/useradd\&.
 .RE
 .PP
-\fB\-g\fR, \fB\-\-gid\fR \fIGROUP\fR
+\fB\-g\fR, \fB\-\-gid\fR\ \&\fIGROUP\fR
 .RS 4
 Встановлює типову основну групу для новостворених записів користувачів\&. Можна вказати назву групи або числовий ідентифікатор групи\&. Вказана за назвою група має існувати, а GID має бути наявним записом\&.
 .sp
-Цей параметр встановлює значення змінної
+This option sets the
 \fBGROUP\fR
-у
+variable in
 /etc/default/useradd\&.
 .RE
 .PP
-\fB\-s\fR, \fB\-\-shell\fR \fIОБОЛОНКА\fR
+\fB\-s\fR, \fB\-\-shell\fR\ \&\fISHELL\fR
 .RS 4
 Визначає типову оболонку входу для нових користувачів\&.
 .sp
-Цей параметр встановлює значення змінної
-\fBОБОЛОНКА\fR
-у
+This option sets the
+\fBSHELL\fR
+variable in
 /etc/default/useradd\&.
 .RE
 .SH "ПРИМІТКИ"
 .PP
-За розташування типових файлів користувача у каталозі
+The system administrator is responsible for placing the default user files in the
 /etc/skel/
-(або будь\-якому іншому каркасному каталозі, який вказано у
+directory (or any other skeleton directory specified in
 /etc/default/useradd
-або рядку команди) відповідає адміністратор системи\&.
+or on the command line)\&.
 .SH "ЗАСТЕРЕЖЕННЯ"
 .PP
 Не можна додавати користувача до групи NIS або LDAP\&. Для таких груп цю дію має бути виконано на відповідному сервері\&.
 .PP
-Так само, якщо ім\*(Aqя користувача вже існує у зовнішній базі даних користувачів, зокрема NIS або LDAP,
+Similarly, if the username already exists in an external user database such as NIS or LDAP,
 \fBuseradd\fR
-відмовить у запиті щодо створення облікового запису користувача\&.
+will deny the user account creation request\&.
 .PP
 Usernames may contain only lower and upper case letters, digits, underscores, or dashes\&. They can end with a dollar sign\&. Dashes are not allowed at the beginning of the username\&. Fully numeric usernames and usernames \&. or \&.\&. are also disallowed\&. It is not recommended to use usernames beginning with \&. character as their home directories will be hidden in the
 \fBls\fR
 output\&.
 .PP
-Довжина імен користувачів не може перевищувати 32 символи\&.
+Довжина імен користувачів не може перевищувати 256 символи\&.
 .SH "НАЛАШТУВАННЯ"
 .PP
-Вказані нижче змінні налаштувань у
+The following configuration variables in
 /etc/login\&.defs
-змінюють поведінку цього інструмента:
+change the behavior of this tool:
 .SH "ФАЙЛИ"
 .PP
 /etc/passwd
@@ -491,14 +524,16 @@ output\&.
 .PP
 /etc/shadow\-maint/useradd\-pre\&.d/*, /etc/shadow\-maint/useradd\-post\&.d/*
 .RS 4
-Файли, які буде виконано під час додавання запису користувача\&. Змінну середовища
+Run\-part files to execute during user addition\&. The environment variable
 \fBACTION\fR
-буде заповнено командою useradd, а змінну середовища
+will be populated with useradd and
 \fBSUBJECT\fR
-\(em
-\fBкористувач\fR\&. Перед додаванням запису користувача буде виконано
-useradd\-pre\&.d\&. Після додавання запису користувача буде виконано
-useradd\-post\&.d\&. Якщо станом виходу зі скрипту буде ненульове значення, виконання дій буде перервано\&.
+with the
+\fBusername\fR\&.
+useradd\-pre\&.d
+will be executed prior to any user addition\&.
+useradd\-post\&.d
+will execute after user addition\&. If a script exits non\-zero then execution will terminate\&.
 .RE
 .PP
 /etc/skel/
@@ -522,39 +557,39 @@ useradd\-post\&.d\&. Якщо станом виходу зі скрипту бу
 .RE
 .SH "ЗНАЧЕННЯ ВИХОДУ"
 .PP
-Команда
+The
 \fBuseradd\fR
-завершує роботу із такими значеннями:
+command exits with the following values:
 .PP
 \fI0\fR
 .RS 4
-успіх
+success
 .RE
 .PP
 \fI1\fR
 .RS 4
-не вдалося оновити файл паролів
+can\*(Aqt update password file
 .RE
 .PP
 \fI2\fR
 .RS 4
-некоректний синтаксис команди
+invalid command syntax
 .RE
 .PP
 \fI3\fR
 .RS 4
-некоректний аргумент параметра
+invalid argument to option
 .RE
 .PP
 \fI4\fR
 .RS 4
-UID вже використано (і не вказано
+UID already in use (and no
 \fB\-o\fR)
 .RE
 .PP
 \fI6\fR
 .RS 4
-вказаної групи не існує
+specified group doesn\*(Aqt exist
 .RE
 .PP
 \fI9\fR
@@ -564,17 +599,22 @@ username or group name already in use
 .PP
 \fI10\fR
 .RS 4
-не вдалося оновити файл груп
+can\*(Aqt update group file
 .RE
 .PP
 \fI12\fR
 .RS 4
-не вдалося створити домашній каталог
+can\*(Aqt create home directory
 .RE
 .PP
 \fI14\fR
 .RS 4
-не вдалося оновити прив\*(Aqязку користувача SELinux
+can\*(Aqt update SELinux user mapping
+.RE
+.PP
+\fI19\fR
+.RS 4
+invalid user or group name
 .RE
 .SH "ДИВ\&. ТАКОЖ"
 .PP

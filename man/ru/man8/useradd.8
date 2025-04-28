@@ -2,12 +2,12 @@
 .\"     Title: useradd
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 11/08/2022
-.\"    Manual: Команды управления системой
-.\"    Source: shadow-utils 4.13
+.\"      Date: 03/19/2025
+.\"    Manual: System Management Commands
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: Russian
 .\"
-.TH "useradd" "8" "11/08/2022" "shadow\-utils 4\&.13" "Команды управления системой"
+.TH "useradd" "8" "03/19/2025" "shadow\-utils 4\&.17\&.4" "System Management Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -31,11 +31,11 @@
 useradd \- регистрирует нового пользователя или изменяет информацию по умолчанию о новых пользователях
 .SH "СИНТАКСИС"
 .HP \w'\fBuseradd\fR\ 'u
-\fBuseradd\fR [\fIпараметры\fR] \fIУЧЁТНАЯ_ЗАПИСЬ\fR
+\fBuseradd\fR [\fIoptions\fR] \fILOGIN\fR
 .HP \w'\fBuseradd\fR\ 'u
 \fBuseradd\fR \-D
 .HP \w'\fBuseradd\fR\ 'u
-\fBuseradd\fR \-D [\fIпараметры\fR]
+\fBuseradd\fR \-D [\fIoptions\fR]
 .SH "ОПИСАНИЕ"
 .PP
 When invoked without the
@@ -155,7 +155,7 @@ variable in
 \fIyes\fR
 (or
 \fB\-U/\-\-user\-group\fR
-is specified on the command line), a group will be created for the user, with the same name as her loginname\&. If the variable is set to
+is specified on the command line), a group will be created for the user, with the same name as the loginname\&. If the variable is set to
 \fIno\fR
 (or
 \fB\-N/\-\-no\-user\-group\fR
@@ -169,7 +169,11 @@ variable in
 .RS 4
 A list of supplementary groups which the user is also a member of\&. Each group is separated from the next by a comma, with no intervening whitespace\&. The groups are subject to the same restrictions as the group given with the
 \fB\-g\fR
-option\&. The default is for the user to belong only to the initial group\&.
+option\&. The default is for the user to belong only to the initial group\&. In addition to passing in the \-G flag, you can add the option
+\fBGROUPS\fR
+to the file
+/etc/default/useradd
+which in turn will add all users to those supplementary groups\&.
 .RE
 .PP
 \fB\-h\fR, \fB\-\-help\fR
@@ -193,6 +197,10 @@ variable in
 /etc/default/useradd
 or, by default,
 /etc/skel\&.
+.sp
+Absolute symlinks that link back to the skel directory will have the
+/etc/skel
+prefix replaced with the user\*(Aqs home directory\&.
 .sp
 Если возможно, выполняется копирование ACL и расширенных атрибутов\&.
 .RE
@@ -380,9 +388,21 @@ variable in
 .PP
 \fB\-Z\fR, \fB\-\-selinux\-user\fR\ \&\fISEUSER\fR
 .RS 4
-defines the SELinux user for the new account\&. Without this option, a SELinux uses the default user\&. Note that the shadow system doesn\*(Aqt store the selinux\-user, it uses
+defines the SELinux user for the new account\&. Without this option, SELinux uses the default user\&. Note that the shadow system doesn\*(Aqt store the selinux\-user, it uses
 \fBsemanage\fR(8)
 for that\&.
+.RE
+.PP
+\fB\-\-selinux\-range\fR\ \&\fISERANGE\fR
+.RS 4
+defines the SELinux MLS range for the new account\&. Without this option, SELinux uses the default range\&. Note that the shadow system doesn\*(Aqt store the selinux\-range, it uses
+\fBsemanage\fR(8)
+for that\&.
+.sp
+This option is only valid if the
+\fB\-Z\fR
+(or
+\fB\-\-selinux\-user\fR) option is specified\&.
 .RE
 .SS "Изменение значений по умолчанию"
 .PP
@@ -469,7 +489,7 @@ Usernames may contain only lower and upper case letters, digits, underscores, or
 \fBls\fR
 output\&.
 .PP
-Имена пользователей могут быть длиной не более 32 знаков\&.
+Имена пользователей могут быть длиной не более 256 знаков\&.
 .SH "НАСТРОЙКА"
 .PP
 The following configuration variables in
@@ -590,6 +610,11 @@ can\*(Aqt create home directory
 \fI14\fR
 .RS 4
 can\*(Aqt update SELinux user mapping
+.RE
+.PP
+\fI19\fR
+.RS 4
+invalid user or group name
 .RE
 .SH "СМОТРИТЕ ТАКЖЕ"
 .PP

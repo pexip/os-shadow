@@ -1,18 +1,16 @@
 debian/default/useradd etc/default
-debian/shadowconfig sbin
+debian/shadowconfig usr/sbin
 usr/bin/chage
 usr/bin/chfn
 usr/bin/chsh
 usr/bin/expiry
 usr/bin/gpasswd
 usr/bin/passwd
-usr/sbin/chpasswd
 usr/sbin/chgpasswd
-usr/sbin/cppw
+usr/sbin/chpasswd
 usr/sbin/groupadd
 usr/sbin/groupdel
 usr/sbin/groupmod
-usr/sbin/groupmems
 usr/sbin/grpck
 usr/sbin/grpconv
 usr/sbin/grpunconv
@@ -24,3 +22,4 @@ usr/sbin/useradd
 usr/sbin/userdel
 usr/sbin/usermod
 usr/sbin/vipw
+usr/share/locale/*/LC_MESSAGES/shadow.mo

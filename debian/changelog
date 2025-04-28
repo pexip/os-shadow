@@ -1,3 +1,352 @@
+shadow (1:4.17.4-1) unstable; urgency=medium
+
+  * New upstream version 4.17.4
+  * Rebase patches
+
+ -- Chris Hofstaedtler <zeha@debian.org>  Sat, 29 Mar 2025 13:28:35 +0100
+
+shadow (1:4.17.3-3) unstable; urgency=medium
+
+  * Accept /usr/sbin/nologin as an alternate to /sbin/nologin.
+    Thanks to Marc Haber
+
+ -- Chris Hofstaedtler <zeha@debian.org>  Fri, 28 Mar 2025 12:13:03 +0100
+
+shadow (1:4.17.3-2) unstable; urgency=medium
+
+  * Do not warn about useradd --system with Debian-globally allocated uids
+    (Closes: #1100563)
+  * Refresh patches
+
+ -- Chris Hofstaedtler <zeha@debian.org>  Sun, 16 Mar 2025 13:39:58 +0100
+
+shadow (1:4.17.3-1) unstable; urgency=medium
+
+  * New upstream version 4.17.3
+  * Refresh patches and include upstream patch for getdate.
+    Include https://github.com/shadow-maint/shadow/pull/1214 to fix
+    https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1095430 in the
+    way upstream intends to fix it.
+  * Explicitly pass {s,}bindir to configure.
+    Avoids upstream hacks in configure.
+
+ -- Chris Hofstaedtler <zeha@debian.org>  Mon, 24 Feb 2025 23:09:52 +0100
+
+shadow (1:4.17.2-6) unstable; urgency=medium
+
+  * d/rules: ensure lib/getdate.c gets rebuilt
+  * configure: always pick /usr/bin/passwd.
+    Thanks to Jochen Sprickerhof <jspricke@debian.org>
+
+ -- Chris Hofstaedtler <zeha@debian.org>  Mon, 24 Feb 2025 12:16:49 +0100
+
+shadow (1:4.17.2-5) unstable; urgency=medium
+
+  * Warn about future --badname removal.
+    Upstream PR 1158 plans to remove this flag, probably in the forky
+    timeframe. Warn users now.
+  * Import upstream patch to fix chfn (#1096187)
+  * Add regression test for #1096187
+  * Add regression test for #1095430
+  * Remove "shadowconfig off"
+    If needed please run pwunconv, grpunconv manually, but please understand
+    you are on your own.
+
+ -- Chris Hofstaedtler <zeha@debian.org>  Mon, 17 Feb 2025 19:54:09 +0100
+
+shadow (1:4.17.2-4) unstable; urgency=medium
+
+  * Revert upstreams chfn.c strsep change (Closes: #1096187)
+
+ -- Chris Hofstaedtler <zeha@debian.org>  Mon, 17 Feb 2025 12:28:56 +0100
+
+shadow (1:4.17.2-3) unstable; urgency=medium
+
+  * Revert upstreams strtoday calculation "fix" (Closes: #1095430)
+
+ -- Chris Hofstaedtler <zeha@debian.org>  Sun, 16 Feb 2025 20:24:35 +0100
+
+shadow (1:4.17.2-2) unstable; urgency=medium
+
+  * Upload to unstable.
+  * Apply upstream revert of "Use local time for human-readable dates"
+    (Closes: #1095430)
+
+ -- Chris Hofstaedtler <zeha@debian.org>  Sat, 15 Feb 2025 17:21:17 +0100
+
+shadow (1:4.17.2-1) experimental; urgency=medium
+
+  * New upstream version 4.17.2
+  * Apply upstream patch from Marc Haber to document E_BAD_NAME
+  * Refresh patches
+
+ -- Chris Hofstaedtler <zeha@debian.org>  Sun, 09 Feb 2025 18:14:51 +0100
+
+shadow (1:4.17.1-2) experimental; urgency=medium
+
+  * Rewrite shadowconfig(8) manpage.
+    Thanks to Alejandro Colomar <alx@kernel.org>
+  * Remove unnecessary Build-Depends: quilt.
+    Thanks to Bastian Germann (Closes: #1092461)
+
+ -- Chris Hofstaedtler <zeha@debian.org>  Wed, 08 Jan 2025 12:40:10 +0100
+
+shadow (1:4.17.1-1) experimental; urgency=medium
+
+  * New upstream version 4.17.1
+
+ -- Chris Hofstaedtler <zeha@debian.org>  Sat, 04 Jan 2025 12:41:51 +0100
+
+shadow (1:4.17.0-1) experimental; urgency=medium
+
+  * New upstream version 4.17.0
+  * Refresh patches.
+
+ -- Chris Hofstaedtler <zeha@debian.org>  Sat, 28 Dec 2024 13:14:16 +0100
+
+shadow (1:4.17.0~rc1-2) experimental; urgency=medium
+
+  * Remove Debian patch to relax username checks.
+    Per discussion on d-devel, with upstream, and with the
+    adduser maintainer.
+    Thanks: Marc Haber
+
+ -- Chris Hofstaedtler <zeha@debian.org>  Sun, 22 Dec 2024 20:15:16 +0100
+
+shadow (1:4.17.0~rc1-1) experimental; urgency=medium
+
+  * New upstream version 4.17.0~rc1
+  * Add upstream patch for new return-code for bad usernames
+  * Refresh patches
+  * d/copyright: update
+  * Forbid purely numeric user/group names, and "." and ".."
+
+ -- Chris Hofstaedtler <zeha@debian.org>  Fri, 06 Dec 2024 19:55:32 +0100
+
+shadow (1:4.16.0-7) unstable; urgency=medium
+
+  [ Florent 'Skia' Jacquet ]
+  * d/patches: fix 'upstream' test suite
+
+ -- Chris Hofstaedtler <zeha@debian.org>  Fri, 06 Dec 2024 13:51:40 +0100
+
+shadow (1:4.16.0-6) unstable; urgency=medium
+
+  * Add NEWS entry about faillog (Closes: #1074320)
+
+ -- Chris Hofstaedtler <zeha@debian.org>  Fri, 06 Dec 2024 13:29:54 +0100
+
+shadow (1:4.16.0-5) unstable; urgency=medium
+
+  [ Chris Hofstaedtler ]
+  * Always build with btrfs support on linux-any (Closes: #856557)
+  * debputy.manifest: merge path-metadata entries
+  * login.defs: remove info about write(1)
+    Which is not part of Debian trixie. (Closes: #1087519)
+
+  [ Pino Toscano ]
+  * Include <utmpx.h>, fixing the build on GNU/Hurd
+
+ -- Chris Hofstaedtler <zeha@debian.org>  Fri, 15 Nov 2024 20:30:32 +0100
+
+shadow (1:4.16.0-4) unstable; urgency=medium
+
+  * Drop Debian-only cppw, cpgr tools (Closes: #750752)
+  * Stop patching login, not installed anymore
+  * Define LOGIN_NAME_MAX on HURD
+  * Remove libsystemd-dev Build-Depends.
+    Only necessary for login(1).
+  * Stop building programs we do not install
+
+ -- Chris Hofstaedtler <zeha@debian.org>  Tue, 06 Aug 2024 00:29:18 +0200
+
+shadow (1:4.16.0-3) unstable; urgency=medium
+
+  * Upload to unstable.
+  * Fix FTBFS on hurd.
+    DEB_HOST_ARCH_OS was unset.
+
+ -- Chris Hofstaedtler <zeha@debian.org>  Mon, 05 Aug 2024 17:21:27 +0200
+
+shadow (1:4.16.0-2) experimental; urgency=medium
+
+  * passwd: switch Depends from login to login.defs
+    login will again be installed on fewer systems, but existing installs
+    will retain it (it is Protected: yes).
+  * Drop login package, to allow takeover by util-linux.
+    Move shadow.mo to Package: passwd, have passwd Replaces: older login.
+  * login.defs: ship manpage
+  * Re-add workarounds for tests in tests/tests directory.
+    4.15.3 fixed this, but 4.16.0 happened earlier.
+
+ -- Chris Hofstaedtler <zeha@debian.org>  Mon, 05 Aug 2024 02:36:29 +0200
+
+shadow (1:4.16.0-1) experimental; urgency=medium
+
+  * New upstream version 4.16.0
+    * Rebase patches
+  * Split /etc/login.defs into its own binary package (Closes: #1074394)
+  * Rename libsubid4 to libsubid5 (soname bump)
+  * d/watch: add versionmangle for -rc
+
+ -- Chris Hofstaedtler <zeha@debian.org>  Fri, 02 Aug 2024 17:35:29 +0200
+
+shadow (1:4.15.3-3) unstable; urgency=medium
+
+  * Forbid backslashes in user/group-names.
+    They can still be used with --force-badname, but it's a start. In the
+    long run I want to remove our relax patch, and upstream should fix the
+    line continuation too. For #1076619.
+
+ -- Chris Hofstaedtler <zeha@debian.org>  Sun, 21 Jul 2024 21:05:32 +0200
+
+shadow (1:4.15.3-2) unstable; urgency=medium
+
+  [ Pino Toscano ]
+  * d/rules: actually enable Linux-only options on Linux
+    This enables --enable-logind and --with-audit.
+
+  [ Chris Hofstaedtler ]
+  * Stop installing groupmems(8) (Closes: #1004472, LP: #2039541)
+  * login.defs: remove obsolete/confusing comments
+  * login.defs: resync comments with upstream
+  * login.defs: remove incomplete list of unused vars
+  * login.defs: remove obscure, defaulted vars
+  * login.defs: remove vars ignored by su(1)
+  * login.defs: remove CONSOLE_GROUPS, ignored with PAM
+  * login.defs: remove CONSOLE, ignored with PAM
+
+ -- Chris Hofstaedtler <zeha@debian.org>  Sun, 07 Jul 2024 15:30:38 +0200
+
+shadow (1:4.15.3-1) unstable; urgency=medium
+
+  * New upstream version 4.15.3
+  * tests: follow upstream subdir fix
+  * Fix setup of test libsubid-04_nss
+  * Drop login.postinst, obsoleted by #1074121
+  * Bump Standards-Version to 4.7.0
+
+ -- Chris Hofstaedtler <zeha@debian.org>  Sat, 06 Jul 2024 23:50:36 +0200
+
+shadow (1:4.15.2-3) unstable; urgency=medium
+
+  * d/watch: add versionmangle for -rc
+  * Revert "Use upstream's restrictions on user- and group names again".
+    Breaks adduser's tests, see #1074306.
+
+ -- Chris Hofstaedtler <zeha@debian.org>  Wed, 26 Jun 2024 12:40:34 +0200
+
+shadow (1:4.15.2-2) unstable; urgency=medium
+
+  * useradd(8): Fix missing paragraph on username length
+  * d/rules: explicitly set --with-audit and --enable-subordinate-ids
+  * Remove faillog support.
+    Stop installing faillog binary and man pages. Stop creating
+    /var/log/faillog in login.postinst.
+    PAM has removed support for /var/log/faillog by dropping pam_tally, and
+    login itself cannot write to it either.
+  * Use upstream's restrictions on user- and group names again.
+    Upstream started supporting mixed-case names some time ago.
+    Purely numeric names (#79682) are now forbidden again, as there is no
+    way of distinguishing them from user/group IDs otherwise.
+  * Drop useradd's backwards-compatibility -O flag
+  * Remove our copy of HOME_MODE.xml, identical upstream
+  * shadowconfig.8: actually install again
+  * passwd: add Depends: login.
+    Stop-gap until passwd can takeover /etc/login.defs from login.
+
+ -- Chris Hofstaedtler <zeha@debian.org>  Tue, 25 Jun 2024 19:42:24 +0200
+
+shadow (1:4.15.2-1) unstable; urgency=medium
+
+  * New upstream version 4.15.2
+    Includes fix for csrand_uniform().
+
+ -- Chris Hofstaedtler <zeha@debian.org>  Sat, 22 Jun 2024 17:37:34 +0200
+
+shadow (1:4.15.1-1) unstable; urgency=medium
+
+  * New upstream version 4.15.1
+    Closes: #832047, #812127, #1034312, #856902, #791806
+    Closes: #1006216, #1006225, #1006208
+    * contrib/atudel, non-DFSG-compliant was removed upstream
+    * Remove obsolete configure flag --without-libcrack
+    * Use functions from libbsd (Closes: #1032393)
+    * Build-Depend: libltdl-dev for LT_LIB_DLLOAD
+      (Closes: #1065350)
+    * Build-Depend: pkgconf
+    * Drop upstream applied patches
+    * Disable FTMP_FILE by default, drop login failure logging
+    * Rebase patch 401_cppw_src.dpatch
+    * Rename patch 402_cppw_selinux
+    * Use upstream FAILLOG_ENAB code, incompatible with PAM
+      (Closes: #776314)
+    * Rebase patch 463_login_delay_obeys_to_PAM
+    * Rebase patch 501_commonio_group_shadow
+    * Rebase patch 502_debian_useradd_defaults
+    * Rebase patch 506_relaxed_usernames
+    * Rebase patch 542_useradd-O_option
+  * Update upstream signing keys
+  * Tag build with dh-package-notes
+  * Turn off --enable-lastlog, drop lastlog from not-installed
+  * Explicitly enable logind on linux-any
+  * Update default ENCRYPT_METHOD (Closes: #1043236)
+  * login: switch from Essential to Protected: yes (Closes: #960638)
+    Moves Pre-Depends to Depends.
+  * Enable acl, xattr support (Closes: #745796)
+  * login.defs: remove PAM-unsupported crypt settings (Closes: #1055582)
+
+ -- Chris Hofstaedtler <zeha@debian.org>  Sat, 22 Jun 2024 16:08:41 +0200
+
+shadow (1:4.13+dfsg1-5) unstable; urgency=medium
+
+  * Add myself to Uploaders, per discussion with Serge Hallyn
+  * Apply wrap-and-sort -kas style
+  * Use debputy to avoid Rules-Requires-Root: binary-targets
+  * libsubid4: tighten package-internal dependencies
+
+  [ Serge Hallyn ]
+  * Drop pam_lastlog.so from config. (Closes: #1068229)
+  * Stop installing lastlog binary.
+
+ -- Chris Hofstaedtler <zeha@debian.org>  Sun, 02 Jun 2024 20:01:51 +0200
+
+shadow (1:4.13+dfsg1-4) unstable; urgency=medium
+
+  [ Helmut Grohne ]
+  * DEP17: Move login and shadowconfig to /usr. (Closes: #1059915)
+
+ -- Serge Hallyn <serge@hallyn.com>  Sun, 04 Feb 2024 20:28:27 +0000
+
+shadow (1:4.13+dfsg1-3) unstable; urgency=medium
+
+  * Team upload
+  * Remove myself from uploaders
+
+ -- Balint Reczey <balint@balintreczey.hu>  Sun, 15 Oct 2023 19:10:52 +0200
+
+shadow (1:4.13+dfsg1-2) unstable; urgency=medium
+
+  [ Balint Reczey ]
+  * debian/gitlab-ci.yml: Use sudo to fix reprotest test
+  * debian/login.pam: Drop reference to Debian Etch (Closes: #1040064)
+  * debian/NEWS: Fix false claim about PREVENT_NO_AUTH affecting authentication.
+    Also drop setting PREVENT_NO_AUTH in shipped login.defs. (Closes: #1041547)
+  * Cherry-pick upstream patch to fix gpasswd passwd leak
+    (CVE-2023-4641) (Closes: #1051062)
+  * Cherry-pick upstream patch to fix chfn vulnerability allowing injection of
+    control characters into some /etc/passwd fields.
+    (CVE-2023-29383) (Closes: #1034482)
+
+  [ Gioele Barabucci ]
+  * Support <nodoc> build profile
+    `xsltproc`, `docbook` and all other XML-related packages are not needed
+    when the `<nodoc>` build profile is active, as long as `./configure` is
+    called with `--disable-man`. (Closes: #1051827)
+
+
+ -- Balint Reczey <balint@balintreczey.hu>  Tue, 26 Sep 2023 22:01:52 +0200
+
 shadow (1:4.13+dfsg1-1+b1+pexip24u2) pexip-bookworm; urgency=medium
 
   * New versioning scheme

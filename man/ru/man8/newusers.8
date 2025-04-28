@@ -2,12 +2,12 @@
 .\"     Title: newusers
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 11/08/2022
-.\"    Manual: Команды управления системой
-.\"    Source: shadow-utils 4.13
+.\"      Date: 03/19/2025
+.\"    Manual: System Management Commands
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: Russian
 .\"
-.TH "newusers" "8" "11/08/2022" "shadow\-utils 4\&.13" "Команды управления системой"
+.TH "newusers" "8" "03/19/2025" "shadow\-utils 4\&.17\&.4" "System Management Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -31,7 +31,7 @@
 newusers \- обновляет и создаёт новые учётные записи пользователей в пакетном режиме
 .SH "СИНТАКСИС"
 .HP \w'\fBnewusers\fR\ 'u
-\fBnewusers\fR [\fIпараметры\fR] [\fIфайл\fR]
+\fBnewusers\fR [\fIoptions\fR] [\fIfile\fR]
 .SH "ОПИСАНИЕ"
 .PP
 The
@@ -56,7 +56,7 @@ It can be the name of a new user or the name of an existing user (or a user crea
 Это поле будет зашифровано и использовано как новое значение шифрованного пароля\&.
 .RE
 .PP
-\fI pw_gid\fR
+\fIpw_uid\fR
 .RS 4
 Это поле используется для определения UID пользователя\&.
 .sp
@@ -168,14 +168,13 @@ directory\&. Only absolute paths are supported\&.
 .RS 4
 Использовать указанное количество раундов шифрования паролей\&.
 .sp
-Значение 0 означает, что система выберет количество раундов по умолчанию для выбранного метода шифрования (5000)\&.
+You can only use this option with crypt method:
+\fISHA256\fR \fISHA512\fR
 .sp
-Минимальное значение равно 1000, а максимальное значение равно 999,999,999\&.
-.sp
-Вы можете использовать этот параметр только при методе шифрования SHA256 или SHA512\&.
-.sp
-By default, the number of rounds is defined by the SHA_CRYPT_MIN_ROUNDS and SHA_CRYPT_MAX_ROUNDS variables in
+By default, the number of rounds for SHA256 or SHA512 is defined by the SHA_CRYPT_MIN_ROUNDS and SHA_CRYPT_MAX_ROUNDS variables in
 /etc/login\&.defs\&.
+.sp
+A minimal value of 1000 and a maximal value of 999,999,999 will be enforced for SHA256 and SHA512\&. The default is 5000\&.
 .RE
 .SH "ПРЕДОСТЕРЕЖЕНИЯ"
 .PP

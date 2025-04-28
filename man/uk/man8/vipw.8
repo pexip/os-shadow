@@ -2,12 +2,12 @@
 .\"     Title: vipw
 .\"    Author: Marek Micha\(/lkiewicz
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 08/11/2022
-.\"    Manual: Команди керування системою
-.\"    Source: shadow-utils 4.13
+.\"      Date: 19/03/2025
+.\"    Manual: System Management Commands
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: Ukrainian
 .\"
-.TH "vipw" "8" "08/11/2022" "shadow\-utils 4\&.13" "Команди керування системою"
+.TH "vipw" "8" "19/03/2025" "shadow\-utils 4\&.17\&.4" "System Management Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -31,33 +31,34 @@
 vipw, vigr \- редагування файла паролів, груп, прихованих паролів та прихованих груп
 .SH "КОРОТКИЙ ОГЛЯД"
 .HP \w'\fBvipw\fR\ 'u
-\fBvipw\fR [\fIпараметри\fR]
+\fBvipw\fR [\fIoptions\fR]
 .HP \w'\fBvigr\fR\ 'u
-\fBvigr\fR [\fIпараметри\fR]
+\fBvigr\fR [\fIoptions\fR]
 .SH "ОПИС"
 .PP
-Команди
+The
 \fBvipw\fR
-і
+and
 \fBvigr\fR
-призначено для редагування файлів
+commands edit the files
 /etc/passwd
-і
-/etc/group, відповідно\&. З прапорцем
+and
+/etc/group, respectively\&. With the
 \fB\-s\fR
-вони відкриватимуть shadow\-версії цих файлів,
+flag, they will edit the shadow versions of those files,
 /etc/shadow
-і
-/etc/gshadow, відповідно\&. Ці програми встановлюють відповідні блокування для запобігання пошкодженню файлів\&. При пошуку редактора програми спочатку намагатимуться скористатися вмістом змінної середовища
-\fB$VISUAL\fR, потім змінної середовища
-\fB$EDITOR\fR, і нарешті, типовим редактором,
+and
+/etc/gshadow, respectively\&. The programs will set the appropriate locks to prevent file corruption\&. When looking for an editor, the programs will first try the environment variable
+\fB$VISUAL\fR, then the environment variable
+\fB$EDITOR\fR, and finally the default editor,
 \fBvi\fR(1)\&.
 .SH "ПАРАМЕТРИ"
 .PP
-Параметри, які застосовують до команд
+The options which apply to the
 \fBvipw\fR
-і
-\fBvigr\fR, є такими:
+and
+\fBvigr\fR
+commands are:
 .PP
 \fB\-g\fR, \fB\-\-group\fR
 .RS 4
@@ -79,7 +80,7 @@ vipw, vigr \- редагування файла паролів, груп, при
 Режим без повідомлень\&.
 .RE
 .PP
-\fB\-R\fR, \fB\-\-root\fR \fIКАТАЛОГ_CHROOT\fR
+\fB\-R\fR, \fB\-\-root\fR\ \&\fICHROOT_DIR\fR
 .RS 4
 Apply changes in the
 \fICHROOT_DIR\fR
@@ -101,8 +102,9 @@ directory\&. Only absolute paths are supported\&.
 .PP
 \fBEDITOR\fR
 .RS 4
-Редактор, яким слід скористатися, що не встановлено значення
-\fBVISUAL\fR\&.
+Editor to be used if
+\fBVISUAL\fR
+is not set\&.
 .RE
 .SH "ФАЙЛИ"
 .PP
@@ -128,7 +130,7 @@ directory\&. Only absolute paths are supported\&.
 .SH "ДИВ\&. ТАКОЖ"
 .PP
 \fBvi\fR(1),
-\fBгрупа\fR(5),
+\fBgroup\fR(5),
 \fBgshadow\fR(5)
 ,
 \fBpasswd\fR(5), ,

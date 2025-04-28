@@ -2,12 +2,12 @@
 .\"     Title: chgpasswd
 .\"    Author: Thomas K\(/loczko <kloczek@pld.org.pl>
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 08.11.2022
-.\"    Manual: Befehle zur Systemverwaltung
-.\"    Source: shadow-utils 4.13
+.\"      Date: 19.03.2025
+.\"    Manual: System Management Commands
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: German
 .\"
-.TH "CHGPASSWD" "8" "08.11.2022" "shadow\-utils 4\&.13" "Befehle zur Systemverwaltung"
+.TH "CHGPASSWD" "8" "19.03.2025" "shadow\-utils 4\&.17\&.4" "System Management Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -28,10 +28,10 @@
 .\" * MAIN CONTENT STARTS HERE *
 .\" -----------------------------------------------------------------
 .SH "NAME"
-chgpasswd \- aktualisiert Gruppenpassw\(:orter im Batch\-Modus
+chgpasswd \- aktualisiert Gruppenpassw\(:orter im Stapel\-Modus
 .SH "\(:UBERSICHT"
 .HP \w'\fBchgpasswd\fR\ 'u
-\fBchgpasswd\fR [\fIOptionen\fR]
+\fBchgpasswd\fR [\fIoptions\fR]
 .SH "BESCHREIBUNG"
 .PP
 The
@@ -52,7 +52,7 @@ variable of
 \fB\-c\fR
 options\&.
 .PP
-Dieser Befehl ist f\(:ur den Einsatz in gro\(ssen Umgebungen vorgesehen, in der viele Konten gleichzeitig erstellt werden m\(:ussen\&.
+Dieser Befehl ist f\(:ur weitreichende Systeme gedacht, bei denenviele Passw\(:orter gleichzeitig aktualisiert werden m\(:ussen\&.
 .SH "OPTIONEN"
 .PP
 The options which apply to the
@@ -61,24 +61,29 @@ command are:
 .PP
 \fB\-c\fR, \fB\-\-crypt\-method\fR
 .RS 4
-Definiert die Methode, mit der die Passw\(:orter verschl\(:usselt werden\&.
+definiert die Methode, mit der die Passw\(:orter verschl\(:usselt werden\&.
 .sp
-Die verf\(:ugbaren Methoden sind DES, MD5, NONE und SHA256 oder SHA512, soweit Ihre libc sie unterst\(:utzt\&.
+The available methods are
+\fIDES\fR,
+\fIMD5\fR, \fISHA256\fR, \fISHA512\fR
+and
+\fINONE\fR
+if your libc supports these methods\&.
 .RE
 .PP
 \fB\-e\fR, \fB\-\-encrypted\fR
 .RS 4
-Passw\(:orter werden verschl\(:usselt angegeben\&.
+Passw\(:orter werden verschl\(:usselt geliefert\&.
 .RE
 .PP
 \fB\-h\fR, \fB\-\-help\fR
 .RS 4
-zeigt die Hilfe an und beendet das Programm
+zeigt die Hilfe an und beendet das Programm\&.
 .RE
 .PP
 \fB\-m\fR, \fB\-\-md5\fR
 .RS 4
-werwendet zur Verschl\(:usselung MD5 anstelle von DES, wenn die Passw\(:orter unverschl\(:usselt angegeben werden
+Zur Verschl\(:usselung MD5 anstelle von DES verwenden, wenn die Passw\(:orter unverschl\(:usselt geliefert werden\&.
 .RE
 .PP
 \fB\-R\fR, \fB\-\-root\fR\ \&\fICHROOT_DIR\fR
@@ -92,22 +97,23 @@ directory\&. Only absolute paths are supported\&.
 .PP
 \fB\-s\fR, \fB\-\-sha\-rounds\fR
 .RS 4
-Verwendet die angegebene Anzahl von Runden, um die Passw\(:orter zu verschl\(:usseln\&.
+legt die Anzahl von Runden beim Verschl\(:usseln von Passw\(:ortern fest\&.
 .sp
-Ein Wert von 0 bedeutet, dass das System die Standardanzahl der Runden (5000) f\(:ur die Verschl\(:usselung verwenden wird\&.
+You can only use this option with crypt method:
+\fISHA256\fR \fISHA512\fR
 .sp
-Der Mindestwert ist 1000, der H\(:ochstwert 999\&.999\&.999\&.
-.sp
-Sie k\(:onnen diese Option nur mit den Verschl\(:usselungsmethoden SHA256 und SHA512 verwenden\&.
-.sp
-By default, the number of rounds is defined by the SHA_CRYPT_MIN_ROUNDS and SHA_CRYPT_MAX_ROUNDS variables in
+By default, the number of rounds for SHA256 or SHA512 is defined by the SHA_CRYPT_MIN_ROUNDS and SHA_CRYPT_MAX_ROUNDS variables in
 /etc/login\&.defs\&.
+.sp
+A minimal value of 1000 and a maximal value of 999,999,999 will be enforced for SHA256 and SHA512\&. The default number of rounds is 5000\&.
 .RE
 .SH "WARNUNGEN"
 .PP
-Achten Sie darauf, dass die Rechte und Umask korrekt vergeben sind, um zu verhindern, dass andere Benutzer unverschl\(:usselte Dateien lesen k\(:onnen\&.
+Achten Sie darauf, dass die Zugriffsrechte der unverschl\(:usselten Datei beziehungsweise
+\fBUMASK\fR
+ausschlie\(ssen, dass andere Benutzer sie lesen k\(:onnen\&.
 .PP
-Sie sollten darauf achten, dass Passw\(:orter und Verschl\(:usselungsmethode in Einklage mit der Passwortrichtlinie des Systems stehen\&.
+Sie sollten darauf achten, dass Passw\(:orter und Verschl\(:usselungsmethode in Einklang mit der Passwortrichtlinie des Systems stehen\&.
 .SH "KONFIGURATION"
 .PP
 The following configuration variables in
@@ -122,12 +128,12 @@ Informationen zu den Gruppenkonten
 .PP
 /etc/gshadow
 .RS 4
-sichere Informationen zu den Gruppenkonten
+gesch\(:utzte Informationen zu den Gruppenkonten
 .RE
 .PP
 /etc/login\&.defs
 .RS 4
-Konfiguration der Shadow\-Passwort\-Werkzeugsammlung
+konfiguriert die Shadow\-Hilfsprogramme\&.
 .RE
 .SH "SIEHE AUCH"
 .PP

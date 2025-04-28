@@ -1,16 +1,12 @@
-# These patches are only for the testsuite:
-#900_testsuite_groupmems
-#901_testsuite_gcov
-
-008_login_log_failure_in_FTMP
-401_cppw_src.dpatch
-# 402 should be merged in 401, but should be reviewed by SE Linux experts first
-402_cppw_selinux
-429_login_FAILLOG_ENAB
-463_login_delay_obeys_to_PAM
-501_commonio_group_shadow
-502_debian_useradd_defaults
-503_shadowconfig.8
-505_useradd_recommend_adduser
-506_relaxed_usernames
-542_useradd-O_option
+debian/Set-group-and-mode-for-g-shadow-files.patch
+debian/Keep-using-Debian-adduser-defaults.patch
+debian/Exclude-Debian-globally-allocated-UIDs-from-sys_uid-range.patch
+debian/Document-the-shadowconfig-utility.patch
+debian/Recommend-using-adduser-and-deluser.patch
+debian/tests-disable-su.patch
+debian/Adapt-login.defs-for-Debian.patch
+debian/Define-LOGIN_NAME_MAX-on-HURD.patch
+debian/Stop-building-programs-we-do-not-install.patch
+debian/Warn-when-badname-and-variants-are-given.patch
+debian/configure.ac-align-exec_prefix-with-prefix.patch
+upstream/Accept-usr-sbin-nologin-as-an-alternate-to-sbin-nologin.patch

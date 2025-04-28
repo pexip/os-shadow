@@ -2,12 +2,12 @@
 .\"     Title: groupadd
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 2022-11-08
-.\"    Manual: 系统管理命令
-.\"    Source: shadow-utils 4.13
+.\"      Date: 2025-03-19
+.\"    Manual: System Management Commands
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: Chinese Simplified
 .\"
-.TH "GROUPADD" "8" "2022-11-08" "shadow\-utils 4\&.13" "系统管理命令"
+.TH "GROUPADD" "8" "2025-03-19" "shadow\-utils 4\&.17\&.4" "System Management Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -31,7 +31,7 @@
 groupadd \- 创建一个新组
 .SH "大纲"
 .HP \w'\fBgroupadd\fR\ 'u
-\fBgroupadd\fR [\fI选项\fR] \fINEWGROUP\fR
+\fBgroupadd\fR [\fIOPTIONS\fR] \fINEWGROUP\fR
 .SH "描述"
 .PP
 The
@@ -146,7 +146,7 @@ Apply changes to configuration files under the root filesystem found under the d
 .PP
 \fB\-U\fR, \fB\-\-users\fR
 .RS 4
-A list of usernames to add as members of the group\&.
+A comma\-separated list of usernames to add as members of the group\&.
 .sp
 The default behavior (if the
 \fB\-g\fR,

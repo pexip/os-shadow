@@ -2,12 +2,12 @@
 .\"     Title: login
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 2022-11-08
-.\"    Manual: 用户命令
-.\"    Source: shadow-utils 4.13
+.\"      Date: 2025-03-19
+.\"    Manual: User Commands
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: Chinese Simplified
 .\"
-.TH "LOGIN" "1" "2022-11-08" "shadow\-utils 4\&.13" "用户命令"
+.TH "LOGIN" "1" "2025-03-19" "shadow\-utils 4\&.17\&.4" "User Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -31,9 +31,9 @@
 login \- 在系统上启动回话
 .SH "大纲"
 .HP \w'\fBlogin\fR\ 'u
-\fBlogin\fR [\-p] [\-h\ \fIhost\fR] [\fI用户名\fR] [\fIENV=VAR\fR...]
+\fBlogin\fR [\-p] [\-h\ \fIhost\fR] [\fIusername\fR] [\fIENV=VAR\fR...]
 .HP \w'\fBlogin\fR\ 'u
-\fBlogin\fR [\-p] [\-h\ \fIhost\fR] \-f \fI用户名\fR
+\fBlogin\fR [\-p] [\-h\ \fIhost\fR] \-f \fIusername\fR
 .HP \w'\fBlogin\fR\ 'u
 \fBlogin\fR [\-p] \-r\ \fIhost\fR
 .SH "描述"
@@ -113,11 +113,6 @@ is mandatory\&.
 \fB\-p\fR
 .RS 4
 保留环境。
-.RE
-.PP
-\fB\-r\fR
-.RS 4
-为 rlogin (远程登录)执行 autologin (自动登录)协议。
 .RE
 .PP
 The

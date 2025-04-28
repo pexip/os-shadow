@@ -16,6 +16,8 @@
 #include <stdio.h>
 #include <sys/types.h>
 #include <getopt.h>
+
+#include "attr.h"
 #include "defines.h"
 #include "prototypes.h"
 /*@-exitarg@*/
@@ -23,18 +25,18 @@
 #include "shadowlog.h"
 
 /* Global variables */
-const char *Prog;
+static const char Prog[] = "expiry";
 static bool cflg = false;
 
 /* local function prototypes */
-static void catch_signals (unused int sig);
-static /*@noreturn@*/void usage (int status);
+static void catch_signals (MAYBE_UNUSED int sig);
+NORETURN static void usage (int status);
 static void process_flags (int argc, char **argv);
 
 /*
  * catch_signals - signal catcher
  */
-static void catch_signals (unused int sig)
+static void catch_signals (MAYBE_UNUSED int sig)
 {
 	_exit (10);
 }
@@ -42,7 +44,9 @@ static void catch_signals (unused int sig)
 /*
  * usage - print syntax message and exit
  */
-static /*@noreturn@*/void usage (int status)
+NORETURN
+static void
+usage (int status)
 {
 	FILE *usageout = (E_SUCCESS != status) ? stderr : stdout;
 	(void) fprintf (usageout,
@@ -121,11 +125,11 @@ int main (int argc, char **argv)
 	struct passwd *pwd;
 	struct spwd *spwd;
 
-	Prog = Basename (argv[0]);
+	sanitize_env ();
+	check_fds ();
+
 	log_set_progname(Prog);
 	log_set_logfd(stderr);
-
-	sanitize_env ();
 
 	/*
 	 * Start by disabling all of the keyboard signals.
@@ -133,9 +137,7 @@ int main (int argc, char **argv)
 	(void) signal (SIGHUP, catch_signals);
 	(void) signal (SIGINT, catch_signals);
 	(void) signal (SIGQUIT, catch_signals);
-#ifdef	SIGTSTP
 	(void) signal (SIGTSTP, catch_signals);
-#endif
 
 	/*
 	 * expiry takes one of two arguments. The default action is to give
@@ -145,7 +147,7 @@ int main (int argc, char **argv)
 	(void) bindtextdomain (PACKAGE, LOCALEDIR);
 	(void) textdomain (PACKAGE);
 
-	OPENLOG ("expiry");
+	OPENLOG (Prog);
 
 	process_flags (argc, argv);
 

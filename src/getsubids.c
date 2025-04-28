@@ -1,13 +1,15 @@
 /* SPDX-License-Identifier: BSD-3-Clause */
 
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
-#include "subid.h"
+#include <string.h>
+
 #include "prototypes.h"
 #include "shadowlog.h"
+#include "string/strcmp/streq.h"
+#include "subid.h"
 
-const char *Prog;
+static const char Prog[] = "getsubids";
 
 static void usage(void)
 {
@@ -23,16 +25,15 @@ int main(int argc, char *argv[])
 	struct subid_range *ranges;
 	const char *owner;
 
-	Prog = Basename (argv[0]);
 	log_set_progname(Prog);
 	log_set_logfd(stderr);
 	if (argc < 2)
 		usage();
 	owner = argv[1];
-	if (argc == 3 && strcmp(argv[1], "-g") == 0) {
+	if (argc == 3 && streq(argv[1], "-g")) {
 		owner = argv[2];
 		count = subid_get_gid_ranges(owner, &ranges);
-	} else if (argc == 2 && strcmp(argv[1], "-h") == 0) {
+	} else if (argc == 2 && streq(argv[1], "-h")) {
 		usage();
 	} else {
 		count = subid_get_uid_ranges(owner, &ranges);
@@ -45,5 +46,6 @@ int main(int argc, char *argv[])
 		printf("%d: %s %lu %lu\n", i, owner,
 			ranges[i].start, ranges[i].count);
 	}
+	subid_free(ranges);
 	return 0;
 }

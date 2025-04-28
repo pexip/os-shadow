@@ -16,27 +16,41 @@
 #include <pwd.h>
 #include <stdio.h>
 #include <sys/types.h>
+
+#include "chkname.h"
 #include "defines.h"
+/*@-exitarg@*/
+#include "exitcodes.h"
 #include "getdef.h"
 #include "nscd.h"
-#include "sssd.h"
 #include "prototypes.h"
 #include "pwauth.h"
 #include "pwio.h"
 #ifdef USE_PAM
 #include "pam_defs.h"
 #endif
-/*@-exitarg@*/
-#include "exitcodes.h"
 #include "shadowlog.h"
+#include "sssd.h"
+#include "string/strcmp/streq.h"
+#include "string/strcpy/strtcpy.h"
+#include "string/strdup/xstrdup.h"
+
 
 #ifndef SHELLS_FILE
 #define SHELLS_FILE "/etc/shells"
 #endif
+
+#ifdef HAVE_VENDORDIR
+#include <libeconf.h>
+#define SHELLS "shells"
+#define ETCDIR "/etc"
+#endif
+
+
 /*
  * Global variables
  */
-const char *Prog;		/* Program name */
+static const char Prog[] = "chsh";	/* Program name */
 static bool amroot;		/* Real UID is root */
 static char loginsh[BUFSIZ];	/* Name of new login shell */
 /* command line options */
@@ -46,8 +60,8 @@ static bool pw_locked = false;
 /* external identifiers */
 
 /* local function prototypes */
-static /*@noreturn@*/void fail_exit (int code);
-static /*@noreturn@*/void usage (int status);
+NORETURN static void fail_exit (int code);
+NORETURN static void usage (int status);
 static void new_fields (void);
 static bool shell_is_listed (const char *);
 static bool is_restricted_shell (const char *);
@@ -58,7 +72,9 @@ static void update_shell (const char *user, char *loginsh);
 /*
  * fail_exit - do some cleanup and exit with the given error code
  */
-static /*@noreturn@*/void fail_exit (int code)
+NORETURN
+static void
+fail_exit (int code)
 {
 	if (pw_locked) {
 		if (pw_unlock () == 0) {
@@ -76,7 +92,9 @@ static /*@noreturn@*/void fail_exit (int code)
 /*
  * usage - print command line syntax and exit
  */
-static /*@noreturn@*/void usage (int status)
+NORETURN
+static void
+usage (int status)
 {
 	FILE *usageout = (E_SUCCESS != status) ? stderr : stdout;
 	(void) fprintf (usageout,
@@ -127,50 +145,95 @@ static bool is_restricted_shell (const char *sh)
  * If getusershell() is available (Linux, *BSD, possibly others), use it
  * instead of re-implementing it.
  */
+
+#ifdef HAVE_VENDORDIR
 static bool shell_is_listed (const char *sh)
 {
-	char *cp;
 	bool found = false;
 
-#ifndef HAVE_GETUSERSHELL
-	char buf[BUFSIZ];
-	FILE *fp;
-#endif
+	size_t size = 0;
+	econf_err error;
+	char **keys;
+	econf_file *key_file;
+
+	error = econf_readDirs(&key_file,
+			       VENDORDIR,
+			       ETCDIR,
+			       SHELLS,
+			       NULL,
+			       "", /* key only */
+			       "#" /* comment */);
+	if (error) {
+		fprintf (stderr,
+			 _("Cannot parse shell files: %s"),
+			 econf_errString(error));
+		fail_exit (1);
+	}
+
+	error = econf_getKeys(key_file, NULL, &size, &keys);
+	if (error) {
+		fprintf (stderr,
+			 _("Cannot evaluate entries in shell files: %s"),
+			 econf_errString(error));
+		econf_free (key_file);
+		fail_exit (1);
+	}
+
+	for (size_t i = 0; i < size; i++) {
+		if (streq(keys[i], sh)) {
+			found = true;
+			break;
+		}
+	}
+	econf_free (keys);
+	econf_free (key_file);
+
+	return found;
+}
+
+#else /* without HAVE_VENDORDIR */
+
+static bool shell_is_listed (const char *sh)
+{
+	bool found = false;
 
 #ifdef HAVE_GETUSERSHELL
+	char *cp;
 	setusershell ();
 	while ((cp = getusershell ())) {
-		if (strcmp (cp, sh) == 0) {
+		if (streq(cp, sh)) {
 			found = true;
 			break;
 		}
 	}
 	endusershell ();
 #else
+	char *buf = NULL;
+	FILE *fp;
+	size_t n = 0;
+
 	fp = fopen (SHELLS_FILE, "r");
 	if (NULL == fp) {
 		return false;
 	}
 
-	while (fgets (buf, sizeof (buf), fp) == buf) {
-		cp = strrchr (buf, '\n');
-		if (NULL != cp) {
-			*cp = '\0';
-		}
-
-		if (buf[0] == '#') {
+	while (getline (&buf, &n, fp) != -1) {
+		if (buf[0] != '/') {
 			continue;
 		}
 
-		if (strcmp (buf, sh) == 0) {
+		if (streq(buf, sh)) {
 			found = true;
 			break;
 		}
 	}
+
+	free(buf);
 	fclose (fp);
 #endif
 	return found;
 }
+#endif /* with HAVE_VENDORDIR */
 
 /*
  * process_flags - parse the command line options
@@ -197,7 +260,7 @@ static void process_flags (int argc, char **argv)
 			break;
 		case 's':
 			sflg = true;
-			STRFCPY (loginsh, optarg);
+			STRTCPY(loginsh, optarg);
 			break;
 		default:
 			usage (E_USAGE);
@@ -260,7 +323,7 @@ static void check_perms (const struct passwd *pw)
 	 * check if the change is allowed by SELinux policy.
 	 */
 	if ((pw->pw_uid != getuid ())
-	    && (check_selinux_permit("chsh") != 0)) {
+	    && (check_selinux_permit(Prog) != 0)) {
 		SYSLOG ((LOG_WARN, "can't change shell for '%s'", pw->pw_name));
 		fprintf (stderr,
 		         _("You may not change the shell for '%s'.\n"),
@@ -277,7 +340,7 @@ static void check_perms (const struct passwd *pw)
 	 * chfn/chsh.  --marekm
 	 */
 	if (!amroot && getdef_bool ("CHSH_AUTH")) {
-		passwd_check (pw->pw_name, pw->pw_passwd, "chsh");
+		passwd_check (pw->pw_name, pw->pw_passwd, Prog);
         }
 
 #else				/* !USE_PAM */
@@ -289,7 +352,7 @@ static void check_perms (const struct passwd *pw)
 		exit (E_NOPERM);
 	}
 
-	retval = pam_start ("chsh", pampw->pw_name, &conv, &pamh);
+	retval = pam_start (Prog, pampw->pw_name, &conv, &pamh);
 
 	if (PAM_SUCCESS == retval) {
 		retval = pam_authenticate (pamh, 0);
@@ -413,12 +476,8 @@ int main (int argc, char **argv)
 	const struct passwd *pw;	/* Password entry from /etc/passwd   */
 
 	sanitize_env ();
+	check_fds ();
 
-	/*
-	 * Get the program name. The program name is used as a prefix to
-	 * most error messages.
-	 */
-	Prog = Basename (argv[0]);
 	log_set_progname(Prog);
 	log_set_logfd(stderr);
 
@@ -433,7 +492,7 @@ int main (int argc, char **argv)
 	 */
 	amroot = (getuid () == 0);
 
-	OPENLOG ("chsh");
+	OPENLOG (Prog);
 
 	/* parse the command line options */
 	process_flags (argc, argv);
@@ -443,6 +502,10 @@ int main (int argc, char **argv)
 	 * name, or the name getlogin() returns.
 	 */
 	if (optind < argc) {
+		if (!is_valid_user_name (argv[optind])) {
+			fprintf (stderr, _("%s: Provided user name is not a valid name\n"), Prog);
+			fail_exit (1);
+		}
 		user = argv[optind];
 		pw = xgetpwnam (user);
 		if (NULL == pw) {
@@ -463,28 +526,6 @@ int main (int argc, char **argv)
 		user = xstrdup (pw->pw_name);
 	}
 
-#ifdef	USE_NIS
-	/*
-	 * Now we make sure this is a LOCAL password entry for this user ...
-	 */
-	if (__ispwNIS ()) {
-		char *nis_domain;
-		char *nis_master;
-
-		fprintf (stderr,
-		         _("%s: cannot change user '%s' on NIS client.\n"),
-		         Prog, user);
-
-		if (!yp_get_default_domain (&nis_domain) &&
-		    !yp_master (nis_domain, "passwd.byname", &nis_master)) {
-			fprintf (stderr,
-			         _("%s: '%s' is the NIS master for this client.\n"),
-			         Prog, nis_master);
-		}
-		fail_exit (1);
-	}
-#endif
-
 	check_perms (pw);
 
 	/*
@@ -492,7 +533,7 @@ int main (int argc, char **argv)
 	 * file, or use the value from the command line.
 	 */
 	if (!sflg) {
-		STRFCPY (loginsh, pw->pw_shell);
+		STRTCPY(loginsh, pw->pw_shell);
 	}
 
 	/*
@@ -514,18 +555,27 @@ int main (int argc, char **argv)
 		fprintf (stderr, _("%s: Invalid entry: %s\n"), Prog, loginsh);
 		fail_exit (1);
 	}
-	if (   !amroot
-	    && (   is_restricted_shell (loginsh)
-	        || (access (loginsh, X_OK) != 0))) {
-		fprintf (stderr, _("%s: %s is an invalid shell\n"), Prog, loginsh);
-		fail_exit (1);
+	if (!streq(loginsh, "")
+	    && (loginsh[0] != '/'
+	        || is_restricted_shell (loginsh)
+	        || (access (loginsh, X_OK) != 0)))
+	{
+		if (amroot) {
+			fprintf (stderr, _("%s: Warning: %s is an invalid shell\n"), Prog, loginsh);
+		} else {
+			fprintf (stderr, _("%s: %s is an invalid shell\n"), Prog, loginsh);
+			fail_exit (1);
+		}
 	}
 
 	/* Even for root, warn if an invalid shell is specified. */
-	if (access (loginsh, F_OK) != 0) {
-		fprintf (stderr, _("%s: Warning: %s does not exist\n"), Prog, loginsh);
-	} else if (access (loginsh, X_OK) != 0) {
-		fprintf (stderr, _("%s: Warning: %s is not executable\n"), Prog, loginsh);
+	if (!streq(loginsh, "")) {
+		/* But not if an empty string is given, documented as meaning the default shell */
+		if (access (loginsh, F_OK) != 0) {
+			fprintf (stderr, _("%s: Warning: %s does not exist\n"), Prog, loginsh);
+		} else if (access (loginsh, X_OK) != 0) {
+			fprintf (stderr, _("%s: Warning: %s is not executable\n"), Prog, loginsh);
+		}
 	}
 
 	update_shell (user, loginsh);

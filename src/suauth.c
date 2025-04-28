@@ -8,13 +8,22 @@
  */
 
 #include <config.h>
+
 #include <errno.h>
 #include <grp.h>
 #include <pwd.h>
+#include <stdint.h>
 #include <stdio.h>
+#include <string.h>
 #include <sys/types.h>
+
 #include "defines.h"
 #include "prototypes.h"
+#include "string/strcmp/streq.h"
+#include "string/strspn/stpspn.h"
+#include "string/strspn/stprspn.h"
+#include "string/strtok/stpsep.h"
+
 
 #ifndef SUAUTHFILE
 #define SUAUTHFILE "/etc/suauth"
@@ -34,15 +43,12 @@ static int applies (const char *, char *);
 
 static int isgrp (const char *, const char *);
 
-static int lines = 0;
+static intmax_t lines = 0;
 
 
-int check_su_auth (const char *actual_id,
-                   const char *wanted_id,
-                   bool su_to_root)
+int
+check_su_auth(const char *actual_id, const char *wanted_id, bool su_to_root)
 {
-	int posn, endline;
-	const char field[] = ":";
 	FILE *authfile_fd;
 	char temp[1024];
 	char *to_users;
@@ -67,35 +73,29 @@ int check_su_auth (const char *actual_id,
 	}
 
 	while (fgets (temp, sizeof (temp), authfile_fd) != NULL) {
+		char  *p;
+
 		lines++;
 
-		if (temp[endline = strlen (temp) - 1] != '\n') {
+		if (stpsep(temp, "\n") == NULL) {
 			SYSLOG ((LOG_ERR,
-				 "%s, line %d: line too long or missing newline",
+				 "%s, line %jd: line too long or missing newline",
 				 SUAUTHFILE, lines));
 			continue;
 		}
 
-		while (endline > 0 && (temp[endline - 1] == ' '
-				       || temp[endline - 1] == '\t'
-				       || temp[endline - 1] == '\n'))
-			endline--;
-		temp[endline] = '\0';
+		stpcpy(stprspn(temp, " \t"), "");
 
-		posn = 0;
-		while (temp[posn] == ' ' || temp[posn] == '\t')
-			posn++;
-
-		if (temp[posn] == '\n' || temp[posn] == '#'
-		    || temp[posn] == '\0') {
+		p = stpspn(temp, " \t");
+		if (*p == '#' || streq(p, ""))
 			continue;
-		}
-		if (!(to_users = strtok (temp + posn, field))
-		    || !(from_users = strtok ((char *) NULL, field))
-		    || !(action = strtok ((char *) NULL, field))
-		    || strtok ((char *) NULL, field)) {
+
+		to_users = strsep(&p, ":");
+		from_users = strsep(&p, ":");
+		action = strsep(&p, ":");
+		if (action == NULL || p != NULL) {
 			SYSLOG ((LOG_ERR,
-				 "%s, line %d. Bad number of fields.\n",
+				 "%s, line %jd. Bad number of fields.\n",
 				 SUAUTHFILE, lines));
 			continue;
 		}
@@ -104,7 +104,7 @@ int check_su_auth (const char *actual_id,
 			continue;
 		if (!applies (actual_id, from_users))
 			continue;
-		if (!strcmp (action, "DENY")) {
+		if (streq(action, "DENY")) {
 			SYSLOG ((su_to_root ? LOG_WARN : LOG_NOTICE,
 				 "DENIED su from '%s' to '%s' (%s)\n",
 				 actual_id, wanted_id, SUAUTHFILE));
@@ -112,14 +112,14 @@ int check_su_auth (const char *actual_id,
 			       stderr);
 			fclose (authfile_fd);
 			return DENY;
-		} else if (!strcmp (action, "NOPASS")) {
+		} else if (streq(action, "NOPASS")) {
 			SYSLOG ((su_to_root ? LOG_NOTICE : LOG_INFO,
 				 "NO password asked for su from '%s' to '%s' (%s)\n",
 				 actual_id, wanted_id, SUAUTHFILE));
 			fputs (_("Password authentication bypassed.\n"),stderr);
 			fclose (authfile_fd);
 			return NOPWORD;
-		} else if (!strcmp (action, "OWNPASS")) {
+		} else if (streq(action, "OWNPASS")) {
 			SYSLOG ((su_to_root ? LOG_NOTICE : LOG_INFO,
 				 "su from '%s' to '%s': asking for user's own password (%s)\n",
 				 actual_id, wanted_id, SUAUTHFILE));
@@ -129,7 +129,7 @@ int check_su_auth (const char *actual_id,
 			return OWNPWORD;
 		} else {
 			SYSLOG ((LOG_ERR,
-				 "%s, line %d: unrecognized action!\n",
+				 "%s, line %jd: unrecognized action!\n",
 				 SUAUTHFILE, lines));
 		}
 	}
@@ -137,36 +137,35 @@ int check_su_auth (const char *actual_id,
 	return NOACTION;
 }
 
-static int applies (const char *single, char *list)
+static int
+applies(const char *single, char *list)
 {
-	const char split[] = ", ";
 	char *tok;
 
 	int state = 0;
 
-	for (tok = strtok (list, split); tok != NULL;
-	     tok = strtok (NULL, split)) {
+	while (NULL != (tok = strsep(&list, ", "))) {
 
-		if (!strcmp (tok, "ALL")) {
+		if (streq(tok, "ALL")) {
 			if (state != 0) {
 				SYSLOG ((LOG_ERR,
-					 "%s, line %d: ALL in bad place\n",
+					 "%s, line %jd: ALL in bad place\n",
 					 SUAUTHFILE, lines));
 				return 0;
 			}
 			state = 1;
-		} else if (!strcmp (tok, "EXCEPT")) {
+		} else if (streq(tok, "EXCEPT")) {
 			if (state != 1) {
 				SYSLOG ((LOG_ERR,
-					 "%s, line %d: EXCEPT in bas place\n",
+					 "%s, line %jd: EXCEPT in bas place\n",
 					 SUAUTHFILE, lines));
 				return 0;
 			}
 			state = 2;
-		} else if (!strcmp (tok, "GROUP")) {
+		} else if (streq(tok, "GROUP")) {
 			if ((state != 0) && (state != 2)) {
 				SYSLOG ((LOG_ERR,
-					 "%s, line %d: GROUP in bad place\n",
+					 "%s, line %jd: GROUP in bad place\n",
 					 SUAUTHFILE, lines));
 				return 0;
 			}
@@ -174,16 +173,16 @@ static int applies (const char *single, char *list)
 		} else {
 			switch (state) {
 			case 0:	/* No control words yet */
-				if (!strcmp (tok, single))
+				if (streq(tok, single))
 					return 1;
 				break;
 			case 1:	/* An all */
 				SYSLOG ((LOG_ERR,
-					 "%s, line %d: expect another token after ALL\n",
+					 "%s, line %jd: expect another token after ALL\n",
 					 SUAUTHFILE, lines));
 				return 0;
 			case 2:	/* All except */
-				if (!strcmp (tok, single))
+				if (streq(tok, single))
 					return 0;
 				break;
 			case 3:	/* Group */

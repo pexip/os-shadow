@@ -2,12 +2,12 @@
 .\"     Title: groupmod
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 08/11/2022
-.\"    Manual: Команди керування системою
-.\"    Source: shadow-utils 4.13
+.\"      Date: 19/03/2025
+.\"    Manual: System Management Commands
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: Ukrainian
 .\"
-.TH "groupmod" "8" "08/11/2022" "shadow\-utils 4\&.13" "Команди керування системою"
+.TH "groupmod" "8" "19/03/2025" "shadow\-utils 4\&.17\&.4" "System Management Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -31,49 +31,50 @@
 groupmod \- зміна визначення групи у системі
 .SH "КОРОТКИЙ ОГЛЯД"
 .HP \w'\fBgroupmod\fR\ 'u
-\fBgroupmod\fR [\fIпараметри\fR] \fIGROUP\fR
+\fBgroupmod\fR [\fIoptions\fR] \fIGROUP\fR
 .SH "ОПИС"
 .PP
-Команда
+The
 \fBgroupmod\fR
-змінює визначення вказаної аргументом групи
-\fIGROUP\fR, вносячи зміни до відповідного запису у базі даних груп\&.
+command modifies the definition of the specified
+\fIGROUP\fR
+by modifying the appropriate entry in the group database\&.
 .SH "ПАРАМЕТРИ"
 .PP
-Параметри, які застосовують до команди
-\fBgroupmod\fR, є такими:
+The options which apply to the
+\fBgroupmod\fR
+command are:
 .PP
-\fB\-a\fR, \fB\-\-append\fR \fIGID\fR
+\fB\-a\fR, \fB\-\-append\fR
 .RS 4
 Учасників групи вказують за допомогою параметра \-U\&. Записи буде дописано до наявного списку учасників, а не використано для заміни цього списку\&.
 .RE
 .PP
-\fB\-g\fR, \fB\-\-gid\fR \fIGID\fR
+\fB\-g\fR, \fB\-\-gid\fR\ \&\fIGID\fR
 .RS 4
-Ідентифікатор групи вказаного запису
+The group ID of the given
 \fIGROUP\fR
-буде змінено на
+will be changed to
 \fIGID\fR\&.
 .sp
-Значенням
+The value of
 \fIGID\fR
-має бути невід\*(Aqємне десяткове ціле число\&. Це значення має бути унікальним, якщо не використано параметр
-\fB\-o\fR\&.
+must be a non\-negative decimal integer\&. This value must be unique, unless the
+\fB\-o\fR
+option is used\&.
 .sp
 Записи користувачів, які використовують групу, як основну групу, буде оновлено з метою збереження групи, як їхньої основної групи\&.
 .sp
-Ідентифікатор групи усіх файли, власником яких є група зі старим ідентифікатором, і які мають належати
-\fIGROUP\fR, доведеться змінити вручну\&.
+Any files that have the old group ID and must continue to belong to
+\fIGROUP\fR, must have their group ID changed manually\&.
 .sp
-Перевірок щодо
-\fBМІНІМАЛЬНИЙ_GID\fR,
-\fBМАКСИМАЛЬНИЙ_GID\fR,
-\fBSYS_GID_MIN\fR
-або
+No checks will be performed with regard to the
+\fBGID_MIN\fR,
+\fBGID_MAX\fR,
+\fBSYS_GID_MIN\fR, or
 \fBSYS_GID_MAX\fR
-з
-/etc/login\&.defs
-виконано не буде\&.
+from
+/etc/login\&.defs\&.
 .RE
 .PP
 \fB\-h\fR, \fB\-\-help\fR
@@ -81,34 +82,36 @@ groupmod \- зміна визначення групи у системі
 Показати довідкове повідомлення і завершити роботу\&.
 .RE
 .PP
-\fB\-n\fR, \fB\-\-new\-name\fR \fIНОВА_ГРУПА\fR
+\fB\-n\fR, \fB\-\-new\-name\fR\ \&\fINEW_GROUP\fR
 .RS 4
-Назву групи буде змінено з
+The name of the group will be changed from
 \fIGROUP\fR
-на
-\fIНОВА_ГРУПА\fR\&.
+to
+\fINEW_GROUP\fR
+name\&.
 .RE
 .PP
 \fB\-o\fR, \fB\-\-non\-unique\fR
 .RS 4
-Якщо використано у поєднанні із параметром
-\fB\-g\fR, дозволити зміну групи
+When used with the
+\fB\-g\fR
+option, allow to change the group
 \fIGID\fR
-на неунікальне значення\&.
+to a non\-unique value\&.
 .RE
 .PP
-\fB\-p\fR, \fB\-\-password\fR \fIПАРОЛЬ\fR
+\fB\-p\fR, \fB\-\-password\fR\ \&\fIPASSWORD\fR
 .RS 4
-Зашифрований пароль, як його повертає
+The encrypted password, as returned by
 \fBcrypt\fR(3)\&.
 .sp
-\fBЗауваження:\fR
-не рекомендуємо користуватися цим параметром, оскільки пароль (або шифрований пароль) буде видимим для користувачів, які мають доступ до списку процесів\&.
+\fBNote:\fR
+This option is not recommended because the password (or encrypted password) will be visible by users listing the processes\&.
 .sp
 Вам слід переконатися, що пароль відповідає правилам складання паролів системи\&.
 .RE
 .PP
-\fB\-R\fR, \fB\-\-root\fR \fIКАТАЛОГ_CHROOT\fR
+\fB\-R\fR, \fB\-\-root\fR\ \&\fICHROOT_DIR\fR
 .RS 4
 Apply changes in the
 \fICHROOT_DIR\fR
@@ -117,32 +120,33 @@ directory and use the configuration files from the
 directory\&. Only absolute paths are supported\&.
 .RE
 .PP
-\fB\-P\fR, \fB\-\-prefix\fR \fIКАТАЛОГ_ПРЕФІКСА\fR
+\fB\-P\fR, \fB\-\-prefix\fR\ \&\fIPREFIX_DIR\fR
 .RS 4
-Застосувати зміни до каталогу
-\fIКАТАЛОГ_ПРЕФІКСА\fR
-і використати файли налаштувань з каталогу
-\fIКАТАЛОГ_ПРЕФІКСА\fR\&. Використання цього параметра не змінює кореневої теки\&. Параметр призначено лише для приготування цілі для компіляції коду для іншої операційної системи\&. Обмеження: не буде виконано перевірку користувачів/груп NIS і LDAP\&. При розпізнаванні у PAM буде використано файли основної системи\&. Підтримки SELINUX не передбачено\&.
+Apply changes in the
+\fIPREFIX_DIR\fR
+directory and use the configuration files from the
+\fIPREFIX_DIR\fR
+directory\&. This option does not chroot and is intended for preparing a cross\-compilation target\&. Some limitations: NIS and LDAP users/groups are not verified\&. PAM authentication is using the host files\&. No SELINUX support\&.
 .RE
 .PP
 \fB\-U\fR, \fB\-\-users\fR
 .RS 4
-Список імен користувачів, яких слід додати як учасників групи\&.
+A comma\-separated list of usernames to add as members of the group\&.
 .sp
-Типову поведінку (якщо не вказано параметрів
-\fB\-g\fR,
-\fB\-N\fR
-і
-\fB\-U\fR) буде визначено змінною
+The default behavior (if the
+\fB\-g\fR
+and
+\fB\-U\fR
+options are not specified) is defined by the
 \fBUSERGROUPS_ENAB\fR
-у
+variable in
 /etc/login\&.defs\&.
 .RE
 .SH "НАЛАШТУВАННЯ"
 .PP
-Вказані нижче змінні налаштувань у
+The following configuration variables in
 /etc/login\&.defs
-змінюють поведінку цього інструмента:
+change the behavior of this tool:
 .SH "ФАЙЛИ"
 .PP
 /etc/group
@@ -166,58 +170,58 @@ directory\&. Only absolute paths are supported\&.
 .RE
 .SH "ЗНАЧЕННЯ ВИХОДУ"
 .PP
-Команда
+The
 \fBgroupmod\fR
-завершує роботу із такими значеннями:
+command exits with the following values:
 .PP
 \fI0\fR
 .RS 4
-E_SUCCESS: успіх
+E_SUCCESS: success
 .RE
 .PP
 \fI2\fR
 .RS 4
-E_USAGE: некоректний синтаксис команди
+E_USAGE: invalid command syntax
 .RE
 .PP
 \fI3\fR
 .RS 4
-E_BAD_ARG: некоректний аргумент параметра
+E_BAD_ARG: invalid argument to option
 .RE
 .PP
 \fI4\fR
 .RS 4
-E_GID_IN_USE: ідентифікатор групи вже використано
+E_GID_IN_USE: group id already in use
 .RE
 .PP
 \fI6\fR
 .RS 4
-E_NOTFOUND: вказаної групи не існує
+E_NOTFOUND: specified group doesn\*(Aqt exist
 .RE
 .PP
 \fI9\fR
 .RS 4
-E_NAME_IN_USE: назву групи вже використано
+E_NAME_IN_USE: group name already in use
 .RE
 .PP
 \fI10\fR
 .RS 4
-E_GRP_UPDATE: не вдалося оновити файл групи
+E_GRP_UPDATE: can\*(Aqt update group file
 .RE
 .PP
 \fI11\fR
 .RS 4
-E_CLEANUP_SERVICE: не вдалося налаштувати службу чищення
+E_CLEANUP_SERVICE: can\*(Aqt setup cleanup service
 .RE
 .PP
 \fI12\fR
 .RS 4
-E_PAM_USERNAME: не вдалося визначити ваше ім\*(Aqя користувача для використання разом із pam
+E_PAM_USERNAME: can\*(Aqt determine your username for use with pam
 .RE
 .PP
 \fI13\fR
 .RS 4
-E_PAM_ERROR: pam повернуто повідомлення про помилку, див\&. ідентифікатор groupmod у журналі syslog, щоб ознайомитися із повідомленням про помилку PAM
+E_PAM_ERROR: pam returned an error, see syslog facility id groupmod for the PAM error message
 .RE
 .SH "ДИВ\&. ТАКОЖ"
 .PP

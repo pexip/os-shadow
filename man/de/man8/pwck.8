@@ -2,12 +2,12 @@
 .\"     Title: pwck
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 08.11.2022
-.\"    Manual: Befehle zur Systemverwaltung
-.\"    Source: shadow-utils 4.13
+.\"      Date: 19.03.2025
+.\"    Manual: System Management Commands
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: German
 .\"
-.TH "PWCK" "8" "08.11.2022" "shadow\-utils 4\&.13" "Befehle zur Systemverwaltung"
+.TH "PWCK" "8" "19.03.2025" "shadow\-utils 4\&.17\&.4" "System Management Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -31,7 +31,7 @@
 pwck \- verify the integrity of password files
 .SH "\(:UBERSICHT"
 .HP \w'\fBpwck\fR\ 'u
-\fBpwck\fR [Optionen] [\fIPASSWORDFILE\fR\ [\ \fISHADOWFILE\fR\ ]]
+\fBpwck\fR [options] [\fIPASSWORDFILE\fR\ [\ \fISHADOWFILE\fR\ ]]
 .SH "BESCHREIBUNG"
 .PP
 The
@@ -85,7 +85,7 @@ eine g\(:ultige Benutzer\- und Gruppenkennung
 .sp -1
 .IP \(bu 2.3
 .\}
-eine g\(:ultige Hauptgruppe
+eine g\(:ultige prim\(:are Gruppe
 .RE
 .sp
 .RS 4
@@ -96,7 +96,7 @@ eine g\(:ultige Hauptgruppe
 .sp -1
 .IP \(bu 2.3
 .\}
-ein g\(:ultiges Home\-Verzeichnis
+ein g\(:ultiges pers\(:onliches Verzeichnis
 .RE
 .sp
 .RS 4
@@ -126,7 +126,11 @@ Diese Tests umfassen Folgendes:
 .sp -1
 .IP \(bu 2.3
 .\}
-ob jedem Eintrag in passwd ein Eintrag in shadow entspricht und umgekehrt
+ob es zu jedem Eintrag in
+passwd
+einen passenden Eintrag in
+shadow
+und umgekehrt gibt
 .RE
 .sp
 .RS 4
@@ -137,7 +141,7 @@ ob jedem Eintrag in passwd ein Eintrag in shadow entspricht und umgekehrt
 .sp -1
 .IP \(bu 2.3
 .\}
-ob die Passw\(:orter in der Shadow\-Datei niedergelegt sind
+ob die Passw\(:orter in der gesch\(:utzten Datei abgelegt sind
 .RE
 .sp
 .RS 4
@@ -148,7 +152,7 @@ ob die Passw\(:orter in der Shadow\-Datei niedergelegt sind
 .sp -1
 .IP \(bu 2.3
 .\}
-ob die shadow\-Eintr\(:age die richtige Anzahl von Feldern haben
+ob die Eintr\(:age der gesch\(:utzten Datei die richtige Anzahl von Feldern haben
 .RE
 .sp
 .RS 4
@@ -159,7 +163,7 @@ ob die shadow\-Eintr\(:age die richtige Anzahl von Feldern haben
 .sp -1
 .IP \(bu 2.3
 .\}
-ob die Shadow\-Eintr\(:age in shadow eindeutig sind
+ob die Eintr\(:age in der gesch\(:utzten Datei nicht mehrfach vorkommen
 .RE
 .sp
 .RS 4
@@ -196,17 +200,17 @@ command are:
 .PP
 \fB\-\-badname\fR\ \&
 .RS 4
-Allow names that do not conform to standards\&.
+erlaube Namen, die nicht den Standards entsprechen\&.
 .RE
 .PP
 \fB\-h\fR, \fB\-\-help\fR
 .RS 4
-zeigt die Hilfe an und beendet das Programm
+zeigt die Hilfe an und beendet das Programm\&.
 .RE
 .PP
 \fB\-q\fR, \fB\-\-quiet\fR
 .RS 4
-meldet nur Fehler\&. Warnungen, die keine Handlung des Benutzers erfordern, werden nicht angezeigt
+meldet nur Fehler\&. Warnungen, die keine Handlung des Benutzers erfordern, werden nicht angezeigt\&.
 .RE
 .PP
 \fB\-r\fR, \fB\-\-read\-only\fR
@@ -263,7 +267,7 @@ Informationen zu den Benutzerkonten
 .PP
 /etc/shadow
 .RS 4
-verschl\(:usselte Informationen zu den Benutzerkonten
+gesch\(:utzte Informationen zu den Benutzerkonten
 .RE
 .SH "R\(:UCKGABEWERTE"
 .PP

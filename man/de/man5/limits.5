@@ -2,12 +2,12 @@
 .\"     Title: limits
 .\"    Author: Luca Berra
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 08.11.2022
+.\"      Date: 19.03.2025
 .\"    Manual: File Formats and Configuration Files
-.\"    Source: shadow-utils 4.13
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: German
 .\"
-.TH "LIMITS" "5" "08.11.2022" "shadow\-utils 4\&.13" "File Formats and Configuration"
+.TH "LIMITS" "5" "19.03.2025" "shadow\-utils 4\&.17\&.4" "File Formats and Configuration"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -28,7 +28,7 @@
 .\" * MAIN CONTENT STARTS HERE *
 .\" -----------------------------------------------------------------
 .SH "NAME"
-limits \- Festlegung von Resourcenbeschr\(:ankungen
+limits \- legt Beschr\(:ankungen zur Nutzung von Ressourcen fest
 .SH "BESCHREIBUNG"
 .PP
 The
@@ -37,15 +37,15 @@ file (/etc/limits
 by default or LIMITS_FILE defined
 config\&.h) describes the resource limits you wish to impose\&. It should be owned by root and readable by root account only\&.
 .PP
-Standardm\(:a\(ssig bestehen f\(:ur Root keine Einschr\(:ankungen\&. Tats\(:achlich gibt es keine M\(:oglichkeit, mit diesem Verfahren Root\-Konten (Konten mit der UID 0) Beschr\(:ankungen aufzuerlegen\&.
+Standardm\(:a\(ssig sind dem Benutzer \(Fcroot\(Fo keine Beschr\(:ankungen auferlegt\&. Tats\(:achlich gibt ist keinen Weg, ihm oder \(:ahnlich privilegierten Nutzern (Konten mit der Benutzerkennung 0) Beschr\(:ankungen aufzuerlegen\&.
 .PP
 Jede Zeile beschreibt eine Beschr\(:ankung f\(:ur einen Benutzer in der Form:
 .PP
-\fIBenutzer BESCHR\(:ANKUNGSZEICHENKETTE\fR
+\fIuser LIMITS_STRING\fR
 .PP
 oder in der Form:
 .PP
-\fI@Gruppe BESCHR\(:ANKUNGSZEICHENKETTE\fR
+\fI@group LIMITS_STRING\fR
 .PP
 The
 \fILIMITS_STRING\fR
@@ -61,7 +61,7 @@ G\(:ultige Kennungen sind:
 .sp -1
 .IP \(bu 2.3
 .\}
-A: maximaler Adressraum (KB)
+A: maximaler Adressraum (kB)
 .RE
 .sp
 .RS 4
@@ -72,7 +72,7 @@ A: maximaler Adressraum (KB)
 .sp -1
 .IP \(bu 2.3
 .\}
-C: maximale Gr\(:o\(sse der Speicherabbild\-Datei
+C: maximale Gr\(:o\(sse der Speicherauszugs\-Datei (kB)
 .RE
 .sp
 .RS 4
@@ -83,7 +83,7 @@ C: maximale Gr\(:o\(sse der Speicherabbild\-Datei
 .sp -1
 .IP \(bu 2.3
 .\}
-D: maximale Datengr\(:o\(sse (KB)
+D: maximale Datenmenge (kB)
 .RE
 .sp
 .RS 4
@@ -94,7 +94,7 @@ D: maximale Datengr\(:o\(sse (KB)
 .sp -1
 .IP \(bu 2.3
 .\}
-F: maximum file size (KB)
+F: maximale Dateigr\(:o\(sse (kB)
 .RE
 .sp
 .RS 4
@@ -128,7 +128,7 @@ I: Maximaler Wert von nice (0 bis 39, was in 20 bis \-19 \(:ubersetzt wird)
 .sp -1
 .IP \(bu 2.3
 .\}
-L: maximale Anzahl von Logins f\(:ur diesen Benutzer
+L: maximale Anzahl von Anmeldungen f\(:ur diesen Benutzer
 .RE
 .sp
 .RS 4
@@ -139,7 +139,7 @@ L: maximale Anzahl von Logins f\(:ur diesen Benutzer
 .sp -1
 .IP \(bu 2.3
 .\}
-M: maximaler gesperrter Adressbereich im Speicher (KB)
+M: maximaler gesperrter Adressbereich im Speicher (kB)
 .RE
 .sp
 .RS 4
@@ -161,7 +161,7 @@ N: maximale Anzahl offener Dateien
 .sp -1
 .IP \(bu 2.3
 .\}
-O: Maximale Echtzeit\-Priorit\(:at
+O: maximale Echtzeit\-Priorit\(:at
 .RE
 .sp
 .RS 4
@@ -184,7 +184,9 @@ P: process priority, set by
 .sp -1
 .IP \(bu 2.3
 .\}
-R: maximale Resident Set Size (KB)
+R: maximale Arbeitsspeicherbelegung, siehe
+\fBproc\fR(5)
+\(Fcresident set size\(Fo (kB)
 .RE
 .sp
 .RS 4
@@ -195,7 +197,9 @@ R: maximale Resident Set Size (KB)
 .sp -1
 .IP \(bu 2.3
 .\}
-S: maximale Gr\(:o\(sse des Stapelverarbeitungsspeichers (KB)
+S: maximale Gr\(:o\(sse des Stapelverarbeitungsspeichers, siehe
+\fBproc\fR(5)
+\(Fcstack\(Fo (kB)
 .RE
 .sp
 .RS 4
@@ -206,7 +210,7 @@ S: maximale Gr\(:o\(sse des Stapelverarbeitungsspeichers (KB)
 .sp -1
 .IP \(bu 2.3
 .\}
-T: maximale CPU\-Zeit (Min)
+T: maximale CPU\-Zeit (min)
 .RE
 .sp
 .RS 4
@@ -251,7 +255,7 @@ entries in your
 The limits specified in the form "\fI@group\fR" apply to the members of the specified
 \fIgroup\fR\&.
 .PP
-If more than one line with limits for a user exist, only the first line for this user will be considered\&.
+Wenn mehr als eine Zeile mit Beschr\(:ankungen f\(:ur eine Benutzerin vorhanden ist, wird f\(:ur sie nur die erste Zeile ber\(:ucksichtigt\&.
 .PP
 If no lines are specified for a user, the last
 \fI@group\fR
@@ -261,7 +265,9 @@ To completely disable limits for a user, a single dash "\fI\-\fR" will do\&.
 .PP
 To disable a limit for a user, a single dash "\fI\-\fR" can be used instead of the numerical value for this limit\&.
 .PP
-Ber\(:ucksichtigen Sie auch, dass alle Beschr\(:ankungen nur JE ANMELDUNG gelten\&. Sie sind nicht global und auch nicht dauerhaft\&. Vielleicht wird es einmal globale Beschr\(:ankungen geben, f\(:ur jetzt muss dies aber reichen ;)
+Ber\(:ucksichtigen Sie auch, dass alle Beschr\(:ankungen nur
+\fIje Anmeldung\fR
+gelten\&. Sie sind nicht global und auch nicht dauerhaft\&. Vielleicht wird es einmal globale Beschr\(:ankungen geben, f\(:ur jetzt muss dies aber reichen ;)
 .SH "DATEIEN"
 .PP
 /etc/limits

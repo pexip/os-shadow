@@ -87,8 +87,9 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-@USE_PAM_FALSE@am__append_1 = $(man_nopam)
-@USE_PAM_TRUE@am__append_2 = $(man_nopam)
+@ENABLE_LASTLOG_TRUE@am__append_1 = man8/lastlog.8
+@USE_PAM_FALSE@am__append_2 = $(man_nopam)
+@USE_PAM_TRUE@am__append_3 = $(man_nopam)
 subdir = man/ja
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/gettext.m4 \
@@ -174,6 +175,8 @@ AWK = @AWK@
 CC = @CC@
 CCDEPMODE = @CCDEPMODE@
 CFLAGS = @CFLAGS@
+CMOCKA_CFLAGS = @CMOCKA_CFLAGS@
+CMOCKA_LIBS = @CMOCKA_LIBS@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CSCOPE = @CSCOPE@
@@ -207,9 +210,15 @@ INTL_MACOSX_LIBS = @INTL_MACOSX_LIBS@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
 LIBACL = @LIBACL@
+LIBADD_DL = @LIBADD_DL@
+LIBADD_DLD_LINK = @LIBADD_DLD_LINK@
+LIBADD_DLOPEN = @LIBADD_DLOPEN@
+LIBADD_SHL_LOAD = @LIBADD_SHL_LOAD@
 LIBATTR = @LIBATTR@
 LIBAUDIT = @LIBAUDIT@
-LIBCRACK = @LIBCRACK@
+LIBBSD = @LIBBSD@
+LIBBSD_CFLAGS = @LIBBSD_CFLAGS@
+LIBBSD_LIBS = @LIBBSD_LIBS@
 LIBCRYPT = @LIBCRYPT@
 LIBECONF = @LIBECONF@
 LIBICONV = @LIBICONV@
@@ -225,6 +234,7 @@ LIBSUBID_ABI = @LIBSUBID_ABI@
 LIBSUBID_ABI_MAJOR = @LIBSUBID_ABI_MAJOR@
 LIBSUBID_ABI_MICRO = @LIBSUBID_ABI_MICRO@
 LIBSUBID_ABI_MINOR = @LIBSUBID_ABI_MINOR@
+LIBSYSTEMD = @LIBSYSTEMD@
 LIBTCB = @LIBTCB@
 LIBTOOL = @LIBTOOL@
 LIPO = @LIPO@
@@ -233,6 +243,8 @@ LN_S = @LN_S@
 LTLIBICONV = @LTLIBICONV@
 LTLIBINTL = @LTLIBINTL@
 LTLIBOBJS = @LTLIBOBJS@
+LT_DLLOADERS = @LT_DLLOADERS@
+LT_DLPREOPEN = @LT_DLPREOPEN@
 LT_SYS_LIBRARY_PATH = @LT_SYS_LIBRARY_PATH@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
@@ -255,6 +267,9 @@ PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
+PKG_CONFIG = @PKG_CONFIG@
+PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
+PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
 POSUB = @POSUB@
 RANLIB = @RANLIB@
 SED = @SED@
@@ -328,20 +343,19 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 man_MANS = man1/chage.1 man1/chfn.1 man8/chpasswd.8 man1/chsh.1 \
 	man1/expiry.1 man5/faillog.5 man8/faillog.8 man1/gpasswd.1 \
-	man8/groupadd.8 man8/groupdel.8 man8/groupmod.8 man1/groups.1 \
-	man8/grpck.8 man8/grpconv.8 man8/grpunconv.8 man8/lastlog.8 \
-	man1/login.1 man5/login.defs.5 man8/logoutd.8 man1/newgrp.1 \
-	man8/newusers.8 man1/passwd.1 man5/passwd.5 man8/pwck.8 \
-	man8/pwconv.8 man8/pwunconv.8 man1/sg.1 man5/shadow.5 \
-	man1/su.1 man5/suauth.5 man8/useradd.8 man8/userdel.8 \
-	man8/usermod.8 man8/vigr.8 man8/vipw.8 $(am__append_1)
+	man8/groupadd.8 man8/groupdel.8 man8/groupmod.8 man8/grpck.8 \
+	man8/grpconv.8 man8/grpunconv.8 man1/login.1 man5/login.defs.5 \
+	man8/logoutd.8 man1/newgrp.1 man8/newusers.8 man1/passwd.1 \
+	man5/passwd.5 man8/pwck.8 man8/pwconv.8 man8/pwunconv.8 \
+	man1/sg.1 man5/shadow.5 man1/su.1 man5/suauth.5 man8/useradd.8 \
+	man8/userdel.8 man8/usermod.8 man8/vigr.8 man8/vipw.8 \
+	$(am__append_1) $(am__append_2)
 man_nopam = \
 	man5/limits.5 \
 	man5/login.access.5 \
 	man5/porttime.5
 
-EXTRA_DIST = $(man_MANS) man1/id.1 man3/shadow.3 man8/sulogin.8 \
-	$(am__append_2)
+EXTRA_DIST = $(man_MANS) man3/shadow.3 man8/sulogin.8 $(am__append_3)
 all: all-am
 
 .SUFFIXES:

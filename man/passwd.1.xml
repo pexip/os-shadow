@@ -6,6 +6,7 @@
 -->
 <!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook V4.5//EN"
   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY BCRYPT_MIN_ROUNDS     SYSTEM "login.defs.d/BCRYPT_MIN_ROUNDS.xml">
 <!ENTITY ENCRYPT_METHOD        SYSTEM "login.defs.d/ENCRYPT_METHOD.xml">
 <!ENTITY MD5_CRYPT_ENAB        SYSTEM "login.defs.d/MD5_CRYPT_ENAB.xml">
 <!ENTITY OBSCURE_CHECKS_ENAB   SYSTEM "login.defs.d/OBSCURE_CHECKS_ENAB.xml">
@@ -13,6 +14,7 @@
 <!ENTITY PASS_CHANGE_TRIES     SYSTEM "login.defs.d/PASS_CHANGE_TRIES.xml">
 <!ENTITY PASS_MAX_LEN          SYSTEM "login.defs.d/PASS_MAX_LEN.xml">
 <!ENTITY SHA_CRYPT_MIN_ROUNDS  SYSTEM "login.defs.d/SHA_CRYPT_MIN_ROUNDS.xml">
+<!ENTITY YESCRYPT_COST_FACTOR  SYSTEM "login.defs.d/YESCRYPT_COST_FACTOR.xml">
 <!-- SHADOW-CONFIG-HERE -->
 ]>
 <refentry id='passwd.1'>
@@ -94,27 +96,10 @@
       </para>
 
       <para>
-	Then, the password is tested for complexity. As a general guideline,
-	passwords should consist of 6 to 8 characters including one or more
-	characters from each of the following sets:
-      </para>
-
-      <itemizedlist mark='bullet'>
-	<listitem>
-	  <para>lower case alphabetics</para>
-	</listitem>
-	<listitem>
-	  <para>digits 0 thru 9</para>
-	</listitem>
-	<listitem>
-	  <para>punctuation marks</para>
-	</listitem>
-      </itemizedlist>
-
-      <para>
-	Care must be taken not to include the system default erase or kill
-	characters. <command>passwd</command> will reject any password which
-	is not suitably complex.
+	Then, the password is tested for complexity.
+	<command>passwd</command> will reject any password which is not
+	suitably complex.  Care must be taken not to include the system
+	default erase or kill characters.
       </para>
 
     </refsect2>
@@ -140,8 +125,19 @@
       </para>
 
       <para>
+	As a general guideline, passwords should be long and random.  It's
+	fine to use simple character sets, such as passwords consisting
+	only of lowercase letters, if that helps memorizing longer
+	passwords.  For a password consisting only of lowercase English
+	letters randomly chosen, and a length of 32, there are 26^32
+	(approximately 2^150) different possible combinations.  Being an
+	exponential equation, it's apparent that the exponent (the length)
+	is more important than the base (the size of the character set).
+      </para>
+
+      <para>
 	You can find advice on how to choose a strong password on
-	http://en.wikipedia.org/wiki/Password_strength
+	https://en.wikipedia.org/wiki/Password_strength
       </para>
     </refsect2>
   </refsect1>
@@ -232,7 +228,7 @@
 	    Note that this does not disable the account. The user may
 	    still be able to login using another authentication token
 	    (e.g. an SSH key). To disable the account, administrators
-	    should use <command>usermod --expiredate 1</command> (this set
+	    should use <command>usermod --expiredate 1</command> (this sets
 	    the account's expire date to Jan 2, 1970).
 	  </para>
 	  <para>
@@ -283,6 +279,20 @@
 	    directory and use the configuration files from the
 	    <replaceable>CHROOT_DIR</replaceable> directory.
 	    Only absolute paths are supported.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <option>-P</option>, <option>--prefix</option>&nbsp;<replaceable>PREFIX_DIR</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    Apply changes to configuration files under the root filesystem
+	    found under the directory <replaceable>PREFIX_DIR</replaceable>.
+	    This option does not chroot and is intended for preparing a cross-compilation
+	    target.  Some limitations: NIS and LDAP users/groups are
+	    not verified.  No PAM support.  No SELINUX support.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -344,6 +354,17 @@
 	    Passing the number <emphasis remap='I'>-1</emphasis> as
 	    <replaceable>MAX_DAYS</replaceable> will remove checking a
 	    password's validity.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <option>-s</option>, <option>--stdin</option>
+	</term>
+	<listitem>
+	  <para>
+	    This option is used to indicate that passwd should read the new password from standard
+	    input, which can be a pipe.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -474,6 +495,9 @@
 	<refentrytitle>chpasswd</refentrytitle><manvolnum>8</manvolnum>
       </citerefentry>,
       <citerefentry>
+	<refentrytitle>makepasswd</refentrytitle><manvolnum>1</manvolnum>
+      </citerefentry>,
+      <citerefentry>
 	<refentrytitle>passwd</refentrytitle><manvolnum>5</manvolnum>
       </citerefentry>,
       <citerefentry>
@@ -487,6 +511,12 @@
       <citerefentry>
 	<refentrytitle>usermod</refentrytitle><manvolnum>8</manvolnum>
       </citerefentry>.
+    </para>
+
+    <para>
+	The following web page comically (yet correctly) compares the
+	strength of two different methods for choosing a password:
+	"https://xkcd.com/936/"
     </para>
   </refsect1>
 </refentry>

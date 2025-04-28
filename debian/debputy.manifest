@@ -1,0 +1,24 @@
+manifest-version: '0.1'
+packages:
+  passwd:
+    transformations:
+    - path-metadata:
+        paths:
+        - usr/bin/chfn
+        - usr/bin/chsh
+        - usr/bin/gpasswd
+        - usr/bin/passwd
+        mode: "u=rwxs,go=rx"
+    - path-metadata:
+        paths:
+        - usr/bin/chage
+        - usr/bin/expiry
+        group: "shadow"
+        mode: "u=rwx,go=rxs"
+  uidmap:
+    transformations:
+    - path-metadata:
+        paths:
+        - usr/bin/newgidmap
+        - usr/bin/newuidmap
+        mode: "u=rwxs,go=rx"

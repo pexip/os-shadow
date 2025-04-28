@@ -21,12 +21,10 @@ man_MANS = \
 	man8/groupdel.8 \
 	man8/groupmems.8 \
 	man8/groupmod.8 \
-	man1/groups.1 \
 	man8/grpck.8 \
 	man8/grpconv.8 \
 	man8/grpunconv.8 \
 	man5/gshadow.5 \
-	man8/lastlog.8 \
 	man1/login.1 \
 	man5/login.defs.5 \
 	man8/logoutd.8 \
@@ -41,12 +39,15 @@ man_MANS = \
 	man1/sg.1 \
 	man3/shadow.3 \
 	man5/shadow.5 \
-	man5/suauth.5 \
 	man8/useradd.8 \
 	man8/userdel.8 \
 	man8/usermod.8 \
 	man8/vigr.8 \
 	man8/vipw.8
+
+if ENABLE_LASTLOG
+man_MANS += man8/lastlog.8
+endif
 
 man_nopam = \
 	man5/limits.5 \
@@ -55,6 +56,7 @@ man_nopam = \
 
 if WITH_SU
 man_MANS += man1/su.1
+man_nopam += man5/suauth.5
 endif
 
 if !USE_PAM
@@ -87,10 +89,8 @@ man_XMANS = \
 	groupdel.8.xml \
 	groupmems.8.xml \
 	groupmod.8.xml \
-	groups.1.xml \
 	grpck.8.xml \
 	gshadow.5.xml \
-	lastlog.8.xml \
 	limits.5.xml \
 	login.1.xml \
 	login.access.5.xml \
@@ -118,7 +118,12 @@ man_XMANS = \
 	usermod.8.xml \
 	vipw.8.xml
 
+if ENABLE_LASTLOG
+man_XMANS += lastlog.8.xml
+endif
+
 login_defs_v = \
+	BCRYPT_MIN_ROUNDS.xml \
 	CHFN_AUTH.xml \
 	CHFN_RESTRICT.xml \
 	CHSH_AUTH.xml \
@@ -185,18 +190,20 @@ login_defs_v = \
 	SUB_GID_COUNT.xml \
 	SUB_UID_COUNT.xml \
 	SYS_GID_MAX.xml \
-	SYS_UID_MAX.xml
+	SYS_UID_MAX.xml \
+	YESCRYPT_COST_FACTOR.xml
 
 EXTRA_DIST = \
 	$(man_MANS) \
 	$(man_XMANS) \
+	config.xml \
 	$(addprefix login.defs.d/,$(login_defs_v)) \
-	man1/id.1 \
-	id.1.xml \
 	man8/sulogin.8 \
 	sulogin.8.xml \
 	generate_mans.mak \
-	generate_translations.mak
+	generate_translations.mak \
+	its.rules \
+	shadow-man.xsl
 
 if USE_PAM
 EXTRA_DIST += $(man_nopam)
@@ -206,9 +213,9 @@ if !ENABLE_SUBIDS
 EXTRA_DIST += $(man_subids)
 endif
 
-generate_mans.deps: *.xml
+generate_mans.deps: $(man_XMANS)
 	echo "# This file is generated" > $@
-	awk 'BEGIN{FS="\"";} /^<!ENTITY .* * SYSTEM ".*">$$/{ f=FILENAME; sub(/.xml/,"",f); print "man" substr(f, length (f)) "/" f ": " $$2 }' $(man_XMANS) >> $@
+	awk 'BEGIN{FS="\"";} /^<!ENTITY .* * SYSTEM ".*">$$/{ f=FILENAME; sub(/.xml/,"",f); print "man" substr(f, length (f)) "/" f ": " $$2 }' $< >> $@
 
 if ENABLE_REGENERATE_MAN
 
@@ -216,7 +223,7 @@ if ENABLE_REGENERATE_MAN
 
 include generate_mans.mak
 
-CLEANFILES = $(man_MANS) man1/id.1 man8/sulogin.8
+CLEANFILES = $(man_MANS) man8/sulogin.8
 
 else
 $(man_MANS):

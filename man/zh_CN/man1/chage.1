@@ -2,12 +2,12 @@
 .\"     Title: chage
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 2022-11-08
-.\"    Manual: 用户命令
-.\"    Source: shadow-utils 4.13
+.\"      Date: 2025-03-19
+.\"    Manual: User Commands
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: Chinese Simplified
 .\"
-.TH "CHAGE" "1" "2022-11-08" "shadow\-utils 4\&.13" "用户命令"
+.TH "CHAGE" "1" "2025-03-19" "shadow\-utils 4\&.17\&.4" "User Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -31,7 +31,7 @@
 chage \- 更改用户密码过期信息
 .SH "大纲"
 .HP \w'\fBchage\fR\ 'u
-\fBchage\fR [\fI选项\fR] \fI登录\fR
+\fBchage\fR [\fIoptions\fR] \fILOGIN\fR
 .SH "描述"
 .PP
 The
@@ -134,6 +134,12 @@ Apply changes in the
 directory and use the configuration files from the
 \fICHROOT_DIR\fR
 directory\&. Only absolute paths are supported\&.
+.RE
+.PP
+\fB\-P\fR, \fB\-\-prefix\fR\ \&\fIPREFIX_DIR\fR
+.RS 4
+Apply changes to configuration files under the root filesystem found under the directory
+\fIPREFIX_DIR\fR\&. This option does not chroot and is intended for preparing a cross\-compilation target\&. Some limitations: NIS and LDAP users/groups are not verified\&. No SELINUX support\&.
 .RE
 .PP
 \fB\-W\fR, \fB\-\-warndays\fR\ \&\fIWARN_DAYS\fR

@@ -2,12 +2,12 @@
 .\"     Title: gshadow
 .\"    Author: Nicolas Fran\(,cois <nicolas.francois@centraliens.net>
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 11/08/2022
+.\"      Date: 03/19/2025
 .\"    Manual: File Formats and Configuration Files
-.\"    Source: shadow-utils 4.13
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: Russian
 .\"
-.TH "gshadow" "5" "11/08/2022" "shadow\-utils 4\&.13" "File Formats and Configuration"
+.TH "gshadow" "5" "03/19/2025" "shadow\-utils 4\&.17\&.4" "File Formats and Configuration"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -38,12 +38,12 @@ contains the shadowed information for group accounts\&.
 .PP
 Каждая строка файла содержит поля, отделёнными друг от друга двоеточием:
 .PP
-\fBимя группы\fR
+\fBgroup name\fR
 .RS 4
-Должно содержать правильное имя группы, которая существует в системе\&.
+It must be a valid group name, which exists on the system\&.
 .RE
 .PP
-\fBшифрованный пароль\fR
+\fBencrypted password\fR
 .RS 4
 Refer to
 \fBcrypt\fR(3)
@@ -63,7 +63,7 @@ This password supersedes any password specified in
 /etc/group\&.
 .RE
 .PP
-\fBадминистраторы\fR
+\fBadministrators\fR
 .RS 4
 Список имён пользователей, перечисленных через запятую\&.
 .sp
@@ -72,7 +72,7 @@ This password supersedes any password specified in
 Администраторы также имеют те же права, что и члены группы (смотрите далее)\&.
 .RE
 .PP
-\fBчлены\fR
+\fBmembers\fR
 .RS 4
 Список имён пользователей, перечисленных через запятую\&.
 .sp

@@ -2,12 +2,12 @@
 .\"     Title: pwck
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 08/11/2022
-.\"    Manual: Команди керування системою
-.\"    Source: shadow-utils 4.13
+.\"      Date: 19/03/2025
+.\"    Manual: System Management Commands
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: Ukrainian
 .\"
-.TH "pwck" "8" "08/11/2022" "shadow\-utils 4\&.13" "Команди керування системою"
+.TH "pwck" "8" "19/03/2025" "shadow\-utils 4\&.17\&.4" "System Management Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -31,15 +31,16 @@
 pwck \- перевірка цілісності файлів паролів
 .SH "КОРОТКИЙ ОГЛЯД"
 .HP \w'\fBpwck\fR\ 'u
-\fBpwck\fR [параметри] [\fIФАЙЛ_ПАРОЛІВ\fR\ [\ \fIФАЙЛ_SHADOW\fR\ ]]
+\fBpwck\fR [options] [\fIPASSWORDFILE\fR\ [\ \fISHADOWFILE\fR\ ]]
 .SH "ОПИС"
 .PP
-Команду
+The
 \fBpwck\fR
-призначено для перевірки цілісності даних щодо користувачів і розпізнавання\&. Вона перевіряє, чи усі записи у
+command verifies the integrity of the users and authentication information\&. It checks that all entries in
 /etc/passwd
-і
-/etc/shadowмають належне форматування і містять чинні дані\&. Програма попросить користувача вилучити записи із помилковим форматуванням або іншими непридатними до виправлення помилками\&.
+and
+/etc/shadow
+have the proper format and contain valid data\&. The user is prompted to delete entries that are improperly formatted or which have other uncorrectable errors\&.
 .PP
 Буде виконано перевірки з метою переконатися, що кожен запис має:
 .sp
@@ -109,10 +110,11 @@ pwck \- перевірка цілісності файлів паролів
 чинна оболонка входу
 .RE
 .PP
-Перевірки для даних прихованих паролів буде увімкнено, якщо вказано другий параметр файла
-\fIФАЙЛ_SHADOW\fR
-або якщо у системі існує
-/etc/shadow\&.
+Checks for shadowed password information are enabled when the second file parameter
+\fISHADOWFILE\fR
+is specified or when
+/etc/shadow
+exists on the system\&.
 .PP
 Цими перевірками є такі:
 .sp
@@ -171,23 +173,26 @@ pwck \- перевірка цілісності файлів паролів
 останні зміни паролів не позначено часовими позначками у майбутньому
 .RE
 .PP
-Перевірки належної кількості полів та унікальності імен користувачів є критичними\&. Якщо у записі помилкова кількість полів, програма попросить користувача вилучити увесь рядок\&. Якщо користувач не підтвердить дію з вилучення, усі наступні перевірки буде пропущено\&. Якщо буде виявлено запис із дублюванням імені користувача, програма попросить вилучити його, але якщо у цьому буде відмовлено, виконає решту перевірок\&. Усі інші помилки вважатимуться незначними \(em користувачу буде рекомендовано віддати команду
-\fBusermod\fR, щоб виправити помилку\&.
+The checks for correct number of fields and unique user name are fatal\&. If the entry has the wrong number of fields, the user will be prompted to delete the entire line\&. If the user does not answer affirmatively, all further checks are bypassed\&. An entry with a duplicated user name is prompted for deletion, but the remaining checks will still be made\&. All other errors are warnings and the user is encouraged to run the
+\fBusermod\fR
+command to correct the error\&.
 .PP
-Команди, які мають справу з файлом
-/etc/passwd, не зможуть змінити пошкоджені або дубльовані записи\&. У цих випадках слід скористатися
+The commands which operate on the
+/etc/passwd
+file are not able to alter corrupted or duplicated entries\&.
 \fBpwck\fR
-для вилучення помилкового запису\&.
+should be used in those circumstances to remove the offending entry\&.
 .SH "ПАРАМЕТРИ"
 .PP
-Параметри
+The
 \fB\-r\fR
-і
+and
 \fB\-s\fR
-не можна поєднувати\&.
+options cannot be combined\&.
 .PP
-Параметри, які застосовують до команди
-\fBpwck\fR, є такими:
+The options which apply to the
+\fBpwck\fR
+command are:
 .PP
 \fB\-\-badname\fR\ \&
 .RS 4
@@ -206,12 +211,12 @@ pwck \- перевірка цілісності файлів паролів
 .PP
 \fB\-r\fR, \fB\-\-read\-only\fR
 .RS 4
-Виконати команду
+Execute the
 \fBpwck\fR
-у режимі лише читання\&.
+command in read\-only mode\&.
 .RE
 .PP
-\fB\-R\fR, \fB\-\-root\fR \fIКАТАЛОГ_CHROOT\fR
+\fB\-R\fR, \fB\-\-root\fR\ \&\fICHROOT_DIR\fR
 .RS 4
 Apply changes in the
 \fICHROOT_DIR\fR
@@ -222,27 +227,28 @@ directory\&. Only absolute paths are supported\&.
 .PP
 \fB\-s\fR, \fB\-\-sort\fR
 .RS 4
-Упорядкувати записи у
+Sort entries in
 /etc/passwd
-і
+and
 /etc/shadow
-за UID\&.
+by UID\&.
 .RE
 .PP
-Типово,
+By default,
 \fBpwck\fR
-працює з файлами
+operates on the files
 /etc/passwd
-і
-/etc/shadow\&. Користувач може вибрати альтернативні файли за допомогою параметрів
+and
+/etc/shadow\&. The user may select alternate files with the
 \fIpasswd\fR
-і
-\fIshadow\fR\&.
+and
+\fIshadow\fR
+parameters\&.
 .SH "НАЛАШТУВАННЯ"
 .PP
-Вказані нижче змінні налаштувань у
+The following configuration variables in
 /etc/login\&.defs
-змінюють поведінку цього інструмента:
+change the behavior of this tool:
 .SH "ФАЙЛИ"
 .PP
 /etc/group
@@ -261,47 +267,47 @@ directory\&. Only absolute paths are supported\&.
 .RE
 .SH "ЗНАЧЕННЯ ВИХОДУ"
 .PP
-Команда
+The
 \fBpwck\fR
-завершує роботу із такими значеннями:
+command exits with the following values:
 .PP
 \fI0\fR
 .RS 4
-успіх
+success
 .RE
 .PP
 \fI1\fR
 .RS 4
-некоректний синтаксис команди
+invalid command syntax
 .RE
 .PP
 \fI2\fR
 .RS 4
-одна або декілька невдалих спроб ввести пароль
+one or more bad password entries
 .RE
 .PP
 \fI3\fR
 .RS 4
-не вдалося відкрити файли паролів
+can\*(Aqt open password files
 .RE
 .PP
 \fI4\fR
 .RS 4
-не вдалося заблокувати файли паролів
+can\*(Aqt lock password files
 .RE
 .PP
 \fI5\fR
 .RS 4
-не вдалося оновити файли паролів
+can\*(Aqt update password files
 .RE
 .PP
 \fI6\fR
 .RS 4
-не вдалося упорядкувати файли паролів
+can\*(Aqt sort password files
 .RE
 .SH "ДИВ\&. ТАКОЖ"
 .PP
-\fBгрупа\fR(5),
+\fBgroup\fR(5),
 \fBgrpck\fR(8),
 \fBpasswd\fR(5),
 \fBshadow\fR(5),

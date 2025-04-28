@@ -1,5 +1,5 @@
 #!/bin/sh
-# turn shadow passwords on or off on a Debian system
+# turn shadow passwords on on a Debian system
 
 set -e
 
@@ -36,16 +36,6 @@ shadowon () {
     chmod 640 "${DPKG_ROOT}/etc/shadow" "${DPKG_ROOT}/etc/gshadow"
 }
 
-shadowoff () {
-    set -e
-    pwck -q -r
-    grpck -r
-    pwunconv
-    grpunconv
-    # sometimes the passwd perms get munged
-    chown root:root /etc/passwd /etc/group
-    chmod 644 /etc/passwd /etc/group
-}
 
 case "$1" in
     "on")
@@ -57,14 +47,10 @@ case "$1" in
 	fi
 	;;
     "off")
-	if shadowoff ; then
-	    echo Shadow passwords are now off.
-	else
-	    echo Please correct the error and rerun \`$0 off\'
-	    exit 1
-	fi
+	echo E: Turning shadow passwords off is no longer supported.
+	exit 1
 	;;
      *)
-	echo Usage: $0 on \| off
+	echo Usage: $0 on
 	;;
 esac

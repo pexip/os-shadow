@@ -14,11 +14,14 @@
 #include <fcntl.h>
 #include <getopt.h>
 #include <pwd.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+
 #ifdef USE_PAM
 #include "pam_defs.h"
 #endif				/* USE_PAM */
+#include "atoi/str2i/str2s.h"
 #include "defines.h"
 #include "nscd.h"
 #include "sssd.h"
@@ -29,13 +32,16 @@
 /*@-exitarg@*/
 #include "exitcodes.h"
 #include "shadowlog.h"
+#include "string/strcmp/streq.h"
+#include "string/strtok/stpsep.h"
 
-#define IS_CRYPT_METHOD(str) ((crypt_method != NULL && strcmp(crypt_method, str) == 0) ? true : false)
+
+#define IS_CRYPT_METHOD(str) ((crypt_method != NULL && streq(crypt_method, str)) ? true : false)
 
 /*
  * Global variables
  */
-const char *Prog;
+static const char Prog[] = "chpasswd";
 static bool eflg   = false;
 static bool md5flg = false;
 #if defined(USE_SHA_CRYPT) || defined(USE_BCRYPT) || defined(USE_YESCRYPT)
@@ -54,13 +60,15 @@ static long bcrypt_rounds = 13;
 static long yescrypt_cost = 5;
 #endif
 
+static const char *prefix = "";
+
 static bool is_shadow_pwd;
 static bool pw_locked = false;
 static bool spw_locked = false;
 
 /* local function prototypes */
-static void fail_exit (int code);
-static /*@noreturn@*/void usage (int status);
+NORETURN static void fail_exit (int code);
+NORETURN static void usage (int status);
 static void process_flags (int argc, char **argv);
 static void check_flags (void);
 static void check_perms (void);
@@ -94,7 +102,9 @@ static void fail_exit (int code)
 /*
  * usage - display usage message and exit
  */
-static /*@noreturn@*/void usage (int status)
+NORETURN
+static void
+usage (int status)
 {
 	FILE *usageout = (E_SUCCESS != status) ? stderr : stdout;
 	(void) fprintf (usageout,
@@ -121,6 +131,7 @@ static /*@noreturn@*/void usage (int status)
 	                "                                the MD5 algorithm\n"),
 	              usageout);
 	(void) fputs (_("  -R, --root CHROOT_DIR         directory to chroot into\n"), usageout);
+	(void) fputs (_("  -P, --prefix PREFIX_DIR       directory prefix\n"), usageout);
 #if defined(USE_SHA_CRYPT) || defined(USE_BCRYPT) || defined(USE_YESCRYPT)
 	(void) fputs (_("  -s, --sha-rounds              number of rounds for the SHA, BCRYPT\n"
 	                "                                or YESCRYPT crypt algorithms\n"),
@@ -148,6 +159,7 @@ static void process_flags (int argc, char **argv)
 		{"help",         no_argument,       NULL, 'h'},
 		{"md5",          no_argument,       NULL, 'm'},
 		{"root",         required_argument, NULL, 'R'},
+		{"prefix",       required_argument, NULL, 'P'},
 #if defined(USE_SHA_CRYPT) || defined(USE_BCRYPT) || defined(USE_YESCRYPT)
 		{"sha-rounds",   required_argument, NULL, 's'},
 #endif				/* USE_SHA_CRYPT || USE_BCRYPT || USE_YESCRYPT */
@@ -156,9 +168,9 @@ static void process_flags (int argc, char **argv)
 
 	while ((c = getopt_long (argc, argv,
 #if defined(USE_SHA_CRYPT) || defined(USE_BCRYPT) || defined(USE_YESCRYPT)
-	                         "c:ehmR:s:",
+	                         "c:ehmR:P:s:",
 #else
-	                         "c:ehmR:",
+	                         "c:ehmR:P:",
 #endif
 	                         long_options, NULL)) != -1) {
 		switch (c) {
@@ -176,25 +188,27 @@ static void process_flags (int argc, char **argv)
 			break;
 		case 'R': /* no-op, handled in process_root_flag () */
 			break;
+		case 'P': /* no-op, handled in process_prefix_flag () */
+			break;
 #if defined(USE_SHA_CRYPT) || defined(USE_BCRYPT) || defined(USE_YESCRYPT)
 		case 's':
 			sflg = true;
                         bad_s = 0;
 #if defined(USE_SHA_CRYPT)
 			if ((IS_CRYPT_METHOD("SHA256") || IS_CRYPT_METHOD("SHA512"))
-			    && (0 == getlong(optarg, &sha_rounds))) {
+			    && (-1 == str2sl(&sha_rounds, optarg))) {
                             bad_s = 1;
                         }
 #endif				/* USE_SHA_CRYPT */
 #if defined(USE_BCRYPT)
                         if (IS_CRYPT_METHOD("BCRYPT")
-			    && (0 == getlong(optarg, &bcrypt_rounds))) {
+			    && (-1 == str2sl(&bcrypt_rounds, optarg))) {
                             bad_s = 1;
                         }
 #endif				/* USE_BCRYPT */
 #if defined(USE_YESCRYPT)
                         if (IS_CRYPT_METHOD("YESCRYPT")
-			    && (0 == getlong(optarg, &yescrypt_cost))) {
+			    && (-1 == str2sl(&yescrypt_cost, optarg))) {
                             bad_s = 1;
                         }
 #endif				/* USE_YESCRYPT */
@@ -294,7 +308,7 @@ static void check_perms (void)
 		exit (1);
 	}
 
-	retval = pam_start ("chpasswd", pampw->pw_name, &conv, &pamh);
+	retval = pam_start (Prog, pampw->pw_name, &conv, &pamh);
 
 	if (PAM_SUCCESS == retval) {
 		retval = pam_authenticate (pamh, 0);
@@ -439,10 +453,9 @@ int main (int argc, char **argv)
 	bool use_pam = true;
 #endif				/* USE_PAM */
 
-	int errors = 0;
-	int line = 0;
+	bool errors = false;
+	intmax_t line = 0;
 
-	Prog = Basename (argv[0]);
 	log_set_progname(Prog);
 	log_set_logfd(stderr);
 
@@ -450,18 +463,25 @@ int main (int argc, char **argv)
 	(void) bindtextdomain (PACKAGE, LOCALEDIR);
 	(void) textdomain (PACKAGE);
 
+#ifdef WITH_SELINUX
+	if (check_selinux_permit ("passwd") != 0) {
+		return (E_NOPERM);
+	}
+#endif				/* WITH_SELINUX */
+
 	process_flags (argc, argv);
 
 	salt = get_salt();
 	process_root_flag ("-R", argc, argv);
+	prefix = process_prefix_flag ("-P", argc, argv);
 
 #ifdef USE_PAM
-	if (md5flg || eflg || cflg) {
+	if (md5flg || eflg || cflg || prefix[0]) {
 		use_pam = false;
 	}
 #endif				/* USE_PAM */
 
-	OPENLOG ("chpasswd");
+	OPENLOG (Prog);
 
 	check_perms ();
 
@@ -482,16 +502,12 @@ int main (int argc, char **argv)
 	 * last change date is set in the age only if aging information is
 	 * present.
 	 */
-	while (fgets (buf, (int) sizeof buf, stdin) != (char *) 0) {
+	while (fgets (buf, sizeof buf, stdin) != NULL) {
 		line++;
-		cp = strrchr (buf, '\n');
-		if (NULL != cp) {
-			*cp = '\0';
-		} else {
+		if (stpsep(buf, "\n") == NULL) {
 			if (feof (stdin) == 0) {
-
 				// Drop all remaining characters on this line.
-				while (fgets (buf, (int) sizeof buf, stdin) != (char *) 0) {
+				while (fgets (buf, sizeof buf, stdin) != NULL) {
 					cp = strchr (buf, '\n');
 					if (cp != NULL) {
 						break;
@@ -499,9 +515,9 @@ int main (int argc, char **argv)
 				}
 
 				fprintf (stderr,
-				         _("%s: line %d: line too long\n"),
+				         _("%s: line %jd: line too long\n"),
 				         Prog, line);
-				errors++;
+				errors = true;
 				continue;
 			}
 		}
@@ -516,26 +532,23 @@ int main (int argc, char **argv)
 		 */
 
 		name = buf;
-		cp = strchr (name, ':');
-		if (NULL != cp) {
-			*cp = '\0';
-			cp++;
-		} else {
+		cp = stpsep(name, ":");
+		if (cp == NULL) {
 			fprintf (stderr,
-			         _("%s: line %d: missing new password\n"),
+			         _("%s: line %jd: missing new password\n"),
 			         Prog, line);
-			errors++;
+			errors = true;
 			continue;
 		}
 		newpwd = cp;
 
 #ifdef USE_PAM
 		if (use_pam) {
-			if (do_pam_passwd_non_interactive ("chpasswd", name, newpwd) != 0) {
+			if (do_pam_passwd_non_interactive (Prog, name, newpwd) != 0) {
 				fprintf (stderr,
-				         _("%s: (line %d, user %s) password not changed\n"),
+				         _("%s: (line %jd, user %s) password not changed\n"),
 				         Prog, line, name);
-				errors++;
+				errors = true;
 			}
 		} else
 #endif				/* USE_PAM */
@@ -562,9 +575,9 @@ int main (int argc, char **argv)
 		pw = pw_locate (name);
 		if (NULL == pw) {
 			fprintf (stderr,
-			         _("%s: line %d: user '%s' does not exist\n"), Prog,
+			         _("%s: line %jd: user '%s' does not exist\n"), Prog,
 			         line, name);
-			errors++;
+			errors = true;
 			continue;
 		}
 		if (is_shadow_pwd) {
@@ -577,8 +590,8 @@ int main (int argc, char **argv)
 			sp = spw_locate (name);
 
 			if (   (NULL == sp)
-			    && (strcmp (pw->pw_passwd,
-			                SHADOW_PASSWD_STRING) == 0)) {
+			    && streq(pw->pw_passwd, SHADOW_PASSWD_STRING))
+			{
 				/* If the password is set to 'x' in
 				 * passwd, but there are no entries in
 				 * shadow, create one.
@@ -606,7 +619,7 @@ int main (int argc, char **argv)
 		if (NULL != sp) {
 			newsp = *sp;
 			newsp.sp_pwdp = cp;
-			newsp.sp_lstchg = (long) gettime () / SCALE;
+			newsp.sp_lstchg = gettime () / DAY;
 			if (0 == newsp.sp_lstchg) {
 				/* Better disable aging than requiring a
 				 * password change */
@@ -615,7 +628,7 @@ int main (int argc, char **argv)
 		}
 
 		if (   (NULL == sp)
-		    || (strcmp (pw->pw_passwd, SHADOW_PASSWD_STRING) != 0)) {
+		    || !streq(pw->pw_passwd, SHADOW_PASSWD_STRING)) {
 			newpw = *pw;
 			newpw.pw_passwd = cp;
 		}
@@ -628,19 +641,19 @@ int main (int argc, char **argv)
 		if (NULL != sp) {
 			if (spw_update (&newsp) == 0) {
 				fprintf (stderr,
-				         _("%s: line %d: failed to prepare the new %s entry '%s'\n"),
+				         _("%s: line %jd: failed to prepare the new %s entry '%s'\n"),
 				         Prog, line, spw_dbname (), newsp.sp_namp);
-				errors++;
+				errors = true;
 				continue;
 			}
 		}
 		if (   (NULL == sp)
-		    || (strcmp (pw->pw_passwd, SHADOW_PASSWD_STRING) != 0)) {
+		    || !streq(pw->pw_passwd, SHADOW_PASSWD_STRING)) {
 			if (pw_update (&newpw) == 0) {
 				fprintf (stderr,
-				         _("%s: line %d: failed to prepare the new %s entry '%s'\n"),
+				         _("%s: line %jd: failed to prepare the new %s entry '%s'\n"),
 				         Prog, line, pw_dbname (), newpw.pw_name);
-				errors++;
+				errors = true;
 				continue;
 			}
 		}
@@ -657,7 +670,7 @@ int main (int argc, char **argv)
 	 * With PAM, it is not possible to delay the update of the
 	 * password database.
 	 */
-	if (0 != errors) {
+	if (errors) {
 #ifdef USE_PAM
 		if (!use_pam)
 #endif				/* USE_PAM */

@@ -1,15 +1,19 @@
 /* SPDX-License-Identifier: BSD-3-Clause */
 
+
 #include <stdio.h>
 #include <unistd.h>
+
+#include "atoi/str2i/str2u.h"
 #include "subid.h"
 #include "stdlib.h"
 #include "prototypes.h"
 #include "shadowlog.h"
 
+
 /* Test program for the subid freeing routine */
 
-const char *Prog;
+static const char Prog[] = "free_subid_range";
 
 static void usage(void)
 {
@@ -25,7 +29,6 @@ int main(int argc, char *argv[])
 	struct subordinate_range range;
 	bool group = false;   // get subuids by default
 
-	Prog = Basename (argv[0]);
 	log_set_progname(Prog);
 	log_set_logfd(stderr);
 	while ((c = getopt(argc, argv, "g")) != EOF) {
@@ -39,8 +42,8 @@ int main(int argc, char *argv[])
 	if (argc < 3)
 		usage();
 	range.owner = argv[0];
-	range.start = atoi(argv[1]);
-	range.count = atoi(argv[2]);
+	str2ul(&range.start, argv[1]);
+	str2ul(&range.count, argv[2]);
 	if (group)
 		ok = subid_ungrant_gid_range(&range);
 	else

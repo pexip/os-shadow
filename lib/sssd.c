@@ -1,43 +1,53 @@
 /* Author: Peter Vrabec <pvrabec@redhat.com> */
 
 #include <config.h>
+
 #ifdef USE_SSSD
+#include "sssd.h"
 
 #include <stdio.h>
+#include <sys/stat.h>
 #include <sys/wait.h>
 #include <sys/types.h>
+
+#include "alloc/malloc.h"
 #include "exitcodes.h"
 #include "defines.h"
 #include "prototypes.h"
-#include "sssd.h"
-
 #include "shadowlog_internal.h"
+#include "string/strcmp/streq.h"
+
 
 #define MSG_SSSD_FLUSH_CACHE_FAILED "%s: Failed to flush the sssd cache."
 
-int sssd_flush_cache (int dbflags)
-{
-	int status, code, rv;
-	const char *cmd = "/usr/sbin/sss_cache";
-	char *sss_cache_args = NULL;
-	const char *spawnedArgs[] = {"sss_cache", NULL, NULL};
-	const char *spawnedEnv[] = {NULL};
-	int i = 0;
 
-	sss_cache_args = malloc(4);
+int
+sssd_flush_cache(int dbflags)
+{
+	int          status, code, rv;
+	char         *p;
+	char         *sss_cache_args = NULL;
+	const char   *cmd = "/usr/sbin/sss_cache";
+	const char   *spawnedArgs[] = {"sss_cache", NULL, NULL};
+	const char   *spawnedEnv[] = {NULL};
+	struct stat  sb;
+
+	rv = stat(cmd, &sb);
+	if (rv == -1 && errno == ENOENT)
+		return 0;
+
+	sss_cache_args = MALLOC(4, char);
 	if (sss_cache_args == NULL) {
 	    return -1;
 	}
 
-	sss_cache_args[i++] = '-';
-	if (dbflags & SSSD_DB_PASSWD) {
-		sss_cache_args[i++] = 'U';
-	}
-	if (dbflags & SSSD_DB_GROUP) {
-		sss_cache_args[i++] = 'G';
-	}
-	sss_cache_args[i++] = '\0';
-	if (i == 2) {
+	p = stpcpy(sss_cache_args, "-");
+	if (dbflags & SSSD_DB_PASSWD)
+		stpcpy(p, "U");
+	if (dbflags & SSSD_DB_GROUP)
+		stpcpy(p, "G");
+
+	if (streq(p, "")) {
 		/* Neither passwd nor group, nothing to do */
 		free(sss_cache_args);
 		return 0;
@@ -70,6 +80,6 @@ int sssd_flush_cache (int dbflags)
 	return 0;
 }
 #else				/* USE_SSSD */
-extern int errno;		/* warning: ANSI C forbids an empty source file */
+extern int ISO_C_forbids_an_empty_translation_unit;
 #endif				/* USE_SSSD */
 

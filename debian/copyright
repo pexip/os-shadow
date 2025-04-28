@@ -1,12 +1,10 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: Shadow
 Source: https://github.com/shadow-maint/shadow
-Note: atudel is licensed under BSD-4-Clause which is not DFSG compatible
-Files-Excluded: contrib/atudel
 
 Files: *
 Copyright: 1989-1994, Julianne Frances Haugh
-           2016-2022, Serge Hallyn <serge@hallyn.com>
+           2016-2024, Serge Hallyn <serge@hallyn.com>
 License: BSD-3-clause
 
 Files: man/po/da.po
@@ -59,8 +57,7 @@ Files: man/id/man1/login.1
 Copyright: 1993, Rickard E. Faith <faith@cs.unc.edu>
 License: BSD-3-clause
 
-Files: man/ja/man1/groups.1
-       man/ja/man5/limits.5
+Files: man/ja/man5/limits.5
        man/ja/man8/vipw.8
 Copyright: 2001, Maki KURODA
 License: BSD-3-clause
@@ -80,13 +77,13 @@ Files: man/po/fr.po
 Copyright: 2011-2013, Debian French l10n team <debian-l10n-french@lists.debian.org>
 License: BSD-3-clause
 
+Files: man/shadowconfig.8
+Copyright: 2025 Alejandro Colomar <alx@kernel.org>
+License: BSD-3-clause
+
 Files: man/zh_TW/man5/*
 Copyright: 1993, Michael Haardt <michael@moria.de>
            1993, Scorpio, www.linuxforum.net
-License: GPL-2+
-
-Files: contrib/udbachk.tgz
-Copyright: 1999, Sami Kerola and Janne Riihijärvi
 License: GPL-2+
 
 Files: man/hu/man5/*
@@ -97,24 +94,12 @@ Files: contrib/adduser2.sh
 Copyright: 1996, Petri Mattila, Prihateam Networks <petri@prihateam.fi>
 License: GPL-2+
 
-Files: contrib/pwdauth.c
-Copyright: 1996, Marek Michalkiewicz
-License: BSD-3-clause
-
 Files: lib/subordinateio.h
 Copyright: 2012, Eric W. Biederman
 License: BSD-3-clause
 
-Files: libmisc/date_to_str.c
-Copyright: 2021, Alejandro Colomar <alx.manpages@gmail.com>
-License: BSD-3-clause
-
 Files: man/hu/man1/su.1
 Copyright: 1999, Ragnar Hojland Espinosa <ragnar@macula.net>
-License: BSD-3-clause
-
-Files: man/ja/man1/id.1
-Copyright: 2000, ISHIKAWA Keisuke
 License: BSD-3-clause
 
 Files: man/ja/man8/pwconv.8
@@ -139,16 +124,6 @@ Copyright: 1997, Guy Maor <maor@ece.utexas.edu>
            2007 - 2013, Nicolas François
 License: GPL-2+
 
-Files: libmisc/getdate.y
-Copyright: Steven M. Bellovin <smb@research.att.com>
-License: public-domain
- Originally written by Steven M. Bellovin <smb@research.att.com> while
- at the University of North Carolina at Chapel Hill.  Later tweaked by
- a couple of people on Usenet.  Completely overhauled by Rich $alz
- <rsalz@bbn.com> and Jim Berets <jberets@bbn.com> in August, 1990;
- .
- This code is in the public domain and has no copyright.
-
 Files: man/ko/man5/*
 Copyright: 2000, ASPLINUX <man@asp-linux.co.kr>
 License: GPL-2+
@@ -160,17 +135,6 @@ Copyright: 1999-2001, Ben Collins <bcollins@debian.org>
            2006-2012 Nicolas Francois (Nekral) <nicolas.francois@centraliens.net>
            2017-2022 Balint Reczey <balint@balintreczey.hu>
 License: BSD-3-clause
-
-Files: debian/HOME_MODE.xml
-Copyright: 1991-1993, Chip Rosenthal
-           1991-1993, Julianne Frances Haugh
-           2007-2009, Nicolas François
-License: BSD-3-clause
-
-Files: debian/patches/401_cppw_src.dpatch
-Copyright: 1997, Guy Maor <maor@ece.utexas.edu>
-           1999, Stephen Frost <sfrost@snowman.net>
-License: GPL-2+
 
 Files: debian/passwd.expire.cron
 Copyright: 1999, Ben Collins <bcollins@debian.org>

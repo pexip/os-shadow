@@ -2,12 +2,12 @@
 .\"     Title: faillog
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 08.11.2022
+.\"      Date: 19.03.2025
 .\"    Manual:  File Formats and Configuration Files
-.\"    Source: shadow-utils 4.13
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: German
 .\"
-.TH "FAILLOG" "5" "08.11.2022" "shadow\-utils 4\&.13" "File Formats and Configuratio"
+.TH "FAILLOG" "5" "19.03.2025" "shadow\-utils 4\&.17\&.4" "File Formats and Configuratio"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -28,15 +28,15 @@
 .\" * MAIN CONTENT STARTS HERE *
 .\" -----------------------------------------------------------------
 .SH "NAME"
-faillog \- Datei mit fehlgeschlagenen Anmeldungen
+faillog \- Datei zur Protokollierung von Anmeldefehlschl\(:agen
 .SH "BESCHREIBUNG"
 .PP
 /var/log/faillog
 maintains a count of login failures and the limits for each account\&.
 .PP
-Eintr\(:age in dieser Datei haben eine festgelegte L\(:ange und sind der zahlenm\(:a\(ssigen UID nach angeordnet\&. Jeder Eintrag besteht aus der Anzahl der fehlgeschlagenen Anmeldungen seit der letzten erfolgreichen Anmeldung, der maximalen Anzahl von Fehlschl\(:agen, ehe das Konto abgeschaltet wird, dem Ger\(:at, auf dem die letzte fehlgeschlagene Anmeldung erfolgte, das Datum der letzten fehlgeschlagenen Anmeldung und die Dauer in Sekunden, f\(:ur die das Konto nach einem Fehlschlag gesperrt ist\&.
+Eintr\(:age in dieser Datei haben eine feste L\(:ange und sind mit der Benutzerkennung als Index versehen\&. Jeder Eintrag besteht aus der Anzahl der Anmeldefehlschl\(:age seit der letzten erfolgreichen Anmeldung, der maximalen Anzahl von Fehlschl\(:agen, ehe das Konto gesperrt wird, der xxx Leitung|Verbindung, auf der der letzte Anmeldefehlschlag erfolgte, dessen Datum und die Zeit in Sekunden, f\(:ur die nach einem Fehlschlag das Konto gesperrt wird\&.
 .PP
-Die Datei ist so aufgebaut:
+Die Datei ist folgenderma\(ssen aufgebaut:
 .sp
 .if n \{\
 .RS 4
@@ -57,7 +57,7 @@ struct	faillog {
 .PP
 /var/log/faillog
 .RS 4
-Datei mit fehlgeschlagenen Anmeldungen
+Datei zur Protokollierung von Anmeldefehlchl\(:agen
 .RE
 .SH "SIEHE AUCH"
 .PP

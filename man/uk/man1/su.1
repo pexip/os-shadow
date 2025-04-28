@@ -2,12 +2,12 @@
 .\"     Title: su
 .\"    Author: Julianne Frances Haugh
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 08/11/2022
-.\"    Manual: Команди користувача
-.\"    Source: shadow-utils 4.13
+.\"      Date: 19/03/2025
+.\"    Manual: User Commands
+.\"    Source: shadow-utils 4.17.4
 .\"  Language: Ukrainian
 .\"
-.TH "su" "1" "08/11/2022" "shadow\-utils 4\&.13" "Команди користувача"
+.TH "su" "1" "19/03/2025" "shadow\-utils 4\&.17\&.4" "User Commands"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -31,50 +31,53 @@
 su \- зміна ідентифікатора користувача або набуття прав надкористувача
 .SH "КОРОТКИЙ ОГЛЯД"
 .HP \w'\fBsu\fR\ 'u
-\fBsu\fR [\fIпараметри\fR] [\fI\-\fR] [\fIкористувач\fR\ [\ \fIаргументи\fR\ ]]
+\fBsu\fR [\fIoptions\fR] [\fI\-\fR] [\fIusername\fR\ [\ \fIargs\fR\ ]]
 .SH "ОПИС"
 .PP
-Команду
+The
 \fBsu\fR
-використовують для набуття прав іншого користувача під час робочого сеансу у системі\&. Якщо команду викликано без
-\fBкористувач\fR,
-\fBsu\fR, типово, надає доступ до облікового запису надкористувача\&. Параметром
+command is used to become another user during a login session\&. Invoked without a
+\fBusername\fR,
+\fBsu\fR
+defaults to becoming the superuser\&. The
 \fB\-\fR
-можна скористатися для забезпечення середовища, подібного до того, яке б мав отримати користувач, який увійшов до системи безпосередньо\&. Параметром
+option may be used to provide an environment similar to what the user would expect had the user logged in directly\&. The
 \fB\-c\fR
-можна скористатися для того, щоб більшість командних оболонок вважали наступний аргумент командою\&.
+option may be used to treat the next argument as a command by most shells\&.
 .PP
-Параметри буде розпізнано усюди у списку аргументів\&. Ви можете скористатися аргументом
-\fB\-\-\fR, щоб припинити обробку аргументів\&. Параметр
+Options are recognized everywhere in the argument list\&. You can use the
+\fB\-\-\fR
+argument to stop option parsing\&. The
 \fB\-\fR
-є особливим: програма розпізнає його також після
-\fB\-\-\fR, але його слід розташувати перед
-\fBкористувач\fR\&.
+option is special: it is also recognized after
+\fB\-\-\fR, but has to be placed before
+\fBusername\fR\&.
 .PP
 Програма попросить користувача ввести пароль, якщо у цьому є потреба\&. Введення некоректного пароля призведе до виведення повідомлення про помилку\&. Усі спроби, коректні і некоректні, буде записано до журналу для виявлення спроб зловмисників проникнути у систему\&.
 .PP
-Поточне середовище буде передано новій оболонці\&. Значення
+The current environment is passed to the new shell\&. The value of
 \fB$PATH\fR
-буде скинуто до
+is reset to
 /bin:/usr/bin
-для звичайних користувачів або
+for normal users, or
 /sbin:/bin:/usr/sbin:/usr/bin
-для надкористувача\&. Це значення можна змінити за допомогою визначень
+for the superuser\&. This may be changed with the
 \fBENV_PATH\fR
-і
+and
 \fBENV_SUPATH\fR
-у
+definitions in
 /etc/login\&.defs\&.
 .PP
 Вхід до підсистеми буде позначено наявністю \(Fo*\(Fc як першого символу оболонки входу\&. Заданий домашній каталог буде використано як кореневий каталог нової файлової системи, до якої користувач насправді увійшов\&.
 .SH "ПАРАМЕТРИ"
 .PP
-Параметри, які застосовують до команди
-\fBsu\fR, є такими:
+The options which apply to the
+\fBsu\fR
+command are:
 .PP
-\fB\-c\fR, \fB\-\-command\fR \fIКОМАНДА\fR
+\fB\-c\fR, \fB\-\-command\fR\ \&\fICOMMAND\fR
 .RS 4
-Вказати команду, яку буде викликано командною оболонкою за допомогою її
+Specify a command that will be invoked by the shell using its
 \fB\-c\fR\&.
 .sp
 У виконаної команди не буде керівного термінала\&. Цей параметр не можна використовувати для виконання інтерактивних програм, яким потрібне для керування термінал\&.
@@ -84,15 +87,16 @@ su \- зміна ідентифікатора користувача або на
 .RS 4
 Надає середовище, яке є подібним до середовища, яке мав би отримати користувач після безпосереднього входу до системи\&.
 .sp
-Якщо використано параметр
-\fB\-\fR, його має бути вказано перед будь\-яким
-\fBкористувач\fR\&. З міркувань сумісності рекомендуємо використовувати його як останній параметр, до
-\fBкористувач\fR\&. Для інших форм (\fB\-l\fR
-і
-\fB\-\-login\fR) цього обмеження не передбачено\&.
+When
+\fB\-\fR
+is used, it must be specified before any
+\fBusername\fR\&. For portability it is recommended to use it as last option, before any
+\fBusername\fR\&. The other forms (\fB\-l\fR
+and
+\fB\-\-login\fR) do not have this restriction\&.
 .RE
 .PP
-\fB\-s\fR, \fB\-\-shell\fR \fIОБОЛОНКА\fR
+\fB\-s\fR, \fB\-\-shell\fR\ \&\fISHELL\fR
 .RS 4
 Оболонка, яку буде викликано\&.
 .sp
@@ -103,31 +107,34 @@ su \- зміна ідентифікатора користувача або на
 .RE
 .PP
 .RS 4
-Якщо використано параметр
-\fB\-\-preserve\-environment\fR, оболонка, яку вказано за допомогою змінної середовища
-\fB$SHELL\fR\&.
+If
+\fB\-\-preserve\-environment\fR
+is used, the shell specified by the
+\fB$SHELL\fR
+environment variable\&.
 .RE
 .PP
 .RS 4
-Оболонки, на яку вказує запис
+The shell indicated in the
 /etc/passwd
-для вибраного користувача\&.
+entry for the target user\&.
 .RE
 .PP
 .RS 4
-/bin/sh, якщо оболонку не вдасться знайти у жоден із вказаних вище способів\&.
+/bin/sh
+if a shell could not be found by any above method\&.
 .RE
 .sp
-Якщо командну оболонку вказаного користувача обмежено (тобто вмісту поля оболонки запису цього користувача у
+If the target user has a restricted shell (i\&.e\&. the shell field of this user\*(Aqs entry in
 /etc/passwd
-немає у списку
-/etc/shells), параметр
+is not listed in
+/etc/shells), then the
 \fB\-\-shell\fR
-та змінну середовища
+option or the
 \fB$SHELL\fR
-не буде взято до уваги, якщо
+environment variable won\*(Aqt be taken into account, unless
 \fBsu\fR
-не викликано від імені користувача root\&.
+is called by root\&.
 .RE
 .PP
 \fB\-m\fR, \fB\-p\fR, \fB\-\-preserve\-environment\fR
@@ -136,12 +143,13 @@ su \- зміна ідентифікатора користувача або на
 .PP
 \fB$PATH\fR
 .RS 4
-відновлено початкове значення за параметром
+reset according to the
 /etc/login\&.defs
+options
 \fBENV_PATH\fR
-або
+or
 \fBENV_SUPATH\fR
-(див\&. нижче);
+(see below);
 .RE
 .PP
 \fB$IFS\fR
@@ -150,73 +158,75 @@ su \- зміна ідентифікатора користувача або на
 \(Fo<space><tab><newline>\(Fc, якщо було встановлено інше значення\&.
 .RE
 .sp
-Якщо у користувача призначення командну оболонку обмежено, цей параметр ні на що не вплине (якщо
+If the target user has a restricted shell, this option has no effect (unless
 \fBsu\fR
-не викликано від імені користувача root)\&.
+is called by root)\&.
 .sp
 Зауважте, що типовою поведінкою для середовища є така:
 .PP
 .RS 4
-Буде відновлено початкові значення змінних середовища
+The
 \fB$HOME\fR,
 \fB$SHELL\fR,
 \fB$USER\fR,
 \fB$LOGNAME\fR,
-\fB$PATH\fR
-і
-\fB$IFS\fR\&.
+\fB$PATH\fR, and
+\fB$IFS\fR
+environment variables are reset\&.
 .RE
 .PP
 .RS 4
-Якщо не використано
-\fB\-\-login\fR, середовище буде скопійовано, окрім вказаних вище змінних\&.
+If
+\fB\-\-login\fR
+is not used, the environment is copied, except for the variables above\&.
 .RE
 .PP
 .RS 4
-Якщо використано
-\fB\-\-login\fR, змінні середовища
+If
+\fB\-\-login\fR
+is used, the
 \fB$TERM\fR,
 \fB$COLORTERM\fR,
-\fB$DISPLAY\fR
-і
+\fB$DISPLAY\fR, and
 \fB$XAUTHORITY\fR
-буде скопійовано, якщо було встановлено їхні значення\&.
+environment variables are copied if they were set\&.
 .RE
 .PP
 .RS 4
-Якщо використано
-\fB\-\-login\fR, значення змінних середовища
+If
+\fB\-\-login\fR
+is used, the
 \fB$TZ\fR,
-\fB$HZ\fR
-і
+\fB$HZ\fR, and
 \fB$MAIL\fR
-буде встановлено за параметрами
+environment variables are set according to the
 /etc/login\&.defs
+options
 \fBENV_TZ\fR,
 \fBENV_HZ\fR,
-\fBMAIL_DIR\fR
-і
+\fBMAIL_DIR\fR, and
 \fBMAIL_FILE\fR
-(див\&. нижче)\&.
+(see below)\&.
 .RE
 .PP
 .RS 4
-Якщо використано
-\fB\-\-login\fR, значення для інших змінних середовища можна встановити за допомогою файла
+If
+\fB\-\-login\fR
+is used, other environment variables might be set by the
 \fBENVIRON_FILE\fR
-(див\&. нижче)\&.
+file (see below)\&.
 .RE
 .RE
 .SH "ЗАСТЕРЕЖЕННЯ"
 .PP
-У цієї версії
+This version of
 \fBsu\fR
-багато параметрів збирання\&. У певній збірці може бути використано лише частину з них\&.
+has many compilation options, only some of which may be in use at any particular site\&.
 .SH "НАЛАШТУВАННЯ"
 .PP
-Вказані нижче змінні налаштувань у
+The following configuration variables in
 /etc/login\&.defs
-змінюють поведінку цього інструмента:
+change the behavior of this tool:
 .SH "ФАЙЛИ"
 .PP
 /etc/passwd
@@ -235,41 +245,41 @@ su \- зміна ідентифікатора користувача або на
 .RE
 .SH "ЗНАЧЕННЯ ВИХОДУ"
 .PP
-Якщо виконано успішно,
+On success,
 \fBsu\fR
-повертає значення виходу виконаної команди\&.
+returns the exit value of the command it executed\&.
 .PP
-Якщо цю команду перервано сигналом,
+If this command was terminated by a signal,
 \fBsu\fR
-повертає номер цього сигналу плюс 128\&.
+returns the number of this signal plus 128\&.
 .PP
-Якщо su довелося перервати виконання команди (оскільки було надіслано команду щодо переривання роботи, але команда не перервала роботу вчасно),
+If su has to kill the command (because it was asked to terminate, and the command did not terminate in time),
 \fBsu\fR
-поверне 255\&.
+returns 255\&.
 .PP
-Деякі значення виходу з
+Some exit values from
 \fBsu\fR
-є незалежними від виконаної команди:
+are independent from the executed command:
 .PP
 \fI0\fR
 .RS 4
-успіх (лише
-\fB\-\-help\fR)
+success (\fB\-\-help\fR
+only)
 .RE
 .PP
 \fI1\fR
 .RS 4
-Помилка системи або розпізнавання
+System or authentication failure
 .RE
 .PP
 \fI126\fR
 .RS 4
-Потрібну команду не знайдено
+The requested command was not found
 .RE
 .PP
 \fI127\fR
 .RS 4
-Потрібну команду не вдалося виконати
+The requested command could not be executed
 .RE
 .SH "ДИВ\&. ТАКОЖ"
 .PP
