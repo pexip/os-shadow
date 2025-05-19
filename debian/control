@@ -1,8 +1,8 @@
 Source: shadow
 Maintainer: Pexip AS <packaging@pexip.com>
 XSBC-Pexip-Original-Maintainer: Shadow package maintainers <pkg-shadow-devel@lists.alioth.debian.org>
-XSBC-Pexip-Original-Uploaders: Balint Reczey <balint@balintreczey.hu>,
-           Serge Hallyn <serge@hallyn.com>
+XSBC-Pexip-Original-Uploaders: Serge Hallyn <serge@hallyn.com>,
+ Chris Hofstaedtler <zeha@debian.org>
 Section: admin
 Priority: required
 Build-Depends: debhelper-compat (= 13),

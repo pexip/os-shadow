@@ -1,3 +1,23 @@
+shadow (1:4.13+dfsg1-1+pexip24u3+deb12u1) pexip; urgency=medium
+
+  * New upstream version with security fixes
+
+ -- Steve McIntyre <steve.mcintyre@pexip.com>  Mon, 19 May 2025 13:35:30 +0100
+
+shadow (1:4.13+dfsg1-1+deb12u1) bookworm; urgency=medium
+
+  [ Balint Reczey ]
+  * Cherry-pick upstream patch to fix gpasswd passwd leak (Closes: #1051062)
+    CVE-2023-4641
+  * Cherry-pick upstream patch to fix chfn vulnerability (Closes: #1034482)
+    CVE-2023-29383
+  * Fix valid_field() that regressed in upstream's chfn fix
+
+  [ Chris Hofstaedtler ]
+  * Update Uploaders: field from unstable
+
+ -- Chris Hofstaedtler <zeha@debian.org>  Mon, 07 Apr 2025 12:38:46 +0200
+
 shadow (1:4.13+dfsg1-1+b1+pexip24u2) pexip-bookworm; urgency=medium
 
   * New versioning scheme
