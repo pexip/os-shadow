@@ -10,3 +10,4 @@ debian/Stop-building-programs-we-do-not-install.patch
 debian/Warn-when-badname-and-variants-are-given.patch
 debian/configure.ac-align-exec_prefix-with-prefix.patch
 upstream/Accept-usr-sbin-nologin-as-an-alternate-to-sbin-nologin.patch
+upstream/Add-LOGIN_ENV_SAFELIST-to-FOREIGNDEFS.patch

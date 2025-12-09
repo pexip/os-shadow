@@ -1,0 +1,24 @@
+From: Stanislav Brabec <sbrabec@suse.cz>
+Date: Wed, 9 Apr 2025 02:03:10 +0200
+Subject: Add LOGIN_ENV_SAFELIST to FOREIGNDEFS
+
+util-linux-2.41 introduced new variable: LOGIN_ENV_SAFELIST.
+Add it to known login.defs variables.
+
+Signed-off-by: Stanislav Brabec <sbrabec@suse.cz>
+---
+ lib/getdef.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/lib/getdef.c b/lib/getdef.c
+index e354d89..8883a29 100644
+--- a/lib/getdef.c
++++ b/lib/getdef.c
+@@ -76,6 +76,7 @@ struct itemdef {
+ #define FOREIGNDEFS				\
+ 	{"ALWAYS_SET_PATH", NULL},		\
+ 	{"ENV_ROOTPATH", NULL},			\
++	{"LOGIN_ENV_SAFELIST", NULL},		\
+ 	{"LOGIN_KEEP_USERNAME", NULL},		\
+ 	{"LOGIN_PLAIN_PROMPT", NULL},		\
+ 	{"MOTD_FIRSTONLY", NULL},		\
