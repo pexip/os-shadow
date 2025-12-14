@@ -1,3 +1,6 @@
+# Debian #1122913
+upstream/10429edc14673fbb8c78b25f1872c34e88e5f07f.patch
+
 # CVE-2023-4641
 0001-gpasswd-1-Fix-password-leak.patch
 

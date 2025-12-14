@@ -1,0 +1,54 @@
+From 10429edc14673fbb8c78b25f1872c34e88e5f07f Mon Sep 17 00:00:00 2001
+From: lixinyun <li.xinyun@h3c.com>
+Date: Wed, 29 May 2024 06:53:02 +0800
+Subject: [PATCH] src/groupmod.c: delete gr_free_members(&grp) to avoid double
+ free
+
+Groupmod -U may cause crashes because of double free. If without -a, the first free of (*ogrp).gr_mem is in gr_free_members(&grp), and then in gr_update without -n or gr_remove with -n.
+Considering the minimal impact of modifications on existing code, delete gr_free_members(&grp) to avoid double free.Although this may seem reckless, the second free in two different positions will definitely be triggered, and the following two test cases can be used to illustrate the situation :
+
+[root@localhost src]# ./useradd u1
+[root@localhost src]# ./useradd u2
+[root@localhost src]# ./useradd u3
+[root@localhost src]# ./groupadd -U u1,u2,u3 g1
+[root@localhost src]# ./groupmod -n g2 -U u1,u2 g1
+Segmentation fault
+
+This case would free (*ogrp).gr_mem in gr_free_members(&grp) due to assignment statements grp = *ogrp, then in if (nflg && (gr_remove (group_name) == 0)), which finally calls gr_free_members(grent) to free (*ogrp).gr_mem again.
+
+[root@localhost src]# ./useradd u1
+[root@localhost src]# ./useradd u2
+[root@localhost src]# ./useradd u3
+[root@localhost src]# ./groupadd -U u1,u2,u3 g1
+[root@localhost src]# ./groupmod -U u1,u2 g1
+Segmentation fault
+
+The other case would free (*ogrp).gr_mem in gr_free_members(&grp) too, then in if (gr_update (&grp) == 0), which finally calls gr_free_members(grent) too to free (*ogrp).gr_mem again.
+
+So the first free is unnecessary, maybe we can drop it.
+
+Fixes: 342c934a3590 ("add -U option to groupadd and groupmod")
+Closes: <https://github.com/shadow-maint/shadow/issues/1013>
+Link: <https://github.com/shadow-maint/shadow/pull/1007>
+Link: <https://github.com/shadow-maint/shadow/pull/271>
+Link: <https://github.com/shadow-maint/shadow/issues/265>
+Cc: "Serge E. Hallyn" <serge@hallyn.com>
+Reviewed-by: Alejandro Colomar <alx@kernel.org>
+Signed-off-by: lixinyun <li.xinyun@h3c.com>
+---
+ src/groupmod.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git i/src/groupmod.c w/src/groupmod.c
+index 006eca1c..7eae4c6f 100644
+--- i/src/groupmod.c
++++ w/src/groupmod.c
+@@ -244,8 +244,6 @@ static void grp_update (void)
+ 
+ 		if (!aflg) {
+ 			// requested to replace the existing groups
+-			if (NULL != grp.gr_mem[0])
+-				gr_free_members(&grp);
+ 			grp.gr_mem = (char **)xmalloc(sizeof(char *));
+ 			grp.gr_mem[0] = (char *)0;
+ 		} else {
