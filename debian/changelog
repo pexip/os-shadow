@@ -1,3 +1,15 @@
+shadow (1:4.13+dfsg1-1+pexip24u4+deb12u2) pexip; urgency=medium
+
+  * New upstream version
+
+ -- Steve McIntyre <steve.mcintyre@pexip.com>  Tue, 20 Jan 2026 15:14:12 +0000
+
+shadow (1:4.13+dfsg1-1+deb12u2) bookworm; urgency=medium
+
+  * Apply upstream patch to fix groupmod -U "" segfault (Closes: #1122913)
+
+ -- Chris Hofstaedtler <zeha@debian.org>  Sun, 14 Dec 2025 15:00:01 +0100
+
 shadow (1:4.13+dfsg1-1+pexip24u3+deb12u1) pexip; urgency=medium
 
   * New upstream version with security fixes
